@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Feel++ Template Project Notebook :: Feel++ Template Project</title>
-    <link rel="canonical" href="https://feelpp.github.io/feelpp-project/feelpp-project/env/jupyter.html">
+    <title>Antora Environment :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/env/antora.html">
     <meta name="generator" content="Antora 3.1.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -99,7 +99,7 @@ MathJax.Hub.Config({
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
         <div class="navbar-brand">
             <div class="navbar-item feelpp-logo">
-                <a href="https://feelpp.github.io/feelpp-project">Feel++ Template Project</a>
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
             </div>
             <button class="navbar-burger" data-target="topbar-nav">
                 <span></span>
@@ -127,7 +127,7 @@ MathJax.Hub.Config({
 </header>
 <div class="body">
 <a href="#" class="menu-expand-toggle"></a>
-<div class="nav-container" data-component="feelpp-project" data-version="">
+<div class="nav-container" data-component="benchmarking" data-version="">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -161,7 +161,7 @@ MathJax.Hub.Config({
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="cmake.html">CMake Environment</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="antora.html">Antora Environment</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -173,7 +173,7 @@ MathJax.Hub.Config({
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="rename.html">Renaming the Project</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jupyter.html">Jupyter Notebook</a>
   </li>
 </ul>
@@ -205,12 +205,12 @@ MathJax.Hub.Config({
   <ul>
     <li><a href="../index.html">Template Project</a></li>
     <li>Setting up the development Environment</li>
-    <li><a href="jupyter.html">Jupyter Notebook</a></li>
+    <li><a href="antora.html">Antora Environment</a></li>
   </ul>
 </nav>
 
   
-    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/env/jupyter.adoc">Edit this Page</a></div>
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/env/antora.adoc">Edit this Page</a></div>
   
   <div class="page-downloads">
   <span class="label">Download as</span>
@@ -221,12 +221,6 @@ MathJax.Hub.Config({
         <img class="pdf-file-icon icon" src="../../_/img/pdf.svg"/> .pdf
       </a>
     </li>
-      <li>
-        <a href="../_attachments/env/jupyter.ipynb"
-           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
-          <img class="jupyter-file-icon icon" src="../../_/img/jupyter-logo.svg"/> .ipynb
-        </a>
-      </li>
   </ul>
 </div>
 </div>
@@ -236,76 +230,35 @@ MathJax.Hub.Config({
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Feel++ Template Project Notebook</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph lead">
-<p>This is a Jupyter notebook for the Feel++ Template Project project.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_introduction"><a class="anchor" href="#_introduction"></a>1. Introduction</h2>
-<div class="sectionbody">
+<h1 class="page">Antora Environment</h1>
 <div class="paragraph">
-<p>You write your notebook in AsciiDoc including LaTeX math and thanks to the <code>:page-jupyter: true</code> attribute, the notebook is converted to a Jupyter notebook when the book is built.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_code_cells"><a class="anchor" href="#_code_cells"></a>2. Code cells</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You can include code cells in your notebook using the <code>[source,python]</code> block macro.</p>
+<p>Antora is our static website generator.
+We use it to generate the documentation of the project
+It is part of the documentation of <a href="https://docs.feelpp.org">Feel++ docs</a> website.</p>
 </div>
 <div class="listingblock">
+<div class="title">To generate the documentation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import sys, os
-print("Hello, world!")</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell"> $ npm install <i class="conum" data-value="1"></i><b>(1)</b>
+ $ npm run antora <i class="conum" data-value="2"></i><b>(2)</b>
+ $ npm run start <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_feel_code_cells"><a class="anchor" href="#_feel_code_cells"></a>3. Feel++ Code cells</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You can include Feel++ code cells in your notebook using the <code>[source,python]</code> block macro.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import feelpp
-app = feelpp.Environment(["myapp"],config=feelpp.globalRepository("myapp"))
-
-geo=feelpp.download( "github:{repo:feelpp,path:feelpp/quickstart/laplacian/cases/feelpp2d/feelpp2d.geo}", worldComm=app.worldCommPtr() )[0]
-print("geo file: {}".format(geo))
-mesh = feelpp.load(feelpp.mesh(dim=2,realdim=2), geo, 0.1)
-
-Xh=feelpp.functionSpace(mesh=mesh, space="Pchv")
-f = Xh.element()
-f.on(range=feelpp.elements(mesh),expr=feelpp.expr("{sin(pi*x)*sin(pi*y),cos(pi*x)*cos(pi*y)}:x:y",row=2,col=1))
-e= feelpp.exporter(mesh=mesh)
-e.add("f",f)
-e.save()</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can then visualize the result using the <code>pyvista</code> package as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from xvfbwrapper import Xvfb
-vdisplay = Xvfb()
-vdisplay.start()
-
-import pyvista as pv
-pv.set_jupyter_backend('panel')
-reader = pv.get_reader("exports/ensightgold/Exporter/Exporter.case")
-mesh = reader.read()
-mesh.plot(scalars="f",show_edges=True)</code></pre>
-</div>
-</div>
-</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Install the dependencies</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Generate the documentation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Serve the documentation, the URL is provided in the console</td>
+</tr>
+</table>
 </div>
 </article>
   </div>

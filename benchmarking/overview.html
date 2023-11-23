@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Quickstart Guide :: Feel++ Template Project</title>
-    <link rel="canonical" href="https://feelpp.github.io/feelpp-project/feelpp-project/quickstart.html">
+    <title>Overview of Benchmarking :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/overview.html">
     <meta name="generator" content="Antora 3.1.4">
     <link rel="stylesheet" href="../_/css/site.css">
 <link rel="icon" href="../_/img/favicon.ico" type="image/x-icon">
@@ -99,7 +99,7 @@ MathJax.Hub.Config({
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
         <div class="navbar-brand">
             <div class="navbar-item feelpp-logo">
-                <a href="https://feelpp.github.io/feelpp-project">Feel++ Template Project</a>
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
             </div>
             <button class="navbar-burger" data-target="topbar-nav">
                 <span></span>
@@ -127,7 +127,7 @@ MathJax.Hub.Config({
 </header>
 <div class="body">
 <a href="#" class="menu-expand-toggle"></a>
-<div class="nav-container" data-component="feelpp-project" data-version="">
+<div class="nav-container" data-component="benchmarking" data-version="">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -139,10 +139,10 @@ MathJax.Hub.Config({
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="index.html">Introduction</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="quickstart.html">Quickstart</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="overview.html">Overview</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -204,12 +204,12 @@ MathJax.Hub.Config({
   <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Template Project</a></li>
-    <li><a href="quickstart.html">Quickstart</a></li>
+    <li><a href="overview.html">Overview</a></li>
   </ul>
 </nav>
 
   
-    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/quickstart.adoc">Edit this Page</a></div>
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/overview.adoc">Edit this Page</a></div>
   
   <div class="page-downloads">
   <span class="label">Download as</span>
@@ -229,121 +229,32 @@ MathJax.Hub.Config({
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Quickstart Guide</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>To get started with compiling and using Feel++ Template Project, you can either</p>
-</div>
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-check-square-o"></i> install <a href="https://docs.feelpp.org/user/latest/install/index.html">Feel++ Debian or Ubuntu packages</a> if you use such systems or</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> use DevContainers in Visual Studio Code as described below.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>To get started with viewing and creating documentation, checkout the project <a href="env/antora.html" class="xref page">Antora</a> page.</p>
-</div>
-</div>
-</div>
+<h1 class="page">Overview of Benchmarking</h1>
 <div class="sect1">
-<h2 id="_using_devcontainers_in_visual_studio_code"><a class="anchor" href="#_using_devcontainers_in_visual_studio_code"></a>1. Using DevContainers in Visual Studio Code</h2>
+<h2 id="_organisation"><a class="anchor" href="#_organisation"></a>1. Organisation</h2>
 <div class="sectionbody">
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
 <div class="paragraph">
-<p>Please ensure that you have <a href="https://code.visualstudio.com/">Visual Studio Code</a> and <a href="https://docs.docker.com/engine/install/">Docker</a> installed before proceeding.</p>
+<p>The directory structure of the project is as follows:</p>
 </div>
-</td>
-</tr>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_getting_started"><a class="anchor" href="#_getting_started"></a>1.1. Getting Started</h3>
-<div class="paragraph">
-<p>To start using DevContainers in Visual Studio Code, follow these steps:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Open your project in Visual Studio Code.</p>
-</li>
-<li>
-<p>A <code>devcontainer.json</code> file in the root of your project in <code>.devcontainer</code> directory</p>
-</li>
-<li>
-<p>A configuration similar to the following one is available:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-	"name": "Feel++ Dev Jammy",
-	"image": "ghcr.io/feelpp/feelpp-dev:jammy",
-	"extensions": [
-		"ms-vscode.cpptools",
-		"ms-vscode.cmake-tools",
-		"josetr.cmake-language-support-vscode",
-		"asciidoctor.asciidoctor-vscode",
-		"ms-python.python",
-		"ms-toolsai.jupyter"
-	]
-}</code></pre>
+<pre>.
+├── docs
+│   ├── antora
+│   └── modules
+└── src
+    └── cases
+
+5 directories</pre>
 </div>
-</div>
-</li>
-<li>
-<p>Customize the configuration based on your project requirements.
-In the example above, the configuration sets the name of the Dev Container as "Feel++ Dev Jammy" and specifies the Docker image to use as "ghcr.io/feelpp/feelpp-dev:jammy".
-Additionally, it includes a list of extensions to install inside the Dev Container.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_opening_in_devcontainer"><a class="anchor" href="#_opening_in_devcontainer"></a>1.2. Opening in DevContainer</h3>
-<div class="paragraph">
-<p>To open your project using the DevContainer, follow these steps:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Open the Command Palette in Visual Studio Code by pressing <code>Ctrl+Shift+P</code> (or <code>Cmd+Shift+P</code> on macOS).</p>
-</li>
-<li>
-<p>Search for and select "Remote-Containers: Reopen in Container".</p>
-</li>
-<li>
-<p>Visual Studio Code will build the Docker image specified in the <code>devcontainer.json</code> file and open a new window inside the Dev Container.</p>
-</li>
-<li>
-<p>Once the Dev Container is loaded, you can start working on your project within the containerized environment.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_benefits_of_using_devcontainers"><a class="anchor" href="#_benefits_of_using_devcontainers"></a>1.3. Benefits of Using DevContainers</h3>
-<div class="paragraph">
-<p>Using DevContainers in Visual Studio Code offers several benefits:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Consistent Development Environment</strong>: DevContainers provide a consistent and reproducible development environment across different machines, ensuring that everyone works in the same environment.</p>
+<p>The <code>docs</code> directory contains the documentation of the project and uses antora to generate the documentation.</p>
 </li>
 <li>
-<p><strong>Isolation and Dependency Management</strong>: DevContainers isolate your project dependencies from your local machine, reducing conflicts and simplifying dependency management.</p>
-</li>
-<li>
-<p><strong>Easy Extension Installation</strong>: DevContainers automatically install the specified extensions, making it easy to set up the required tools and configurations for your project.</p>
+<p>The <code>src</code> directory contains initially some C++ and Python Feel++ source code of the project to help you get started.</p>
 </li>
 </ul>
 </div>
@@ -354,11 +265,65 @@ Additionally, it includes a list of extensions to install inside the Dev Contain
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Make sure your Docker daemon is running and accessible from the terminal to use DevContainers in Visual Studio Code.
+<div class="paragraph">
+<p>Feel++ is a C++ library for the numerical simulation of partial differential equations. It is designed to be easy to use and to extend.
+Feel++ is a free software distributed under the terms of the GNU General Public License version 3.
+The documentation is available <a href="https://docs.feelpp.org">&gt; here</a>.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_build_the_project"><a class="anchor" href="#_how_to_build_the_project"></a>2. How to build the project</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need first to follow the <a href="quickstart.html" class="xref page">quickstart</a> to get the Feel++ environment.
+The installation procedure uses <a href="env/cmake.html" class="xref page">Cmake</a> for the C++ programs and create a bundle of this project.
+The steps are as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cmake --preset default <i class="conum" data-value="1"></i><b>(1)</b>
+$ cmake --build --preset default <i class="conum" data-value="2"></i><b>(2)</b>
+$ cmake --build --preset default -t install <i class="conum" data-value="3"></i><b>(3)</b>
+$ ctest --preset default <i class="conum" data-value="4"></i><b>(4)</b>
+$ cmake --build --preset default -t package <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configure the project</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Build the project</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Install the project</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Run the tests</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Package the project</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_start_documenting_your_work"><a class="anchor" href="#_how_to_start_documenting_your_work"></a>3. How to start documenting your work</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The documentation is written in AsciiDoc and uses Antora to generate the documentation. Please check the project <a href="env/antora.html" class="xref page">Antora</a> page to get started.</p>
 </div>
 </div>
 </div>

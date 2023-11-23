@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>GitHub Actions :: Feel++ Template Project</title>
-    <link rel="canonical" href="https://feelpp.github.io/feelpp-project/feelpp-project/env/githubactions.html">
+    <title>VS Code Integration :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/env/vscode.html">
     <meta name="generator" content="Antora 3.1.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -99,7 +99,7 @@ MathJax.Hub.Config({
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
         <div class="navbar-brand">
             <div class="navbar-item feelpp-logo">
-                <a href="https://feelpp.github.io/feelpp-project">Feel++ Template Project</a>
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
             </div>
             <button class="navbar-burger" data-target="topbar-nav">
                 <span></span>
@@ -127,7 +127,7 @@ MathJax.Hub.Config({
 </header>
 <div class="body">
 <a href="#" class="menu-expand-toggle"></a>
-<div class="nav-container" data-component="feelpp-project" data-version="">
+<div class="nav-container" data-component="benchmarking" data-version="">
   <aside class="nav">
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
@@ -164,10 +164,10 @@ MathJax.Hub.Config({
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="antora.html">Antora Environment</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="vscode.html">VS Code Integration</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="githubactions.html">GitHub Actions</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -205,12 +205,12 @@ MathJax.Hub.Config({
   <ul>
     <li><a href="../index.html">Template Project</a></li>
     <li>Setting up the development Environment</li>
-    <li><a href="githubactions.html">GitHub Actions</a></li>
+    <li><a href="vscode.html">VS Code Integration</a></li>
   </ul>
 </nav>
 
   
-    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/env/githubactions.adoc">Edit this Page</a></div>
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/env/vscode.adoc">Edit this Page</a></div>
   
   <div class="page-downloads">
   <span class="label">Download as</span>
@@ -230,40 +230,34 @@ MathJax.Hub.Config({
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">GitHub Actions</h1>
-<div id="preamble">
-<div class="sectionbody">
+<h1 class="page">VS Code Integration</h1>
 <div class="paragraph">
-<p>GitHub Actions are set up to</p>
+<p>The project is configured to integrate VSCode using Docker Container.</p>
+</div>
+<div class="paragraph">
+<p>The Docker image can be set from <code>feelpp/feelpp</code> or <code>feelpp/feelpp-toolboxes</code>, simply edit <code>.devcontainer/Dockerfile</code> and choose the image you want.</p>
+</div>
+<div class="paragraph">
+<p><code>ssh-keyscan</code> is used on <code>github.com</code> to register the public key of github in $HOME/.ssh/known_hosts and avoid having git auth issues the first time we log into the container and push/pull to/from github.</p>
+</div>
+<div class="paragraph">
+<p>The following extensions are installed in Docker:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>build the documentation using Antora and upload them to docs.feelpp.org[Feel++ docs] upon any change in the repo.</p>
+<p>cpptools</p>
 </li>
 <li>
-<p>build, install, package and deliver the Feel++ code</p>
+<p>cmaketools</p>
+</li>
+<li>
+<p>cmake</p>
+</li>
+<li>
+<p>asciidoctor-vscode</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>See the [workflow file](.github/workflows/ci.yml) for more details.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_skipping_a_job"><a class="anchor" href="#_skipping_a_job"></a>1. Skipping a job</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You can skip the CI  by adding the following line in the commit message: <code>[skip ci]</code></p>
-</div>
-<div class="paragraph">
-<p>You can skip the job that build the documentation  by adding the following line in the commit message: <code>doc skip</code>.</p>
-</div>
-<div class="paragraph">
-<p>You can skip the job that build the code  by adding the following line in the commit message: <code>code skip</code>.</p>
-</div>
-</div>
 </div>
 </article>
   </div>
