@@ -21,6 +21,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 #
+
 feelpp_add_application(laplacian SRCS laplacian.cpp TESTS INSTALL )
 feelpp_add_testcase(cases PREFIX fp CATEGORY feelpp)
 
@@ -34,10 +35,11 @@ if ( SKBUILD_PROJECT_NAME )
     target_link_libraries(_laplacian PRIVATE pybind11::headers Feelpp::feelpp)
     target_compile_definitions(_laplacian PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
-    install(TARGETS _laplacian DESTINATION feelpp_project)
+    install(TARGETS _laplacian DESTINATION benchmarking)
 else()
     feelpp_add_pymodule(laplacian SRCS _laplacian.cpp DESTINATION ${PROJECT_NAME})
-    file(GLOB PYFILES "${CMAKE_CURRENT_SOURCE_DIR}/feelpp_project/*.py")
+    file(GLOB PYFILES "${CMAKE_CURRENT_SOURCE_DIR}/benchmarking/*.py")
     install(FILES ${PYFILES} DESTINATION ${FEELPP_PYTHON_MODULE_PATH}/${PROJECT_NAME})
 endif()
+
 
