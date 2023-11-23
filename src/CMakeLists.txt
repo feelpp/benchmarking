@@ -21,6 +21,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 #
+
 feelpp_add_application(laplacian SRCS laplacian.cpp TESTS INSTALL )
 feelpp_add_testcase(cases PREFIX fp CATEGORY feelpp)
 
@@ -40,4 +41,5 @@ else()
     file(GLOB PYFILES "${CMAKE_CURRENT_SOURCE_DIR}/benchmarking/*.py")
     install(FILES ${PYFILES} DESTINATION ${FEELPP_PYTHON_MODULE_PATH}/${PROJECT_NAME})
 endif()
+
 

@@ -54,7 +54,6 @@ if ( NOT TARGET check )
   add_custom_target(check)
 endif()
 
-
 add_subdirectory( src )
 #add_subdirectory( docs )
 

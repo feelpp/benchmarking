@@ -1,0 +1,11 @@
+= Meluxina
+
+[source,sh]
+----
+module load env/release/2023.1 <1>
+module load Apptainer/1.2.4-GCCcore-12.3.0  <2>
+apptainer pull docker://ghcr.io/feelpp/feelpp:jammy <3>
+----
+<.> load latest environment
+<.> load apptainer
+<.> pull feelpp image and generate sif
