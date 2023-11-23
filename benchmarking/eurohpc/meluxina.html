@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>CMake Environment :: Benchmarking</title>
-    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/env/cmake.html">
+    <title>Meluxina :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/eurohpc/meluxina.html">
     <meta name="generator" content="Antora 3.1.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -163,19 +163,19 @@ MathJax.Hub.Config({
     <a class="nav-link" href="#eurohpc/index.adoc">EuroHPC</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/karolina.html">Karolina</a>
+    <a class="nav-link" href="karolina.html">Karolina</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/leonardo.html">Leonardo</a>
+    <a class="nav-link" href="leonardo.html">Leonardo</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/lumi.html">Lumi</a>
+    <a class="nav-link" href="lumi.html">Lumi</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="meluxina.html">Meluxina</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/meluxina.html">Meluxina</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/vega.html">Vega</a>
+    <a class="nav-link" href="vega.html">Vega</a>
   </li>
 </ul>
   </li>
@@ -185,23 +185,23 @@ MathJax.Hub.Config({
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Programming Environment</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="cmake.html">CMake Environment</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../env/cmake.html">CMake Environment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="antora.html">Antora Environment</a>
+    <a class="nav-link" href="../env/antora.html">Antora Environment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="vscode.html">VS Code Integration</a>
+    <a class="nav-link" href="../env/vscode.html">VS Code Integration</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="githubactions.html">GitHub Actions</a>
+    <a class="nav-link" href="../env/githubactions.html">GitHub Actions</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="rename.html">Renaming the Project</a>
+    <a class="nav-link" href="../env/rename.html">Renaming the Project</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="jupyter.html">Jupyter Notebook</a>
+    <a class="nav-link" href="../env/jupyter.html">Jupyter Notebook</a>
   </li>
 </ul>
   </li>
@@ -231,13 +231,14 @@ MathJax.Hub.Config({
   <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Template Project</a></li>
-    <li>Programming Environment</li>
-    <li><a href="cmake.html">CMake Environment</a></li>
+    <li>HPC Systems</li>
+    <li><a href="#eurohpc/index.adoc">EuroHPC</a></li>
+    <li><a href="meluxina.html">Meluxina</a></li>
   </ul>
 </nav>
 
   
-    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/env/cmake.adoc">Edit this Page</a></div>
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/eurohpc/meluxina.adoc">Edit this Page</a></div>
   
   <div class="page-downloads">
   <span class="label">Download as</span>
@@ -257,82 +258,29 @@ MathJax.Hub.Config({
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">CMake Environment</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>The CMakeLists.txt is setup with Feel++.
-A sample Feel++ application is available in <code>src</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_building"><a class="anchor" href="#_building"></a>1. Building</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The CMakeLists.txt is configured to build the application in <code>src</code>.
-The following commands can be used to build the application:</p>
-</div>
+<h1 class="page">Meluxina</h1>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"> $ cmake --preset default <i class="conum" data-value="1"></i><b>(1)</b>
- $ cmake --build --preset default <i class="conum" data-value="2"></i><b>(2)</b>
- $ cmake --build --preset default -t install <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">module load env/release/2023.1 <i class="conum" data-value="1"></i><b>(1)</b>
+module load Apptainer/1.2.4-GCCcore-12.3.0  <i class="conum" data-value="2"></i><b>(2)</b>
+apptainer pull docker://ghcr.io/feelpp/feelpp:jammy <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configure the project</td>
+<td>load latest environment</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Build the project</td>
+<td>load apptainer</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Install the project</td>
+<td>pull feelpp image and generate sif</td>
 </tr>
 </table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_packaging"><a class="anchor" href="#_packaging"></a>2. Packaging</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>CPack is configured and allows to generate a binary and source package.
-Use the following commands to generate the binary package:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>$ cmake --build --preset default -t package</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Use the following commands to generate the source package:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>$ cmake --build --preset default -t package_source</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_testing"><a class="anchor" href="#_testing"></a>3. Testing</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>CTest is configured.
-Use the following command to run the tests:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>$ cmake --build --preset default -t test</pre>
-</div>
-</div>
-</div>
 </div>
 </article>
   </div>
