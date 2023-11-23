@@ -110,9 +110,9 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         # Artifact name
-        name: feelpp-project-artifacts
+        name: benchmarking-artifacts
         # Directory containing files to upload
-        path: build/default/assets/feelpp-project-*
+        path: build/default/assets/benchmarking-*
   deliver:
     runs-on: self-ubuntu-22.04
     needs: build_code
@@ -127,7 +127,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         # Artifact name
-        name: feelpp-project-artifacts
+        name: benchmarking-artifacts
         path: artifacts/
     -
         name: Docker meta
@@ -135,7 +135,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/feelpp/feelpp-project
+            ghcr.io/feelpp/benchmarking
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -177,7 +177,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           # Artifact name
-          name: feelpp-project-artifacts
+          name: benchmarking-artifacts
           path: artifacts/
       - name: Download Wheel Packages
         uses: actions/download-artifact@v3

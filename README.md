@@ -1,8 +1,8 @@
-# Feel++ Template Project 
+# Benchmarking 
 Author: Christophe Prud'homme ![GitHub](https://github.com/prudhomm)
 Version: v2
 
-![CI](https://github.com/feelpp/feelpp-project/workflows/CI/badge.svg)
+![CI](https://github.com/feelpp/benchmarking/workflows/CI/badge.svg)
 
 This repository provides a basic starting point for a Feel++ application including:
 
@@ -12,11 +12,11 @@ This repository provides a basic starting point for a Feel++ application includi
 - [x] Continuous integration including tests for the C++ applications
 - [x] Docker image generation for the project
 
-The documentation for feelpp-project is available [here](https://feelpp.github.io/feelpp-project), and you can build on it for your project by enabling the [github pages](https://docs.github.com/en/pages) for your repository.
+The documentation for benchmarking is available [here](https://feelpp.github.io/benchmarking), and you can build on it for your project by enabling the [github pages](https://docs.github.com/en/pages) for your repository.
 
 ## Renaming the project
 
-By default, the project is named `feelpp-project` if you cloned the repository `feelpp/feelpp-project`. However, if you used the previous repository as a template, then the project is renamed using the name of the repository using the script `rename.sh` at the initialization of the repository. If the name does not suit you, you can change it again using the script `rename.sh` and providing the new name as an argument.
+By default, the project is named `benchmarking` if you cloned the repository `feelpp/benchmarking`. However, if you used the previous repository as a template, then the project is renamed using the name of the repository using the script `rename.sh` at the initialization of the repository. If the name does not suit you, you can change it again using the script `rename.sh` and providing the new name as an argument.
 
 > **Warning**: The script `rename.sh` will rename the project. However, some URLs might not be set properly if you rename the project yourself. You need to check the following files: `docs/site.yml` and `docs/package.json` and fix the URLs after the rename process is done.
 
