@@ -1,0 +1,56 @@
+= {project_name} Notebook
+:stem: latexmath
+:page-jupyter: true
+
+[.lead]
+This is a Jupyter notebook for the {project_name} project.
+
+== Introduction
+
+You write your notebook in AsciiDoc including LaTeX math and thanks to the `:page-jupyter: true` attribute, the notebook is converted to a Jupyter notebook when the book is built.
+
+== Code cells
+
+You can include code cells in your notebook using the `[source,python]` block macro.
+
+[source,python]
+----
+import sys, os
+print("Hello, world!")
+----
+
+== {feelpp} Code cells
+
+You can include {feelpp} code cells in your notebook using the `[source,python]` block macro.
+
+[source,python]
+----
+import feelpp
+app = feelpp.Environment(["myapp"],config=feelpp.globalRepository("myapp"))
+
+geo=feelpp.download( "github:{repo:feelpp,path:feelpp/quickstart/laplacian/cases/feelpp2d/feelpp2d.geo}", worldComm=app.worldCommPtr() )[0]
+print("geo file: {}".format(geo))
+mesh = feelpp.load(feelpp.mesh(dim=2,realdim=2), geo, 0.1)
+
+Xh=feelpp.functionSpace(mesh=mesh, space="Pchv")
+f = Xh.element()
+f.on(range=feelpp.elements(mesh),expr=feelpp.expr("{sin(pi*x)*sin(pi*y),cos(pi*x)*cos(pi*y)}:x:y",row=2,col=1))
+e= feelpp.exporter(mesh=mesh)
+e.add("f",f)
+e.save()
+----
+
+You can then visualize the result using the `pyvista` package as follows:
+
+[source,python]
+----
+from xvfbwrapper import Xvfb 
+vdisplay = Xvfb()
+vdisplay.start()
+
+import pyvista as pv
+pv.set_jupyter_backend('panel')
+reader = pv.get_reader("exports/ensightgold/Exporter/Exporter.case")
+mesh = reader.read()
+mesh.plot(scalars="f",show_edges=True)
+----

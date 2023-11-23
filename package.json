@@ -1,0 +1,52 @@
+{
+  "private": true,
+  "name": "feelpp-project",
+  "description": "The Feel++ Template Project documentation",
+  "version": "2.1.0",
+  "license": "AGPL-3.0",
+  "author": "The Feel++ Template Project Team",
+  "homepage": "https://github.com/feelpp/feelpp-project#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feelpp/feelpp-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/feelpp/feelpp-project/issues"
+  },
+  "contributors": [
+    {
+      "name": "Christophe Prud'homme",
+      "email": "christophe.prudhomme@cemosis.fr"
+    }
+  ],
+  "scripts": {
+    "prose": "write-good --parse **/*.adoc",
+    "start": "http-server public/ -d -i",
+    "antora": "npx antora --stacktrace generate --cache-dir cache --clean site.yml",
+    "validate": "npx antora --stacktrace generate --cache-dir cache --generator ./generator/xref-validator.js --clean site.yml",
+    "linkcheck": "broken-link-checker --filter-level 3 --recursive --verbose"
+  },
+  "dependencies": {
+    "@antora/cli": "^3.1",
+    "@antora/collector-extension": "^1.0.0-alpha.3",
+    "@antora/site-generator": "^3.1",
+    "@antora/site-generator-default": "^3.1",
+    "@asciidoctor/core": "^2.2.6",
+    "asciidoctor": "^2.2.6",
+    "asciidoctor-jupyter": "^0.6.0",
+    "asciidoctor-kroki": "^0.17.0",
+    "handlebars": "^4.7.8",
+    "handlebars-utils": "^1.0.6",
+    "@feelpp/asciidoctor-extensions": "1.0.0-rc.8"
+  },
+  "devDependencies": {
+    "broken-link-checker": "^0.7.8",
+    "http-server": "^14.1.1",
+    "write-good": "^1.0.8"
+  },
+  "keywords": [
+    "antora",
+    "asciidoc",
+    "documentation"
+  ]
+}

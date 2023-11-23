@@ -1,0 +1,125 @@
+= Thermal fin
+Christophe Prud'homme
+:page-plotly: true
+:page-jupyter: true
+:page-tags: case
+:page-illustration: fin2d-4.png
+:description: We simulate the heat transfer in a thermal fin
+
+== Problem statement
+
+We consider the problem of designing a thermal fin to effectively remove heat from a surface. The two-dimensional fin, shown in Figure below, consists of a vertical central post and four horizontal subfins; the fin conducts heat from a prescribed uniform flux source at the root, stem:[\Gamma_{\text {root }}], through the large-surface-area subfins to surrounding flowing air. The fin is characterized by a five-component parameter vector, or input, stem:[\mu_{=}\left(\mu_1, \mu_2, \ldots, \mu_5\right)], where stem:[\mu_i=k^i, i=1, \ldots, 4], and stem:[\mu_5=\mathrm{Bi} ; \mu] may take on any value in a specified design set stem:[D \subset \mathbb{R}^5].
+
+.Geometry of 2D thermal fin
+image::ROOT:fin2d-4-mesh.png[width=500px]
+
+Here stem:[k^i] is the thermal conductivity of the ith subfin (normalized relative to the post conductivity stem:[k^0 \equiv 1] ); and stem:[\mathrm{Bi}] is the Biot number, a nondimensional heat transfer coefficient reflecting convective transport to the air at the fin surfaces (larger stem:[\mathrm{Bi}] means better heat transfer). For example, suppose we choose a thermal fin with stem:[k^1=0.4, k^2=0.6, k^3=0.8, k^4=1.2], and stem:[\mathrm{Bi}=0.1]; for this particular configuration stem:[\mu=\{0.4,0.6,0.8,1.2,0.1\}], which corresponds to a single point in the set of all possible configurations D (the parameter or design set). The post is of width unity and height four; the subfins are of fixed thickness stem:[t=0.25] and length stem:[L=2.5].
+
+We are interested in the design of this thermal fin, and we thus need to look at certain outputs or cost-functionals of the temperature as a function of stem:[\mu]. We choose for our output stem:[T_{\text {root }}], the average steady-state temperature of the fin root normalized by the prescribed heat flux into the fin root. The particular output chosen relates directly to the cooling efficiency of the fin lower values of stem:[T_{\text {root }}] imply better thermal performance. The steadystate temperature distribution within the fin, stem:[u(\mu)], is governed by the elliptic partial differential equation
+[stem]
+++++
+\rho_i C_i \frac{\partial u^i}{\partial t} -k^i \Delta u^i=0 \text { in } \Omega^i, i=0, \ldots, 4,
+++++
+where stem:[\Delta] is the Laplacian operator, and stem:[u_i] refers to the restriction of stem:[u] to stem:[\Omega^i]. 
+Here stem:[\Omega^i] is the region of the fin with conductivity stem:[k^i, i=0, \ldots, 4] and volumetric heat capacity stem:[(\rho C)_i, i=0, \cdots, 4]: stem:[\Omega^0] is thus the central post, and stem:[\Omega^i, i=1, \ldots, 4], corresponds to the four subfins. 
+
+The entire fin domain is denoted stem:[\Omega\left(\bar{\Omega}=\cup_{i=0}^4 \bar{\Omega}^i\right)]; the boundary stem:[\Omega] is denoted stem:[\Gamma]. We must also ensure continuity of temperature and heat flux at the conductivity discontinuity interfaces stem:[\Gamma_{\text {int }}^i \equiv \partial \Omega^0 \cap \partial \Omega^i, i=1, \ldots, 4], where stem:[\partial \Omega^i] denotes the boundary of stem:[\Omega^i], we have on stem:[\Gamma_{\text {int }}^i i=1, \ldots, 4] :
+[stem]
+++++
+\begin{aligned}
+u^0 & =u^i \\
+-\left(\nabla u^0 \cdot n^i\right) & =-k^i\left(\nabla u^i \cdot n^i\right)
+\end{aligned}
+++++
+here stem:[n^i] is the outward normal on stem:[\partial \Omega^i]. Finally, we introduce a Neumann flux boundary condition on the fin root
+[stem]
+++++
+-\left(\nabla u^0 \cdot n^0\right)=-1 \text { on } \Gamma_{\text {root }},
+++++
+which models the heat source; and a Robin boundary condition
+[stem]
+++++
+-k^i\left(\nabla u^i \cdot n^i\right)=\operatorname{Bi} u^i \text { on } \Gamma_{e x t}^i, i=0, \ldots, 4,
+++++
+which models the convective heat losses. Here stem:[\Gamma_{\text {ext }}^i] is that part of the boundary of stem:[\Omega^i] exposed to the flowing fluid; note that stem:[\cup_{i=0}^4 \Gamma_{e x t}^i=\Gamma \backslash \Gamma_{\text {root }}]. The average temperature at the root, stem:[T_{\text {root }}(\mu)], can then be expressed as stem:[\ell^O(u(\mu))], where
+[stem]
+++++
+\ell^O(v)=\int_{\Gamma_{\text {root }}} v
+++++
+
+== Implementation
+
+First, we initialize the {feelpp} environment and set the working directory.
+
+[%dynamic,python]
+----
+import feelpp
+from feelpp_project import laplacian
+import json
+import os
+
+d = os.getcwd()
+print(f"directory={d}")
+e = feelpp.Environment(['fin'], config=feelpp.localRepository("."))
+----
+
+Next, we set the configuration file for the simulation and load the specifications from a JSON file.
+
+[%dynamic,python]
+----
+feelpp.Environment.setConfigFile(f"{d}/src/cases/laplacian/fin/fin1/fin2d.cfg")
+# Reading the JSON file
+data = laplacian.loadSpecs(f"{d}/src/cases/laplacian/fin/fin2d.json")
+print(data)
+----
+
+Now, we create a Laplacian object, set the specifications, and run the simulation.
+
+[%dynamic,python]
+----
+lap = laplacian.get(dim=2, order=1)
+lap.setSpecs(data)
+lap.run()
+meas=lap.measures()
+----
+
+After running the simulation, we convert the results to a Pandas DataFrame and set the 'time' column as the index for easy data manipulation.
+
+[%dynamic,python]
+----
+import pandas as pd
+df = pd.DataFrame(meas)
+df.set_index('time', inplace=True)
+print(df.to_markdown())
+----
+
+In the next block, we plot the mean temperature values at the fin root and the exterior using Plotly.
+
+.Temperatures
+[%dynamic%raw%open,python]
+----
+import plotly.graph_objects as go
+import numpy as np
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=df.index, y=df["mean_Gamma_root"], mode='lines', name='T_{Gamma Root}'))
+fig.add_trace(go.Scatter(x=df.index, y=df["mean_Gamma_ext"], mode='markers', name='T_{Gamma Ext}'))
+fig.add_trace(go.Scatter(x=df.index, y=df["min"], mode='markers', name='min T'))
+fig.add_trace(go.Scatter(x=df.index, y=df["max"], mode='markers', name='max T'))
+fig.update_layout(title='Temperature', xaxis_title='time', yaxis_title='T')
+fig.show()
+----
+
+Lastly, we plot the heat flux values at the fin root and the exterior.
+
+.Fluxes
+[%dynamic%raw%open,python]
+----
+fig = go.Figure()
+fig.add_trace(go.Scatter(
+    x=df.index, y=df["flux_Gamma_root"], mode='lines', name='Flux_{Gamma Root}'))
+fig.add_trace(go.Scatter(
+    x=df.index, y=df["flux_Gamma_ext"], mode='markers', name='Flux_{Gamma Ext}'))
+fig.update_layout(title='Heat Flux', xaxis_title='time', yaxis_title='Flux')
+fig.show()
+----

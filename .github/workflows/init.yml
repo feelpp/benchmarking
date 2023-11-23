@@ -1,0 +1,45 @@
+name: Execute workflow only upon repository initialisation
+
+on:
+  push:
+    branches:
+      - '**'
+ 
+jobs:
+    activate:
+        runs-on: ubuntu-latest
+        if: github.repository != 'feelpp/feelpp-project'
+        steps:
+        - run: echo ok go
+
+    initialize:
+        needs: activate
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+          with:
+            ref: ${{ github.head_ref }}
+            fetch-depth: 0
+            token: ${{ secrets.CR_PAT_WORKFLOW }}
+        - name: Rename project
+          shell: bash
+          run: |
+            bash rename.sh $GITHUB_REPOSITORY 
+          env:
+            GITHUB_TOKEN: ${{secrets.CR_PAT_WORKFLOW}}
+        - name: Commit files
+          run: |
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git commit -a -m "Renamed feelpp-project to $GITHUB_REPOSITORY"
+        - name: Push changes
+          uses: ad-m/github-push-action@master
+          with:
+            force_with_lease: true
+            github_token: ${{ secrets.CR_PAT_WORKFLOW }}
+        - name: Disable this workflow
+          shell: bash
+          run: |
+            gh workflow disable -R $GITHUB_REPOSITORY "${{ github.workflow }}"
+          env:
+            GITHUB_TOKEN: ${{secrets.CR_PAT_WORKFLOW}}

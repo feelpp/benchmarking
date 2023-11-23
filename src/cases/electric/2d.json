@@ -1,0 +1,52 @@
+// -*- mode: javascript -*-
+{
+    "Name":"update",
+    "ShortName":"update",
+    "Materials":
+    {
+        "omega":
+        {
+            "sigma":"-1"
+        }
+    },
+    "BoundaryConditions":
+    {
+        "electric-potential":
+        {
+            "Dirichlet":
+            {
+                "gamma":
+                {
+                    "expr":"sin(x*y):x:y"
+                }
+            }
+        }
+    },
+    "PostProcess":
+    {
+        "Exports":
+        {
+            "fields":["electric-potential","electric-field","pid"]
+        },
+        "Measures":
+        {
+            "Norm":
+            {
+                "potential-error":
+                {
+                    "type": "L2-error",
+                    "field": "electric-potential",
+                    "solution": "sin(x*y):x:y",
+                    "markers": "omega"
+                },
+                "field-error":
+                {
+                    "type": "L2-error",
+                    "field": "electric-field",
+                    "solution": "{y*cos(x*y),x*cos(x*y)}:x:y",
+                    "markers": "omega"
+                }
+            }
+        }
+    }
+}

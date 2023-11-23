@@ -1,0 +1,63 @@
+= Quickstart Guide 
+:navtitle: Quickstart
+
+To get started with compiling and using {project_name}, you can either 
+
+- [x] install https://docs.feelpp.org/user/latest/install/index.html[{feelpp} Debian or Ubuntu packages] if you use such systems or 
+- [x] use DevContainers in Visual Studio Code as described below.
+
+To get started with viewing and creating documentation, checkout the project xref:env/antora.adoc[Antora] page.
+
+== Using DevContainers in Visual Studio Code
+
+[IMPORTANT]
+====
+Please ensure that you have https://code.visualstudio.com/[Visual Studio Code] and https://docs.docker.com/engine/install/[Docker] installed before proceeding.
+====
+
+=== Getting Started
+
+To start using DevContainers in Visual Studio Code, follow these steps:
+
+. Open your project in Visual Studio Code.
+. A `devcontainer.json` file in the root of your project in `.devcontainer` directory
+. A configuration similar to the following one is available:
++
+[source,json]
+----
+{
+	"name": "Feel++ Dev Jammy",
+	"image": "ghcr.io/feelpp/feelpp-dev:jammy",
+	"extensions": [
+		"ms-vscode.cpptools",
+		"ms-vscode.cmake-tools",
+		"josetr.cmake-language-support-vscode",
+		"asciidoctor.asciidoctor-vscode",
+		"ms-python.python",
+		"ms-toolsai.jupyter"
+	]
+}
+----
+
+. Customize the configuration based on your project requirements.
+In the example above, the configuration sets the name of the Dev Container as "Feel++ Dev Jammy" and specifies the Docker image to use as "ghcr.io/feelpp/feelpp-dev:jammy".
+Additionally, it includes a list of extensions to install inside the Dev Container.
+
+=== Opening in DevContainer
+
+To open your project using the DevContainer, follow these steps:
+
+. Open the Command Palette in Visual Studio Code by pressing `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS).
+. Search for and select "Remote-Containers: Reopen in Container".
+. Visual Studio Code will build the Docker image specified in the `devcontainer.json` file and open a new window inside the Dev Container.
+. Once the Dev Container is loaded, you can start working on your project within the containerized environment.
+
+=== Benefits of Using DevContainers
+
+Using DevContainers in Visual Studio Code offers several benefits:
+
+- **Consistent Development Environment**: DevContainers provide a consistent and reproducible development environment across different machines, ensuring that everyone works in the same environment.
+- **Isolation and Dependency Management**: DevContainers isolate your project dependencies from your local machine, reducing conflicts and simplifying dependency management.
+- **Easy Extension Installation**: DevContainers automatically install the specified extensions, making it easy to set up the required tools and configurations for your project.
+
+NOTE: Make sure your Docker daemon is running and accessible from the terminal to use DevContainers in Visual Studio Code.
