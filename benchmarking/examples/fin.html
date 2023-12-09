@@ -135,78 +135,12 @@ MathJax.Hub.Config({
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">Template Project</a></h3>
+    <h3 class="title"><a href="../index.html">The Feel++ Benchmarking Project</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../index.html">Introduction</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../quickstart.html">Quickstart</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../overview.html">Overview</a>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Examples</a>
-<ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="fin.html">Thermal Fin</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <span class="nav-text">HPC Systems</span>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="#eurohpc/index.adoc">EuroHPC</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/karolina.html">Karolina</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/leonardo.html">Leonardo</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/lumi.html">Lumi</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/meluxina.html">Meluxina</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../eurohpc/vega.html">Vega</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <span class="nav-text">Programming Environment</span>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../env/cmake.html">CMake Environment</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../env/antora.html">Antora Environment</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../env/vscode.html">VS Code Integration</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../env/githubactions.html">GitHub Actions</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../env/rename.html">Renaming the Project</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../env/jupyter.html">Jupyter Notebook</a>
-  </li>
-</ul>
+    <a class="nav-link" href="../meluxina/20231209/index.html">Report</a>
   </li>
 </ul>
   </li>
@@ -215,12 +149,12 @@ MathJax.Hub.Config({
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Template Project</span>
+    <span class="title">The Feel++ Benchmarking Project</span>
     <span class="version"></span>
   </div>
   <ul class="components">
       <li class="component is-current">
-        <a class="title" href="../index.html">Template Project</a>
+        <a class="title" href="../index.html">The Feel++ Benchmarking Project</a>
       </li>
   </ul>
 </div>
@@ -233,9 +167,8 @@ MathJax.Hub.Config({
     <a href="../index.html" class="home-link"></a>
   <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Template Project</a></li>
-    <li><a href="index.html">Examples</a></li>
-    <li><a href="fin.html">Thermal Fin</a></li>
+    <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="fin.html">Thermal fin</a></li>
   </ul>
 </nav>
 
@@ -356,12 +289,11 @@ e = feelpp.Environment(['fin'], config=feelpp.localRepository("."))</code></pre>
 <div class="content">
 <pre>---------------------------------------------------------------------------
 ModuleNotFoundError                       Traceback (most recent call last)
-<ipython-input-1-1d4b97f5aec6> in <module>
+File <ipython-input-1-1d4b97f5aec6>:2
       1 import feelpp
 ----> 2 from feelpp_project import laplacian
       3 import json
       4 import os
-      5
 
 ModuleNotFoundError: No module named 'feelpp_project'</pre>
 </div>
@@ -386,11 +318,10 @@ print(data)</code></pre>
 <div class="content">
 <pre>---------------------------------------------------------------------------
 NameError                                 Traceback (most recent call last)
-<ipython-input-1-334c38b17d9d> in <module>
+File <ipython-input-1-334c38b17d9d>:1
 ----> 1 feelpp.Environment.setConfigFile(f"{d}/src/cases/laplacian/fin/fin1/fin2d.cfg")
       2 # Reading the JSON file
       3 data = laplacian.loadSpecs(f"{d}/src/cases/laplacian/fin/fin2d.json")
-      4 print(data)
 
 NameError: name 'd' is not defined</pre>
 </div>
@@ -415,11 +346,10 @@ meas=lap.measures()</code></pre>
 <div class="content">
 <pre>---------------------------------------------------------------------------
 NameError                                 Traceback (most recent call last)
-<ipython-input-1-d909663a9992> in <module>
+File <ipython-input-1-d909663a9992>:1
 ----> 1 lap = laplacian.get(dim=2, order=1)
       2 lap.setSpecs(data)
       3 lap.run()
-      4 meas=lap.measures()
 
 NameError: name 'laplacian' is not defined</pre>
 </div>
@@ -444,7 +374,7 @@ print(df.to_markdown())</code></pre>
 <div class="content">
 <pre>---------------------------------------------------------------------------
 NameError                                 Traceback (most recent call last)
-<ipython-input-1-d5bf1c958560> in <module>
+File <ipython-input-1-d5bf1c958560>:2
       1 import pandas as pd
 ----> 2 df = pd.DataFrame(meas)
       3 df.set_index('time', inplace=True)

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Report :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/meluxina/20231209/index.html">
+    <meta name="generator" content="Antora 3.1.4">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="index.html">Report</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="index.html">Report</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/meluxina/pages/20231209/index.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+      <li>
+        <a href="../_attachments/20231209/index.ipynb"
+           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
+          <img class="jupyter-file-icon icon" src="../../../_/img/jupyter-logo.svg"/> .ipynb
+        </a>
+      </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Report</h1>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import json
+
+# Replace 'your_file.json' with the path to your JSON file
+file_path = 'docs/modules/meluxina/pages/20231209/kub_scenario0.json'
+
+# Open the file and read the JSON data
+with open(file_path, 'r') as file:
+    data = json.load(file)
+
+import pandas as pd
+
+for d in data['runs'][0]['testcases'][2:]:
+    print(d['check_vars']['num_tasks'])
+    for i in d['perfvars']:
+        print(i['name'], i['value'])
+
+# now we plot using plotly
+import plotly.graph_objects as go
+import plotly.express as px
+
+# create a dataframe from the data
+df = pd.DataFrame(data['runs'][0]['testcases'][2:])
+df['num_tasks'] = df['check_vars'].apply(lambda x: x['num_tasks'])
+df['num_tasks'] = df['num_tasks'].astype(int)
+
+print(df.to_markdown())</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>4096
+cem_updateForUse 4.81030678
+cem_instance_execute 857.71111267
+cem_instance_simulation 3.9541015569999987
+cem_instance_postprocess 853.7352674100001
+2048
+cem_updateForUse 4.277154268
+cem_instance_execute 334.84616136
+cem_instance_simulation 5.208441996999999
+cem_instance_postprocess 329.6153657489997
+1024
+cem_updateForUse 8.004388976
+cem_instance_execute 91.089533421
+cem_instance_simulation 7.867044152999998
+cem_instance_postprocess 83.19191763200001
+512
+cem_updateForUse 7.557450398
+cem_instance_execute 82.043935424
+cem_instance_simulation 14.361443807000004
+cem_instance_postprocess 67.65357840200005
+256
+cem_updateForUse 5.493449789
+cem_instance_execute 86.521453719
+cem_instance_simulation 28.01393779799999
+cem_instance_postprocess 58.48419625000002
+128
+cem_updateForUse 1.135650843
+cem_instance_execute 85.183717454
+cem_instance_simulation 55.56225266500002
+cem_instance_postprocess 29.580665882
+|    | build_stderr   | build_stdout   | dependencies_actual   | dependencies_conceptual   | description                                         | display_name                                                                    | environment   | fail_phase   | fail_reason   | filename                                                                                     | fixture   | hash     |   jobid | job_stderr   | job_stdout   | maintainers   | name                                                                            | nodelist                                                                                                                                                                                                                                                                                                                                                         | outputdir                                                                                         | perfvars                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | prefix                                                                        | result   | stagedir                                                                                         | scheduler   | system       | tags   |   time_compile |   time_performance |   time_run |   time_sanity |   time_setup |   time_total | unique_name   | check_vars                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | check_params   |   num_tasks |
+|---:|:---------------|:---------------|:----------------------|:--------------------------|:----------------------------------------------------|:--------------------------------------------------------------------------------|:--------------|:-------------|:--------------|:---------------------------------------------------------------------------------------------|:----------|:---------|--------:|:-------------|:-------------|:--------------|:--------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|:---------|:-------------------------------------------------------------------------------------------------|:------------|:-------------|:-------|---------------:|-------------------:|-----------:|--------------:|-------------:|-------------:|:--------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------|------------:|
+|  0 |                |                | []                    | []                        | Run commands inside a container using ['Apptainer'] | Feelpp %my_regression_parameter={'nodes': 32, 'tasks_per_node': 128} %inputs=[] | env_meluxina  |              |               | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building/feelpp_main.py | False     | b94b5bb9 |  565707 | rfm_job.err  | rfm_job.out  | []            | Feelpp %my_regression_parameter={'nodes': 32, 'tasks_per_node': 128} %inputs=[] | ['mel0012', 'mel0020', 'mel0052', 'mel0063', 'mel0082', 'mel0089', 'mel0108', 'mel0130', 'mel0155', 'mel0177', 'mel0184', 'mel0216', 'mel0235', 'mel0258', 'mel0267', 'mel0268', 'mel0299', 'mel0311', 'mel0331', 'mel0354', 'mel0366', 'mel0392', 'mel0443', 'mel0448', 'mel0460', 'mel0474', 'mel0492', 'mel0505', 'mel0524', 'mel0543', 'mel0553', 'mel0558'] | /mnt/tier2/project/p200229/cemosis/kub/reframedb/output/meluxina/cpu/env_meluxina/Feelpp_b94b5bb9 | [{'name': 'cem_updateForUse', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 4.81030678}, {'name': 'cem_instance_execute', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 857.71111267}, {'name': 'cem_instance_simulation', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 3.9541015569999987}, {'name': 'cem_instance_postprocess', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 853.7352674100001}]  | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building | success  | /mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_b94b5bb9 | slurm       | meluxina:cpu | []     |      0.0171862 |          0.0265439 |    944.805 |     0.0258119 |    0.0298271 |      945.216 | Feelpp_5      | {'valid_prog_environs': ['env_meluxina'], 'valid_systems': ['meluxina:cpu'], 'descr': "Run commands inside a container using ['Apptainer']", 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_b94b5bb9:/rfm_workdir" --home /mnt/tier2/project/p200229/cemosis/kub /mnt/tier2/project/p200229/cemosis/sifs/hidalgo2-urban-building_master.sif feelpp_hub_cem --config-file /usr/share/feelpp/data/testcases/hub/examples/strasbourg/strasbourg.cfg --cem.database.directory=cemdb/reframe/np_4096 --cem.instance.postprocess.export.outputs.enabled=1 --cem.instance.postprocess.export.visualization.enabled=0 --cem.simulator.lod0.filename=/mnt/tier2/project/p200229/cemosis/kub/data/simulators/SimpleBuildingFlatRoof.fmu', 'executable_opts': [], 'prerun_cmds': ['rm /tmp/fmi4cpp_*'], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': [], 'maintainers': [], 'strict_check': True, 'num_tasks': 4096, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': False, 'local': False, 'modules': [], 'env_vars': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'variables': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True} | {}             |        4096 |
+|  1 |                |                | []                    | []                        | Run commands inside a container using ['Apptainer'] | Feelpp %my_regression_parameter={'nodes': 16, 'tasks_per_node': 128} %inputs=[] | env_meluxina  |              |               | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building/feelpp_main.py | False     | a8348efe |  565708 | rfm_job.err  | rfm_job.out  | []            | Feelpp %my_regression_parameter={'nodes': 16, 'tasks_per_node': 128} %inputs=[] | ['mel0065', 'mel0074', 'mel0109', 'mel0158', 'mel0179', 'mel0187', 'mel0236', 'mel0269', 'mel0368', 'mel0393', 'mel0451', 'mel0463', 'mel0476', 'mel0545', 'mel0556', 'mel0566']                                                                                                                                                                                 | /mnt/tier2/project/p200229/cemosis/kub/reframedb/output/meluxina/cpu/env_meluxina/Feelpp_a8348efe | [{'name': 'cem_updateForUse', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 4.277154268}, {'name': 'cem_instance_execute', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 334.84616136}, {'name': 'cem_instance_simulation', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 5.208441996999999}, {'name': 'cem_instance_postprocess', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 329.6153657489997}]  | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building | success  | /mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_a8348efe | slurm       | meluxina:cpu | []     |      0.0173659 |          0.0255909 |    426.688 |     0.0247467 |    0.0298915 |      427.084 | Feelpp_4      | {'valid_prog_environs': ['env_meluxina'], 'valid_systems': ['meluxina:cpu'], 'descr': "Run commands inside a container using ['Apptainer']", 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_a8348efe:/rfm_workdir" --home /mnt/tier2/project/p200229/cemosis/kub /mnt/tier2/project/p200229/cemosis/sifs/hidalgo2-urban-building_master.sif feelpp_hub_cem --config-file /usr/share/feelpp/data/testcases/hub/examples/strasbourg/strasbourg.cfg --cem.database.directory=cemdb/reframe/np_2048 --cem.instance.postprocess.export.outputs.enabled=1 --cem.instance.postprocess.export.visualization.enabled=0 --cem.simulator.lod0.filename=/mnt/tier2/project/p200229/cemosis/kub/data/simulators/SimpleBuildingFlatRoof.fmu', 'executable_opts': [], 'prerun_cmds': ['rm /tmp/fmi4cpp_*'], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': [], 'maintainers': [], 'strict_check': True, 'num_tasks': 2048, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': False, 'local': False, 'modules': [], 'env_vars': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'variables': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True} | {}             |        2048 |
+|  2 |                |                | []                    | []                        | Run commands inside a container using ['Apptainer'] | Feelpp %my_regression_parameter={'nodes': 8, 'tasks_per_node': 128} %inputs=[]  | env_meluxina  |              |               | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building/feelpp_main.py | False     | afb3be4f |  565709 | rfm_job.err  | rfm_job.out  | []            | Feelpp %my_regression_parameter={'nodes': 8, 'tasks_per_node': 128} %inputs=[]  | ['mel0197', 'mel0198', 'mel0199', 'mel0200', 'mel0201', 'mel0202', 'mel0203', 'mel0204']                                                                                                                                                                                                                                                                         | /mnt/tier2/project/p200229/cemosis/kub/reframedb/output/meluxina/cpu/env_meluxina/Feelpp_afb3be4f | [{'name': 'cem_updateForUse', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 8.004388976}, {'name': 'cem_instance_execute', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 91.089533421}, {'name': 'cem_instance_simulation', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 7.867044152999998}, {'name': 'cem_instance_postprocess', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 83.19191763200001}]  | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building | success  | /mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_afb3be4f | slurm       | meluxina:cpu | []     |      0.016679  |          0.0265028 |    164.04  |     0.0840185 |    0.0296922 |      164.421 | Feelpp_3      | {'valid_prog_environs': ['env_meluxina'], 'valid_systems': ['meluxina:cpu'], 'descr': "Run commands inside a container using ['Apptainer']", 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_afb3be4f:/rfm_workdir" --home /mnt/tier2/project/p200229/cemosis/kub /mnt/tier2/project/p200229/cemosis/sifs/hidalgo2-urban-building_master.sif feelpp_hub_cem --config-file /usr/share/feelpp/data/testcases/hub/examples/strasbourg/strasbourg.cfg --cem.database.directory=cemdb/reframe/np_1024 --cem.instance.postprocess.export.outputs.enabled=1 --cem.instance.postprocess.export.visualization.enabled=0 --cem.simulator.lod0.filename=/mnt/tier2/project/p200229/cemosis/kub/data/simulators/SimpleBuildingFlatRoof.fmu', 'executable_opts': [], 'prerun_cmds': ['rm /tmp/fmi4cpp_*'], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': [], 'maintainers': [], 'strict_check': True, 'num_tasks': 1024, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': False, 'local': False, 'modules': [], 'env_vars': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'variables': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True} | {}             |        1024 |
+|  3 |                |                | []                    | []                        | Run commands inside a container using ['Apptainer'] | Feelpp %my_regression_parameter={'nodes': 4, 'tasks_per_node': 128} %inputs=[]  | env_meluxina  |              |               | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building/feelpp_main.py | False     | d044b7ce |  565710 | rfm_job.err  | rfm_job.out  | []            | Feelpp %my_regression_parameter={'nodes': 4, 'tasks_per_node': 128} %inputs=[]  | ['mel0021', 'mel0023', 'mel0024', 'mel0025']                                                                                                                                                                                                                                                                                                                     | /mnt/tier2/project/p200229/cemosis/kub/reframedb/output/meluxina/cpu/env_meluxina/Feelpp_d044b7ce | [{'name': 'cem_updateForUse', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 7.557450398}, {'name': 'cem_instance_execute', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 82.043935424}, {'name': 'cem_instance_simulation', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 14.361443807000004}, {'name': 'cem_instance_postprocess', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 67.65357840200005}] | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building | success  | /mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_d044b7ce | slurm       | meluxina:cpu | []     |      0.0173862 |          0.0264339 |    133.222 |     0.025712  |    0.0296991 |      133.59  | Feelpp_2      | {'valid_prog_environs': ['env_meluxina'], 'valid_systems': ['meluxina:cpu'], 'descr': "Run commands inside a container using ['Apptainer']", 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_d044b7ce:/rfm_workdir" --home /mnt/tier2/project/p200229/cemosis/kub /mnt/tier2/project/p200229/cemosis/sifs/hidalgo2-urban-building_master.sif feelpp_hub_cem --config-file /usr/share/feelpp/data/testcases/hub/examples/strasbourg/strasbourg.cfg --cem.database.directory=cemdb/reframe/np_512 --cem.instance.postprocess.export.outputs.enabled=1 --cem.instance.postprocess.export.visualization.enabled=0 --cem.simulator.lod0.filename=/mnt/tier2/project/p200229/cemosis/kub/data/simulators/SimpleBuildingFlatRoof.fmu', 'executable_opts': [], 'prerun_cmds': ['rm /tmp/fmi4cpp_*'], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': [], 'maintainers': [], 'strict_check': True, 'num_tasks': 512, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': False, 'local': False, 'modules': [], 'env_vars': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'variables': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True}   | {}             |         512 |
+|  4 |                |                | []                    | []                        | Run commands inside a container using ['Apptainer'] | Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]  | env_meluxina  |              |               | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building/feelpp_main.py | False     | 9def56dd |  565711 | rfm_job.err  | rfm_job.out  | []            | Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]  | ['mel0320', 'mel0321']                                                                                                                                                                                                                                                                                                                                           | /mnt/tier2/project/p200229/cemosis/kub/reframedb/output/meluxina/cpu/env_meluxina/Feelpp_9def56dd | [{'name': 'cem_updateForUse', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 5.493449789}, {'name': 'cem_instance_execute', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 86.521453719}, {'name': 'cem_instance_simulation', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 28.01393779799999}, {'name': 'cem_instance_postprocess', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 58.48419625000002}]  | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building | success  | /mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_9def56dd | slurm       | meluxina:cpu | []     |      0.0168009 |          0.0257547 |    133.238 |     0.0243671 |    0.0329869 |      133.591 | Feelpp_1      | {'valid_prog_environs': ['env_meluxina'], 'valid_systems': ['meluxina:cpu'], 'descr': "Run commands inside a container using ['Apptainer']", 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_9def56dd:/rfm_workdir" --home /mnt/tier2/project/p200229/cemosis/kub /mnt/tier2/project/p200229/cemosis/sifs/hidalgo2-urban-building_master.sif feelpp_hub_cem --config-file /usr/share/feelpp/data/testcases/hub/examples/strasbourg/strasbourg.cfg --cem.database.directory=cemdb/reframe/np_256 --cem.instance.postprocess.export.outputs.enabled=1 --cem.instance.postprocess.export.visualization.enabled=0 --cem.simulator.lod0.filename=/mnt/tier2/project/p200229/cemosis/kub/data/simulators/SimpleBuildingFlatRoof.fmu', 'executable_opts': [], 'prerun_cmds': ['rm /tmp/fmi4cpp_*'], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': [], 'maintainers': [], 'strict_check': True, 'num_tasks': 256, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': False, 'local': False, 'modules': [], 'env_vars': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'variables': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True}   | {}             |         256 |
+|  5 |                |                | []                    | []                        | Run commands inside a container using ['Apptainer'] | Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]  | env_meluxina  |              |               | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building/feelpp_main.py | False     | 24fb2631 |  565712 | rfm_job.err  | rfm_job.out  | []            | Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]  | ['mel0312']                                                                                                                                                                                                                                                                                                                                                      | /mnt/tier2/project/p200229/cemosis/kub/reframedb/output/meluxina/cpu/env_meluxina/Feelpp_24fb2631 | [{'name': 'cem_updateForUse', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 1.135650843}, {'name': 'cem_instance_execute', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 85.183717454}, {'name': 'cem_instance_simulation', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 55.56225266500002}, {'name': 'cem_instance_postprocess', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 29.580665882}]       | /mnt/tier2/project/p200229/cemosis/feelpp-reframe/src/hidalgo2-urban-building | success  | /mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_24fb2631 | slurm       | meluxina:cpu | []     |      0.0161128 |          0.0260112 |    133.254 |     0.0244718 |    0.031616  |      133.59  | Feelpp_0      | {'valid_prog_environs': ['env_meluxina'], 'valid_systems': ['meluxina:cpu'], 'descr': "Run commands inside a container using ['Apptainer']", 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/mnt/tier2/project/p200229/cemosis/kub/reframedb/stage/meluxina/cpu/env_meluxina/Feelpp_24fb2631:/rfm_workdir" --home /mnt/tier2/project/p200229/cemosis/kub /mnt/tier2/project/p200229/cemosis/sifs/hidalgo2-urban-building_master.sif feelpp_hub_cem --config-file /usr/share/feelpp/data/testcases/hub/examples/strasbourg/strasbourg.cfg --cem.database.directory=cemdb/reframe/np_128 --cem.instance.postprocess.export.outputs.enabled=1 --cem.instance.postprocess.export.visualization.enabled=0 --cem.simulator.lod0.filename=/mnt/tier2/project/p200229/cemosis/kub/data/simulators/SimpleBuildingFlatRoof.fmu', 'executable_opts': [], 'prerun_cmds': ['rm /tmp/fmi4cpp_*'], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': [], 'maintainers': [], 'strict_check': True, 'num_tasks': 128, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': False, 'local': False, 'modules': [], 'env_vars': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'variables': {'APPTAINERENV_OMPI_MCA_io': 'romio321'}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True}   | {}             |         128 |</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Now create a dataframe for each perfvar and each num_tasks</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">df_perf = pd.DataFrame()
+for k,t in enumerate(df['num_tasks'].unique()):
+    for i in df['perfvars'][k]:
+        df_perf = df_perf.append({'num_tasks': t, 'name': i['name'], 'value': i['value']}, ignore_index=True)
+
+df_perf['name'] = df_perf['name'].astype(str)
+df_perf['value'] = df_perf['value'].astype(float)
+df_perf['num_tasks'] = df_perf['num_tasks'].astype(int)
+print(df_perf.to_markdown())</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>|    |   num_tasks | name                     |     value |
+|---:|------------:|:-------------------------|----------:|
+|  0 |        4096 | cem_updateForUse         |   4.81031 |
+|  1 |        4096 | cem_instance_execute     | 857.711   |
+|  2 |        4096 | cem_instance_simulation  |   3.9541  |
+|  3 |        4096 | cem_instance_postprocess | 853.735   |
+|  4 |        2048 | cem_updateForUse         |   4.27715 |
+|  5 |        2048 | cem_instance_execute     | 334.846   |
+|  6 |        2048 | cem_instance_simulation  |   5.20844 |
+|  7 |        2048 | cem_instance_postprocess | 329.615   |
+|  8 |        1024 | cem_updateForUse         |   8.00439 |
+|  9 |        1024 | cem_instance_execute     |  91.0895  |
+| 10 |        1024 | cem_instance_simulation  |   7.86704 |
+| 11 |        1024 | cem_instance_postprocess |  83.1919  |
+| 12 |         512 | cem_updateForUse         |   7.55745 |
+| 13 |         512 | cem_instance_execute     |  82.0439  |
+| 14 |         512 | cem_instance_simulation  |  14.3614  |
+| 15 |         512 | cem_instance_postprocess |  67.6536  |
+| 16 |         256 | cem_updateForUse         |   5.49345 |
+| 17 |         256 | cem_instance_execute     |  86.5215  |
+| 18 |         256 | cem_instance_simulation  |  28.0139  |
+| 19 |         256 | cem_instance_postprocess |  58.4842  |
+| 20 |         128 | cem_updateForUse         |   1.13565 |
+| 21 |         128 | cem_instance_execute     |  85.1837  |
+| 22 |         128 | cem_instance_simulation  |  55.5623  |
+| 23 |         128 | cem_instance_postprocess |  29.5807  |</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>Now create a plotly figure in go for each task</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">fig = go.Figure()
+for t in df_perf['num_tasks'].unique():
+    df_task = df_perf[df_perf['num_tasks'] == t]
+    fig.add_trace(go.Bar(x=df_task['name'], y=df_task['value'], name=str(t)))
+
+fig.update_layout(barmode='group', xaxis_tickangle=-45, title='Performance of tasks', yaxis_type='log')
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="6b0fd0c6-8084-4a7b-8530-84031c7ba5f6" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("6b0fd0c6-8084-4a7b-8530-84031c7ba5f6")) {                    Plotly.newPlot(                        "6b0fd0c6-8084-4a7b-8530-84031c7ba5f6",                        [{"name":"4096","x":["cem_updateForUse","cem_instance_execute","cem_instance_simulation","cem_instance_postprocess"],"y":[4.81030678,857.71111267,3.9541015569999987,853.7352674100001],"type":"bar"},{"name":"2048","x":["cem_updateForUse","cem_instance_execute","cem_instance_simulation","cem_instance_postprocess"],"y":[4.277154268,334.84616136,5.208441996999999,329.6153657489997],"type":"bar"},{"name":"1024","x":["cem_updateForUse","cem_instance_execute","cem_instance_simulation","cem_instance_postprocess"],"y":[8.004388976,91.089533421,7.867044152999998,83.19191763200001],"type":"bar"},{"name":"512","x":["cem_updateForUse","cem_instance_execute","cem_instance_simulation","cem_instance_postprocess"],"y":[7.557450398,82.043935424,14.361443807000004,67.65357840200005],"type":"bar"},{"name":"256","x":["cem_updateForUse","cem_instance_execute","cem_instance_simulation","cem_instance_postprocess"],"y":[5.493449789,86.521453719,28.01393779799999,58.48419625000002],"type":"bar"},{"name":"128","x":["cem_updateForUse","cem_instance_execute","cem_instance_simulation","cem_instance_postprocess"],"y":[1.135650843,85.183717454,55.56225266500002,29.580665882],"type":"bar"}],                        {"template":{"data":{"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"heatmapgl":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmapgl"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"#E5ECF6","showlakes":true,"showland":true,"subunitcolor":"white"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2}}},"xaxis":{"tickangle":-45},"yaxis":{"type":"log"},"barmode":"group","title":{"text":"Performance of tasks"}},                        {"responsive": true}                    )                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>We see that the simulation scales quite well however the postprocessing does not scale well at all.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python"># now have the y axis in log scale
+fig = px.bar(df_perf, x="num_tasks", y="value", color="name", barmode="group", log_y=True)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="f7ebf937-d7b9-4460-90e1-e88c309f9a51" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("f7ebf937-d7b9-4460-90e1-e88c309f9a51")) {                    Plotly.newPlot(                        "f7ebf937-d7b9-4460-90e1-e88c309f9a51",                        [{"alignmentgroup":"True","hovertemplate":"name=cem_updateForUse<br>num_tasks=%{x}<br>value=%{y}<extra></extra>","legendgroup":"cem_updateForUse","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"cem_updateForUse","offsetgroup":"cem_updateForUse","orientation":"v","showlegend":true,"textposition":"auto","x":[4096,2048,1024,512,256,128],"xaxis":"x","y":[4.81030678,4.277154268,8.004388976,7.557450398,5.493449789,1.135650843],"yaxis":"y","type":"bar"},{"alignmentgroup":"True","hovertemplate":"name=cem_instance_execute<br>num_tasks=%{x}<br>value=%{y}<extra></extra>","legendgroup":"cem_instance_execute","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"cem_instance_execute","offsetgroup":"cem_instance_execute","orientation":"v","showlegend":true,"textposition":"auto","x":[4096,2048,1024,512,256,128],"xaxis":"x","y":[857.71111267,334.84616136,91.089533421,82.043935424,86.521453719,85.183717454],"yaxis":"y","type":"bar"},{"alignmentgroup":"True","hovertemplate":"name=cem_instance_simulation<br>num_tasks=%{x}<br>value=%{y}<extra></extra>","legendgroup":"cem_instance_simulation","marker":{"color":"#00cc96","pattern":{"shape":""}},"name":"cem_instance_simulation","offsetgroup":"cem_instance_simulation","orientation":"v","showlegend":true,"textposition":"auto","x":[4096,2048,1024,512,256,128],"xaxis":"x","y":[3.9541015569999987,5.208441996999999,7.867044152999998,14.361443807000004,28.01393779799999,55.56225266500002],"yaxis":"y","type":"bar"},{"alignmentgroup":"True","hovertemplate":"name=cem_instance_postprocess<br>num_tasks=%{x}<br>value=%{y}<extra></extra>","legendgroup":"cem_instance_postprocess","marker":{"color":"#ab63fa","pattern":{"shape":""}},"name":"cem_instance_postprocess","offsetgroup":"cem_instance_postprocess","orientation":"v","showlegend":true,"textposition":"auto","x":[4096,2048,1024,512,256,128],"xaxis":"x","y":[853.7352674100001,329.6153657489997,83.19191763200001,67.65357840200005,58.48419625000002,29.580665882],"yaxis":"y","type":"bar"}],                        {"template":{"data":{"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"heatmapgl":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmapgl"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"#E5ECF6","showlakes":true,"showland":true,"subunitcolor":"white"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"num_tasks"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"value"},"type":"log"},"legend":{"title":{"text":"name"},"tracegroupgap":0},"margin":{"t":60},"barmode":"group"},                        {"responsive": true}                    )                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python"># now a ascatter plot of the data with lines using go and log scale on y axis
+fig = go.Figure()
+for i in df_perf['name'].unique():
+    fig.add_trace(go.Scatter(x=df_perf[df_perf['name']==i]['num_tasks'], y=df_perf[df_perf['name']==i]['value'], name=i, mode='lines+markers'))
+fig.update_layout(yaxis_type="log")
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="c47a68d1-48ca-46da-aa74-ff8f0f2d0bbb" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("c47a68d1-48ca-46da-aa74-ff8f0f2d0bbb")) {                    Plotly.newPlot(                        "c47a68d1-48ca-46da-aa74-ff8f0f2d0bbb",                        [{"mode":"lines+markers","name":"cem_updateForUse","x":[4096,2048,1024,512,256,128],"y":[4.81030678,4.277154268,8.004388976,7.557450398,5.493449789,1.135650843],"type":"scatter"},{"mode":"lines+markers","name":"cem_instance_execute","x":[4096,2048,1024,512,256,128],"y":[857.71111267,334.84616136,91.089533421,82.043935424,86.521453719,85.183717454],"type":"scatter"},{"mode":"lines+markers","name":"cem_instance_simulation","x":[4096,2048,1024,512,256,128],"y":[3.9541015569999987,5.208441996999999,7.867044152999998,14.361443807000004,28.01393779799999,55.56225266500002],"type":"scatter"},{"mode":"lines+markers","name":"cem_instance_postprocess","x":[4096,2048,1024,512,256,128],"y":[853.7352674100001,329.6153657489997,83.19191763200001,67.65357840200005,58.48419625000002,29.580665882],"type":"scatter"}],                        {"template":{"data":{"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"heatmapgl":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmapgl"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"#E5ECF6","showlakes":true,"showland":true,"subunitcolor":"white"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2}}},"yaxis":{"type":"log"}},                        {"responsive": true}                    )                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python"># build a dataframe for the speedup with respect to 128 tasks
+df_speedup = pd.DataFrame()
+ref = df_perf[df_perf['num_tasks'] == 128]
+print(ref.to_markdown())
+
+for k,t in enumerate(df['num_tasks'].unique()):
+    for i in df['perfvars'][k]:
+        if i['name'] == 'cem_instance_simulation':
+            df_speedup = df_speedup.append({'num_tasks': t, 'name': i['name'], 'value': ref['value'].values[2]/i['value']}, ignore_index=True)
+# the optimal speedup is 128
+df_speedup['optimal'] = df_speedup['num_tasks'].apply(lambda x: x/128)
+df_speedup['half optimal'] = df_speedup['num_tasks'].apply(lambda x: x/(2*128))
+
+print(df_speedup.to_markdown())</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>|    |   num_tasks | name                     |    value |
+|---:|------------:|:-------------------------|---------:|
+| 20 |         128 | cem_updateForUse         |  1.13565 |
+| 21 |         128 | cem_instance_execute     | 85.1837  |
+| 22 |         128 | cem_instance_simulation  | 55.5623  |
+| 23 |         128 | cem_instance_postprocess | 29.5807  |
+|    |   num_tasks | name                    |    value |   optimal |   half optimal |
+|---:|------------:|:------------------------|---------:|----------:|---------------:|
+|  0 |        4096 | cem_instance_simulation | 14.0518  |        32 |           16   |
+|  1 |        2048 | cem_instance_simulation | 10.6677  |        16 |            8   |
+|  2 |        1024 | cem_instance_simulation |  7.06266 |         8 |            4   |
+|  3 |         512 | cem_instance_simulation |  3.86885 |         4 |            2   |
+|  4 |         256 | cem_instance_simulation |  1.98338 |         2 |            1   |
+|  5 |         128 | cem_instance_simulation |  1       |         1 |            0.5 |</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python"># plot a region between optimal and half optimal
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['value'], mode='lines+markers', name='speedup'))
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['optimal'], mode='lines+markers', name='optimal'))
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['half optimal'], mode='lines+markers', name='half optimal'))
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['optimal'], fill='tonexty', mode='none', name='optimal'))
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="427f8574-fd41-4e32-a1cf-74981af74625" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("427f8574-fd41-4e32-a1cf-74981af74625")) {                    Plotly.newPlot(                        "427f8574-fd41-4e32-a1cf-74981af74625",                        [{"mode":"lines+markers","name":"speedup","x":[4096.0,2048.0,1024.0,512.0,256.0,128.0],"y":[14.051802125981672,10.667729946307018,7.0626593145294665,3.8688486625500746,1.9833788832417125,1.0],"type":"scatter"},{"mode":"lines+markers","name":"optimal","x":[4096.0,2048.0,1024.0,512.0,256.0,128.0],"y":[32.0,16.0,8.0,4.0,2.0,1.0],"type":"scatter"},{"mode":"lines+markers","name":"half optimal","x":[4096.0,2048.0,1024.0,512.0,256.0,128.0],"y":[16.0,8.0,4.0,2.0,1.0,0.5],"type":"scatter"},{"fill":"tonexty","mode":"none","name":"optimal","x":[4096.0,2048.0,1024.0,512.0,256.0,128.0],"y":[32.0,16.0,8.0,4.0,2.0,1.0],"type":"scatter"}],                        {"template":{"data":{"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"heatmapgl":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmapgl"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"#E5ECF6","showlakes":true,"showland":true,"subunitcolor":"white"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","gridwidth":2,"linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"bgcolor":"#E5ECF6","caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","zerolinewidth":2}}}},                        {"responsive": true}                    )                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2023 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<script async src="../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>
