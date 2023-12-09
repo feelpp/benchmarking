@@ -1,0 +1,115 @@
+= Report
+:page-jupyter: true
+:page-plotly: true
+
+[%dynamic%open,python]
+----
+import json
+
+# Replace 'your_file.json' with the path to your JSON file
+file_path = 'docs/modules/meluxina/pages/20231209/kub_scenario0.json'
+
+# Open the file and read the JSON data
+with open(file_path, 'r') as file:
+    data = json.load(file)
+
+import pandas as pd
+
+for d in data['runs'][0]['testcases'][2:]:
+    print(d['check_vars']['num_tasks'])
+    for i in d['perfvars']:
+        print(i['name'], i['value'])
+
+# now we plot using plotly
+import plotly.graph_objects as go
+import plotly.express as px
+
+# create a dataframe from the data
+df = pd.DataFrame(data['runs'][0]['testcases'][2:])
+df['num_tasks'] = df['check_vars'].apply(lambda x: x['num_tasks'])
+df['num_tasks'] = df['num_tasks'].astype(int)
+
+print(df.to_markdown())
+----
+
+Now create a dataframe for each perfvar and each num_tasks
+
+[%dynamic%open,python]
+----
+df_perf = pd.DataFrame()
+for k,t in enumerate(df['num_tasks'].unique()):
+    for i in df['perfvars'][k]:
+        df_perf = df_perf.append({'num_tasks': t, 'name': i['name'], 'value': i['value']}, ignore_index=True)
+
+df_perf['name'] = df_perf['name'].astype(str)
+df_perf['value'] = df_perf['value'].astype(float)
+df_perf['num_tasks'] = df_perf['num_tasks'].astype(int)
+print(df_perf.to_markdown())
+----
+
+Now create a plotly figure in go for each task
+
+[%dynamic%open,python]
+----
+
+fig = go.Figure()
+for t in df_perf['num_tasks'].unique():
+    df_task = df_perf[df_perf['num_tasks'] == t]
+    fig.add_trace(go.Bar(x=df_task['name'], y=df_task['value'], name=str(t)))
+
+fig.update_layout(barmode='group', xaxis_tickangle=-45, title='Performance of tasks', yaxis_type='log')
+fig.show()
+----
+
+We see that the simulation scales quite well however the postprocessing does not scale well at all. 
+
+[%dynamic%open,python]
+----
+# now have the y axis in log scale 
+fig = px.bar(df_perf, x="num_tasks", y="value", color="name", barmode="group", log_y=True)
+fig.show()
+----
+
+[%dynamic%open,python]
+----
+# now a ascatter plot of the data with lines using go and log scale on y axis
+fig = go.Figure()
+for i in df_perf['name'].unique():
+    fig.add_trace(go.Scatter(x=df_perf[df_perf['name']==i]['num_tasks'], y=df_perf[df_perf['name']==i]['value'], name=i, mode='lines+markers'))
+fig.update_layout(yaxis_type="log")
+fig.show()
+----
+
+[%dynamic%open,python]
+----
+# build a dataframe for the speedup with respect to 128 tasks
+df_speedup = pd.DataFrame()
+ref = df_perf[df_perf['num_tasks'] == 128]
+print(ref.to_markdown())
+
+for k,t in enumerate(df['num_tasks'].unique()):
+    for i in df['perfvars'][k]:
+        if i['name'] == 'cem_instance_simulation':
+            df_speedup = df_speedup.append({'num_tasks': t, 'name': i['name'], 'value': ref['value'].values[2]/i['value']}, ignore_index=True)
+# the optimal speedup is 128
+df_speedup['optimal'] = df_speedup['num_tasks'].apply(lambda x: x/128)
+df_speedup['half optimal'] = df_speedup['num_tasks'].apply(lambda x: x/(2*128))            
+
+print(df_speedup.to_markdown())   
+----
+
+[%dynamic%open,python]
+----
+# plot a region between optimal and half optimal
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['value'], mode='lines+markers', name='speedup'))
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['optimal'], mode='lines+markers', name='optimal'))
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['half optimal'], mode='lines+markers', name='half optimal'))
+fig.add_trace(go.Scatter(x=df_speedup['num_tasks'], y=df_speedup['optimal'], fill='tonexty', mode='none', name='optimal'))
+fig.show()
+
+
+----
+
+
+
