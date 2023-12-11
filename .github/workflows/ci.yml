@@ -65,7 +65,7 @@ jobs:
         path: dist/
     - name: Install Python dependencies
       run: |
-          python -m venv --system-site-packages .venv
+          python -m venv .venv
           source .venv/bin/activate
           pip3 install -r requirements.txt
           pip3 install dist/*.whl
