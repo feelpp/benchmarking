@@ -331,13 +331,13 @@ print(data)</code></pre>
 <div class="literalblock dynamic-py-result">
 <div class="content">
 <pre>---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
+AttributeError                            Traceback (most recent call last)
 File <ipython-input-1-334c38b17d9d>:1
 ----> 1 feelpp.Environment.setConfigFile(f"{d}/src/cases/laplacian/fin/fin1/fin2d.cfg")
       2 # Reading the JSON file
       3 data = laplacian.loadSpecs(f"{d}/src/cases/laplacian/fin/fin2d.json")
 
-NameError: name 'd' is not defined</pre>
+AttributeError: module 'feelpp' has no attribute 'Environment'</pre>
 </div>
 </div>
 </div>
