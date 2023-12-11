@@ -1,0 +1,51 @@
+
+= Reframe Report for meluxina
+:page-plotly: true
+:page-jupyter: true
+:author: Your Name
+:revdate: 2023-12-09T00:40:37+0100
+
+== Test Summary
+
+* Total Tests: 6
+* Failures: 0
+* Testcases
+** Feelpp %my_regression_parameter={'nodes': 32, 'tasks_per_node': 128} %inputs=[]
+** Feelpp %my_regression_parameter={'nodes': 16, 'tasks_per_node': 128} %inputs=[]
+** Feelpp %my_regression_parameter={'nodes': 8, 'tasks_per_node': 128} %inputs=[]
+** Feelpp %my_regression_parameter={'nodes': 4, 'tasks_per_node': 128} %inputs=[]
+** Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]
+** Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]
+
+
+[%dynamic%close,python]
+----
+from feelpp.benchmarking.reframe.report import Report
+report=Report(file_path="docs/modules/meluxina/pages/kub/scenario0/20231209-0040.json")
+----
+
+=== Performance by Simulation Steps 
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByStep()
+fig.show()
+----
+
+=== Performance by Number of Tasks
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByTask()
+fig.show()
+----
+
+=== Speedup of the simulation Steps
+
+.Speedup
+[%dynamic%raw%open,python]
+----
+print(report.speedup())
+fig=report.plotSpeedup()
+fig.show()
+----

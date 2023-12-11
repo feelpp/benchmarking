@@ -1,0 +1,51 @@
+{% set machine = session_info.hostname | convert_hostname  %}
+
+= Reframe Report for {{ machine }}
+:page-plotly: true
+:page-jupyter: true
+:author: Your Name
+:revdate: {{ session_info.time_end }}
+
+== Test Summary
+
+* Total Tests: {{ session_info.num_cases }}
+* Failures: {{ session_info.num_failures }}
+* Testcases
+{% for run in runs %}
+    {% for test in run.testcases %}
+** {{ test.display_name }}
+    {% endfor %}
+{% endfor %}
+
+
+[%dynamic%close,python]
+----
+from feelpp.benchmarking.reframe.report import Report
+report=Report(file_path="docs/modules/{{ machine }}/pages/{{ filename }}")
+----
+
+=== Performance by Simulation Steps 
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByStep()
+fig.show()
+----
+
+=== Performance by Number of Tasks
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByTask()
+fig.show()
+----
+
+=== Speedup of the simulation Steps
+
+.Speedup
+[%dynamic%raw%open,python]
+----
+print(report.speedup())
+fig=report.plotSpeedup()
+fig.show()
+----
