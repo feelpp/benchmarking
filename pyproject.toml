@@ -1,15 +1,18 @@
 [build-system]
-requires = ["scikit-build-core>=0.3.3", "pybind11"]
-build-backend = "scikit_build_core.build"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project]
 name = "benchmarking"
-version = "3.0.1"
-description="Benchmarking"
+version = "0.0.1"
+description="The Feel++ Benchmarking Project"
 readme = "README.md"
 authors = [
   { name = "Christophe Prud'homme", email = "christophe.prudhomme@cemosis.fr" },
+  { name = "Vincent Chabannes", email = "vincent.chabannes@cemosis.fr" },
 ]
 requires-python = ">=3.7"
 classifiers = [
@@ -23,12 +26,12 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
 ]
 
+[project.urls]
+Homepage = "https://github.com/feelpp/benchmarking"
+Issues = "https://github.com/feelpp/benchmarking/issues"
+
 [project.optional-dependencies]
 test = ["pytest"]
-
-
-[tool.scikit-build]
-wheel.expand-macos-universal-tags = true
 
 
 [tool.pytest.ini_options]
@@ -39,18 +42,6 @@ filterwarnings = [
   "error",
   "ignore:(ast.Str|Attribute s|ast.NameConstant|ast.Num) is deprecated:DeprecationWarning:_pytest",  # Python 3.12
 ]
-# testpaths = ["tests"]
-
-
-# [tool.cibuildwheel]
-# test-command = "pytest {project}/tests"
-# test-extras = ["test"]
-# test-skip = ["*universal2:arm64"]
-# build-verbosity = 1
-
-
-#[tool.ruff]
-#src = ["src"]
 
 [tool.ruff.lint]
 extend-select = [
