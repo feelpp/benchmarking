@@ -17,6 +17,12 @@
 {% for run in runs %}
     {% for test in run.testcases %}
 ** {{ test.display_name }}
+{% if test.check_vars.env_vars %}
+[source,json]
+----
+{{ test.check_vars.env_vars }}
+----
+{% endif %}
     {% endfor %}
 {% endfor %}
 
