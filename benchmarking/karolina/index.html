@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
+<head>
+      <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>VS Code Integration :: Benchmarking</title>
-    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/env/vscode.html">
+    <title>Report :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/karolina/index.html">
     <meta name="generator" content="Antora 3.1.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -93,8 +93,8 @@ MathJax.Hub.Config({
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
 <script>var uiRootPath = '../../_'</script>
 
-  </head>
-  <body class="article">
+</head>
+<body class="article docs-case-study">
 <header class="header">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
         <div class="navbar-brand">
@@ -125,8 +125,9 @@ MathJax.Hub.Config({
         </div>
     </nav>
 </header>
+
 <div class="body">
-<a href="#" class="menu-expand-toggle"></a>
+  <a href="#" class="menu-expand-toggle"></a>
 <div class="nav-container" data-component="benchmarking" data-version="">
   <aside class="nav">
     <div class="panels">
@@ -143,8 +144,8 @@ MathJax.Hub.Config({
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../karolina/index.html">Karolina Reports</a>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="index.html">Karolina Reports</a>
   </li>
 </ul>
   </li>
@@ -172,71 +173,43 @@ MathJax.Hub.Config({
     </div>
   </aside>
 </div>
-<main class="article">
-<div class="toolbar" role="navigation">
-  <button class="nav-toggle"></button>
-    <a href="../index.html" class="home-link"></a>
-  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <main class="article">
+    <div class="toolbar" role="navigation">
+      <button class="nav-toggle"></button>
+        <a href="../index.html" class="home-link"></a>
+      <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
-    <li><a href="vscode.html">VS Code Integration</a></li>
+    <li><a href="index.html">Karolina Reports</a></li>
   </ul>
 </nav>
+    </div>
 
-  
-    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/env/vscode.adoc">Edit this Page</a></div>
-  
-  <div class="page-downloads">
-  <span class="label">Download as</span>
-  <ul class="download-options">
-    <li>
-      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
-         class="pdf-download">
-        <img class="pdf-file-icon icon" src="../../_/img/pdf.svg"/> .pdf
-      </a>
-    </li>
-  </ul>
+    <div class="content">
+      <article class="doc">
+          <h1 class="page">Report</h1>
+          <h2 id="cases">Cases</h2>
+          <div class="cases">
+              <div class="case"><a class="page-card" href="output_20231207-1600.html">
+    <div class="page-card-illustration">
+      <img alt="" src="_images/karolina.jpg"/>
+    </div>
+    <div class="page-card-body">
+      <h4>Reframe Report for karolina</h4>
+      <p class="page-card-description">Performance report for karolina on 2023-12-07T16:59:54+0100</p>
+    </div>
+</a>
 </div>
+              <div class="case">  <div class="empty"></div>
+</div>
+              <div class="case">  <div class="empty"></div>
+</div>
+          </div>
+      </article>
+    </div>
+  </main>
 </div>
 
-  <div class="content">
-<aside class="toc sidebar" data-title="Contents" data-levels="2">
-  <div class="toc-menu"></div>
-</aside>
-<article class="doc">
-<h1 class="page">VS Code Integration</h1>
-<div class="paragraph">
-<p>The project is configured to integrate VSCode using Docker Container.</p>
-</div>
-<div class="paragraph">
-<p>The Docker image can be set from <code>feelpp/feelpp</code> or <code>feelpp/feelpp-toolboxes</code>, simply edit <code>.devcontainer/Dockerfile</code> and choose the image you want.</p>
-</div>
-<div class="paragraph">
-<p><code>ssh-keyscan</code> is used on <code>github.com</code> to register the public key of github in $HOME/.ssh/known_hosts and avoid having git auth issues the first time we log into the container and push/pull to/from github.</p>
-</div>
-<div class="paragraph">
-<p>The following extensions are installed in Docker:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>cpptools</p>
-</li>
-<li>
-<p>cmaketools</p>
-</li>
-<li>
-<p>cmake</p>
-</li>
-<li>
-<p>asciidoctor-vscode</p>
-</li>
-</ul>
-</div>
-</article>
-  </div>
-</main>
-</div>
 <footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
     <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
         <div>
@@ -271,5 +244,5 @@ function toggleFullScreen() {
    }
 }
 </script>
-  </body>
+</body>
 </html>

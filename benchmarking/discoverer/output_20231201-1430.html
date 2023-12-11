@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>VS Code Integration :: Benchmarking</title>
-    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/env/vscode.html">
+    <title>Reframe Report for discoverer :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/discoverer/output_20231201-1430.html">
+    <meta name="description" content="Performance report for discoverer on 2023-12-01T15:03:57+0200">
     <meta name="generator" content="Antora 3.1.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
@@ -14,6 +15,8 @@
 <script src="../../_/js/vendor/tabs-block-behavior.js"></script>
 
 
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -151,7 +154,7 @@ MathJax.Hub.Config({
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../discoverer/index.html">Discoverer Reports</a>
+    <a class="nav-link" href="index.html">Discoverer Reports</a>
   </li>
 </ul>
   </li>
@@ -179,12 +182,12 @@ MathJax.Hub.Config({
   <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
-    <li><a href="vscode.html">VS Code Integration</a></li>
+    <li><a href="output_20231201-1430.html">Reframe Report for discoverer</a></li>
   </ul>
 </nav>
 
   
-    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/env/vscode.adoc">Edit this Page</a></div>
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/discoverer/pages/output_20231201-1430.adoc">Edit this Page</a></div>
   
   <div class="page-downloads">
   <span class="label">Download as</span>
@@ -195,6 +198,12 @@ MathJax.Hub.Config({
         <img class="pdf-file-icon icon" src="../../_/img/pdf.svg"/> .pdf
       </a>
     </li>
+      <li>
+        <a href="#"
+           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
+          <img class="jupyter-file-icon icon" src="../../_/img/jupyter-logo.svg"/> .ipynb
+        </a>
+      </li>
   </ul>
 </div>
 </div>
@@ -204,34 +213,115 @@ MathJax.Hub.Config({
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">VS Code Integration</h1>
-<div class="paragraph">
-<p>The project is configured to integrate VSCode using Docker Container.</p>
-</div>
-<div class="paragraph">
-<p>The Docker image can be set from <code>feelpp/feelpp</code> or <code>feelpp/feelpp-toolboxes</code>, simply edit <code>.devcontainer/Dockerfile</code> and choose the image you want.</p>
-</div>
-<div class="paragraph">
-<p><code>ssh-keyscan</code> is used on <code>github.com</code> to register the public key of github in $HOME/.ssh/known_hosts and avoid having git auth issues the first time we log into the container and push/pull to/from github.</p>
-</div>
-<div class="paragraph">
-<p>The following extensions are installed in Docker:</p>
-</div>
+<h1 class="page">Reframe Report for discoverer</h1>
+<div class="sect1">
+<h2 id="_test_summary"><a class="anchor" href="#_test_summary"></a>1. Test Summary</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>cpptools</p>
+<p>Total Tests: 6</p>
 </li>
 <li>
-<p>cmaketools</p>
+<p>Failures: 0</p>
 </li>
 <li>
-<p>cmake</p>
+<p>Testcases</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Feelpp %my_regression_parameter={'nodes': 32, 'tasks_per_node': 128} %inputs=[]</p>
 </li>
 <li>
-<p>asciidoctor-vscode</p>
+<p>Feelpp %my_regression_parameter={'nodes': 16, 'tasks_per_node': 128} %inputs=[]</p>
+</li>
+<li>
+<p>Feelpp %my_regression_parameter={'nodes': 8, 'tasks_per_node': 128} %inputs=[]</p>
+</li>
+<li>
+<p>Feelpp %my_regression_parameter={'nodes': 4, 'tasks_per_node': 128} %inputs=[]</p>
+</li>
+<li>
+<p>Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]</p>
+</li>
+<li>
+<p>Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]</p>
 </li>
 </ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.reframe.report import Report
+report=Report(file_path="docs/modules/discoverer/pages/kub/scenario0/20231201-1430.json")</code></pre>
+</div>
+</div>
+<details>
+<summary class="title">Results</summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+File <ipython-input-1-019f79122a45>:1
+----> 1 from feelpp.benchmarking.reframe.report import Report
+      2 report=Report(file_path="docs/modules/discoverer/pages/kub/scenario0/20231201-1430.json")
+
+ModuleNotFoundError: No module named 'feelpp.benchmarking'</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="sect2">
+<h3 id="_performance_by_simulation_steps"><a class="anchor" href="#_performance_by_simulation_steps"></a>1.1. Performance by Simulation Steps</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">fig=report.plotPerformanceByStep()
+fig.show()</code></pre>
+</div>
+</div>
+<details class="dynamic-py-result dynamic-py-result-plotly" open>
+<summary class="title">Results</summary>
+<div class="content">
+
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_performance_by_number_of_tasks"><a class="anchor" href="#_performance_by_number_of_tasks"></a>1.2. Performance by Number of Tasks</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">fig=report.plotPerformanceByTask()
+fig.show()</code></pre>
+</div>
+</div>
+<details class="dynamic-py-result dynamic-py-result-plotly" open>
+<summary class="title">Results</summary>
+<div class="content">
+
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_speedup_of_the_simulation_steps"><a class="anchor" href="#_speedup_of_the_simulation_steps"></a>1.3. Speedup of the simulation Steps</h3>
+<div class="listingblock">
+<div class="title">Speedup</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">print(report.speedup())
+fig=report.plotSpeedup()
+fig.show()</code></pre>
+</div>
+</div>
+<details class="dynamic-py-result dynamic-py-result-plotly" open>
+<summary class="title">Results</summary>
+<div class="content">
+
+</div>
+</details>
+</div>
+</div>
 </div>
 </article>
   </div>
