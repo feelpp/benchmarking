@@ -3,6 +3,9 @@
 = Reframe Report for {{ machine }}
 :page-plotly: true
 :page-jupyter: true
+:page-tags: case
+:description: Performance report for {{ machine }} on {{ session_info.time_end }}
+:page-illustration: {{ machine }}.jpg
 :author: Your Name
 :revdate: {{ session_info.time_end }}
 
@@ -21,7 +24,7 @@
 [%dynamic%close,python]
 ----
 from feelpp.benchmarking.reframe.report import Report
-report=Report(file_path="docs/modules/{{ machine }}/pages/{{ filename }}")
+report=Report(file_path="docs/modules/{{ filename }}")
 ----
 
 === Performance by Simulation Steps 
