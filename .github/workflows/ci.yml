@@ -58,7 +58,7 @@ jobs:
     - name: Install NPM dependencies
       run: npm install
     - name: Download
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: wheel-artifacts
@@ -124,7 +124,7 @@ jobs:
         lfs: true
         submodules: 'recursive'
     - name: Download
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: benchmarking-artifacts
@@ -174,13 +174,13 @@ jobs:
           lfs: true
           submodules: 'recursive'      
       - name: Download Deb Packages
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           # Artifact name
           name: benchmarking-artifacts
           path: artifacts/
       - name: Download Wheel Packages
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           # Artifact name
           name: wheel-artifacts
