@@ -1,0 +1,87 @@
+\documentclass[12pt]{article}
+
+\setlength{\parskip}{\baselineskip}  % ajoute un espace entre les paragraphes
+
+\usepackage{a4wide}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\usepackage{biblatex}
+\addbibresource{../../bibliography/biblioV0.bib}
+
+
+\title{\textbf{ExaMA WP3 -- Dashboard Performances}}
+\author{Tanguy Pierre\\[0.5cm]
+            Supervisors: V. Chabannes, J. Cladellas\\[1cm]
+            University of Strasbourg}
+
+\date{26th of March}
+
+
+
+\begin{document}
+    \maketitle
+
+\newpage
+\tableofcontents
+
+
+\newpage
+\section{Introduction}
+
+This work is part of the \textit{ExaMA} project, whose main objective is to design algorithms and methods
+that will adapt in the best way to exascale machines and their imminent appearance.\newline
+Benchmarking is an unavoidable step for \textit{ExaMA}, as it needs to analyse and compare performances on systems
+with different structures. These analyses will not only guide the developer team to improve the scalability of the different available tools,
+but also ensure complete transparency during the evaluation process.
+
+As launching tests on supercomputers isn't always easy because of their availability and costs, there is a real need to store the results.
+It is exactly what the \textit{Dashboard Performances} project is about: providing a clear and easy to use interface between tests and results.
+This interface is already available at \url{https://feelpp.github.io/benchmarking/benchmarking/index.html}.
+
+
+\section{Tools description}
+
+For testing the implemented algorithms and trying to predict how they will behave, we will use \textit{ReFrame HPC}\cite*{ReFrame}.
+ReFrame is a robust framework that allows to focus only on the algorithm by isolating the running code from the system's complexity.
+It distinguishes between "performance by simulation step" and "performance by number of task", which are two unavoidable criteria when talking about HPC.
+But for us, the most interesting feature is its ability to simulate exascale performance with regressions tests.
+
+For reporting the results, we will use \textit{Antora}\cite*{Antora}. Antora gives the opportunity to publish documentation on the web.
+The documentation needs to be written in \textit{AsciiDoc}. Once it's done, \textit{AsciiDoctor} will handle the conversion to \textit{html}
+for responsiveness.
+In this way, it also call python functions and print their output, graphs for example, like you would do it in a notebook.
+
+\newpage
+\section{Objectives}
+As the repository has already being started, the necessary resources \textit{(like .adoc templates)} are available
+to be able to publish documentation about new tests.
+
+We want to get \textit{Continuous Integration/Continuous Deployment (CI/DI)} system.
+It means that every time a new test has been done, and integrated in the directory main branch, a task will 
+automatically be launched for updating the documentation site.
+
+In order to achieve this, the first point is to collect all needed information from ReFrame performances and regressions tests
+within the created Report python class. Then, it should automatically create an AsciiDoc file which will be used from Antora
+for the deployment on the website.
+
+%A first objective would be to work on a first test case and getting all the necessary files ready for publishing
+%In a first phase, we will only focus on heat problems.
+% A further goal would be to create a whole database
+
+
+\newpage
+\section{Roadmap}
+MISSING
+
+\newpage
+\section{Bibliography}
+\nocite{*}
+\printbibliography[heading=none]
+
+\end{document}
