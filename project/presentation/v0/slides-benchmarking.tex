@@ -1,0 +1,79 @@
+\documentclass[10pt]{beamer}
+
+% theme
+\usetheme{PaloAlto}
+\usecolortheme{spruce}
+\setbeamertemplate{navigation symbols}{}
+
+% packages
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+% attributes
+\title{\textbf{ExaMA WP3 -- Dashboard Performances}}
+\author[Tanguy PIERRE]{Tanguy Pierre\\[1cm] \small{Supervisors: V. Chabannes, J. Cladellas}}
+\institute{University of Strasbourg}
+\date{26th of March}
+
+
+% **********************  START  **********************
+\begin{document}
+
+\frame{\titlepage}
+
+
+\begin{frame}
+    \frametitle{\textbf{Project description}}
+
+    \begin{itemize}
+        \addtolength{\itemsep}{10pt}
+        \item Part of the \textit{ExaMA} project
+        \item Benchmarking is for:
+        \begin{itemize}
+            \item performances comparison
+            \item transparency
+            \item references in order to avoid performance decline
+            \item data analysis depending on context
+        \end{itemize}
+        \item {\footnotesize\url{https://feelpp.github.io/benchmarking/benchmarking/index.html}}
+    \end{itemize}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{../../illustrations/feelpp-dashboard.png}
+      \end{figure}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{\textbf{Tools}}
+    \begin{itemize}
+        \addtolength{\itemsep}{10pt}
+        \item \textit{ReFrame HPC}, a framework allowing system's complexity abstraction
+        \item \textit{Antora}, a documentation site generator.\newline \textit{.adoc} to \textit{html}\ conversion with \textit{AsciiDoctor}
+        \item \textit{Plotly}, the well-known data visualization library.
+    \end{itemize}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{../../illustrations/benchmarking-graphics.png}
+      \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\textbf{Objectives}}
+    \begin{itemize}
+        \addtolength{\itemsep}{10pt}
+        \item Resources for publishing already available
+        \item Repetitive task\\
+                [0.2cm]
+                $\Rightarrow$ \textbf{Continuous Integration / Continuous Deployment}
+        \item Database creation
+        \item Starting point: heat-related problems
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\textbf{Roadmap}}
+    \includegraphics[width=\textwidth]{../../roadmap/roadmapv0-full.png}
+\end{frame}
+
+\end{document}
