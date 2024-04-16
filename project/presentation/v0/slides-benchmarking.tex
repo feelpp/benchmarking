@@ -13,7 +13,7 @@
 \title{\textbf{ExaMA WP3 -- Dashboard Performances}}
 \author[Tanguy PIERRE]{Tanguy Pierre\\[1cm] \small{Supervisors: V. Chabannes, J. Cladellas}}
 \institute{University of Strasbourg}
-\date{26th of March}
+\date{9th of April}
 
 
 % **********************  START  **********************
@@ -31,7 +31,7 @@
         \item Benchmarking is for:
         \begin{itemize}
             \item performances comparison
-            \item transparency
+            \item transparency about the evaluation process
             \item references in order to avoid performance decline
             \item data analysis depending on context
         \end{itemize}
@@ -43,14 +43,14 @@
       \end{figure}
 \end{frame}
 
-
 \begin{frame}
     \frametitle{\textbf{Tools}}
     \begin{itemize}
         \addtolength{\itemsep}{10pt}
-        \item \textit{ReFrame HPC}, a framework allowing system's complexity abstraction
-        \item \textit{Antora}, a documentation site generator.\newline \textit{.adoc} to \textit{html}\ conversion with \textit{AsciiDoctor}
-        \item \textit{Plotly}, the well-known data visualization library.
+        \item \textit{ReFrame HPC}, a framework allowing system's complexity abstraction in order to focus only on the algorithm's performance
+        \item \textit{Feel++}, a C++ library for Galerkin methods
+        \item \textit{Antora}, a documentation site generator \small(\textit{.adoc} to \textit{.html})
+        \item \textit{Plotly}, the well-known data visualization library
     \end{itemize}
     \begin{figure}
         \centering
@@ -58,22 +58,32 @@
       \end{figure}
 \end{frame}
 
+
 \begin{frame}
     \frametitle{\textbf{Objectives}}
+    The necessary resources for publishing results are already available:
+    Python scripts for reading ReFrame results and reporting them to an AsciiDoc file.\\
+    As it as repetitive task, our objectives are as follows:\\
+    [10pt]
     \begin{itemize}
         \addtolength{\itemsep}{10pt}
-        \item Resources for publishing already available
-        \item Repetitive task\\
+        \item Establish a workflow based on:\\
                 [0.2cm]
-                $\Rightarrow$ \textbf{Continuous Integration / Continuous Deployment}
-        \item Database creation
-        \item Starting point: heat-related problems
+                \textbf{Continuous Integration / Continuous Deployment}
+        \item Database creation for easy access and retrieval of results\\
+        [1cm]
     \end{itemize}
+    The initial focus will be on heat-related algorithms from the Feel++ library.\\
 \end{frame}
+
 
 \begin{frame}
     \frametitle{\textbf{Roadmap}}
-    \includegraphics[width=\textwidth]{../../roadmap/roadmapv0-full.png}
+    \includegraphics[width=\textwidth]{../../roadmap/roadmapv0-group.png}\\
+    [1cm]
+    Only generic conducting issues, except from environment checking.\\
+    More precise project-relative issues and objectives have to be defined for V1.
 \end{frame}
+
 
 \end{document}
