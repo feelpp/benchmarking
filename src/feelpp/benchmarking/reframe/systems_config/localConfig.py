@@ -1,17 +1,15 @@
-# system configuration for running test on .cpp files
-
 site_configuration = {
     'systems': [
         {
             'name': 'localCFG',
-            'descr': 'Config for local desktop',
+            'descr': 'Local desktop with mpiexec',
             'hostnames': ['localCFG'],
             'modules_system': 'nomod',
             'partitions': [
                 {
                     'name': 'default',
                     'scheduler': 'local',
-                    'launcher': 'local',
+                    'launcher': 'mpiexec',
                     'environs': ['gnu'],
                 }
             ]
@@ -23,7 +21,6 @@ site_configuration = {
             'cc': 'gcc',
             'cxx': 'g++',
             'ftn': 'gfortran',
-            'features': ['openmp'],
             'target_systems': ['localCFG']
         }
     ]

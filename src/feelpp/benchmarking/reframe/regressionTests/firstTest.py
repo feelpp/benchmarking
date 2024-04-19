@@ -1,32 +1,46 @@
-import reframe as rfm
-import reframe.utility.sanity as sn
-import reframe.core.runtime as rt
-import feelpp
+import  reframe                 as rfm
+import  reframe.utility.sanity  as sn
 
 
 @rfm.simple_test
-class LaplacianTest(rfm.RunOnlyRegressionTest):
-    num_threads = parameter([1,2,4,8,16,24])
-    reference = {}
-    #sourcesdir = './../../../src'
+class HeatToolboxTest (rfm.RunOnlyRegressionTest):
+
+    descr = 'Launch testcases from the Heat Toolbox'
     valid_systems = ['*']
-    valid_prog_environs = ['+openmp']
-    #build_system = 'Make'
+    valid_prog_environs = ['*']
+
+    reference = {}
 
     executable = 'feelpp_toolbox_heat'
-    executable_opts = ['--config-file /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg']
+
+    case = parameter([  '/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg',
+                        #'/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg',
+                        '/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg' ])
+
+    numTask = parameter([2,4,6])
+
 
     @run_before('run')
-    def set_cpus_per_task(self):
-        self.num_cpus_per_task = self.num_threads
-        self.env_vars['OPM_NUM_THREADS'] = str(self.num_cpus_per_task)
+    def set_task_number(self):
+        self.num_tasks = self.numTask
+        self.num_tasks_per_node = 128
+        self.num_cpus_per_task = 1
 
-    @run_after('setup')
-    def skip_too_many(self):
-        procinfo = self.current_partition.processor
-        self.skip_if(self.num_threads > procinfo.num_cores, 'not enough cores')
+    @run_before('run')
+    def set_launcher_options(self):
+        self.job.launcher.options = ['-bind-to core', '--use-hwthread-cpus']
+
+
+    @run_before('run')
+    def set_executable_opts(self):
+        self.executable_opts = [f'--config-file {self.case}']
+
+
+    @performance_function('s', perf_key='Execution time')
+    def extract_execution_time(self):
+        return sn.extractsingle(r'execution time\s+(\S+)s', self.stdout, 1, float)
 
 
     @sanity_function
-    def assert_checkers(self):
+    def check_finished(self):
         return sn.assert_found('[ Stopping Feel++ ]', self.stdout)
