@@ -24,7 +24,7 @@
             [2cm]
             University of Strasbourg}
 
-\date{26th of March}
+\date{23rd of April}
 
 
 
@@ -35,6 +35,7 @@
 
 \newpage
 \section{Introduction}
+
 This work is part of the \textit{ExaMA} project, whose main objective is to design algorithms and methods
 that will adapt in the best way to exascale machines and their imminent appearance.
 
@@ -57,7 +58,7 @@ ReFrame is a robust framework that allows to focus only on the algorithm by isol
 It distinguishes between "performance by simulation step" and "performance by number of task", which are two unavoidable criteria when talking about HPC.
 But for us, the most interesting feature is its ability to simulate exascale performance with regressions tests.
 
-The algorithms we want to test will be from the \textit{Feel++}\cite*{Feel++} library.
+The algorithms we want to test will be from the \textit{Feel++}\cite*{Feelpp} library.
 This is a "Finite Element Embedded Library in C++". It is used for solving physical problems, up to dimension 3,
 through the resolution op partial differential equations employing continuous or discontinuous Galerkin methods.
 \newpage
@@ -67,42 +68,64 @@ for responsiveness and browser compatibility.
 \textit{AsciiDoc} offers the possibility to call python function directly within its file. With this approach, we will be able to provide dynamic content,
 like graphs for example, for the documentation.
 
-The \textit{Plotly} library will be used for data visualization. This graphing library offers various methods for displaying data. However,
+The \textit{Plotly}\cite*{Plotly} library will be used for data visualization. This graphing library offers various methods for displaying data.
 what's particularly notable for our purposes is its interactivity. Together with its versatility, it perfectly fits the project's needs
 regarding dynamism.
 
 
-\section{Objectives}
-Since the repository had already been initialized, the necessary resources for publishing are available.
-To accomplish this using the previously mentioned tools, results are given by ReFrame in a JSON file.
-This file will be used by two different python scripts,
-one for creating an \textit{.adoc} file representing this test, and the other for data visualization.
-Once all tasks are completed, the results can be uploaded to the website.
+\section{Process}
+Resources for publishing new documentation are already available in this repository. We need to adapt them to our new testsuite.\\
+However, achieving this requires to integrate the previously mentioned tools in the following process:
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../illustrations/process.png}
+\end{figure}
+
+\newpage
+\begin{enumerate}
+    \item The first step of this cycle is of course to develop. This is the only manner to look forward regarding performances.
+    Pushing or merging new test reports should also launch a new process.
+    \item The workflow should automatically launch the specified tests using Reframe. The results will be transmitted in a .json file.
+    If a code doesn't pass all the tests, a warning will appear in order to inform the dev team they have performance decline regarding the new code. In this case, the process will automatically stop.
+    \item At first, we will extract the relative run reports data with a Python script. Then, the Python library \textit{Jinja2}\cite*{Jinja2} will generate an .adoc file containing plotting methods.
+    \item The last step to convert the created .adoc file into .html for generating the website. As I mentioned before, this job is done by Antora together with AsciiDoctor.
+\end{enumerate}
+
+It's apparent that this task involves significant repetition. Therefore, we want our process to work on the most autonomous way possible. This leads us immediately to our main objective.
+
+
+
+\section{Objectives}
 \begin{itemize}
-    \item It's apparent that this task involves significant repetition. Therefore, we aim to establish a \textbf{Continuous Integration/Continuous Deployment (CI/CD)} workflow.
-    This means that every time a new test is done and integrated in the directory main branch, a task will automatically be launched for updating the documentation site.
-    \item A further goal is to \textbf{create a database} for easy access and retrieval of test results.
+    \item Establish a \textbf{Continuous Integration/Continuous Deployment} workflow.
+    This means that every time a new test is done and integrated into the repository main branch, a task will automatically be launched for updating the documentation site.
+    \item Improve the \textbf{dashboard presentation}. We need to enhance the data visualization and add explanations to it for a better comprehension of the given results.
+    \item Finding the appropriate values to analyse performances on a specific context can be difficult. Therefore, \textbf{representative tests} are essential for obtaining reliable results about the system behaviour.
+    \item Provide a \textbf{database} for easy access and retrieval of test results.
     Currently, it is very difficult to perform clear data analysis based on different aggregations, as it requires manual searching.
     Therefore, we want to develop an automated solution to select relevant fields.
+
 \end{itemize}
 
-In a first phase, we will only focus on the heat-related applications from the \textit{Feel++}\cite*{Feel++} library. While it may not be particularly significant to us,
-it serves as a starting point for developing the workflow. Furthermore, we also intend to evaluate how well algorithms from the library related to different domains perform.
+
+\newpage
+\section{Advances}
+It took more time than I thought to get used to the different used tools and their environment.
+ReFrame offers a wide range of possibilities, but it was sometime challenging to find the appropriate option.
+
+However, now we can execute numerous test cases with just one command. This is precisely where Reframe's strength lies.
+Reframe operates with Python classes that are customizable through parameterization. For our purpose, we can for example parametrize the tests with 
+the number of tasks, the number of tasks per core, or even the cases we want to study.
+For our purpose, we started with treating the ThermalBridgesENISO10211 cases which are available in the data folder of the toolbox.
+
+For verifying the sanity of a test, Reframe provides "sanity functions." These functions run once the test is complete and can, for example, perform checks on the output data to ensure correctness. 
+This feature enhances the reliability of our testing process, helping to catch any anomalies or errors in our results.
+In order to avoid any regression in performance, we also have the possibility to provide references for each system configuration.
+If the framework detects that a performance is not within a certain range, then it will trigger a predefined action or alert.
 \newpage
 \section{Roadmap}
 
-\vspace{1cm}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{../../roadmap/roadmapv0-full.png}
-    \caption{Roadmap v0}
-    \label{fig:roadmapv0}
-\end{figure}
-\vspace{1cm}
-At this moment, the roadmap has only been set up with generic project-conducting issues,
-except from environment checking.\\
-More precise project-relative points have to be defined and added for v1.
 
 \newpage
 \section{Bibliography}
