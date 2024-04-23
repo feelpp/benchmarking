@@ -1,27 +1,27 @@
 site_configuration = {
     'systems': [
         {
-            'name': 'localCFG',
+            'name': 'local',
             'descr': 'Local desktop with mpiexec',
-            'hostnames': ['localCFG'],
+            'hostnames': ['local'],
             'modules_system': 'nomod',
             'partitions': [
                 {
                     'name': 'default',
                     'scheduler': 'local',
                     'launcher': 'mpiexec',
-                    'environs': ['gnu'],
+                    'environs': ['env_local'],
                 }
             ]
         }
     ],
     'environments': [
         {
-            'name': 'gnu',
+            'name': 'env_local',
             'cc': 'gcc',
             'cxx': 'g++',
             'ftn': 'gfortran',
-            'target_systems': ['localCFG']
+            'target_systems': ['local:default']
         }
     ]
 }
