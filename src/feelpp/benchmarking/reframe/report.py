@@ -9,7 +9,8 @@ print(pd.__version__)
 # Replace 'your_file.json' with the path to your JSON file
 # file_path = 'docs/modules/meluxina/pages/20231209/kub_scenario0.json'
 
-refIndex = 0    # = 2 for reporting older tests
+# Set refIndex according to the position of the reference you want for the speedup
+refIndex = 2
 
 
 class Report:
