@@ -9,6 +9,9 @@ print(pd.__version__)
 # Replace 'your_file.json' with the path to your JSON file
 # file_path = 'docs/modules/meluxina/pages/20231209/kub_scenario0.json'
 
+# Set refIndex according to the position of the reference you want for the speedup
+refIndex = 2
+
 
 class Report:
     """
@@ -45,7 +48,7 @@ class Report:
         for k, t in enumerate(df['num_tasks'].unique()):
             for i in df['perfvars'][k]:
                 self.df_speedup = pd.concat([self.df_speedup, pd.DataFrame(
-                    [{'num_tasks': t, 'name': i['name'], 'value': ref['value'].values[2]/i['value']}])], ignore_index=True)
+                    [{'num_tasks': t, 'name': i['name'], 'value': ref['value'].values[refIndex]/i['value']}])], ignore_index=True)
         # the optimal speedup is ref_speedup
         self.df_speedup['optimal'] = self.df_speedup['num_tasks'].apply(
             lambda x: x/ref_speedup)
