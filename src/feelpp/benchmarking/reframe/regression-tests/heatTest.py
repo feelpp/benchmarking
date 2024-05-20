@@ -25,12 +25,12 @@ class HeatToolboxTest (rfm.RunOnlyRegressionTest):
     # mpiexec options
     @run_before('run')
     def set_launcher_options(self):
-        self.job.launcher.options = ['-bind-to core', '--use-hwthread-cpus']
+        self.job.launcher.options = ['-bind-to core']
 
 
     @run_before('run')
     def set_task_number(self):
-        self.num_tasks_per_node = 128       # = 128 ou 256 ? --> gaya: 256 cpus par noeud
+        self.num_tasks_per_node = 128
         self.num_cpus_per_task = 1
         self.num_tasks = self.nb_nodes * self.num_tasks_per_node
 
