@@ -12,10 +12,12 @@ def convert_hostname(hostname):
         return "karolina"
     if "discoverer" in hostname:
         return "discoverer"
+    if "gaya" in hostname:
+        return "gaya"
     # You can add more rules here if needed
     return hostname
 
-for module in ['meluxina', 'karolina', 'discoverer']:
+for module in ['meluxina', 'karolina', 'discoverer', 'gaya']:
     # Path to the JSON files
     json_files_path = f'{module}/pages/kub/scenario0/*.json'
 

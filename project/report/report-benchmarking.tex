@@ -4,7 +4,11 @@
 \usepackage{a4wide}
 \usepackage[english]{babel}
 \usepackage{csquotes}
+\usepackage{float}
 \usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{fontenc}
+\usepackage{inputenc}
 \usepackage{graphicx}
 \usepackage{tocloft}
 \usepackage{xcolor}
@@ -24,7 +28,7 @@
             [2cm]
             University of Strasbourg}
 
-\date{23rd of April}
+\date{31st of May}
 
 
 
@@ -32,20 +36,24 @@
 \begin{document}
     \maketitle      % titlepage to be improved
 
+\newpage
+\tableofcontents
 
 \newpage
 \section{Introduction}
 
 This work is part of the \textit{ExaMA} project, whose main objective is to design algorithms and methods
-that will adapt in the best way to exascale machines and their imminent appearance.
+that will best adapt to exascale machines and their imminent appearance.
+As a reminder, \textit{exascale} machines are capable of performing $1$ exaflop, or $10^{18}$ operations per second.
 
 Benchmarking is an unavoidable step for \textit{ExaMA}, as it needs to analyse and compare performances on systems
 with different structures. These analyses will not only guide the developer team to improve the scalability of the different available tools,
-but also ensure complete transparency during the evaluation process.
+but also ensure complete transparency about the evaluation process.
 
-As launching tests on supercomputers isn't always easy because of their availability and costs, there is a real need to store the results.
-In addition to this fact, it serves as a manner to verify that new features haven't caused any pullback in performance.
-It is also important for this project to create a well-structured database for analyses depending on specific context, like machine or application.
+As launching tests on supercomputers isn't always easy because of their availability and costs, there is a real need to have fast-deployable test programs and to store the results.
+In addition to this fact, it serves as a manner to verify that new features haven't caused any pullback in performance. \\
+Storing the results will provide a possibility to perform analyses depending on specific context, like machine or application.
+Therefore, it is also really important for the project to create a well-structured database in order to get a clear overview.
 
 It is exactly what the \textit{Dashboard Performances} project is about: providing a clear and easy to use interface between tests and results.
 This interface is already available at \url{https://feelpp.github.io/benchmarking/benchmarking/index.html}.
@@ -53,28 +61,37 @@ This interface is already available at \url{https://feelpp.github.io/benchmarkin
 
 \section{Tools description}
 
-For testing the implemented algorithms and trying to predict how they will behave, we will use \textit{ReFrame HPC}\cite*{ReFrame}.
-ReFrame is a robust framework that allows to focus only on the algorithm by isolating the running code from the system's complexity.
-It distinguishes between "performance by simulation step" and "performance by number of task", which are two unavoidable criteria when talking about HPC.
-But for us, the most interesting feature is its ability to simulate exascale performance with regressions tests.
+For testing the implemented algorithms and predicting how they will behave, we will use \textit{ReFrame HPC}\cite*{ReFrame}.
+ReFrame is a robust framework based on Python classes that allows us to focus only on the algorithm by isolating the running code from the system's complexity.
+The interesting aspect of this framework is that it allows launching multiple tests at once, ensuring their sanity, and extracting performance metrics.
+Furthermore, its pipeline allows to create tests for specific stages of the program, such as the compilation or execution phase. 
+For our purpose, we will only use the execution testing part of it.
 
 The algorithms we want to test will be from the \textit{Feel++}\cite*{Feelpp} library.
 This is a "Finite Element Embedded Library in C++". It is used for solving physical problems, up to dimension 3,
-through the resolution op partial differential equations employing continuous or discontinuous Galerkin methods.
+through the resolution of partial differential equations employing continuous or discontinuous Galerkin methods.
 \newpage
 For reporting the results, we will use \textit{Antora}\cite*{Antora}. Antora gives the opportunity to publish documentation on the web.
 The documentation needs to be written in \textit{AsciiDoc}. Once it's done, \textit{AsciiDoctor} will handle the conversion to \textit{html}
 for responsiveness and browser compatibility.
 \textit{AsciiDoc} offers the possibility to call python function directly within its file. With this approach, we will be able to provide dynamic content,
-like graphs for example, for the documentation.
+such as graphs, for the documentation.
 
-The \textit{Plotly}\cite*{Plotly} library will be used for data visualization. This graphing library offers various methods for displaying data.
-what's particularly notable for our purposes is its interactivity. Together with its versatility, it perfectly fits the project's needs
+As we will work with \textit{.adoc} files, we first need to create such files based on the collected data.
+For this task, we will use \textit{Jinja2}\cite*{Jinja2}, a template engine for Python code.
+This tool requires a template to generate files designed according to the desired specifications and layout.
+With Jinja2, you can easily create dynamic content by combining templates with data from your Python code.
+We will need it for plotting the results into the documentation pages.
+
+
+The \textit{Plotly}\cite*{Plotly} library will be used for data visualization. This graphing library offers various methods for plotting data.
+What is particularly notable for our purposes is its interactivity. Together with its versatility, it perfectly fits the project's needs
 regarding dynamism.
 
 
 \section{Process}
-Resources for publishing new documentation are already available in this repository. We need to adapt them to our new testsuite.\\
+Resources for publishing new documentation were already available in the repository when starting the project, but we needed to adapt them to the new testsuite.\\
+There were two Python scripts, one for reading the reports generated by ReFrame, and one for converting the data in the desired output with \textit{Jinja2}. \\
 However, achieving this requires to integrate the previously mentioned tools in the following process:
 
 \begin{figure}[h]
@@ -84,16 +101,13 @@ However, achieving this requires to integrate the previously mentioned tools in 
 
 \newpage
 \begin{enumerate}
-    \item The first step of this cycle is of course to develop. This is the only manner to look forward regarding performances.
-    Pushing or merging new test reports should also launch a new process.
-    \item The workflow should automatically launch the specified tests using Reframe. The results will be transmitted in a .json file.
-    If a code doesn't pass all the tests, a warning will appear in order to inform the dev team they have performance decline regarding the new code. In this case, the process will automatically stop.
-    \item At first, we will extract the relative run reports data with a Python script. Then, the Python library \textit{Jinja2}\cite*{Jinja2} will generate an .adoc file containing plotting methods.
-    \item The last step to convert the created .adoc file into .html for generating the website. As I mentioned before, this job is done by Antora together with AsciiDoctor.
-\end{enumerate}
+    \item The first step of this cycle is, of course, development. This is the only way to move forward regarding performance. Pushing or merging new test reports should trigger a new process.
+    \item Use of ReFrame for launching specified test. The results will be reported in a \textit{.json} file. If a code doesn't pass all the tests, a warning will be emitted to inform the development team of a performance decline regarding the new code.
+    \item The relevant run report data will be extracted with a Python script. Then, the Python library \textit{Jinja2}\cite*{Jinja2}  generates an \textit{.adoc} file containing plotting methods.
+    \item The last step is to convert the created \textit{.adoc} file into \textit{.html} for generating the website. As mentioned before, this task is performed by Antora together with AsciiDoctor.
+    \end{enumerate}
 
 It's apparent that this task involves significant repetition. Therefore, we want our process to work on the most autonomous way possible. This leads us immediately to our main objective.
-
 
 
 \section{Objectives}
@@ -101,7 +115,7 @@ It's apparent that this task involves significant repetition. Therefore, we want
     \item Establish a \textbf{Continuous Integration/Continuous Deployment} workflow.
     This means that every time a new test is done and integrated into the repository main branch, a task will automatically be launched for updating the documentation site.
     \item Improve the \textbf{dashboard presentation}. We need to enhance the data visualization and add explanations to it for a better comprehension of the given results.
-    \item Finding the appropriate values to analyse performances on a specific context can be difficult. Therefore, \textbf{representative tests} are essential for obtaining reliable results about the system behaviour.
+    \item Identifiying appropriate values to analyse performances on a specific context can be challenging. Therefore, conducting \textbf{representative tests} are essential to obtain reliable results about the system behaviour.
     \item Provide a \textbf{database} for easy access and retrieval of test results.
     Currently, it is very difficult to perform clear data analysis based on different aggregations, as it requires manual searching.
     Therefore, we want to develop an automated solution to select relevant fields.
@@ -109,27 +123,190 @@ It's apparent that this task involves significant repetition. Therefore, we want
 \end{itemize}
 
 
-\newpage
-\section{Advances}
-It took more time than I thought to get used to the different used tools and their environment.
-ReFrame offers a wide range of possibilities, but it was sometime challenging to find the appropriate option.
+\section{Work with ReFrame}
 
-However, now we can execute numerous test cases with just one command. This is precisely where Reframe's strength lies.
-Reframe operates with Python classes that are customizable through parameterization. For our purpose, we can for example parametrize the tests with 
-the number of tasks, the number of tasks per core, or even the cases we want to study.
-For our purpose, we started with treating the ThermalBridgesENISO10211 cases which are available in the data folder of the toolbox.
+\subsection{Global explanation}
+As previously mentioned, ReFrame has the capacity to focus only on the algorithm's performance, operates with Python classes that are customizable through parameterization.
+Within these classes, one can easily describe and define the environment, but also parametrize the test.
+General attributes like test description or file-paths can be immediately set up.
+ReFrame works with an exact pipeline through different test stages, therefore the necessity to use the decorators provided by the framework.
+With the help of these decorators, Reframe schedules the execution of each method.
+For each 6 different stages, going from "Initialization Phase" to "Cleanup Phase", it is possible to specify to Reframe when to execute the method.
+For instance, if you want to set up the test environment, the method should probably be decorated by \texttt{@run\_before('run')}.
 
-For verifying the sanity of a test, Reframe provides "sanity functions." These functions run once the test is complete and can, for example, perform checks on the output data to ensure correctness. 
-This feature enhances the reliability of our testing process, helping to catch any anomalies or errors in our results.
+The site on which the test will run has to be described in a Python dictionary (or in a XXXXX file).
+It's split into two main categories: systems and environments. \\
+In the first one you can describe the specific system on which the test will be launched.
+In the environment category, you can define various execution environments, for example, by specifying different compilers.
+
+Here is the site configuration script for the Gaya-machine, located at University of Strasbourg:
+\begin{small}
+\begin{verbatim}
+    site_configuration = {
+    'systems': [
+        {
+            'name': 'gaya',
+            'descr': 'Gaya',
+            'hostnames': ['gaya'],
+            'modules_system': 'nomod',
+            'partitions': [
+                {
+                    'name': 'public',
+                    'scheduler': 'squeue',
+                    'launcher': 'mpiexec',
+                    'max_jobs': 8,
+                    'access': ['--partition=public'],
+                    'environs': ['env_gaya'],
+                },
+            ],
+        }
+    ],
+    'environments': [
+        {
+            'name': 'env_gaya',
+            'cc': 'clang',
+            'cxx': 'clang++',
+            'target_systems': ['gaya:public']
+        }
+    ]
+}
+\end{verbatim}
+\end{small}
+
+Notes:
+\begin{itemize}[left=2cm]
+    \item \textit{For more specific clusters of tests, it is perfectly possible to split the system by partition, and to have multiple environments.}
+    \item \textit{Specific node-lists can also be set for the test.}
+\end{itemize}
+
+The tests can be parametrized by the system's topology, which includes the number of nodes, CPUs, tasks per node, \ldots, or even by various test files. \\
+For the scalability tests, the most important characteristics are the number of nodes, the number of task per core and the number of task.\\
+We have: $num\_tasks = num\_nodes * num\_task\_per\_core$
+
+Reframe will automatically launch a test for each combination of nodes and number of task per core.
+Numerous test cases are launched with just one command, this is precisely where Reframe's strength lies.
+
+For verifying the sanity of a test, Reframe provides \textit{"sanity functions"}. These functions run once the test is complete and can, for example, perform checks on the output data to ensure correctness. 
+This feature enhances the reliability of our testing process, helping to catch any anomalies or errors in our results. \\
 In order to avoid any regression in performance, we also have the possibility to provide references for each system configuration.
-If the framework detects that a performance is not within a certain range, then it will trigger a predefined action or alert.
+If the framework detects a performance decline, then it will trigger a predefined action or alert.
+
+\subsection{Scale performances extraction}
+With the command-line option \small{\texttt{--heat.scalability-save=1}}, or more generally \\ \small{\texttt{--<tbprefix>.scalability-save=1}}, you can tell \textit{Feelpp} to write files with the different scale performances. \\
+In order to extract values from files or directly from the terminal output, we use Reframe's sanity module and in particular \texttt{sanity.extractsingle()}.
+This method will extract values using \textit{regex patterns}. Methods for performance measures needs the decorator \small{\texttt{@performance\_function}}.
+
+Explanation using an example:
+\begin{scriptsize}
+\begin{verbatim}
+valPatt  = '([0-9e\-\+\.]+)'
+
+@performance_function('s')
+def extract_constructor_scale(self, index=1):
+    scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')
+    return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]
+                            +{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+',
+                            scalePath, index, float)
+\end{verbatim}
+\end{scriptsize}
+
+\begin{itemize}
+    \item The \small{\texttt{namePatt}} pattern is between parentheses, which means that values corresponding to the pattern will be saved
+    \item \small{\texttt{namePatt}} matches numbers, but also numbers in scientific notation
+    \item Only the value at the n-th index of the corresponding pattern will be extracted
+    \item The \^{} character guarantees that the pattern matches an expression starting on a new line for avoiding any interaction
+    \item It is necessary to know the number of values you are extracting in order to build the pattern (8 values for the feelpp\_heat\_toolbox constructor's scale)
+\end{itemize}
+
+\newpage
+\subsection{Reading Reframe's reports}
+Reframe's results are stored in a \textit{.json} file. But before we can properly analyze this data, we need to extract and process the information contained in the report.
+This task will be performed by the \small{\texttt{Report}} class. Using the \textit{json} Python library, the class will load the report file and construct the following dataframes :
+\texttt{df\_perf, df\_partialPerf, df\_speedup, df\_partialSpeedup}
+
+Some reports do not include values for partial performance variables, but only the total score of a particular execution stage.
+Therefore, we had to construct two different frames to organize the data more efficiently.
+This organization facilitates comparisons between each stage component performance, especially for plotting the results.
+
+\subsection{Class hierarchy}
+graph en arborescence:\\
+- MachineSetup \\
+- ToolboxSetup \\
+- Case1,   - case2,  ...
+\section{Results}
+
+\subsection{Single node test}
+For single node tests, we let vary the number of task by powers of 2 up to the number of CPUs on the node. \\
+As Gaya has 128 physical CPUs per node, our test were launched with 1, 2, 4, 8, 16, 32, 64, 128 tasks.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../illustrations/case3_P2/perfByStep.png}
+\end{figure}
+
+This graphic represents the 3 main performance metrics, namely \textit{init, solve, exportResults} for any number of launched tasks.
+We can notice that the \textit{init} stage of the process doesn't scale well, because some \textit{partial init variables} simply don't run in  parallel.
+The solving and postprocessing stages scale well to higher number of tasks.
+The same can be interpreted out from the following graph.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../illustrations/case3_P2/perfByTask.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../illustrations/case3_P2/speedupMain.png}
+\end{figure}
+According to the graph, the main performances don't adapt well to the raising number of tasks, as the three curves are below the half-optimal curve.
+TO CHECK
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../illustrations/case3_P2/speedupInit.png}
+\end{figure}
+
+On this illustration, we can figure out why, in the first graph, the \textit{init} phase doesn't scale well. 
+The \textit{initMesh} is running in sequential, as the other curves fit in a good way to larger models.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../illustrations/case3_P2/speedupSolve.png}
+\end{figure}
+REMOVE ksp-niter from graph
+\subsection{Multi node test}
+For multi-node, we set the number of task per core to the maximum of available CPUs.
+The total number of tasks is the product of this value with the number of nodes.
+At the moment, results for multi-node testing for are not available due to an error occurring with MPI communications as soon as the number of launched task exceeds the number op CPUs per node.
+
+Here are a few lines about this bug:
+\begin{scriptsize}
+\begin{verbatim}
+    terminate called after throwing an instance of 'boost::wrapexcept<boost::mpi::exception>'
+  what():  MPI_Test: MPI_ERR_TRUNCATE: message truncated
+*** Aborted at 1716774707 (unix time) try "date -d @1716774707" if you are using GNU date ***
+terminate called after throwing an instance of 'boost::wrapexcept<boost::mpi::exception>'
+  what():  MPI_Test: MPI_ERR_TRUNCATE: message truncated
+*** Aborted at 1716774707 (unix time) try "date -d @1716774707" if you are using GNU date ***
+terminate called after throwing an instance of 'boost::wrapexcept<boost::mpi::exception>'
+  what():  MPI_Test: MPI_ERR_TRUNCATE: message truncated
+*** Aborted at 1716774707 (unix time) try "date -d @1716774707" if you are using GNU date ***
+PC: @                0x0 (unknown)
+*** SIGABRT (@0x10fa00158edd) received by PID 1412829 (TID 0x7fc557cab000) from PID 1412829; stack trace: ***
+\end{verbatim}
+\end{scriptsize}
+
+Feelpp works with a booster from the MPI library, but it seems as the communication between processes doesn't occur well.
+
 \newpage
 \section{Roadmap}
-
+TO BE ADDED
 
 \newpage
 \section{Bibliography}
 \nocite{*}
 \printbibliography[heading=none]
 
+\newpage
+\section{Appendix}
+ADD heatToolboxTest code
 \end{document}
