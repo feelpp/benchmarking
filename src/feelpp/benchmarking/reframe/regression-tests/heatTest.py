@@ -2,6 +2,8 @@ import  reframe                 as rfm
 import  reframe.utility.sanity  as sn
 import os
 
+singleNode = False
+
 
 @rfm.simple_test
 class HeatToolboxTest (rfm.RunOnlyRegressionTest):
@@ -22,7 +24,14 @@ class HeatToolboxTest (rfm.RunOnlyRegressionTest):
 
     # Parametrization
     case = parameter ([case3])      # more cases to be added...
-    nbNodes = parameter([2,4,6,8])
+
+    if singleNode:
+        nbNodes = 1
+        nbTaskPerNode = parameter([1,2,4,8,16,32,64,128])
+    else:
+        nbNodes = parameter([1,2,3,4,5,6])      # doesn't work: MPI_ERR_TRUNC
+        nbTaskPerNode = 128
+
 
     homeDir = os.environ['HOME']
 
@@ -36,13 +45,13 @@ class HeatToolboxTest (rfm.RunOnlyRegressionTest):
     # Launcher options
     @run_before('run')
     def set_launcher_options(self):
-        self.job.launcher.options = ['-bind-to core', '--use-hwthread-cpus']
+        self.job.launcher.options = ['-bind-to core']
 
     @run_before('run')
     def set_task_number(self):
-        self.num_tasks_per_node = 128
+        self.num_tasks_per_node = self.nbTaskPerNode
         self.num_cpus_per_task = 1
-        self.num_tasks = self.nbNodes * self.num_tasks_per_node
+        self.num_tasks = self.num_tasks_per_node * self.nbNodes
 
 
     # Executable options
@@ -52,7 +61,7 @@ class HeatToolboxTest (rfm.RunOnlyRegressionTest):
     def set_executable_opts(self):
         fullPath = os.path.join(self.heatCasesPath, self.case3)
         self.executable_opts = [f'--config-file {fullPath}',
-                                '--case.discretization P1',
+                                '--case.discretization P2',
                                 '--heat.scalability-save 1']
 
 
