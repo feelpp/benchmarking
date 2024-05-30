@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y \
         python3-pip \
         wget
 
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
+
 RUN wget -qO - http://apt.feelpp.org/apt.gpg | apt-key add
 RUN echo "deb http://apt.feelpp.org/ubuntu/jammy jammy latest" | tee -a /etc/apt/sources.list.d/feelpp.list
 RUN apt update

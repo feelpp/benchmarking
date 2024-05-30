@@ -58,3 +58,15 @@ print(report.speedup())
 fig=report.plotSpeedup()
 fig.show()
 ----
+
+{% if machine == 'gaya' %}
+=== Speedup for partial performances
+[%dynamic%close,python]
+----
+fig1=report.plotPartialSpeedup('init')
+fig1.show()
+
+fig2=report.plotPartialSpeedup('solve')
+fig2.show()
+----
+{% endif %}

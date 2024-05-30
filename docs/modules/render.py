@@ -19,7 +19,7 @@ def convert_hostname(hostname):
 
 for module in ['meluxina', 'karolina', 'discoverer', 'gaya']:
     # Path to the JSON files
-    json_files_path = f'{module}/pages/kub/scenario0/*.json'
+    json_files_path = f'{module}/pages/**/*.json'
 
     # Iterate over each JSON file in the directory
     for json_file in glob.glob(json_files_path):
