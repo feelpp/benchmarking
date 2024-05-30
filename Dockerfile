@@ -1,23 +1,12 @@
-FROM ubuntu:jammy
+# -*- mode: Dockerfile -*-
 
-RUN apt-get update && apt-get install -y \
-        python3 \
-        python3-pip \
-        wget
+FROM ghcr.io/feelpp/feelpp:jammy
 
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
+USER root
+COPY . /home/feelpp/
+RUN ls -lrtR /home/feelpp
 
-RUN wget -qO - http://apt.feelpp.org/apt.gpg | apt-key add
-RUN echo "deb http://apt.feelpp.org/ubuntu/jammy jammy latest" | tee -a /etc/apt/sources.list.d/feelpp.list
-RUN apt update
+RUN dpkg -i /home/feelpp/*.deb 
 
-RUN apt-get update && apt-get install -y \
-        libfeelpp1 \
-        feelpp-tools \
-        feelpp-quickstart \
-        python3-feelpp \
-        feelpp-data \
-        libfeelpp-toolboxes1 \
-        libfeelpp-toolboxes1-all-dev \
-        feelpp-toolboxes \
-        feelpp-toolboxes-data
+USER feelpp
+
