@@ -9,11 +9,11 @@ hostname=gaya
 current_date=$(date +%Y%m%d)
 mkdir -p $(pwd)/docs/modules/${hostname}/pages/reports
 
-export BENCH_CASES_CFG=$(pwd)/src/benchmarking/cases/
+export BENCH_CASES_CFG=$(pwd)/src/feelpp/benchmarking/cases/
 
 
 # Reframe environment variables
-export RFM_CONFIG_FILES=$(pwd)/src/benchmarking/reframe/cluster-config/${hostname}.py
+export RFM_CONFIG_FILES=$(pwd)/src/feelpp/benchmarking/reframe/cluster-config/${hostname}.py
 export RFM_REPORT_FILE=$(pwd)/docs/modules/${hostname}/pages/reports/${hostname}-${current_date}-{sessionid}.json
 export RFM_PREFIX=$(pwd)/build/reframe/
 

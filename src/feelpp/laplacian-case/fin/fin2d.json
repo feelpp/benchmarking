@@ -1,0 +1,103 @@
+{
+    "Name": "Thermalfin 2D",
+    "ShortName": "thermalfin2d",
+    "Models": {
+        "laplacian": {
+            "name": "omega",
+            "Materials": [
+                "Post",
+                "Fin_1",
+                "Fin_2",
+                "Fin_3",
+                "Fin_4"
+            ]
+        }
+    },
+    "Meshes": {
+        "laplacian": {
+            "Import": {
+                "filename": "$cfgdir/../fin.geo",
+                "partition": 0
+            }
+        }
+    },
+    "Spaces": {
+        "laplacian": {
+            "Domain": {
+
+
+            }
+        }
+    },
+    "TimeStepping":
+    {
+        "laplacian" :{
+            "steady": false,
+            "order" : 1,
+            "start": 0.0,
+            "end": 10,
+            "step": 0.1
+        }
+    },
+    "Materials": {
+        "Post": {
+            "k": "1", 
+            "Cp": "1",
+            "rho": "1"
+        },
+        "Fin_1": {
+            "k": "1",
+            "Cp": "1",
+            "rho": "1"
+        },
+        "Fin_2": {
+            "k": "1",
+            "Cp": "1",
+            "rho": "1"
+        },
+        "Fin_3": {
+            "k": "1",
+            "Cp": "1",
+            "rho": "1"
+        },
+        "Fin_4": {
+            "k": "1",
+            "Cp": "1",
+            "rho": "1"
+        }
+    },
+    "InitialConditions": {
+        "laplacian": {
+            "temperature": {
+                "Expression": {
+                    "Tini": {
+                        "markers": [
+                            "Fin_1",
+                            "Fin_2",
+                            "Fin_3",
+                            "Fin_4",
+                            "Post"
+                        ],
+                        "expr": "0"
+                    }
+                }
+            }
+        }
+    },
+    "BoundaryConditions": {
+        "laplacian": {
+            "flux": {
+                "Gamma_root": {
+                    "expr": "1"
+                }
+            },
+            "convective_laplacian_flux": {
+                "Gamma_ext": {
+                    "h": "0.3",
+                    "Text": "0"
+                }
+            }
+        }
+    }
+
+}
