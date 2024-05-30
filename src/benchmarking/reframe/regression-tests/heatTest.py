@@ -1,97 +1,82 @@
-import  reframe                 as rfm
-import  reframe.utility.sanity  as sn
-import os
-
-singleNode = False
-
+from setup import *
 
 @rfm.simple_test
-class HeatToolboxTest (rfm.RunOnlyRegressionTest):
+class HeatToolboxTest (Setup):
 
-    def __init__(self):
-        super().__init__()
-        self.feelLogPath = self.build_feel_path()
-
-    # Initialisation
     descr = 'Launch testcases from the Heat Toolbox'
-    valid_systems = ['gaya']
-    valid_prog_environs = ['env_gaya']
-
-    heatCasesPath = '/usr/share/feelpp/data/testcases/toolboxes/heat/cases/'
-
-    # 3d, temperature distribution and heat flows through the wall-balcony junction
-    case3 = 'Building/ThermalBridgesENISO10211/case3.cfg'
-
-    # Parametrization
-    case = parameter ([case3])      # more cases to be added...
-
-    if singleNode:
-        nbNodes = 1
-        nbTaskPerNode = parameter([1,2,4,8,16,32,64,128])
-    else:
-        nbNodes = parameter([1,2,3,4,5,6])      # doesn't work: MPI_ERR_TRUNC
-        nbTaskPerNode = 128
-
-
-    homeDir = os.environ['HOME']
-
-    def build_feel_path(self):
-        caseModif = self.case.replace('case3.cfg', 'Case3')
-        caseModif = caseModif.replace('Building/', '')
-        feelLogPath = os.path.join(self.homeDir, 'feelppdb/toolboxes/heat', caseModif)
-        return feelLogPath
-
-
-    # Launcher options
-    @run_before('run')
-    def set_launcher_options(self):
-        self.job.launcher.options = ['-bind-to core']
-
-    @run_before('run')
-    def set_task_number(self):
-        self.num_tasks_per_node = self.nbTaskPerNode
-        self.num_cpus_per_task = 1
-        self.num_tasks = self.num_tasks_per_node * self.nbNodes
-
-
-    # Executable options
     executable = 'feelpp_toolbox_heat'
+
+    cfgPath = os.environ.get('BENCH_CASES_CFG')
+    case2 = os.path.join(cfgPath, 'case2-bench.cfg')   # 2D
+    case3 = os.path.join(cfgPath, 'case3-bench.cfg')   # 3D
+    case4 = os.path.join(cfgPath, 'case4-bench.cfg')   # 3D
+
+    case = parameter([case3])#, case2, case4])
+
+
+
+    @run_after('init')
+    def extendPaths(self):
+        with open(self.case, 'r') as file:
+            for line in file:
+                if line.startswith('directory='):
+                    outputDir = line.split('=')[1].strip()
+                if line.startswith('json.filename='):
+                    geoPath = line.split('=')[1].strip()
+                    geoPath = geoPath.replace('.json', '.geo')
+
+
+        self.feelLogPath = os.path.join(self.feelLogPath, outputDir)
+        self.geoPath = geoPath
+
+
+    @run_before('run')
+    def partitionMesh(self):
+        dim = 2 if self.case == self.case2 else 3
+        output = self.case[:-4]
+        output = output.replace('-bench.cfg', f'_{self.num_tasks}')
+        meshCmd = self.meshPartionerCmd(self.num_tasks, self.geoPath, output, dim)
+        self.prerun_cmds = [f'{meshCmd}']
+
 
     @run_before('run')
     def set_executable_opts(self):
-        fullPath = os.path.join(self.heatCasesPath, self.case3)
-        self.executable_opts = [f'--config-file {fullPath}',
-                                '--case.discretization P2',
-                                '--heat.scalability-save 1']
+        dir = self.case[:-4]
+        filename = os.path.basename(self.case).replace('-bench.cfg', f'_p{self.num_tasks}.json')
+        filePath = os.path.join(dir, filename)
+        self.executable_opts = [f'--config-file={self.case}',
+                                f'--heat.filename={filePath}',
+                                '--heat.scalability-save=1']
 
 
-    # Performance variables extraction using regex patterns
     namePatt = '([a-zA-z\-]+)'
     valPatt  = '([0-9e\-\+\.]+)'
 
-    @sn.deferrable
+
     def get_constructor_name(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+',
                                 scalePath, index, str)
 
-    @sn.deferrable
+
     def get_solve_name(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatSolve.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}',
                                 scalePath, index, str)
 
-    @sn.deferrable
+
     def get_postprocessing_name(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatPostProcessing.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+',
                                 scalePath, index, str)
+
 
     @performance_function('s')
     def extract_constructor_scale(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')
         return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+',
                                 scalePath, index, float)
+
 
     @performance_function('s')
     def extract_solve_scale(self, index=1):
@@ -100,6 +85,7 @@ class HeatToolboxTest (rfm.RunOnlyRegressionTest):
         valType = float if (index!=1) else int
         return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}',
                                 scalePath, index, valType)
+
 
     @performance_function('s')
     def extract_postprocessing_scale(self, index=1):
