@@ -33,7 +33,7 @@ from feelpp.benchmarking.reframe.report import Report
 report=Report(file_path="docs/modules/{{ filename }}")
 ----
 
-=== Performance by Simulation Steps 
+=== Performance by Simulation Steps
 
 [%dynamic%raw%open,python]
 ----
@@ -54,7 +54,6 @@ fig.show()
 .Speedup
 [%dynamic%raw%open,python]
 ----
-print(report.speedup())
 fig=report.plotSpeedup()
 fig.show()
 ----
@@ -63,10 +62,13 @@ fig.show()
 === Speedup for partial performances
 [%dynamic%close,python]
 ----
-fig1=report.plotPartialSpeedup('init')
-fig1.show()
+fig=report.plotPartialSpeedup('init')
+fig.show()
+----
 
-fig2=report.plotPartialSpeedup('solve')
-fig2.show()
+[%dynamic%close,python]
+----
+fig=report.plotPartialSpeedup('solve')
+fig.show()
 ----
 {% endif %}
