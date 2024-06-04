@@ -6,11 +6,16 @@
 \setbeamertemplate{navigation symbols}{}
 
 % packages
-\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{listings}
 \usepackage{array}
+\usepackage{amsmath}
+\usepackage{calc}
+
 
 % caption settings
 \captionsetup{font=scriptsize, skip=2pt}
@@ -24,14 +29,21 @@
     commentstyle=\color{green!60!black},
     numbers=left,
     numberstyle=\tiny\color{gray},
-    abovecaptionskip=0.8cm
+    abovecaptionskip=10pt
 }
+
+% cite options
+\usepackage[style=verbose,autocite=footnote]{biblatex}
+\ExecuteBibliographyOptions{labelnumber}
+\AtEveryCitekey{\clearfield{howpublished}}
+\addbibresource{../biblio.bib}
+
 
 % attributes
 \title{\textbf{ExaMA WP3 -- Dashboard Performances}}
 \author[Tanguy PIERRE]{Tanguy Pierre\\[1cm] \small{Supervisors: V. Chabannes, J. Cladellas}}
 \institute{University of Strasbourg}
-\date{31th of May}
+\date{31st of May}
 
 
 % **********************  START  **********************
@@ -78,7 +90,7 @@
     \begin{figure}
         \centering
         \includegraphics[width=0.6\textwidth]{../illustrations/feelpp-dashboard.png}
-        \caption{Feelpp benchmarking platform}
+        \caption{Feel++ benchmarking platform}
     \end{figure}
 \end{frame}
 
@@ -175,6 +187,200 @@ reframe -c ./src/feelpp/benchmarking/reframe/regression-tests/heatTest.py \
     \end{tabular}
 \end{frame}
 
+\begin{frame}
+    \frametitle{\textbf{Benchmarking with ReFrame}}
+    \framesubtitle{\textbf{Context}}
+    \begin{itemize}
+        \addtolength{\itemsep}{4pt}
+        \item Launching environment description, definition and parametrization
+        \item Exact timeline \\
+                $\Rightarrow$ decorators for specifying when to launch a particular function
+        \item Needs a system configuration file (Python dictionary or \textit{.json} file) \\
+        \item Possibility to split the system by partition, node or environment
+        \item Reframe offers "sanity functions" to verify test integrity
+    \end{itemize}
+    \vspace{12pt}
+    As we will launch tests with the \texttt{-bind-to core} option from \textit{mpiexec} for maximal efficiency, we are interested in the number of physical cpus on each node,
+    which is given by:
+    \small{\[ num\_physical\_cpus = num\_sockets * num\_cores\_per\_sockets\]}
 
+\end{frame}
+
+\begin{frame}[fragile]{\textbf{Benchmarking with ReFrame}}
+    \framesubtitle{\textbf{Parametrization}}
+\begin{lstlisting}[language=python,caption={Task number parametrization, adapted from \footfullcite{CSCS}}]
+def parametrizeTaskNumber():
+    for part in rt.runtime().system.partitions:
+        nbTask = 1
+        nbPhysicalCpus = part.processor.num_cpus_per_socket * part.processor.num_sockets
+        while nbTask < nbPhysicalCpus:
+            yield nbTask
+            nbTask <<= 1
+
+        nbNodes = part.devices[0].num_devices
+        for i in range(1, nbNodes+1):
+            nbTask = i*nbPhysicalCpus
+            yield nbTask
+\end{lstlisting}
+
+
+    \begin{itemize}
+        \item \texttt{reframe.core.runtime} module to access the host's topology
+        \item Parameterization starts with 1 task and increases by power of 2 up to the number of physical CPUs
+        \item Then, tasks increase by increments of number of physical CPUs up to this value multiplied by the number of nodes.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{\textbf{Benchmarking with ReFrame}}
+    \framesubtitle{\textbf{Scale performance extraction}}
+    \begin{small}
+    For extracting performances in the from Feel++ produced files, we work with the \texttt{reframe.utility.sanity} module and regex patterns. \\
+    These functions needs the \texttt{@performance\_function} decorator provided by the framework.
+    \end{small}
+    \begin{tiny}
+    \begin{verbatim}
+valPatt  = '([0-9e\-\+\.]+)'
+
+@performance_function('s')
+def extract_constructor_scale(self, index=1):
+    scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')
+    return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s] \
+                +{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+',
+                scalePath, index, float)
+    \end{verbatim}
+    \end{tiny}
+
+    \begin{itemize}
+        \item The \textit{self.valPatt}-value at the n-th index of the corresponding pattern will be extracted
+        \item The \^{} character guarantees that the expression starts on a new line for avoiding any unintended interaction
+        \item Necessary to know the number of values to extract in order to build the pattern \textit{here: 8 values}
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\textbf{Benchmarking with ReFrame}}
+    \framesubtitle{\textbf{Process extracted data}}
+    The \texttt{Report} class is used for extracting the performances. \\
+    It will load the ReFrame report and build following dataframes: \\
+    \texttt{df\_perf, df\_partialPerf, df\_speedup, df\_partialSpeedup}
+    \vspace{10pt}
+    \begin{itemize}
+        \item The \textit{perf} dataframes are immediately built while reading as they don't need any calculation, they are provided in the report
+        \item The \textit{speedup} dataframes are based on a reference value, which is projected to a higher number of tasks. \\
+        \item Reference value = performance from the test with the lowest number of tasks.
+    \end{itemize}
+    \vspace{10pt}
+    \textit{Some reports do not include values for partial performances. Therefore, we had to construct two different frames for organizing the data efficiently
+            This organization facilitates comparisons between same stage components, especially regarding plotting.}
+\end{frame}
+
+\begin{frame}{\textbf{Results}}
+    \framesubtitle{\textbf{Case}}
+    The following study has been done on case3 from \textit{Thermal Bridges ENISO10122}.
+    This is as 3D case representing temperature distribution and heat flows through a wall-balcony junction.
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.3\textwidth]{../illustrations/balcony.png}
+        \caption{Case3, Thermal Bridges ENISO10122 \cite*{Feel++}}
+    \end{figure}
+
+    \textit{The case is using the case3-bench.cfg configuration file. This file modify some attributes of the case3 located in the Feel++ Heat Toolbox testcases in order to increase the calculation volume: \\
+    \begin{itemize}
+        \item $ hsize: 0.02 \rightarrow 0.01 $
+        \item $ discretization: P1 \rightarrow P2 $
+    \end{itemize}}
+\end{frame}
+
+\begin{frame}{\textbf{Results}}
+    \framesubtitle{\textbf{Single node tests}}
+    As Gaya has 128 physical cpus per node, our test has been launched with 1, 2, 4, 8, 16, 32, 64 and 128 tasks.
+
+    \begin{figure}[h]
+        \centering
+        \begin{subfigure}{0.45\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{../illustrations/gaya-graphs/gayaByStep.png}
+          \caption{Gaya, Performances by step}
+        \end{subfigure}
+        \begin{subfigure}{0.45\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{../illustrations/gaya-graphs/gayaByTask.png}
+          \caption{Gaya, Performances by task}
+        \end{subfigure}
+      \end{figure}
+
+      Both graphics represents the 3 main performances metrics: init, solve and exportResults. \\
+      We can easily identify that both \textit{solve}- and \textit{exportResults}-stages do scale well, while it isn't the case for the \textit{init}-phase.
+\end{frame}
+
+\begin{frame}{\textbf{Results}}
+    \framesubtitle{\textbf{Single node tests}}
+    Let's look how the previous 3 main references behave regarding the speedup.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{../illustrations/gaya-graphs/gayaSpeedup.png}
+        \vspace{-20pt}
+        \caption{Gaya, speedup for main references}
+    \end{figure}
+
+    This graph correspond to the previous ones. \\
+    As we can see, the \textit{init}-stage doesn't scale at all with increasing number of tasks.
+\end{frame}
+
+
+\begin{frame}{\textbf{Results}}
+    \framesubtitle{\textbf{Single node tests}}
+    \begin{figure}[h]
+        \centering
+        \begin{subfigure}{0.49\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{../illustrations/gaya-graphs/gayaInit.png}
+          \caption{Gaya, Performances by step}
+        \end{subfigure}
+        \begin{subfigure}{0.49\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{../illustrations/gaya-graphs/gayaSolve.png}
+          \caption{Gaya, Performances by task}
+        \end{subfigure}
+      \end{figure}
+
+      \begin{itemize}
+        \item Figure \textbf{(a)} shows the behaviour of every partial reference obtained through Feel++. \\
+                $ \Rightarrow $ \textit{initMesh, initFunctionSpaces and algebraicOthers} jobs run in sequential \\
+        \item In contrast, we see in figure \textbf{(b)} that every part of the \textit{solve}-stage scale well. This will of course conduct to great performance for the whole stage.
+      \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{\textbf{Results}}
+    \framesubtitle{\textbf{Multiple nodes tests}}
+    Results for multi-node testing are not available yet, since a bug occurs every time a test is launched for number of tasks requiring more than 1 node. \\
+    Here are a few lines about this bug: \\
+
+\begin{scriptsize}
+\begin{verbatim}
+terminate called after throwing an instance of
+                'boost::wrapexcept<boost::mpi::exception>'
+what():  MPI_Test: MPI_ERR_TRUNCATE: message truncated
+*** Aborted at 1716774707 (unix time) try "date -d @1716774707"
+                                    if you are using GNU date ***
+terminate called after throwing an instance of
+                'boost::wrapexcept<boost::mpi::exception>'
+*** SIGABRT (@0x10fa00158edd) received by PID 1412829 (TID 0x7fc557cab000)
+                                        from PID 1412829; stack trace: ***
+\end{verbatim}
+\end{scriptsize}
+
+    \textit{Feel++ works with the \textit{Boost.MPI} library, but something doesn't occur well regarding the communication between processors. \\
+            The dev-team is already working on it.}
+\end{frame}
+
+\begin{frame}{\textbf{Bibliography}}
+    \nocite{*}
+    \printbibliography[heading=none]
+\end{frame}
 
 \end{document}
