@@ -10,11 +10,21 @@ site_configuration = {
                     'name': 'public',
                     'scheduler': 'squeue',
                     'launcher': 'mpiexec',
+                    'max_jobs': 8,
                     'access': ['--partition=public'],
                     'environs': ['env_gaya'],
+                    'processor': {
+                        'num_cpus_per_socket': 64,
+                        'num_sockets': 2
+                    },
+                    'devices': [
+                        {
+                            'name': 'cpu_node',
+                            'num_devices': 6
+                        }
+                    ]
                 },
-            ],
-            #'max_jobs': 8,      # 'max_jobs': Max number of concurrent launched jobs. Default: 8
+            ]
         }
     ],
     'environments': [
