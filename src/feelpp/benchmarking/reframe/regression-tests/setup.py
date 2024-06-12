@@ -8,14 +8,13 @@ import os
 def parametrizeTaskNumber():
     for part in rt.runtime().system.partitions:
         nbTask = 1
-        nbPhysicalCpus = part.processor.num_cpus_per_socket * part.processor.num_sockets
-        while nbTask < nbPhysicalCpus:
+        while nbTask < part.processor.num_cpus:
             yield nbTask
             nbTask <<= 1
 
         nbNodes = part.devices[0].num_devices
         for i in range(1, nbNodes+1):
-            nbTask = i*nbPhysicalCpus
+            nbTask = i * part.processor.num_cpus
             yield nbTask
 
 
@@ -23,8 +22,8 @@ def parametrizeTaskNumber():
 @rfm.simple_test
 class Setup(rfm.RunOnlyRegressionTest):
 
-    valid_systems = ['local']
-    valid_prog_environs = ['env_local']
+    valid_systems = ['gaya']
+    valid_prog_environs = ['env_gaya']
     homeDir = os.environ['HOME']
     feelLogPath = os.path.join(homeDir, 'feelppdb/')
 
@@ -35,8 +34,7 @@ class Setup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def setTaskNumber(self):
-        nbPhysicalCpus = self.current_partition.processor.num_cpus_per_socket * self.current_partition.processor.num_sockets
-        self.num_tasks_per_node = min(self.nbTask, nbPhysicalCpus)
+        self.num_tasks_per_node = min(self.nbTask, self.current_system.partitions.processor.num_cpus)
         self.num_cpus_per_task = 1
         self.num_tasks = self.nbTask
 

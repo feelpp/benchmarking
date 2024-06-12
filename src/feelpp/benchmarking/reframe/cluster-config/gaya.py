@@ -14,8 +14,7 @@ site_configuration = {
                     'access': ['--partition=public'],
                     'environs': ['env_gaya'],
                     'processor': {
-                        'num_cpus_per_socket': 64,
-                        'num_sockets': 2
+                        'num_cpus': 128
                     },
                     'devices': [
                         {
