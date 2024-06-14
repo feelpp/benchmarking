@@ -27,14 +27,13 @@ class Setup(rfm.RunOnlyRegressionTest):
     homeDir = os.environ['HOME']
     feelLogPath = os.path.join(homeDir, 'feelppdb/')
 
-
     # Parametrization
     nbTask = parameter(parametrizeTaskNumber())
 
 
     @run_before('run')
     def setTaskNumber(self):
-        self.num_tasks_per_node = min(self.nbTask, self.current_system.partitions.processor.num_cpus)
+        self.num_tasks_per_node = min(self.nbTask, self.current_partition.processor.num_cpus)
         self.num_cpus_per_task = 1
         self.num_tasks = self.nbTask
 

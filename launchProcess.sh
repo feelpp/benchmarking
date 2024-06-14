@@ -3,20 +3,31 @@ rm -rf ~/feelppdb
 rm -rf ./build/reframe/output/ ./build/reframe/stage/ ./build/reframe/perflogs
 
 
-# Variable TO BE SET to the actual HPC
-hostname=gaya
-
-current_date=$(date +%Y%m%d)
-mkdir -p $(pwd)/docs/modules/${hostname}/pages/reports
-
-export BENCH_CASES_CFG=$(pwd)/src/feelpp/benchmarking/cases/
+# Hostname must be provided as argument
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <hostname>"
+    exit 1
+fi
+hostname=$1
 
 
 # Reframe environment variables
 export RFM_CONFIG_FILES=$(pwd)/src/feelpp/benchmarking/reframe/cluster-config/${hostname}.py
-export RFM_REPORT_FILE=$(pwd)/docs/modules/${hostname}/pages/reports/${hostname}-${current_date}-{sessionid}.json
 export RFM_PREFIX=$(pwd)/build/reframe/
 
 
+export BENCH_CASES_CFG=$(pwd)/src/feelpp/benchmarking/cases/
+columns=$(tput cols)
+current_date=$(date +%Y%m%d)
 
-reframe -c ./src/feelpp/benchmarking/reframe/regression-tests/heatTest.py -r --system=${hostname} --exec-policy=serial
+
+find $BENCH_CASES_CFG -type f -name "*.cfg" | while read cfgPath
+do
+    echo
+    yes '-' | head -n "$columns" | tr -d '\n'
+    casename=$(basename $cfgPath)
+    echo "[Launching ReFrame with $casename]"
+    casename=${casename%-bench.cfg}
+    export RFM_REPORT_FILE=$(pwd)/docs/modules/${hostname}/pages/reports/${casename}-${current_date}.json.json
+    reframe -c ./regression-tests/heatTest.py -S case=$cfgPath -r --system=$hostname --exec-policy=serial
+done

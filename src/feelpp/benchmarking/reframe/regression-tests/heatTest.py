@@ -5,14 +5,7 @@ class HeatToolboxTest (Setup):
 
     descr = 'Launch testcases from the Heat Toolbox'
     executable = 'feelpp_toolbox_heat'
-
-    cfgPath = os.environ.get('BENCH_CASES_CFG')
-    case2 = os.path.join(cfgPath, 'case2-bench.cfg')   # 2D
-    case3 = os.path.join(cfgPath, 'case3-bench.cfg')   # 3D
-    case4 = os.path.join(cfgPath, 'case4-bench.cfg')   # 3D
-
-    case = parameter([case3])#, case2, case4])
-
+    case = variable(str)
 
 
     @run_after('init')
@@ -24,18 +17,18 @@ class HeatToolboxTest (Setup):
                 if line.startswith('json.filename='):
                     geoPath = line.split('=')[1].strip()
                     geoPath = geoPath.replace('.json', '.geo')
-
+                if line.startswith('case.dimension'):
+                    dim = line.split('=')[1].strip()
 
         self.feelLogPath = os.path.join(self.feelLogPath, outputDir)
         self.geoPath = geoPath
+        self.dim = dim
 
 
     @run_before('run')
     def partitionMesh(self):
-        dim = 2 if self.case == self.case2 else 3
-        output = self.case[:-4]
-        output = output.replace('-bench.cfg', f'_{self.num_tasks}')
-        meshCmd = self.meshPartionerCmd(self.num_tasks, self.geoPath, output, dim)
+        outputDir = self.case.replace('-bench.cfg', '-partitioning')
+        meshCmd = self.meshPartionerCmd(self.num_tasks, self.geoPath, outputDir, self.dim)
         self.prerun_cmds = [f'{meshCmd}']
 
 
