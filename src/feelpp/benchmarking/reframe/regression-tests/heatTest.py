@@ -1,5 +1,6 @@
 from setup import *
 
+
 @rfm.simple_test
 class HeatToolboxTest (Setup):
 
@@ -9,12 +10,12 @@ class HeatToolboxTest (Setup):
 
 
     @run_after('init')
-    def extendPaths(self):
+    def readCfg(self):
         with open(self.case, 'r') as file:
             for line in file:
-                if line.startswith('directory='):
+                if line.startswith('directory'):
                     outputDir = line.split('=')[1].strip()
-                if line.startswith('json.filename='):
+                if line.startswith('json.filename'):
                     geoPath = line.split('=')[1].strip()
                     geoPath = geoPath.replace('.json', '.geo')
                 if line.startswith('case.dimension'):
@@ -27,9 +28,10 @@ class HeatToolboxTest (Setup):
 
     @run_before('run')
     def partitionMesh(self):
-        outputDir = self.case.replace('-bench.cfg', '-partitioning')
+        outputDir = self.case.replace('-bench.cfg', '-partitioning ')
         meshCmd = self.meshPartionerCmd(self.num_tasks, self.geoPath, outputDir, self.dim)
         self.prerun_cmds = [f'{meshCmd}']
+
 
 
     @run_before('run')
@@ -42,9 +44,9 @@ class HeatToolboxTest (Setup):
                                 '--heat.scalability-save=1']
 
 
+
     namePatt = '([a-zA-z\-]+)'
     valPatt  = '([0-9e\-\+\.]+)'
-
 
     def get_constructor_name(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')

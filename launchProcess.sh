@@ -16,7 +16,9 @@ export RFM_CONFIG_FILES=$(pwd)/src/feelpp/benchmarking/reframe/cluster-config/${
 export RFM_PREFIX=$(pwd)/build/reframe/
 
 
+export TEST_DIR=$(pwd)/src/feelpp/benchmarking/reframe/regression-tests/
 export BENCH_CASES_CFG=$(pwd)/src/feelpp/benchmarking/cases/
+
 columns=$(tput cols)
 current_date=$(date +%Y%m%d)
 
@@ -27,7 +29,6 @@ do
     yes '-' | head -n "$columns" | tr -d '\n'
     casename=$(basename $cfgPath)
     echo "[Launching ReFrame with $casename]"
-    casename=${casename%-bench.cfg}
-    export RFM_REPORT_FILE=$(pwd)/docs/modules/${hostname}/pages/reports/${casename}-${current_date}.json.json
-    reframe -c ./regression-tests/heatTest.py -S case=$cfgPath -r --system=$hostname --exec-policy=serial
+    export RFM_REPORT_FILE=$(pwd)/docs/modules/${hostname}/pages/reports/${casename%-bench.cfg}-${current_date}.json.json
+    reframe -c $TEST_DIR/heatTest.py -S case=$cfgPath -r --system=$hostname --exec-policy=serial
 done

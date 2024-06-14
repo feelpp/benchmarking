@@ -4,7 +4,6 @@ import reframe.core.runtime     as rt
 
 import os
 
-
 def parametrizeTaskNumber():
     for part in rt.runtime().system.partitions:
         nbTask = 1
@@ -22,13 +21,15 @@ def parametrizeTaskNumber():
 @rfm.simple_test
 class Setup(rfm.RunOnlyRegressionTest):
 
-    valid_systems = ['gaya']
-    valid_prog_environs = ['env_gaya']
+    valid_systems = ['*']
+    valid_prog_environs = ['*']
     homeDir = os.environ['HOME']
     feelLogPath = os.path.join(homeDir, 'feelppdb/')
 
+
     # Parametrization
     nbTask = parameter(parametrizeTaskNumber())
+    #nbTask = parameter([4,8])
 
 
     @run_before('run')
@@ -41,7 +42,7 @@ class Setup(rfm.RunOnlyRegressionTest):
     # Launcher options
     @run_before('run')
     def set_launcher_options(self):
-        self.job.launcher.options = ['-bind-to core']
+        self.job.launcher.options = ['-bind-to core', '--use-hwthread-cpus']
 
 
     def meshPartionerCmd(self, nparts, ifile, odir, dim=3):
