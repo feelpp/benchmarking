@@ -26,19 +26,21 @@ class HeatToolboxTest (Setup):
         self.dim = dim
 
 
+    @run_after('init')
+    def set_partition_dir(self):
+        self.partitionDir = self.case.replace('bench.cfg', 'partitioning')
+
+
     @run_before('run')
     def partitionMesh(self):
-        outputDir = self.case.replace('-bench.cfg', '-partitioning ')
-        meshCmd = self.meshPartionerCmd(self.num_tasks, self.geoPath, outputDir, self.dim)
+        meshCmd = self.meshPartionerCmd(self.num_tasks, self.geoPath, self.partitionDir, self.dim)
         self.prerun_cmds = [f'{meshCmd}']
-
 
 
     @run_before('run')
     def set_executable_opts(self):
-        dir = self.case[:-4]
         filename = os.path.basename(self.case).replace('-bench.cfg', f'_p{self.num_tasks}.json')
-        filePath = os.path.join(dir, filename)
+        filePath = os.path.join(self.partitionDir, filename)
         self.executable_opts = [f'--config-file={self.case}',
                                 f'--heat.filename={filePath}',
                                 '--heat.scalability-save=1']
