@@ -42,7 +42,7 @@ class Setup(rfm.RunOnlyRegressionTest):
     # Launcher options
     @run_before('run')
     def set_launcher_options(self):
-        self.job.launcher.options = ['-bind-to core', '--use-hwthread-cpus']
+        self.job.launcher.options = ['-bind-to core']
 
 
     def meshPartionerCmd(self, nparts, ifile, odir, dim=3):

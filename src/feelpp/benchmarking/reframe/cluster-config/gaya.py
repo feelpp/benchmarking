@@ -19,7 +19,7 @@ site_configuration = {
                     'devices': [
                         {
                             'name': 'cpu_node',
-                            'num_devices': 6
+                            'num_devices': 1        # --> to be set to 6 when MPI_ERR_TRUNCATE resolved
                         }
                     ]
                 },
