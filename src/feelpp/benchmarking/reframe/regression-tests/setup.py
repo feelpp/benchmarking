@@ -1,5 +1,4 @@
 import reframe                  as rfm
-import reframe.utility.sanity   as sn
 import reframe.core.runtime     as rt
 
 import os
