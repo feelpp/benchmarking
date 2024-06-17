@@ -47,7 +47,6 @@ class HeatToolboxTest (Setup):
                                 '--heat.scalability-save=1']
 
 
-
     namePatt = '([a-zA-z\-]+)'
     valPatt  = '([0-9e\-\+\.]+)'
 
