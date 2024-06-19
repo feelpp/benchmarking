@@ -22,6 +22,8 @@ class Setup(rfm.RunOnlyRegressionTest):
 
     valid_systems = ['*']
     valid_prog_environs = ['*']
+
+    #TODO
     homeDir = os.environ['HOME']
     feelLogPath = os.path.join(homeDir, 'feelppdb/')
 

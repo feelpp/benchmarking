@@ -9,31 +9,12 @@ class HeatToolboxTest (Setup):
     executable = 'feelpp_toolbox_heat'
     case = variable(str)
 
-
-    @run_after('init')
-    def readCfg(self):
-        with open(self.case, 'r') as file:
-            for line in file:
-                if line.startswith('directory'):
-                    outputDir = line.split('=')[1].strip()
-                if line.startswith('json.filename'):
-                    geoPath = line.split('=')[1].strip()
-                    geoPath = geoPath.replace('.json', '.geo')
-                if line.startswith('case.dimension'):
-                    dim = line.split('=')[1].strip()
-
-        self.feelLogPath = os.path.join(self.feelLogPath, outputDir)
-        self.geoPath = geoPath
-        self.dim = dim
-
-
     @run_before('run')
     def set_executable_opts(self):
-        filename = os.path.basename(self.case).replace('-bench.cfg', f'_p{self.num_tasks}.json')
-        filePath = os.path.join(self.partitionDir, filename)
-        self.executable_opts = [f'--config-file={self.case}',
-                                f'--heat.filename={filePath}',
-                                '--heat.scalability-save=1']
+        self.executable_opts = [f'--config-file {self.case}',
+                                '--repository.append.np 0',
+                                '--heat.scalability-save 1',
+                                f'--directory toolboxes/heat/ThermalBridgesENISO10211/Case4_np{self.nbTask}']
 
 
     namePatt = '([a-zA-z\-]+)'
