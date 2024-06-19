@@ -28,7 +28,7 @@ do
     echo
     yes '-' | head -n "$columns" | tr -d '\n'
     casename=$(basename $cfgPath)
-    echo "[Launching ReFrame with $casename]"
+    echo "[Launching $casename on $hostname]"
 
     export RFM_REPORT_FILE=$(pwd)/docs/modules/${hostname}/pages/reports/${casename%-bench.cfg}-${current_date}.json
     reframe -c $TEST_DIR/heatTest.py -S case=$cfgPath -r --system=$hostname
