@@ -12,7 +12,7 @@ site_configuration = {
                     'launcher': 'mpiexec',
                     'environs': ['env_local'],
                     'processor': {
-                        'num_cpus': 8
+                        'num_cpus': 4
                     },
                     'devices': [
                         {
