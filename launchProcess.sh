@@ -31,7 +31,5 @@ do
     echo "[Launching ReFrame with $casename]"
 
     export RFM_REPORT_FILE=$(pwd)/docs/modules/${hostname}/pages/reports/${casename%-bench.cfg}-${current_date}.json
-    reframe -c $TEST_DIR/heatTest.py -S case=$cfgPath -r --system=$hostname --exec-policy=serial
+    reframe -c $TEST_DIR/heatTest.py -S case=$cfgPath -r --system=$hostname
 done
-
-# serial execution policy needed because error when test try to access to ginacExprDefault at the same time
