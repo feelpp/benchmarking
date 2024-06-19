@@ -42,7 +42,3 @@ class Setup(rfm.RunOnlyRegressionTest):
     @run_before('run')
     def set_launcher_options(self):
         self.job.launcher.options = ['-bind-to core']
-
-
-    def meshPartionerCmd(self, nparts, ifile, odir, dim=3):
-        return f'feelpp_mesh_partitioner --part {nparts} --ifile {ifile} --odir {odir} --dim {dim}'
