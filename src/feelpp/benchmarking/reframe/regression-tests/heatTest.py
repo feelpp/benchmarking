@@ -39,19 +39,19 @@ class HeatToolboxTest (Setup):
     namePatt = '([a-zA-z\-]+)'
     valPatt  = '([0-9e\-\+\.]+)'
 
-    @sn.deferrable
+
     def get_constructor_name(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+',
                                 scalePath, index, str)
 
-    @sn.deferrable
+
     def get_solve_name(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatSolve.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}',
                                 scalePath, index, str)
 
-    @sn.deferrable
+
     def get_postprocessing_name(self, index=1):
         scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatPostProcessing.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+',
