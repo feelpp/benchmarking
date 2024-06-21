@@ -23,14 +23,11 @@ class Setup(rfm.RunOnlyRegressionTest):
     valid_systems = ['*']
     valid_prog_environs = ['*']
 
-    #TODO
-    homeDir = os.environ['HOME']
-    feelLogPath = os.path.join(homeDir, 'feelppdb/')
+    feelppdbPath = os.environ.get('FEELPP_OUTPUT_PREFIX')
 
 
     # Parametrization
     nbTask = parameter(parametrizeTaskNumber())
-    #nbTask = parameter([4,8])
 
 
     @run_before('run')

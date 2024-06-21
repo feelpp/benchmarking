@@ -6,15 +6,24 @@ import reframe.utility.sanity as sn
 class HeatToolboxTest (Setup):
 
     descr = 'Launch testcases from the Heat Toolbox'
-    executable = 'feelpp_toolbox_heat'
+    toolbox = 'heat'
+    #toolbox = variable(str)
     case = variable(str)
+
+
+    @run_after('init')
+    def build_paths(self):
+        self.caseRelativeDir = self.case.split("cases/")[-1][:-4]
 
     @run_before('run')
     def set_executable_opts(self):
+        self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-file {self.case}',
+                                f'--repository.prefix {self.feelppdbPath}',
+                                f'--repository.case toolboxes/{self.toolbox}/{self.caseRelativeDir}_np{self.nbTask}',
                                 '--repository.append.np 0',
-                                '--heat.scalability-save 1',
-                                f'--directory toolboxes/heat/ThermalBridgesENISO10211/Case4_np{self.nbTask}']
+                                '--heat.scalability-save 1']
+                                #'--case.discretization PXXX'
 
 
     namePatt = '([a-zA-z\-]+)'
