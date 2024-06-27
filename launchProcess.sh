@@ -25,9 +25,18 @@ valid_machines=("discoverer" "gaya" "karolina" "meluxina" "local")
 valid_toolboxes=("alemesh" "coefficientformpdes" "electric" "fluid" "fsi" "hdg" "heat" "heatfluid" "solid" "thermoelectric")
 
 
+
 # +-------------------------------------------------+
 # |                ARGUMENTS CHECK                  |
 # +-------------------------------------------------+
+
+
+hostname=""
+toolboxes=()
+cases=()
+directories=()
+listing=false
+
 
 if [ $# -lt 1 ] || [ "$*" == "-h" ] || [ "$*" == "--help" ]; then
     usage
@@ -42,11 +51,6 @@ if ! [[ " ${valid_machines[@]} " =~ " $hostname " ]]; then
     echo "Valid machines: ${valid_machines[@]}"
     exit 0
 fi
-
-toolboxes=()
-cases=()
-directories=()
-listing=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -110,9 +114,12 @@ if { [ ${#cases[@]} -gt 0 ] || [ ${#directories[@]} -gt 0 ]; } && [ ${#toolboxes
     exit 1
 fi
 
+
+
 # +-------------------------------------------------+
 # |                 PROCESS START                   |
 # +-------------------------------------------------+
+
 
 rm -rf ~/feelppdb
 rm -rf ./build/reframe/output/ ./build/reframe/stage/ ./build/reframe/perflogs
@@ -127,7 +134,7 @@ disk_path="/home"
 
 export RFM_TEST_DIR=$(pwd)/src/feelpp/benchmarking/reframe/regression-tests
 export FEELPP_TOOLBOXES_CASES=/usr/share/feelpp/data/testcases/toolboxes
-export FEELPP_OUTPUT_PREFIX="${disk_path}/${USER}/feelppdbTANGUYYYY"
+export FEELPP_OUTPUT_PREFIX="${disk_path}/${USER}/feelppdb"
 
 columns=$(tput cols)
 current_date=$(date +%Y%m%d)
@@ -144,7 +151,7 @@ for tb in "${toolboxes[@]}"; do
 
     while read -r cfgPath; do
         relative_path=${cfgPath#"$FEELPP_TOOLBOXES_CASES"}
-        relative_dir=$(dirname "$relative_path")
+        relative_dir=$(dirname "${relative_path#*/cases/}")
         base_name=$(basename "${relative_path%.cfg}")
 
         matched=true
@@ -172,6 +179,7 @@ for tb in "${toolboxes[@]}"; do
         if $matched; then
             counter=$((counter + 1))
             toolboxCounter=$((toolboxCounter + 1))
+
             if $listing; then
                 echo "$relative_path"
             else
@@ -179,7 +187,7 @@ for tb in "${toolboxes[@]}"; do
                 yes '-' | head -n "$columns" | tr -d '\n'
                 echo "[Starting $relative_path]"
                 report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json
-                reframe -c "$RFM_TEST_DIR/heatTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path"
+                #reframe -c "$RFM_TEST_DIR/heatTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path"
             fi
         fi
     done < <(find "$extended_path" -type f -name "*.cfg")
