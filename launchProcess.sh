@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# /testcases/.../fluid/.../TurekHron.cfg is an empty .cfg file
-
-# --case option to be done
-
 usage() {
-    echo "Usage: $0 <machine> [-a|--all] [-tb name|--toolbox=name] [-c path|--case=path] [-h|--help]"
+    echo ""
+    echo "Usage: $0 <machine> [-a|--all] [-tb name|--toolbox name] [-c path|--case path] [-d path|--dir path] [-l|--list] [-h|--help]"
     echo "  <machine>                   Name of the machine "
     echo "  -a, --all                   Launch every test of every toolbox"
     echo "  -tb name, --toolbox name    Name of the toolbox (multiple names separated by ':')"
     echo "                              If no case provided, will launch every test from the toolbox"
-    echo "  -c path, --case path        Path to the case .cfg file (multiple paths separated by ':', requires -tb)"
+    echo "  -c path, --case path        Name of the case .cfg file (multiple names separated by ':', requires -tb)"
+    echo "  -d path, --dir path         Name of the directory containing .cfg (multiple names separated by ':', requires -tb)"
+    echo "  -l, --list                  Found .cfg files listing"
     echo "  -h, --help                  Display help"
 }
+
 
 split_arguments() {
     local input="$1"
@@ -20,9 +20,9 @@ split_arguments() {
     echo "${result[@]}"
 }
 
+
 valid_machines=("discoverer" "gaya" "karolina" "meluxina" "local")
 valid_toolboxes=("alemesh" "coefficientformpdes" "electric" "fluid" "fsi" "hdg" "heat" "heatfluid" "solid" "thermoelectric")
-
 
 
 # +-------------------------------------------------+
@@ -43,9 +43,10 @@ if ! [[ " ${valid_machines[@]} " =~ " $hostname " ]]; then
     exit 0
 fi
 
-
 toolboxes=()
-cases=""
+cases=()
+directories=()
+listing=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -71,12 +72,29 @@ while [[ $# -gt 0 ]]; do
             ;;
         -c|--case)
             if [[ -n "$2" ]]; then
-                cases="$2"
+                cases=($(split_arguments "$2"))
                 shift 2
             else
                 echo "Error: --case requires an argument"
                 exit 0
             fi
+            ;;
+        -d|--dir)
+            if [[ -n "$2" ]]; then
+                directories=($(split_arguments "$2"))
+                shift 2
+            else
+                echo "Error: --dir requires an argument"
+                exit 0
+            fi
+            ;;
+        -l|--list)
+            listing=true
+            shift
+            ;;
+        -h|--help)
+            usage
+            exit 0
             ;;
         *)
             echo "Unknown option: $1"
@@ -86,8 +104,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -n "$cases" ] && [ "${#toolboxes[@]}" -eq 0 ]; then
-    echo "Error: --case requires --toolbox to be specified."
+if { [ ${#cases[@]} -gt 0 ] || [ ${#directories[@]} -gt 0 ]; } && [ ${#toolboxes[@]} -eq 0 ]; then
+    echo "Error: --case or --dir requires --toolbox to be specified."
     usage
     exit 1
 fi
@@ -96,21 +114,19 @@ fi
 # |                 PROCESS START                   |
 # +-------------------------------------------------+
 
-
 rm -rf ~/feelppdb
 rm -rf ./build/reframe/output/ ./build/reframe/stage/ ./build/reframe/perflogs
 
-
 export RFM_CONFIG_FILES=$(pwd)/src/feelpp/benchmarking/reframe/cluster-config/${hostname}.py
-export RFM_PREFIX=$(pwd)/build/reframe/
+export RFM_PREFIX=$(pwd)/build/reframe
 
 disk_path="/home"
 #disk_path="/data/home"
-#disk_path="/data/scratch/"
-#disk_path="/nvme0/"
+#disk_path="/data/scratch"
+#disk_path="/nvme0"
 
-export RFM_TEST_DIR=$(pwd)/src/feelpp/benchmarking/reframe/regression-tests/
-export FEELPP_TOOLBOXES_CASES=/usr/share/feelpp/data/testcases/toolboxes/
+export RFM_TEST_DIR=$(pwd)/src/feelpp/benchmarking/reframe/regression-tests
+export FEELPP_TOOLBOXES_CASES=/usr/share/feelpp/data/testcases/toolboxes
 export FEELPP_OUTPUT_PREFIX="${disk_path}/${USER}/feelppdbTANGUYYYY"
 
 columns=$(tput cols)
@@ -119,31 +135,55 @@ current_date=$(date +%Y%m%d)
 counter=0
 
 for tb in "${toolboxes[@]}"; do
-    echo -e "\n"
+    echo ""
     yes '=' | head -n "$columns" | tr -d '\n'
     echo "[PROCESS LAUNCHED ON ${tb^^} TOOLBOX]"
 
-    #toolboxCounter=0
+    toolboxCounter=0
     extended_path="${FEELPP_TOOLBOXES_CASES}/${tb}/cases"
 
     while read -r cfgPath; do
-        counter=$((counter + 1))
-        toolboxCounter=$((toolboxCounter + 1))
-
-        echo ""
-        yes '-' | head -n "$columns" | tr -d '\n'
         relative_path=${cfgPath#"$FEELPP_TOOLBOXES_CASES"}
         relative_dir=$(dirname "$relative_path")
         base_name=$(basename "${relative_path%.cfg}")
 
-        report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${toolbox}/${relative_dir}/${current_date}-${base_name}.json
+        matched=true
 
-        echo "[Launching $relative_path on $hostname]"
-        #reframe -c $RFM_TEST_DIR/heatTest.py -S case=$cfgPath -r --system=$hostname --report-file=$report_path
+        if [ ${#cases[@]} -gt 0 ]; then
+            matched=false
+            for case_name in "${cases[@]}"; do
+                if [[ "$relative_path" == *"$case_name"* ]]; then
+                    matched=true
+                    break
+                fi
+            done
+        fi
 
+        if [ ${#directories[@]} -gt 0 ]; then
+            matched=false
+            for dir_name in "${directories[@]}"; do
+                if [[ "$relative_path" == *"/$dir_name/"* ]]; then
+                    matched=true
+                    break
+                fi
+            done
+        fi
+
+        if $matched; then
+            counter=$((counter + 1))
+            toolboxCounter=$((toolboxCounter + 1))
+            if $listing; then
+                echo "$relative_path"
+            else
+                echo ""
+                yes '-' | head -n "$columns" | tr -d '\n'
+                echo "[Starting $relative_path]"
+                report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json
+                reframe -c "$RFM_TEST_DIR/heatTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path"
+            fi
+        fi
     done < <(find "$extended_path" -type f -name "*.cfg")
-    #echo "[$tb] .cfg files: $toolboxCounter"
+    echo -e "\n[${tb^^}] .cfg files: $toolboxCounter"
 done
-
 
 echo -e "\n[TOTAL] .cfg files: $counter"
