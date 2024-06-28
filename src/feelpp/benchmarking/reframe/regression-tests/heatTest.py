@@ -14,13 +14,14 @@ class HeatToolboxTest (Setup):
     @run_after('init')
     def build_paths(self):
         self.caseRelativeDir = self.case.split("cases/")[-1][:-4]
+        self.feelOutputPath = os.path.join(self.feelppdbPath, f'toolboxes/{self.toolbox}/{self.caseRelativeDir}_np{self.nbTask}')
 
     @run_before('run')
     def set_executable_opts(self):
         self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-file {self.case}',
                                 f'--repository.prefix {self.feelppdbPath}',
-                                f'--repository.case toolboxes/{self.toolbox}/{self.caseRelativeDir}_np{self.nbTask}',
+                                f'--repository.case {self.feelOutputPath}',
                                 '--repository.append.np 0',
                                 '--heat.scalability-save 1']
                                 #'--case.discretization PXXX'
@@ -31,33 +32,33 @@ class HeatToolboxTest (Setup):
 
 
     def get_constructor_name(self, index=1):
-        scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')
+        scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Constructor.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+',
                                 scalePath, index, str)
 
 
     def get_solve_name(self, index=1):
-        scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatSolve.data')
+        scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Solve.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}',
                                 scalePath, index, str)
 
 
     def get_postprocessing_name(self, index=1):
-        scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatPostProcessing.data')
+        scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}PostProcessing.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+',
                                 scalePath, index, str)
 
 
     @performance_function('s')
     def extract_constructor_scale(self, index=1):
-        scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatConstructor.data')
+        scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Constructor.data')
         return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+',
                                 scalePath, index, float)
 
 
     @performance_function('s')
     def extract_solve_scale(self, index=1):
-        scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatSolve.data')
+        scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Solve.data')
         # the first value to extract is ksp-niter, integer
         valType = float if (index!=1) else int
         return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}[\s]+{self.valPatt}',
@@ -66,7 +67,7 @@ class HeatToolboxTest (Setup):
 
     @performance_function('s')
     def extract_postprocessing_scale(self, index=1):
-        scalePath = os.path.join(self.feelLogPath, 'heat.scalibility.HeatPostProcessing.data')
+        scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}PostProcessing.data')
         return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}',
                                 scalePath, index, float)
 
