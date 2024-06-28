@@ -15,13 +15,14 @@ class HeatToolboxTest (Setup):
     def build_paths(self):
         self.caseRelativeDir = self.case.split("cases/")[-1][:-4]
         self.feelOutputPath = os.path.join(self.feelppdbPath, f'toolboxes/{self.toolbox}/{self.caseRelativeDir}_np{self.nbTask}')
+        self.relativeOutputPath = self.feelOutputPath.split("feelppdb/")[-1]
 
     @run_before('run')
     def set_executable_opts(self):
         self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-file {self.case}',
                                 f'--repository.prefix {self.feelppdbPath}',
-                                f'--repository.case {self.feelOutputPath}',
+                                f'--repository.case {self.relativeOutputPath}',
                                 '--repository.append.np 0',
                                 '--heat.scalability-save 1']
                                 #'--case.discretization PXXX'
