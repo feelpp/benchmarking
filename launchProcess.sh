@@ -36,7 +36,7 @@ toolboxes=()
 cases=()
 directories=()
 listing=false
-disk_path="/home"       # /data/scratch, /data/home, /nvme0
+disk_path="/data/scratch"       # /data/home, /nvme0, /home
 
 
 if [ $# -lt 1 ] || [ "$*" == "-h" ] || [ "$*" == "--help" ]; then
