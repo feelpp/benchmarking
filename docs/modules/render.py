@@ -8,7 +8,7 @@ env = Environment(loader=FileSystemLoader('.'), trim_blocks=True, lstrip_blocks=
 def convert_hostname(hostname):
     if hostname.startswith("mel"):
         return "meluxina"
-    if "karolina"  in hostname:
+    if "karolina" in hostname:
         return "karolina"
     if "discoverer" in hostname:
         return "discoverer"
@@ -22,7 +22,7 @@ for module in ['meluxina', 'karolina', 'discoverer', 'gaya']:
     json_files_path = f'{module}/pages/**/*.json'
 
     # Iterate over each JSON file in the directory
-    for json_file in glob.glob(json_files_path):
+    for json_file in glob.glob(json_files_path, recursive=True):
         # Load JSON data
         with open(json_file, 'r') as file:
             data = json.load(file)
