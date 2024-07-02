@@ -10,12 +10,20 @@ class HeatToolboxTest (Setup):
     #toolbox = variable(str)
     case = variable(str)
 
+    checkers = variable(str, value='')
+    visualization = variable(str, value='')
+    partitioning = variable(str, value='')
+
 
     @run_after('init')
     def build_paths(self):
         self.caseRelativeDir = self.case.split("cases/")[-1][:-4]
         self.feelOutputPath = os.path.join(self.feelppdbPath, f'toolboxes/{self.toolbox}/{self.caseRelativeDir}_np{self.nbTask}')
         self.relativeOutputPath = self.feelOutputPath.split("feelppdb/")[-1]
+
+        self.checkers = os.path.join(self.feelOutputPath, f'{self.toolbox}.measures/values.csv')
+        self.visualization = os.path.join(self.feelOutputPath, f'{self.toolbox}.exports/Export.case')
+        self.partitioning = os.path.join(self.feelOutputPath, f'{self.toolbox}.mesh.json')
 
     @run_before('run')
     def set_executable_opts(self):

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# dir/case combination TODO
+
+
 usage() {
     echo ""
     echo "Usage: $0 <machine> [-a|--all] [-tb name|--toolbox name] [-c path|--case path] [-d path|--dir path] [-l|--list] [-h|--help]"
@@ -36,7 +39,8 @@ toolboxes=()
 cases=()
 directories=()
 listing=false
-disk_path="/data/scratch"       # /data/home, /nvme0, /home
+disk_path="/home"
+#disk_path="/data/scratch"       # /data/home, /nvme0
 
 
 if [ $# -lt 1 ] || [ "$*" == "-h" ] || [ "$*" == "--help" ]; then
