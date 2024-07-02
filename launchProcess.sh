@@ -183,7 +183,7 @@ for tb in "${toolboxes[@]}"; do
                 yes '-' | head -n "$columns" | tr -d '\n'
                 echo "[Starting $relative_path]"
                 report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json
-                reframe -c "$RFM_TEST_DIR/heatTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path"
+                reframe -c "$RFM_TEST_DIR/heatTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path" --exec-policy=serial
             fi
         fi
     done < <(find "$extended_path" -type f -name "*.cfg")
