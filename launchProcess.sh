@@ -6,7 +6,7 @@ usage() {
     echo "  <machine>                   Name of the machine "
     echo "  -a, --all                   Launch every test of every toolbox"
     echo "  -tb name, --toolbox name    Name of the toolbox (multiple names separated by ':')"
-    echo "                              If no case provided, will launch every test from the toolbox"
+    echo "                              If no case/dir provided, will launch every test from the toolbox"
     echo "  -c path, --case path        Name of the case .cfg file (multiple names separated by ':', requires -tb)"
     echo "  -d path, --dir path         Name of the directory containing .cfg (multiple names separated by ':', requires -tb)"
     echo "  -l, --list                  Found .cfg files listing"

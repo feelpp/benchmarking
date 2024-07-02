@@ -256,4 +256,28 @@ class Report:
 
         fig.layout.update(title=f'Speed up for {key} phase')
         return fig
-    
+
+
+
+if __name__ == "__main__":
+
+    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/Building/ThermalBridgesENISO10211/20240702-case3.json"
+    result = Report(file_path=case_path)
+
+    figStep = result.plotSteps()
+    figStep.show()
+
+    figPerfStep = result.plotPerformanceByStep()
+    figPerfStep.show()
+
+    figPerfTask = result.plotPerformanceByTask()
+    figPerfTask.show()
+
+    figSpeedup = result.plotSpeedup()
+    figSpeedup.show()
+
+    figInitSpeedup = result.plotPartialSpeedup(key='init')
+    figInitSpeedup.show()
+
+    figSolveSpeedup = result.plotPartialSpeedup(key='solve')
+    figSolveSpeedup.show()
