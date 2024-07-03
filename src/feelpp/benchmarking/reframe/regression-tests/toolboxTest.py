@@ -19,7 +19,7 @@ class HeatToolboxTest (Setup):
     def build_paths(self):
         self.caseRelativeDir = self.case.split("cases/")[-1][:-4]
         self.feelOutputPath = os.path.join(self.feelppdbPath, f'toolboxes/{self.toolbox}/{self.caseRelativeDir}_np{self.nbTask}')
-        self.relativeOutputPath = self.feelOutputPath.split("feelppdb/")[-1]
+        self.relativeOutputPath = self.feelOutputPath.split("benchmarking/")[-1]
 
         self.checkers = os.path.join(self.feelOutputPath, f'{self.toolbox}.measures/values.csv')
         self.visualization = os.path.join(self.feelOutputPath, f'{self.toolbox}.exports/Export.case')

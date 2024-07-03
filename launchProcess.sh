@@ -39,8 +39,8 @@ toolboxes=()
 cases=()
 directories=()
 listing=false
-disk_path="/home"
-#disk_path="/data/scratch"       # /data/home, /nvme0
+#disk_path="/home"              # for local
+disk_path="/data/scratch"       # for gaya, could also be:  /data/home, /nvme0
 
 
 if [ $# -lt 1 ] || [ "$*" == "-h" ] || [ "$*" == "--help" ]; then
@@ -125,8 +125,8 @@ fi
 # |                 PROCESS START                   |
 # +-------------------------------------------------+
 
-
-rm -rf ~/feelppdb
+# Cleaning for avoiding interactions to be enhanced !!
+rm -rf ~/feelppdb/benchmarking
 rm -rf ./build/reframe/output/ ./build/reframe/stage/ ./build/reframe/perflogs
 
 export RFM_CONFIG_FILES=$(pwd)/src/feelpp/benchmarking/reframe/cluster-config/${hostname}.py
@@ -134,7 +134,7 @@ export RFM_PREFIX=$(pwd)/build/reframe
 
 export RFM_TEST_DIR=$(pwd)/src/feelpp/benchmarking/reframe/regression-tests
 export FEELPP_TOOLBOXES_CASES=/usr/share/feelpp/data/testcases/toolboxes
-export FEELPP_OUTPUT_PREFIX="${disk_path}/${USER}/feelppdb"
+export FEELPP_OUTPUT_PREFIX="${disk_path}/${USER}/feelppdb/benchmarking"
 
 columns=$(tput cols)
 current_date=$(date +%Y%m%d)
@@ -187,7 +187,7 @@ for tb in "${toolboxes[@]}"; do
                 yes '-' | head -n "$columns" | tr -d '\n'
                 echo "[Starting $relative_path]"
                 report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json
-                reframe -c "$RFM_TEST_DIR/heatTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path" --exec-policy=serial
+                reframe -c "$RFM_TEST_DIR/toolboxTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path" --exec-policy=serial
             fi
         fi
     done < <(find "$extended_path" -type f -name "*.cfg")
