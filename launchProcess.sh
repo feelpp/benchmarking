@@ -39,8 +39,8 @@ toolboxes=()
 cases=()
 directories=()
 listing=false
-#disk_path="/home"              # for local
-disk_path="/data/scratch"       # for gaya, could also be:  /data/home, /nvme0
+disk_path="/home"              # for local
+#disk_path="/data/scratch"       # for gaya, could also be:  /data/home, /nvme0
 
 
 if [ $# -lt 1 ] || [ "$*" == "-h" ] || [ "$*" == "--help" ]; then
@@ -125,6 +125,10 @@ fi
 # |                 PROCESS START                   |
 # +-------------------------------------------------+
 
+# Here, we need to call configReader for getting every path and so on
+# But some configuration are needed to be exported before calling reframe
+# How to do it best ?
+
 # Cleaning for avoiding interactions to be enhanced !!
 rm -rf ~/feelppdb/benchmarking
 rm -rf ./build/reframe/output/ ./build/reframe/stage/ ./build/reframe/perflogs
@@ -177,6 +181,10 @@ for tb in "${toolboxes[@]}"; do
         fi
 
         if $matched; then
+            #echo " > relative_path: $relative_path"
+            #echo " > relative_dir: $relative_dir"
+            #echo " > base_name: $base_name"
+
             counter=$((counter + 1))
             toolboxCounter=$((toolboxCounter + 1))
 
@@ -187,7 +195,7 @@ for tb in "${toolboxes[@]}"; do
                 yes '-' | head -n "$columns" | tr -d '\n'
                 echo "[Starting $relative_path]"
                 report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json
-                reframe -c "$RFM_TEST_DIR/toolboxTest.py" -S "case=$cfgPath" -r --system="$hostname" --report-file="$report_path" --exec-policy=serial
+                reframe -C $(pwd)/src/feelpp/benchmarking/reframe/config-files/globalConfig.py -C $(pwd)/src/feelpp/benchmarking/reframe/config-files/local.py -c "$RFM_TEST_DIR/toolboxTest.py" -S case=$cfgPath -r #--system=$hostname #--report-file="$report_path" --exec-policy=serial
             fi
         fi
     done < <(find "$extended_path" -type f -name "*.cfg")

@@ -4,7 +4,6 @@ import reframe.utility.sanity as sn
 
 @rfm.simple_test
 class HeatToolboxTest (Setup):
-
     descr = 'Launch testcases from the Heat Toolbox'
     toolbox = 'heat'
     #toolbox = variable(str)
@@ -28,17 +27,17 @@ class HeatToolboxTest (Setup):
     @run_before('run')
     def set_executable_opts(self):
         self.executable = f'feelpp_toolbox_{self.toolbox}'
-        self.executable_opts = [f'--config-file {self.case}',
+        self.executable_opts = [f'--config-files {self.case}',
                                 f'--repository.prefix {self.feelppdbPath}',
                                 f'--repository.case {self.relativeOutputPath}',
                                 '--repository.append.np 0',
-                                '--heat.scalability-save 1']
+                                '--heat.scalability-save 1',
+                                '--fail-on-unknown-option 1']
                                 #'--case.discretization PXXX'
 
-
+    # Capture patterns
     namePatt = '([a-zA-z\-]+)'
     valPatt  = '([0-9e\-\+\.]+)'
-
 
     def get_constructor_name(self, index=1):
         scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Constructor.data')

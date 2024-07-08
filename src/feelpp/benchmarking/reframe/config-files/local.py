@@ -16,7 +16,7 @@ site_configuration = {
                     },
                     'devices': [
                         {
-                            'name': 'cpu-node',
+                            'type': 'cpu',
                             'num_devices': 1
                         }
                     ]
