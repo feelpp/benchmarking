@@ -8,14 +8,16 @@ site_configuration = {
     'modes': [
         {
             'name': 'serial',
+            'target_systems': ['*'],
             'options': [
                 '--exec-policy=serial'
             ]
         },
         {
             'name': 'async',
+            'target_systems': ['*'],
             'options': [
-                '--exec-policy=aysnc'
+                '--exec-policy=async'
             ]
         }
     ]

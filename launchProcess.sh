@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# dir/case combination TODO
+# dir/case combination TODO !!
+
+
+valid_machines=("discoverer" "gaya" "karolina" "meluxina" "local")
+valid_toolboxes=("alemesh" "coefficientformpdes" "electric" "fluid" "fsi" "hdg" "heat" "heatfluid" "solid" "thermoelectric")
 
 
 usage() {
@@ -24,10 +28,6 @@ split_arguments() {
 }
 
 
-valid_machines=("discoverer" "gaya" "karolina" "meluxina" "local")
-valid_toolboxes=("alemesh" "coefficientformpdes" "electric" "fluid" "fsi" "hdg" "heat" "heatfluid" "solid" "thermoelectric")
-
-
 
 # +-------------------------------------------------+
 # |                ARGUMENTS CHECK                  |
@@ -39,8 +39,8 @@ toolboxes=()
 cases=()
 directories=()
 listing=false
-disk_path="/home"              # for local
-#disk_path="/data/scratch"       # for gaya, could also be:  /data/home, /nvme0
+disk_path="/home"               # for local
+#disk_path="/data/scratch"      # for gaya, could also be:  /data/home, /nvme0
 
 
 if [ $# -lt 1 ] || [ "$*" == "-h" ] || [ "$*" == "--help" ]; then
@@ -133,7 +133,8 @@ fi
 rm -rf ~/feelppdb/benchmarking
 rm -rf ./build/reframe/output/ ./build/reframe/stage/ ./build/reframe/perflogs
 
-export RFM_CONFIG_FILES=$(pwd)/src/feelpp/benchmarking/reframe/cluster-config/${hostname}.py
+export RFM_CONFIG_PATH=$(pwd)/src/feelpp/benchmarking/reframe/config-files
+#export RFM_CONFIG_FILES=$(pwd)/src/feelpp/benchmarking/reframe/config-files/${hostname}.py
 export RFM_PREFIX=$(pwd)/build/reframe
 
 export RFM_TEST_DIR=$(pwd)/src/feelpp/benchmarking/reframe/regression-tests
@@ -188,14 +189,17 @@ for tb in "${toolboxes[@]}"; do
             counter=$((counter + 1))
             toolboxCounter=$((toolboxCounter + 1))
 
+            config1="/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py"
+            config2="/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/local.py"
+
             if $listing; then
                 echo "$relative_path"
+
             else
-                echo ""
                 yes '-' | head -n "$columns" | tr -d '\n'
                 echo "[Starting $relative_path]"
-                report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json
-                reframe -C $(pwd)/src/feelpp/benchmarking/reframe/config-files/globalConfig.py -C $(pwd)/src/feelpp/benchmarking/reframe/config-files/local.py -c "$RFM_TEST_DIR/toolboxTest.py" -S case=$cfgPath -r #--system=$hostname #--report-file="$report_path" --exec-policy=serial
+                #report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json
+                reframe -C "$config1" -C "$config2" -c "$RFM_TEST_DIR/toolboxTest.py" -S case="$cfgPath" -r --system=$hostname #--report-file="$report_path" --exec-policy=serial
             fi
         fi
     done < <(find "$extended_path" -type f -name "*.cfg")

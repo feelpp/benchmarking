@@ -35,10 +35,8 @@ class HeatToolboxTest (Setup):
                                 '--fail-on-unknown-option 1']
                                 #'--case.discretization PXXX'
 
-    # Capture patterns
-    namePatt = '([a-zA-z\-]+)'
-    valPatt  = '([0-9e\-\+\.]+)'
 
+    """
     def get_constructor_name(self, index=1):
         scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Constructor.data')
         return sn.extractsingle(rf'nProc[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+{self.namePatt}[\s]+',
@@ -78,21 +76,56 @@ class HeatToolboxTest (Setup):
         scalePath = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}PostProcessing.data')
         return sn.extractsingle(rf'^{self.num_tasks}[\s]+{self.valPatt}',
                                 scalePath, index, float)
+    """
+
+    # Capture patterns
+    namePatt = '([a-zA-z\-]+)'
+    valPatt  = '([0-9e\-\+\.]+)'
+
+    def get_column_names(self, filename):
+        with open(filename, 'r') as file:
+            for line in file:
+                if line.startswith('# nProc'):
+                    header = line.strip().split()
+                    return header[2:]               # exclude '# nProc'
+        return []
+
+
+    def pattern_generator(self, valuesNumber):
+        valPattern = '([0-9e\-\+\.]+)'
+        linePattern = r'^\d+[\s]+' + rf'{valPattern}[\s]+' * valuesNumber
+        return linePattern[:-1] + '*'
+
+    def extractLine(self, pattern, path, line):
+        return sn.extractall(pattern, path, conv=float)
 
 
     @run_before('performance')
     def set_perf_vars(self):
+
         self.perf_variables = {}
 
-        # 8 values to extract
-        for i in range(1,9):
-            self.perf_variables.update( {str(self.get_constructor_name(i)) : self.extract_constructor_scale(i)} )
-        # 4 values to extract
-        for i in range(1,5):
-            self.perf_variables.update( {str(self.get_solve_name(i)) : self.extract_solve_scale(i)} )
-        # 1 value to extract
-        for i in range(1,2):
-            self.perf_variables.update( {str(self.get_postprocessing_name(i)) : self.extract_postprocessing_scale(i)} )
+        constructor_path = f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Constructor.data'
+        solve_path = f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Solve.data'
+        postprocessing_path = f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}PostProcessing.data'
+
+        constructor_names = self.get_column_names(constructor_path)
+        solve_names = self.get_column_names(solve_path)
+        postprocessing_names = self.get_column_names(postprocessing_path)
+
+        constructor_line = self.extractLine(self.pattern_generator(len(constructor_names)), constructor_path)
+        solve_line = self.extractLine(self.pattern_generator(len(solve_names)), solve_path)
+        postprocessing_line = self.extractLine(self.pattern_generator(len(postprocessing_names)), postprocessing_path)
+
+
+        for i in range(1, len(constructor_names)):
+            self.perf_variables.update( {str(constructor_names[i]) : constructor_line[i]} )
+
+        for i in range(1, len(solve_names)):
+            self.perf_variables.update( {str(solve_names[i]) : solve_line[i]} )
+
+        for i in range(1, len(postprocessing_names)):
+            self.perf_variables.update( {str(postprocessing_names[i]) : postprocessing_line[i]} )
 
 
     @sanity_function

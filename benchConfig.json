@@ -1,0 +1,67 @@
+{
+    "Reframe":
+    {
+        "Configuration":
+        [
+            "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
+            "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/{hostname}.py"
+        ],
+        "Directories":
+        {
+            "prefix": "$(pwd)/build/reframe/",
+            "stage": ".../stage",
+            "output": ".../output",
+            "testFiles": "TESTTESTTEST",
+            "reportPrefix": "$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json"
+        },
+        "Mode":
+        {
+            //"singleNode": "true",
+            "topology":
+            {
+                "minPhysicalCpuPerNode": 1,
+                "maxPhysicalCpuPerNode": 128,
+                "minNodeNumber": 1,
+                "maxNodeNumber": 6
+            },
+            "sequencing":
+            {
+                "generator": "manual / fixAllNodes / powerNB / maxCPU",
+                "sequence": [1,2,4,16,32,64,128]
+            }
+        }
+    },
+
+    "Feelpp":
+    {
+        "Toolboxes":
+        [
+            "heat"
+        ],
+        "Paths":
+        {
+            "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes/",
+            "outputDirectory": "/home/tanguy/feelppdb/benchmarking/toolboxes/"
+        },
+        "CommandLine":
+        {
+            "config-files": [
+            ],
+            "repository":
+            {
+                "prefix": "B",
+                "case": "C"
+            },
+            "case":
+            {
+                "dimension": "D",
+                "discretization": "E"
+            }
+        }
+    },
+
+    "Report.py":
+    {
+        "scaling": "linear / quadratic / exponential / (log) / ..."
+    }
+}

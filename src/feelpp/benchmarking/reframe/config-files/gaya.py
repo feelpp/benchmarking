@@ -19,7 +19,7 @@ site_configuration = {
                     'devices': [
                         {
                             'type': 'cpu',
-                            'num_devices': 1        # --> to be set to 6 when MPI_ERR_TRUNCATE resolved
+                            'num_devices': 6        # --> to be set to 6 when MPI_ERR_TRUNCATE resolved
                         }
                     ]
                 },
