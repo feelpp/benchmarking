@@ -8,8 +8,12 @@ supportedEnvVars = ('PWD', 'HOME', 'USER', 'TB', 'HOSTNAME')
 
 class ConfigReader:
 
-    def __init__(self, mode, configPath='benchConfig.json'):
+    def __init__(self, mode, configPath='./benchConfig.json'):
         self.configPath = configPath
+        print("")
+        print("[CONFIG ABS PATH]")
+        print(os.path.abspath(self.configPath))
+        print("")
         self.data = None
         self.Reframe = None
         self.Feelpp = None
@@ -40,8 +44,8 @@ class ConfigReader:
                 data[i] = self.substituteEnvVars(data[i])
         elif isinstance(data, str):
             for var in supportedEnvVars:
-                env_value = os.getenv(var, '')
-                data = data.replace(f'${{{var}}}', env_value)
+                value = os.getenv(var, '')
+                data = data.replace(f'${{{var}}}', value)
         return data
 
     def processData(self, mode):

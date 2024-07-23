@@ -1,23 +1,37 @@
 import reframe                  as rfm
 import reframe.core.runtime     as rt
-
+import reframe.utility.sanity   as sn
 import os
+import sys
 
 
-def parametrizeTaskNumber(minCpu, maxCpu, minNode, maxNode):
+root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+sys.path.insert(0, root)
+from src.feelpp.benchmarking.configReader import ConfigReader
+
+"""
+print("TEST")
+config = ConfigReader()
+print("TEST")
+"""
+
+def parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes):
+
     for part in rt.runtime().system.partitions:
-        nbTask = minCpu
-        while (nbTask < part.processor.num_cpus) and (nbTask <= maxCpu):
-            yield nbTask
+        nbTask = minCPU
+        yield nbTask
+        while (nbTask < part.processor.num_cpus) and (nbTask < maxCPU):
             nbTask <<= 1
-
-        if maxNode < part.devices[0].num_devices:
-            nbNodes = maxNode
-        else:
-            nbNodes = part.devices[0].num_devices
-        for i in range(minNode, nbNodes+1):
-            nbTask = i * part.processor.num_cpus
             yield nbTask
+
+        if not (minNodes == 1 and maxNodes == 1):
+            if maxNodes < part.devices[0].num_devices:
+                nbNodes = maxNodes
+            else:
+                nbNodes = part.devices[0].num_devices
+            for i in range(minNodes+1, nbNodes+1):
+                nbTask = i * part.processor.num_cpus
+                yield nbTask
 
 
 
@@ -28,14 +42,22 @@ class Setup(rfm.RunOnlyRegressionTest):
     valid_prog_environs = ['*']
 
     feelppdbPath = os.environ.get('FEELPP_OUTPUT_PREFIX')
+    feelpp_out_prefix = os.environ.get('FEELPP_OUTPUT_PREFIX')
 
+    config = ConfigReader(mode="CpuVariation", configPath="./../../../../../benchConfig.json")
+
+    # Parametrization
+    """
     minCPU = int(os.environ.get('MIN_CPU'))
     maxCPU = int(os.environ.get('MAX_CPU'))
     minNodes = int(os.environ.get('MIN_NODES'))
     maxNodes = int(os.environ.get('MAX_NODES'))
+    """
 
-
-    # Parametrization
+    minCPU = config.Reframe.Mode.topology.minPhysicalCpuPerNode
+    maxCPU = config.Reframe.Mode.topology.maxPhysicalCpuPerNode
+    minNodes = config.Reframe.Mode.topology.minNodeNumber
+    maxNodes = config.Reframe.Mode.topology.maxNodeNumber
     nbTask = parameter(parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes))
 
 
@@ -50,3 +72,20 @@ class Setup(rfm.RunOnlyRegressionTest):
     @run_before('run')
     def set_launcher_options(self):
         self.job.launcher.options = ['-bind-to core']
+
+
+    # The following methods will be used in CpuVariation and ModelVariation
+    def pattern_generator(self, valuesNumber):
+        valPattern = '([0-9e\-\+\.]+)'
+        linePattern = r'^\d+[\s]+' + rf'{valPattern}[\s]+' * valuesNumber
+        linePattern = linePattern[:-1] + '*'
+        return linePattern
+
+    def extractLine(self, pattern, path, length, line=0):
+        tags = range(1, length+1)
+        if 'Solve' in path:
+            convertion = [int] + [float]*(length-1)     # for ksp-niter conversion in int
+        else:
+            convertion = float
+        lines = sn.extractall(pattern, path, tag=tags, conv=convertion)
+        return lines[line]                              # to modify for unsteady cases

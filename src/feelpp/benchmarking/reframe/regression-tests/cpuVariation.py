@@ -1,13 +1,11 @@
 from setup import *
-import reframe.utility.sanity as sn
-
 
 @rfm.simple_test
 class ToolboxTest (Setup):
 
     descr = 'Launch testcases from the Heat Toolbox'
-    toolbox = variable(str)
-    case = variable(str)
+    toolbox = variable(str, value=os.getenv('TOOLBOX'))
+    case = variable(str, value=os.getenv('FEELPP_CFG_PATHS'))
 
     #checkers = variable(str, value='')
     #visualization = variable(str, value='')
@@ -15,10 +13,19 @@ class ToolboxTest (Setup):
 
     @run_after('init')
     def build_paths(self):
+        """ self.feelpp_out_prefix = self.feelppdbPath """
+
+        parentDir = os.path.basename(os.path.dirname(self.case))
+        caseNoExt = os.path.basename(self.case)[:-4]
 
         self.caseRelativeDir = self.case.split("cases/")[-1][:-4]
-        self.feelOutputPath = os.path.join(self.feelppdbPath, f'toolboxes/{self.toolbox}/{self.caseRelativeDir}_np{self.nbTask}')
-        self.relativeOutputPath = self.feelOutputPath.split("benchmarking/")[-1]
+        self.feelOutputPath = os.path.join(self.feelppdbPath, f'{self.toolbox}/{parentDir}/{caseNoExt}/np{self.nbTask}')
+
+
+        print(" > self.caseRelativeDir:\t", self.caseRelativeDir)
+        print(" > self.feelpp_output_prefix:\t", self.feelpp_out_prefix)
+        print(" > self.feelOutputPath:\t\t", self.feelOutputPath)
+        print("")
 
         #self.checkers = os.path.join(self.feelOutputPath, f'{self.toolbox}.measures/values.csv')
         #self.visualization = os.path.join(self.feelOutputPath, f'{self.toolbox}.exports/Export.case')
@@ -27,11 +34,8 @@ class ToolboxTest (Setup):
 
     @run_before('run')
     def set_executable_opts(self):
-        print("[CASE]")
-        print(self.case)
-
         self.executable = f'feelpp_toolbox_{self.toolbox}'
-        self.executable_opts = [f'--config-files {self.case}', # --> to export
+        self.executable_opts = [f'--config-files {self.case}',
                                 f'--repository.prefix {self.feelppdbPath}', # --> to export
                                 f'--repository.case {self.relativeOutputPath}', # --> to export
                                 '--repository.append.np 0',
@@ -52,23 +56,6 @@ class ToolboxTest (Setup):
                     return header[2:]               # exclude '# nProc'
         return []
 
-
-    def pattern_generator(self, valuesNumber):
-        valPattern = '([0-9e\-\+\.]+)'
-        linePattern = r'^\d+[\s]+' + rf'{valPattern}[\s]+' * valuesNumber
-        linePattern = linePattern[:-1] + '*'
-        #print(linePattern)
-        return linePattern
-
-
-    def extractLine(self, pattern, path, length, line=0):
-        tags = range(1, length+1)
-        if 'Solve' in path:
-            convertion = [int] + [float]*(length-1)     # for ksp-niter conversion in int
-        else:
-            convertion = float
-        lines = sn.extractall(pattern, path, tag=tags, conv=convertion)
-        return lines[line]                              # to modify for unsteady cases
 
 
 

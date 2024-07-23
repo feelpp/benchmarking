@@ -7,7 +7,6 @@ import subprocess
 import shutil
 
 
-
 validMachines = ('discoverer', 'gaya', 'karolina', 'meluxina', 'local')     # config-files missing for discoverer, karolina, meluxina
 validToolboxes = ('alemesh', 'coefficientformpdes', 'electric', 'fluid', 'fsi', 'hdg', 'heat', 'heatfluid', 'solid', 'thermoelectric')
 validModes = ('CpuVariation', 'ModelVariation', 'TEST')         # Model not working yet
@@ -144,26 +143,29 @@ reframePath = shutil.which('reframe')
 
 args = parseArgs()
 
+
+print("\n[BOUCLE START]")
 for toolbox in args.toolboxes:
-    print(' > toolbox:', toolbox)
+    print(f"[toolbox = {toolbox}]")
+    os.environ['TOOLBOX'] = toolbox
 
     for mode in args.mode:    
-        print('\t > mode:', mode)
+        print(f"\t[mode = {mode}]")
 
         config = ConfigReader(mode)
 
         reportPath = 'x'
 
-        cmd = [ f'--mode={mode}', f'--system={args.machine}', f'-S toolbox={toolbox}']#, '-S case=${FEELPP_CFG_PATHS}']#, f'--report_file={reportPath}']
+        cmd = [ f'--mode={mode}', f'--system={args.machine}']
         str_cmd = ' '.join(['reframe'] + cmd)
         if args.list:
             str_cmd += ' -l'
         print('\t > cmd:', cmd)
         print('\t > str_cmd:', str_cmd, "\n")
 
+        print('=' * shutil.get_terminal_size().columns)
         os.system(str_cmd)
+        print('=' * shutil.get_terminal_size().columns)
 
-print('coucou')
-print(os.environ['FEELPP_CFG_PATHS'])
 
 # '--report_file=${PWD}/docs/modules/${HOSTNAME}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json',

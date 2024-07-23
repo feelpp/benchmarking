@@ -9,8 +9,7 @@
             "stage": "",
             "output": "",
             "testFiles": "${PWD}/src/feelpp/benchmarking/reframe/regression-tests/",
-            "reportPrefix": "${PWD}/docs/modules/${HOSTNAME}/pages/reports/",
-            "_": "#report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json"
+            "reportPrefix": "${PWD}/docs/modules/${HOSTNAME}/pages/reports/"
         },
 
         "Modes":
@@ -20,7 +19,7 @@
                 "topology":
                 {
                     "minPhysicalCpuPerNode": 1,
-                    "maxPhysicalCpuPerNode": 128,
+                    "maxPhysicalCpuPerNode": 2,
                     "minNodeNumber": 1,
                     "maxNodeNumber": 6
                 },
@@ -63,11 +62,11 @@
         {
             "config-files":
             [
-                "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg"
+                "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg"
             ],
             "repository":
             {
-                "prefix": "{self.feelppdbPath} = ",
+                "prefix": "$FEELPP",
                 "case": "{self.relativeOutputPath}"
             },
             "case":
