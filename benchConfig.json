@@ -1,67 +1,86 @@
 {
     "Reframe":
     {
-        "Configuration":
-        [
-            "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
-            "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/{hostname}.py"
-        ],
+        "globalConfig": "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
+        "hostConfig":  "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
         "Directories":
         {
-            "prefix": "$(pwd)/build/reframe/",
-            "stage": ".../stage",
-            "output": ".../output",
-            "testFiles": "TESTTESTTEST",
-            "reportPrefix": "$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json"
+            "prefix": "${PWD}/build/reframe/",
+            "stage": "",
+            "output": "",
+            "testFiles": "${PWD}/src/feelpp/benchmarking/reframe/regression-tests/",
+            "reportPrefix": "${PWD}/docs/modules/${HOSTNAME}/pages/reports/",
+            "_": "#report_path=$(pwd)/docs/modules/${hostname}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json"
         },
-        "Mode":
-        {
-            //"singleNode": "true",
-            "topology":
+
+        "Modes":
+        [
             {
-                "minPhysicalCpuPerNode": 1,
-                "maxPhysicalCpuPerNode": 128,
-                "minNodeNumber": 1,
-                "maxNodeNumber": 6
+                "type": "CpuVariation",
+                "topology":
+                {
+                    "minPhysicalCpuPerNode": 1,
+                    "maxPhysicalCpuPerNode": 128,
+                    "minNodeNumber": 1,
+                    "maxNodeNumber": 6
+                },
+                "sequencing":
+                {
+                    "generator": "manual / fixAllNodes / powerNB / maxCPU",
+                    "sequence": [1,2,4,16,32,64,128]
+                }
             },
-            "sequencing":
             {
-                "generator": "manual / fixAllNodes / powerNB / maxCPU",
-                "sequence": [1,2,4,16,32,64,128]
+                "type": "ModelVariation"
+            },
+            {
+                "type": "TEST",
+                "topology":
+                {
+                    "minPhysicalCpuPerNode": 0,
+                    "maxPhysicalCpuPerNode": 100,
+                    "minNodeNumber": 0,
+                    "maxNodeNumber": 100
+                },
+                "sequencing":
+                {
+                    "generator": "manual",
+                    "sequence": [1,2,4,16,32,64,128]
+                }
             }
-        }
+        ]
     },
 
     "Feelpp":
     {
-        "Toolboxes":
-        [
-            "heat"
-        ],
-        "Paths":
-        {
-            "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes/",
-            "outputDirectory": "/home/tanguy/feelppdb/benchmarking/toolboxes/"
-        },
+        "Toolboxes": "heat",
+        "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes/",
+        "outputPrefix": "${HOME}/feelppdb/benchmarking/toolboxes/",
+        "usePartitioning": false,
+        "partitionDirectory": "",
+
         "CommandLine":
         {
-            "config-files": [
+            "config-files":
+            [
+                "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg"
             ],
             "repository":
             {
-                "prefix": "B",
-                "case": "C"
+                "prefix": "{self.feelppdbPath} = ",
+                "case": "{self.relativeOutputPath}"
             },
             "case":
             {
-                "dimension": "D",
-                "discretization": "E"
+                "dimension": "",
+                "discretization": ""
             }
         }
     },
 
-    "Report.py":
+    "Reporter":
     {
-        "scaling": "linear / quadratic / exponential / (log) / ..."
+        "active": true,
+        "scaling": "linear / quadratic / cubic"
     }
 }

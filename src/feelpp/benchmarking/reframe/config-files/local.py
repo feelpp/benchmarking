@@ -2,7 +2,7 @@ site_configuration = {
     'systems': [
         {
             'name': 'local',
-            'descr': 'Local desktop with 8 cpus',
+            'descr': 'Local desktop with 4 physical cpus',
             'hostnames': ['local'],
             'modules_system': 'nomod',
             'partitions': [

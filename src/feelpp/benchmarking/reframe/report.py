@@ -261,7 +261,8 @@ class Report:
 
 if __name__ == "__main__":
 
-    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/Building/ThermalBridgesENISO10211/20240702-case3.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/Building/ThermalBridgesENISO10211/20240702-case3.json"
+    case_path =  "/home/tanguy/Projet/benchmarking/build/TEST/RESULTS/ASYNC/20240719-case3-ASYNC.json"
     result = Report(file_path=case_path)
 
     figStep = result.plotSteps()

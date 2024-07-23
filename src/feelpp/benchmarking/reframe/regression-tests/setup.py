@@ -3,15 +3,19 @@ import reframe.core.runtime     as rt
 
 import os
 
-def parametrizeTaskNumber():
+
+def parametrizeTaskNumber(minCpu, maxCpu, minNode, maxNode):
     for part in rt.runtime().system.partitions:
-        nbTask = 1
-        while nbTask < part.processor.num_cpus:
+        nbTask = minCpu
+        while (nbTask < part.processor.num_cpus) and (nbTask <= maxCpu):
             yield nbTask
             nbTask <<= 1
 
-        nbNodes = part.devices[0].num_devices
-        for i in range(1, nbNodes+1):
+        if maxNode < part.devices[0].num_devices:
+            nbNodes = maxNode
+        else:
+            nbNodes = part.devices[0].num_devices
+        for i in range(minNode, nbNodes+1):
             nbTask = i * part.processor.num_cpus
             yield nbTask
 
@@ -25,9 +29,14 @@ class Setup(rfm.RunOnlyRegressionTest):
 
     feelppdbPath = os.environ.get('FEELPP_OUTPUT_PREFIX')
 
+    minCPU = int(os.environ.get('MIN_CPU'))
+    maxCPU = int(os.environ.get('MAX_CPU'))
+    minNodes = int(os.environ.get('MIN_NODES'))
+    maxNodes = int(os.environ.get('MAX_NODES'))
+
 
     # Parametrization
-    nbTask = parameter(parametrizeTaskNumber())
+    nbTask = parameter(parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes))
 
 
     @run_before('run')
