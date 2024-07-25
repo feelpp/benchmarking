@@ -2,7 +2,7 @@ site_configuration = {
     'systems': [
         {
             'name': 'local',
-            'descr': 'Local desktop with 4 physical cpus',
+            'descr': 'Local desktop with 8 logical CPUs',
             'hostnames': ['local'],
             'modules_system': 'nomod',
             'partitions': [
@@ -12,7 +12,7 @@ site_configuration = {
                     'launcher': 'mpiexec',
                     'environs': ['env_local'],
                     'processor': {
-                        'num_cpus': 4
+                        'num_cpus': 8
                     },
                     'devices': [
                         {

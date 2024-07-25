@@ -40,8 +40,8 @@ class ToolboxTest (Setup):
 
         self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-files {self.case}',
-                                f'--repository.prefix {self.feelOutputPrefix}', # --> to export
-                                f'--repository.case {self.feelOutputSuffix}', # --> to export
+                                f'--repository.prefix {self.feelOutputPrefix}',
+                                f'--repository.case {self.feelOutputSuffix}',
                                 '--repository.append.np 0',
                                 '--fail-on-unknown-option 1']
 
@@ -53,11 +53,12 @@ class ToolboxTest (Setup):
         if self.toolbox == 'heatfluid':
             toolbox = 'heat-fluid'
             capitalized = 'HeatFluid'
+
         else:
             toolbox = self.toolbox
             capitalized = self.toolbox.capitalize()
-        path = os.path.join(self.feelOutputPath, f'{toolbox}.scalibility.{capitalized}{name}.data')
-        return path
+
+        return os.path.join(self.feelOutputPath, f'{toolbox}.scalibility.{capitalized}{name}.data')
 
 
     @run_before('performance')
@@ -121,16 +122,16 @@ class ToolboxTest (Setup):
         make_perf = sn.make_performance_function
 
         for i in range(length_fluid_constructor):
-            self.perf_variables.update( {fluid_constructor_names[i] : make_perf(fluid_constructor_line[i], 's')} )
+            self.perf_variables.update( { 'F_' + fluid_constructor_names[i] : make_perf(fluid_constructor_line[i], 's')} )
 
         for i in range(length_fluid_postprocessing):
-            self.perf_variables.update( {fluid_postprocessing_names[i] : make_perf(fluid_postprocessing_line[i], 's')} )
+            self.perf_variables.update( { 'F_' + fluid_postprocessing_names[i] : make_perf(fluid_postprocessing_line[i], 's')} )
 
         for i in range(length_heat_constructor):
-            self.perf_variables.update( {heat_constructor_names[i] : make_perf(heat_constructor_line[i], 's')} )
+            self.perf_variables.update( { 'H_' + heat_constructor_names[i] : make_perf(heat_constructor_line[i], 's')} )
 
         for i in range(length_heat_postprocessing):
-            self.perf_variables.update( {heat_postprocessing_names[i] : make_perf(heat_postprocessing_line[i], 's')} )
+            self.perf_variables.update( { 'H_' + heat_postprocessing_names[i] : make_perf(heat_postprocessing_line[i], 's')} )
 
 
     @sanity_function

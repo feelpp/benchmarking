@@ -31,21 +31,18 @@
                 }
             },
             {
-                "type": "ModelVariation"
-            },
-            {
-                "type": "TEST",
+                "type": "ModelVariation",
                 "topology":
                 {
-                    "minPhysicalCpuPerNode": 0,
-                    "maxPhysicalCpuPerNode": 100,
-                    "minNodeNumber": 0,
-                    "maxNodeNumber": 100
+                    "minPhysicalCpuPerNode": 1,
+                    "maxPhysicalCpuPerNode": 4,
+                    "minNodeNumber": 1,
+                    "maxNodeNumber": 1
                 },
                 "sequencing":
                 {
                     "generator": "manual",
-                    "sequence": []
+                    "sequence": [0.20, 0.18, 0.16, 0.14, 0.12, 0.10]
                 }
             }
         ]
@@ -53,7 +50,7 @@
 
     "Feelpp":
     {
-        "Toolboxes": "heatfluid",
+        "Toolboxes": "heat",
         "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
         "usePartitioning": false,
         "partitionDirectory": "",
@@ -62,15 +59,13 @@
         {
             "config-files":
             [
-                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/1-2d_laminar.cfg",
-                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/2-2d_laminar.cfg",
-                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/3-2d_laminar.cfg",
-                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/4-2d_laminar.cfg"
+                "${HOME}/splittedCFG/heat/ThermalBridgesENISO10211/case4-1.cfg",
+                "${HOME}/splittedCFG/heat/ThermalBridgesENISO10211/case4-2.cfg"
             ],
             "repository":
             {
                 "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
-                "case": "NaturalConvection_Cavity/2d_laminar"
+                "case": "Building/ThermalBridgesENISO10211/case4"
             },
             "case":
             {

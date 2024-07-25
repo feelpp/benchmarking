@@ -18,7 +18,7 @@ site_configuration = {
                 '-c $RFM_TEST_DIR/cpuVariation.py',      # check if guillemets needed
                 #'-S sequence=$sequence',
                 '-r',                                   # -r=run, -l=list
-                #f'-S case=$FEELPP_CFG_PATHS',         
+                #f'-S case=$FEELPP_CFG_PATHS',
                 '--exec-policy=serial'
             ]
         },

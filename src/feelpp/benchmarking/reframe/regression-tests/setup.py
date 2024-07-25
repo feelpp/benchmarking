@@ -61,9 +61,11 @@ class Setup(rfm.RunOnlyRegressionTest):
     # Set scheduler and launcher options options
     @run_before('run')
     def setLaunchOptions(self):
+
+        self.exclusive_access = self.config.Reframe.exclusiveAccess
         self.job.launcher.options = ['-bind-to core']
-        if self.config.Reframe.exclusiveAccess:
-            self.exclusive_access = True
+        #if self.current_system.name == 'local':
+        #    self.job.launcher.options.append('--use-hwthread-cpus')
 
 
     def get_column_names(self, filename):
