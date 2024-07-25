@@ -9,17 +9,14 @@ root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..',
 sys.path.insert(0, root)
 from src.feelpp.benchmarking.configReader import ConfigReader
 
-"""
-print("TEST")
-config = ConfigReader()
-print("TEST")
-"""
 
 def parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes):
 
     for part in rt.runtime().system.partitions:
+
         nbTask = minCPU
         yield nbTask
+
         while (nbTask < part.processor.num_cpus) and (nbTask < maxCPU):
             nbTask <<= 1
             yield nbTask
@@ -41,26 +38,19 @@ class Setup(rfm.RunOnlyRegressionTest):
     valid_systems = ['*']
     valid_prog_environs = ['*']
 
-    feelppdbPath = os.environ.get('FEELPP_OUTPUT_PREFIX')
-    feelpp_out_prefix = os.environ.get('FEELPP_OUTPUT_PREFIX')
-
-    config = ConfigReader(mode="CpuVariation", configPath="./../../../../../benchConfig.json")
+    workdir = os.environ['WORKDIR']
+    config = ConfigReader(mode="CpuVariation", configPath=os.path.join(workdir, 'benchConfig.json'))
 
     # Parametrization
-    """
-    minCPU = int(os.environ.get('MIN_CPU'))
-    maxCPU = int(os.environ.get('MAX_CPU'))
-    minNodes = int(os.environ.get('MIN_NODES'))
-    maxNodes = int(os.environ.get('MAX_NODES'))
-    """
-
     minCPU = config.Reframe.Mode.topology.minPhysicalCpuPerNode
     maxCPU = config.Reframe.Mode.topology.maxPhysicalCpuPerNode
     minNodes = config.Reframe.Mode.topology.minNodeNumber
     maxNodes = config.Reframe.Mode.topology.maxNodeNumber
+
     nbTask = parameter(parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes))
 
 
+    # @run_after('init') does not work because of .current_partition
     @run_before('run')
     def setTaskNumber(self):
         self.num_tasks_per_node = min(self.nbTask, self.current_partition.processor.num_cpus)
@@ -68,10 +58,21 @@ class Setup(rfm.RunOnlyRegressionTest):
         self.num_tasks = self.nbTask
 
 
-    # Launcher options
+    # Set scheduler and launcher options options
     @run_before('run')
-    def set_launcher_options(self):
+    def setLaunchOptions(self):
         self.job.launcher.options = ['-bind-to core']
+        if self.config.Reframe.exclusiveAccess:
+            self.exclusive_access = True
+
+
+    def get_column_names(self, filename):
+        with open(filename, 'r') as file:
+            for line in file:
+                if line.startswith('# nProc'):
+                    header = line.strip().split()
+                    return header[2:]               # exclude '# nProc'
+        return []
 
 
     # The following methods will be used in CpuVariation and ModelVariation
@@ -80,6 +81,7 @@ class Setup(rfm.RunOnlyRegressionTest):
         linePattern = r'^\d+[\s]+' + rf'{valPattern}[\s]+' * valuesNumber
         linePattern = linePattern[:-1] + '*'
         return linePattern
+
 
     def extractLine(self, pattern, path, length, line=0):
         tags = range(1, length+1)

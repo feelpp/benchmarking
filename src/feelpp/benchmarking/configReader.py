@@ -3,17 +3,13 @@ import sys
 import os
 
 
-supportedEnvVars = ('PWD', 'HOME', 'USER', 'TB', 'HOSTNAME')
+supportedEnvVars = ('WORKDIR', 'HOME', 'USER', 'TB', 'HOSTNAME', 'FEELPPDB_PATH', 'RFM_TEST_DIR')
 
 
 class ConfigReader:
 
     def __init__(self, mode, configPath='./benchConfig.json'):
         self.configPath = configPath
-        print("")
-        print("[CONFIG ABS PATH]")
-        print(os.path.abspath(self.configPath))
-        print("")
         self.data = None
         self.Reframe = None
         self.Feelpp = None
@@ -65,6 +61,7 @@ class ReframeConfig:
         self.globalConfig = data['globalConfig']
         self.hostConfig = data['hostConfig']
         self.Directories = DirectoriesConfig(data['Directories'])
+        self.exclusiveAccess = data['exclusiveAccess']
 
         for modeDict in data['Modes']:
             if modeDict['type'] == mode:
@@ -72,12 +69,16 @@ class ReframeConfig:
                 break
 
         self.Mode = ModeConfig(mode_data)
-        self.exportEnvVars()
+        #self.exportEnvVars()
 
+
+    """ !! Needed before launching Reframe !! """
+    """
     # Reframe will automatically be launched with these configuration files (colon-separated),
     # instead of passing the -C command line option twice
     def exportEnvVars(self):
         os.environ['RFM_CONFIG_FILES'] = self.globalConfig + ':' + self.hostConfig
+    """
 
     def to_dict(self):
         return {
@@ -98,7 +99,7 @@ class DirectoriesConfig:
         self.output = data['output']
         self.testFiles = data['testFiles']
         self.reportPrefix = data['reportPrefix']
-        self.exportEnvVars()
+        #self.exportEnvVars()
 
     def exportEnvVars(self):
         os.environ['RFM_PREFIX'] = self.prefix
@@ -135,7 +136,7 @@ class TopologyConfig:
         self.maxPhysicalCpuPerNode = data['maxPhysicalCpuPerNode']
         self.minNodeNumber = data['minNodeNumber']
         self.maxNodeNumber = data['maxNodeNumber']
-        self.exportEnvVars()
+        #self.exportEnvVars()
 
     def exportEnvVars(self):
         os.environ['MIN_CPU'] = str(self.minPhysicalCpuPerNode)
@@ -176,7 +177,6 @@ class FeelppConfig:
     def __init__(self, data):
         self.toolboxes = data['Toolboxes']
         self.casesDirectory = data['casesDirectory']
-        self.outputPrefix = data['outputPrefix']
         self.partitioning = data['usePartitioning']
         self.CommandLine = CommandLineConfig(data['CommandLine'])
         if self.partitioning:
@@ -186,16 +186,17 @@ class FeelppConfig:
             else:
                 self.partDirectory = data['partitionDirectory'].strip()
 
-        self.exportEnvVars()
+        #self.exportEnvVars()
 
+    """
     def exportEnvVars(self):
         os.environ['FEELPP_OUTPUT_PREFIX'] = self.outputPrefix
+    """
 
     def to_dict(self):
         return {
             "Toolboxes": self.toolboxes,
             "Cases Directory": self.casesDirectory,
-            "Output Prefix": self.outputPrefix,
             "Partitioning": self.partitioning,
             "Partition Directory": self.partPath,
             "CommandLine": self.CommandLine.to_dict()
@@ -211,7 +212,7 @@ class CommandLineConfig:
         self.repository = RepositoryConfig(data['repository'])
         self.case = CaseConfig(data['case'])
         self.commandList = self.buildCommandList(data)
-        self.exportEnvVars()
+        #self.exportEnvVars()
 
     def exportEnvVars(self):
         os.environ['FEELPP_CFG_PATHS'] = self.configFilesToStr()

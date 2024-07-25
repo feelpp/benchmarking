@@ -5,12 +5,13 @@
         "hostConfig":  "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
         "Directories":
         {
-            "prefix": "${PWD}/build/reframe/",
+            "prefix": "${WORKDIR}/build/reframe/",
             "stage": "",
             "output": "",
-            "testFiles": "${PWD}/src/feelpp/benchmarking/reframe/regression-tests/",
-            "reportPrefix": "${PWD}/docs/modules/${HOSTNAME}/pages/reports/"
+            "testFiles": "${WORKDIR}/src/feelpp/benchmarking/reframe/regression-tests/",
+            "reportPrefix": "${WORKDIR}/docs/modules/${HOSTNAME}/pages/reports/"
         },
+        "exclusiveAccess": false,
 
         "Modes":
         [
@@ -19,14 +20,14 @@
                 "topology":
                 {
                     "minPhysicalCpuPerNode": 1,
-                    "maxPhysicalCpuPerNode": 2,
+                    "maxPhysicalCpuPerNode": 4,
                     "minNodeNumber": 1,
-                    "maxNodeNumber": 6
+                    "maxNodeNumber": 1
                 },
                 "sequencing":
                 {
-                    "generator": "manual / fixAllNodes / powerNB / maxCPU",
-                    "sequence": [1,2,4,16,32,64,128]
+                    "generator": "default",
+                    "sequence": []
                 }
             },
             {
@@ -44,7 +45,7 @@
                 "sequencing":
                 {
                     "generator": "manual",
-                    "sequence": [1,2,4,16,32,64,128]
+                    "sequence": []
                 }
             }
         ]
@@ -52,9 +53,8 @@
 
     "Feelpp":
     {
-        "Toolboxes": "heat",
-        "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes/",
-        "outputPrefix": "${HOME}/feelppdb/benchmarking/toolboxes/",
+        "Toolboxes": "heatfluid",
+        "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
         "usePartitioning": false,
         "partitionDirectory": "",
 
@@ -62,12 +62,15 @@
         {
             "config-files":
             [
-                "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg"
+                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/1-2d_laminar.cfg",
+                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/2-2d_laminar.cfg",
+                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/3-2d_laminar.cfg",
+                "${HOME}/splittedCFG/heatfluid/NaturalConvection_Cavity/4-2d_laminar.cfg"
             ],
             "repository":
             {
-                "prefix": "$FEELPP",
-                "case": "{self.relativeOutputPath}"
+                "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
+                "case": "NaturalConvection_Cavity/2d_laminar"
             },
             "case":
             {

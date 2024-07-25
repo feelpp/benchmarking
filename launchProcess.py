@@ -28,9 +28,7 @@ def parseArgs():        # Usage presentation to be enhanced (because of extend?)
     args.toolboxes, args.case, args.dir, args.mode = handleColonSeparator([args.toolboxes, args.case, args.dir, args.mode])
 
     argsValidation(args)
-    os.environ['HOSTNAME'] = args.machine
-    #os.environ['WORKDIR'] = os.getcwd()
-    printArgs(args)
+    #printArgs(args)
 
     return args
 
@@ -144,28 +142,44 @@ reframePath = shutil.which('reframe')
 args = parseArgs()
 
 
-print("\n[BOUCLE START]")
+""" --- Export some needed ENV_VARS --- """
+
+workdir = os.getcwd()
+os.environ['WORKDIR'] = workdir
+os.environ['MACHINE'] = args.machine
+home = os.getenv('HOME')
+os.environ['FEELPPDB_PATH'] = os.path.join(home, 'feelppdb')
+os.environ['RFM_PREFIX'] = os.path.join(workdir, 'build/reframe')
+os.environ['RFM_TEST_DIR'] = os.path.join(workdir, 'src/feelpp/benchmarking/reframe/regression-tests')
+
+
+
+#print("\n[BOUCLE START]")
+
 for toolbox in args.toolboxes:
-    print(f"[toolbox = {toolbox}]")
+    #print(f" > [toolbox = {toolbox}]")
     os.environ['TOOLBOX'] = toolbox
 
-    for mode in args.mode:    
-        print(f"\t[mode = {mode}]")
+    for mode in args.mode:
+        #print(f" >>> [mode = {mode}]")
 
-        config = ConfigReader(mode)
+        cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py',
+                f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.machine}.py',
+                f'--mode={mode}',
+                f'--system={args.machine}']       # --report_file (see below)
 
-        reportPath = 'x'
-
-        cmd = [ f'--mode={mode}', f'--system={args.machine}']
         str_cmd = ' '.join(['reframe'] + cmd)
         if args.list:
             str_cmd += ' -l'
-        print('\t > cmd:', cmd)
-        print('\t > str_cmd:', str_cmd, "\n")
+
+        #print('\t > cmd:', cmd)
+        print("\n[STR_CMD]")
+        print(str_cmd, "\n")
 
         print('=' * shutil.get_terminal_size().columns)
         os.system(str_cmd)
         print('=' * shutil.get_terminal_size().columns)
 
 
-# '--report_file=${PWD}/docs/modules/${HOSTNAME}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json',
+
+# "--report_file=${PWD}/docs/modules/${HOSTNAME}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json"

@@ -1,62 +1,63 @@
 from setup import *
+import reframe.core.settings as settings
+
 
 @rfm.simple_test
 class ToolboxTest (Setup):
 
-    descr = 'Launch testcases from the Heat Toolbox'
-    toolbox = variable(str, value=os.getenv('TOOLBOX'))
-    case = variable(str, value=os.getenv('FEELPP_CFG_PATHS'))
+    #test = settings.site_configuration
 
-    #checkers = variable(str, value='')
+    descr = 'Launch testcases from the Heat Toolbox'
+    toolbox = variable(str, value='')
+    case = variable(str, value='')
+
+    """ check what is needed """
+    #checkers = variable(str, value='')     --> NEEDED
     #visualization = variable(str, value='')
     #partitioning = variable(str, value='')
 
+
     @run_after('init')
-    def build_paths(self):
-        """ self.feelpp_out_prefix = self.feelppdbPath """
-
-        parentDir = os.path.basename(os.path.dirname(self.case))
-        caseNoExt = os.path.basename(self.case)[:-4]
-
-        self.caseRelativeDir = self.case.split("cases/")[-1][:-4]
-        self.feelOutputPath = os.path.join(self.feelppdbPath, f'{self.toolbox}/{parentDir}/{caseNoExt}/np{self.nbTask}')
+    def setVariables(self):
+        self.toolbox = self.config.Feelpp.toolboxes
+        self.case = self.config.Feelpp.CommandLine.configFilesToStr()
 
 
-        print(" > self.caseRelativeDir:\t", self.caseRelativeDir)
-        print(" > self.feelpp_output_prefix:\t", self.feelpp_out_prefix)
-        print(" > self.feelOutputPath:\t\t", self.feelOutputPath)
-        print("")
-
-        #self.checkers = os.path.join(self.feelOutputPath, f'{self.toolbox}.measures/values.csv')
-        #self.visualization = os.path.join(self.feelOutputPath, f'{self.toolbox}.exports/Export.case')
-        #self.partitioning = os.path.join(self.feelOutputPath, f'{self.toolbox}.mesh.json')
+    @run_after('init')
+    def buildPaths(self):
+        self.feelOutputPrefix = os.path.join(self.config.Feelpp.CommandLine.repository.prefix, f"{self.toolbox}")
+        self.feelOutputSuffix = os.path.join(self.config.Feelpp.CommandLine.repository.case, f'np_{self.nbTask}')
+        self.feelOutputPath = os.path.join(self.feelOutputPrefix, f'{self.feelOutputSuffix}')
 
 
     @run_before('run')
     def set_executable_opts(self):
+
+        if self.toolbox == 'heatfluid':
+            scaleCommands = [   '--heat-fluid.scalability-save=1', '--heat-fluid.heat.scalability-save=1', '--heat-fluid.fluid.scalability-save=1']
+        else:
+            scaleCommands = [f'--{self.toolbox}.scalability-save=1']
+
         self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-files {self.case}',
-                                f'--repository.prefix {self.feelppdbPath}', # --> to export
-                                f'--repository.case {self.relativeOutputPath}', # --> to export
+                                f'--repository.prefix {self.feelOutputPrefix}', # --> to export
+                                f'--repository.case {self.feelOutputSuffix}', # --> to export
                                 '--repository.append.np 0',
-                                '--heat.scalability-save 1',
                                 '--fail-on-unknown-option 1']
+
+        self.executable_opts.extend(scaleCommands)
         # --heat.json.merge_patch={"Meshes":{"heat":{"Import":{"hsize": 0.01}}}}
 
 
-    # Capture patterns
-    namePatt = '([a-zA-z\-]+)'
-    valPatt  = '([0-9e\-\+\.]+)'
-
-    def get_column_names(self, filename):
-        with open(filename, 'r') as file:
-            for line in file:
-                if line.startswith('# nProc'):
-                    header = line.strip().split()
-                    return header[2:]               # exclude '# nProc'
-        return []
-
-
+    def buildScalePath(self, name):
+        if self.toolbox == 'heatfluid':
+            toolbox = 'heat-fluid'
+            capitalized = 'HeatFluid'
+        else:
+            toolbox = self.toolbox
+            capitalized = self.toolbox.capitalize()
+        path = os.path.join(self.feelOutputPath, f'{toolbox}.scalibility.{capitalized}{name}.data')
+        return path
 
 
     @run_before('performance')
@@ -64,9 +65,9 @@ class ToolboxTest (Setup):
 
         self.perf_variables = {}
 
-        constructor_path = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Constructor.data')
-        solve_path = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}Solve.data')
-        postprocessing_path = os.path.join(self.feelOutputPath, f'{self.toolbox}.scalibility.{self.toolbox.capitalize()}PostProcessing.data')
+        constructor_path = self.buildScalePath(name='Constructor')
+        solve_path = self.buildScalePath(name='Solve')
+        postprocessing_path = self.buildScalePath(name='PostProcessing')
 
         constructor_names = self.get_column_names(constructor_path)
         solve_names = self.get_column_names(solve_path)
@@ -91,6 +92,45 @@ class ToolboxTest (Setup):
 
         for i in range(lengthPostproc):
             self.perf_variables.update( {postprocessing_names[i] : make_perf(postprocessing_line[i], 's')} )
+
+        if self.toolbox == 'heatfluid':
+            self.getHeatFluidValues()
+
+
+    def getHeatFluidValues(self):
+        fluid_constructor_path = os.path.join(self.feelOutputPath, 'heat-fluid.fluid.scalibility.FluidMechanicsConstructor.data')
+        fluid_postprocessing_path = os.path.join(self.feelOutputPath, 'heat-fluid.fluid.scalibility.FluidMechanicsPostProcessing.data')
+        heat_constructor_path = os.path.join(self.feelOutputPath, 'heat-fluid.heat.scalibility.HeatConstructor.data')
+        heat_postprocessing_path = os.path.join(self.feelOutputPath, 'heat-fluid.heat.scalibility.HeatPostProcessing.data')
+
+        fluid_constructor_names = self.get_column_names(fluid_constructor_path)
+        fluid_postprocessing_names = self.get_column_names(fluid_postprocessing_path)
+        heat_constructor_names = self.get_column_names(heat_constructor_path)
+        heat_postprocessing_names = self.get_column_names(heat_postprocessing_path)
+
+        length_fluid_constructor = len(fluid_constructor_names)
+        length_fluid_postprocessing = len(fluid_postprocessing_names)
+        length_heat_constructor = len(heat_constructor_names)
+        length_heat_postprocessing = len(heat_postprocessing_names)
+
+        fluid_constructor_line = self.extractLine(self.pattern_generator(length_fluid_constructor), fluid_constructor_path, length_fluid_constructor)
+        fluid_postprocessing_line = self.extractLine(self.pattern_generator(length_fluid_postprocessing), fluid_postprocessing_path, length_fluid_postprocessing)
+        heat_constructor_line = self.extractLine(self.pattern_generator(length_heat_constructor), heat_constructor_path, length_heat_constructor)
+        heat_postprocessing_line = self.extractLine(self.pattern_generator(length_heat_postprocessing), heat_postprocessing_path, length_heat_postprocessing)
+
+        make_perf = sn.make_performance_function
+
+        for i in range(length_fluid_constructor):
+            self.perf_variables.update( {fluid_constructor_names[i] : make_perf(fluid_constructor_line[i], 's')} )
+
+        for i in range(length_fluid_postprocessing):
+            self.perf_variables.update( {fluid_postprocessing_names[i] : make_perf(fluid_postprocessing_line[i], 's')} )
+
+        for i in range(length_heat_constructor):
+            self.perf_variables.update( {heat_constructor_names[i] : make_perf(heat_constructor_line[i], 's')} )
+
+        for i in range(length_heat_postprocessing):
+            self.perf_variables.update( {heat_postprocessing_names[i] : make_perf(heat_postprocessing_line[i], 's')} )
 
 
     @sanity_function
