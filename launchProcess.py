@@ -146,40 +146,54 @@ args = parseArgs()
 
 workdir = os.getcwd()
 os.environ['WORKDIR'] = workdir
-os.environ['MACHINE'] = args.machine
+os.environ['HOSTNAME'] = args.machine
 home = os.getenv('HOME')
-os.environ['FEELPPDB_PATH'] = os.path.join(home, 'feelppdb')
-os.environ['RFM_PREFIX'] = os.path.join(workdir, 'build/reframe')
+
 os.environ['RFM_TEST_DIR'] = os.path.join(workdir, 'src/feelpp/benchmarking/reframe/regression-tests')
 
+os.environ['FEELPPDB_PATH'] = '/data/scratch/pierre/feelppdb'
 
 
 #print("\n[BOUCLE START]")
+counter = 0
+rfmPrefix = os.getenv('RFM_PREFIX')
 
-for toolbox in args.toolboxes:
-    #print(f" > [toolbox = {toolbox}]")
-    os.environ['TOOLBOX'] = toolbox
+for meshIndex in ['M2']:    #, 'M3', 'M4']:
+    os.environ['MESH_INDEX'] = meshIndex
 
-    for mode in args.mode:
-        #print(f" >>> [mode = {mode}]")
+    for solverType in ['simple', 'lsc']:
+        os.environ['SOLVER_TYPE'] = solverType
+        os.environ['RFM_PREFIX'] = os.path.join(workdir, 'build/reframe', solverType + f'-{meshIndex}')
 
-        cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py',
-                f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.machine}.py',
-                f'--mode={mode}',
-                f'--system={args.machine}']       # --report_file (see below)
+        for toolbox in args.toolboxes:
+            os.environ['TOOLBOX'] = toolbox
 
-        str_cmd = ' '.join(['reframe'] + cmd)
-        if args.list:
-            str_cmd += ' -l'
+            for mode in args.mode:
+                
+                print(f" > [ SOLVER_TYPE = {solverType} ]")
+                print(f" > [ MESH_INDEX = {meshIndex} ]")
 
-        #print('\t > cmd:', cmd)
-        print("\n[STR_CMD]")
-        print(str_cmd, "\n")
+                counter += 1
 
-        print('=' * shutil.get_terminal_size().columns)
-        os.system(str_cmd)
-        print('=' * shutil.get_terminal_size().columns)
+                cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py',
+                        f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.machine}.py',
+                        f'--mode={mode}',
+                        f'--system={args.machine}',     # --report_file (see below)       
+                        f'--report-file={workdir}/build/runReports/{toolbox}/Eye-{solverType}-{meshIndex}.json',
+                        '--keep-stage-files' ]
+
+                str_cmd = ' '.join(['reframe'] + cmd)
+                if args.list:
+                    str_cmd += ' -l'
+
+                #print('\t > cmd:', cmd)
+                #print("\n[STR_CMD]")
+                #print(str_cmd, "\n")
+
+                os.system(str_cmd)
+                print('=' * shutil.get_terminal_size().columns)
 
 
-
+print("\n > Number of tests run:\t", counter)
+print()
 # "--report_file=${PWD}/docs/modules/${HOSTNAME}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json"

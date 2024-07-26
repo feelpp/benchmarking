@@ -3,7 +3,7 @@ import sys
 import os
 
 
-supportedEnvVars = ('WORKDIR', 'HOME', 'USER', 'TB', 'HOSTNAME', 'FEELPPDB_PATH', 'RFM_TEST_DIR')
+supportedEnvVars = ('WORKDIR', 'HOME', 'USER', 'TB', 'HOSTNAME', 'FEELPPDB_PATH', 'RFM_TEST_DIR', 'MESH_INDEX', 'SOLVER_TYPE')
 
 
 class ConfigReader:
@@ -31,13 +31,16 @@ class ConfigReader:
             print(f"Error decoding JSON: {e}")
             sys.exit(1)
 
+
     def substituteEnvVars(self, data):
         if isinstance(data, dict):
             for key, value in data.items():
                 data[key] = self.substituteEnvVars(value)
+
         elif isinstance(data, list):
             for i in range(len(data)):
                 data[i] = self.substituteEnvVars(data[i])
+                
         elif isinstance(data, str):
             for var in supportedEnvVars:
                 value = os.getenv(var, '')

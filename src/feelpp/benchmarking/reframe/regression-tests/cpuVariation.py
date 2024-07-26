@@ -21,6 +21,7 @@ class ToolboxTest (Setup):
     def setVariables(self):
         self.toolbox = self.config.Feelpp.toolboxes
         self.case = self.config.Feelpp.CommandLine.configFilesToStr()
+        
 
 
     @run_after('init')
@@ -38,12 +39,15 @@ class ToolboxTest (Setup):
         else:
             scaleCommands = [f'--{self.toolbox}.scalability-save=1']
 
+        meshIndex = os.getenv('MESH_INDEX')
         self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-files {self.case}',
                                 f'--repository.prefix {self.feelOutputPrefix}',
                                 f'--repository.case {self.feelOutputSuffix}',
                                 '--repository.append.np 0',
-                                '--fail-on-unknown-option 1']
+                                '--fail-on-unknown-option 1',
+                                '--heat-fluid.json.patch=\'{ \"op\": \"replace\", \"path\": \"/Meshes/heatfluid/Import/filename\", \"value\": \"$cfgdir/meshpartitioning/' + str(meshIndex) + '/mesh_o_p$np.json\"} \' '
+                                ]
 
         self.executable_opts.extend(scaleCommands)
         # --heat.json.merge_patch={"Meshes":{"heat":{"Import":{"hsize": 0.01}}}}

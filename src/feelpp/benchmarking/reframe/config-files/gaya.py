@@ -4,7 +4,7 @@ site_configuration = {
             'name': 'gaya',
             'descr': 'Gaya',
             'hostnames': ['gaya'],
-            'modules_system': 'nomod',
+            'modules_system': 'tmod4',
             'partitions': [
                 {
                     'name': 'public',
@@ -13,13 +13,14 @@ site_configuration = {
                     'max_jobs': 8,
                     'access': ['--partition=public'],
                     'environs': ['env_gaya'],
+                    'prepare_cmds': ['source /etc/profile.d/modules.sh'],
                     'processor': {
                         'num_cpus': 128
                     },
                     'devices': [
                         {
                             'type': 'cpu',
-                            'num_devices': 6        # --> to be set to 6 when MPI_ERR_TRUNCATE resolved
+                            'num_devices': 6
                         }
                     ]
                 },
@@ -29,6 +30,7 @@ site_configuration = {
     'environments': [
         {
             'name': 'env_gaya',
+            'modules': ['hpcx'],
             'cc': 'clang',
             'cxx': 'clang++',
             'target_systems': ['gaya:public']

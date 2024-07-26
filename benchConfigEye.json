@@ -19,10 +19,10 @@
                 "type": "CpuVariation",
                 "topology":
                 {
-                    "minPhysicalCpuPerNode": 1,
-                    "maxPhysicalCpuPerNode": 4,
+                    "minPhysicalCpuPerNode": 64,
+                    "maxPhysicalCpuPerNode": 128,
                     "minNodeNumber": 1,
-                    "maxNodeNumber": 1
+                    "maxNodeNumber": 4
                 },
                 "sequencing":
                 {
@@ -47,15 +47,13 @@
         {
             "config-files":
             [
-                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-1.cfg",
-                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-2.cfg",
-                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-3.cfg",
-                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-4.cfg"
+                "/data/home/chabannes/datasets/eye2brain/eye-prone-velocity.cfg",
+                "myprec_${SOLVER_TYPE}.cfg"
             ],
             "repository":
             {
                 "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
-                "case": "NaturalConvection/Cavity/2d_laminar"
+                "case": "eyeheatfluid/prone/mesh-convergence/pc_${SOLVER_TYPE}/${MESH_INDEX}"
             },
             "case":
             {
