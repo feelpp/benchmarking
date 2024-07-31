@@ -1,0 +1,71 @@
+{
+    "Reframe":
+    {
+        "globalConfig": "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py -- not needed",
+        "hostConfig":  "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
+        "Directories":
+        {
+            "prefix": "${WORKDIR}/build/reframe/",
+            "stage": "",
+            "output": "",
+            "testFiles": "${WORKDIR}/src/feelpp/benchmarking/reframe/regression-tests/",
+            "reportPrefix": "${WORKDIR}/docs/modules/${HOSTNAME}/pages/reports/"
+        },
+        "exclusiveAccess": true,
+
+        "Modes":
+        [
+            {
+                "type": "CpuVariation",
+                "topology":
+                {
+                    "minPhysicalCpuPerNode": 1,
+                    "maxPhysicalCpuPerNode": 4,
+                    "minNodeNumber": 1,
+                    "maxNodeNumber": 1
+                },
+                "sequencing":
+                {
+                    "generator": "default",
+                    "sequence": []
+                }
+            }
+        ]
+    },
+
+    "Feelpp":
+    {
+        "FeelppdbPath": "${HOME}/feelppdb",
+        "Toolbox": "heatfluid",
+        "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
+        "usePartitioning": false,
+        "partitionDirectory": "",
+
+        "CommandLine":
+        {
+            "config-files":
+            [
+                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-1.cfg",
+                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-2.cfg",
+                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-3.cfg",
+                "${HOME}/splittedCFG/heatfluid/Cavity/2d_laminar-4.cfg"
+            ],
+            "repository":
+            {
+                "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
+                "case": "Cavity/2d_laminar"
+            },
+            "case":
+            {
+                "dimension": "",
+                "discretization": ""
+            }
+        }
+    },
+
+    "Reporter":
+    {
+        "active": true,
+        "scaling": "linear / quadratic / cubic"
+    }
+}

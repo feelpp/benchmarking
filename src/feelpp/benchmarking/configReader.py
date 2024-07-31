@@ -3,7 +3,7 @@ import sys
 import os
 
 
-supportedEnvVars = ('WORKDIR', 'HOME', 'USER', 'TB', 'HOSTNAME', 'FEELPPDB_PATH', 'RFM_TEST_DIR', 'MESH_INDEX', 'SOLVER_TYPE')
+supportedEnvVars = ('WORKDIR', 'HOME', 'USER', 'HOSTNAME', 'FEELPPDB_PATH', 'RFM_TEST_DIR')
 
 
 class ConfigReader:
@@ -40,7 +40,7 @@ class ConfigReader:
         elif isinstance(data, list):
             for i in range(len(data)):
                 data[i] = self.substituteEnvVars(data[i])
-                
+
         elif isinstance(data, str):
             for var in supportedEnvVars:
                 value = os.getenv(var, '')
@@ -178,7 +178,7 @@ class FeelppConfig:
     The files' naming scheme is the one provided by Feelpp Toolboxes, i.e. "filename_np{nbTask}"
     """
     def __init__(self, data):
-        self.toolboxes = data['Toolboxes']
+        self.toolbox = data['Toolbox']
         self.casesDirectory = data['casesDirectory']
         self.partitioning = data['usePartitioning']
         self.CommandLine = CommandLineConfig(data['CommandLine'])
@@ -198,7 +198,7 @@ class FeelppConfig:
 
     def to_dict(self):
         return {
-            "Toolboxes": self.toolboxes,
+            "Toolbox": self.toolbox,
             "Cases Directory": self.casesDirectory,
             "Partitioning": self.partitioning,
             "Partition Directory": self.partPath,

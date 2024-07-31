@@ -1,22 +1,25 @@
 import reframe                  as rfm
 import reframe.core.runtime     as rt
 import reframe.utility.sanity   as sn
+
 import os
 import sys
 
 
+""" is this ok ? """
+
 root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
 sys.path.insert(0, root)
+
 from src.feelpp.benchmarking.configReader import ConfigReader
+
 
 
 def parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes):
 
     for part in rt.runtime().system.partitions:
-
         nbTask = minCPU
         yield nbTask
-
         while (nbTask < part.processor.num_cpus) and (nbTask < maxCPU):
             nbTask <<= 1
             yield nbTask
@@ -31,17 +34,16 @@ def parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes):
                 yield nbTask
 
 
-
 @rfm.simple_test
 class Setup(rfm.RunOnlyRegressionTest):
 
     valid_systems = ['*']
     valid_prog_environs = ['*']
+    workdir = os.getenv('WORKDIR')
 
-    workdir = os.environ['WORKDIR']
-    config = ConfigReader(mode="CpuVariation", configPath=os.path.join(workdir, 'benchConfigEye.json'))
+    configPath = variable(str, value=os.environ['CONFIG_PATH'])
+    config = ConfigReader('CpuVariation', configPath=str(configPath))
 
-    # Parametrization
     minCPU = config.Reframe.Mode.topology.minPhysicalCpuPerNode
     maxCPU = config.Reframe.Mode.topology.maxPhysicalCpuPerNode
     minNodes = config.Reframe.Mode.topology.minNodeNumber
@@ -53,10 +55,10 @@ class Setup(rfm.RunOnlyRegressionTest):
     # @run_after('init') does not work because of .current_partition
     @run_before('run')
     def setTaskNumber(self):
-
         self.num_tasks_per_node = min(self.nbTask, self.current_partition.processor.num_cpus)
         self.num_cpus_per_task = 1
         self.num_tasks = self.nbTask
+
 
     @run_after('init')
     def setEnvVars(self):
@@ -66,10 +68,9 @@ class Setup(rfm.RunOnlyRegressionTest):
     # Set scheduler and launcher options
     @run_before('run')
     def setLaunchOptions(self):
-
-        #self.exclusive_access = self.config.Reframe.exclusiveAccess
-        self.exclusive_access = True
+        self.exclusive_access = self.config.Reframe.exclusiveAccess
         self.job.launcher.options = ['-bind-to core']
+
         #if self.current_system.name == 'local':
         #    self.job.launcher.options.append('--use-hwthread-cpus')
 

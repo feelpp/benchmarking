@@ -1,27 +1,26 @@
 from setup import *
-import reframe.core.settings as settings
+import shutil
 
 
 @rfm.simple_test
 class ToolboxTest (Setup):
 
-    #test = settings.site_configuration
-
     descr = 'Launch testcases from the Heat Toolbox'
     toolbox = variable(str, value='')
     case = variable(str, value='')
+    valuesPath = variable(str, value='')
+
 
     """ check what is needed """
-    #checkers = variable(str, value='')     --> NEEDED
-    #visualization = variable(str, value='')
-    #partitioning = variable(str, value='')
+    #checkers = variable(str, value='')             --> NEEDED
+    #visualization = variable(str, value='')        --> DON'T THINK SO (complicated: use of export-scene-macro.py)
+    #partitioning = variable(str, value='')         --> MAYBE
 
 
     @run_after('init')
     def setVariables(self):
-        self.toolbox = self.config.Feelpp.toolboxes
+        self.toolbox = self.config.Feelpp.toolbox
         self.case = self.config.Feelpp.CommandLine.configFilesToStr()
-        
 
 
     @run_after('init')
@@ -29,28 +28,36 @@ class ToolboxTest (Setup):
         self.feelOutputPrefix = os.path.join(self.config.Feelpp.CommandLine.repository.prefix, f"{self.toolbox}")
         self.feelOutputSuffix = os.path.join(self.config.Feelpp.CommandLine.repository.case, f'np_{self.nbTask}')
         self.feelOutputPath = os.path.join(self.feelOutputPrefix, f'{self.feelOutputSuffix}')
+        self.valuesPath = os.path.join(self.feelOutputPath, f'{self.toolbox}.measures/values.csv')
+
+
+    @run_before('run')
+    def cleanFolder(self):
+        if os.path.exists(self.feelOutputPath):
+            print(" >>> Cleaning Feelpp output folder...")
+            shutil.rmtree(self.feelOutputPath)
+        else:
+            print(" >>> New folder will be created...")
 
 
     @run_before('run')
     def set_executable_opts(self):
+
+        self.executable = f'feelpp_toolbox_{self.toolbox}'
+        self.executable_opts = [f'--config-files {self.case}',
+                                f'--repository.prefix {self.feelOutputPrefix}',
+                                f'--repository.case {self.feelOutputSuffix}',
+                                '--repository.append.np 0',
+                                '--fail-on-unknown-option 1']
+                                #'--heat-fluid.json.patch=\'{ \"op\": \"replace\", \"path\": \"/Meshes/heatfluid/Import/filename\", \"value\": \"$cfgdir/meshpartitioning/' + str(meshIndex) + '/mesh_o_p$np.json\"} \' '
+                                #      the previous option is for usePartitioning: True]
 
         if self.toolbox == 'heatfluid':
             scaleCommands = [   '--heat-fluid.scalability-save=1', '--heat-fluid.heat.scalability-save=1', '--heat-fluid.fluid.scalability-save=1']
         else:
             scaleCommands = [f'--{self.toolbox}.scalability-save=1']
 
-        meshIndex = os.getenv('MESH_INDEX')
-        self.executable = f'feelpp_toolbox_{self.toolbox}'
-        self.executable_opts = [f'--config-files {self.case}',
-                                f'--repository.prefix {self.feelOutputPrefix}',
-                                f'--repository.case {self.feelOutputSuffix}',
-                                '--repository.append.np 0',
-                                '--fail-on-unknown-option 1',
-                                '--heat-fluid.json.patch=\'{ \"op\": \"replace\", \"path\": \"/Meshes/heatfluid/Import/filename\", \"value\": \"$cfgdir/meshpartitioning/' + str(meshIndex) + '/mesh_o_p$np.json\"} \' '
-                                ]
-
         self.executable_opts.extend(scaleCommands)
-        # --heat.json.merge_patch={"Meshes":{"heat":{"Import":{"hsize": 0.01}}}}
 
 
     def buildScalePath(self, name):

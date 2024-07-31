@@ -1,7 +1,7 @@
 {
     "Reframe":
     {
-        "globalConfig": "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
+        "globalConfig": "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py -- not needed",
         "hostConfig":  "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
         "Directories":
         {
@@ -11,7 +11,7 @@
             "testFiles": "${WORKDIR}/src/feelpp/benchmarking/reframe/regression-tests/",
             "reportPrefix": "${WORKDIR}/docs/modules/${HOSTNAME}/pages/reports/"
         },
-        "exclusiveAccess": false,
+        "exclusiveAccess": true,
 
         "Modes":
         [
@@ -29,28 +29,14 @@
                     "generator": "default",
                     "sequence": []
                 }
-            },
-            {
-                "type": "ModelVariation",
-                "topology":
-                {
-                    "minPhysicalCpuPerNode": 1,
-                    "maxPhysicalCpuPerNode": 4,
-                    "minNodeNumber": 1,
-                    "maxNodeNumber": 1
-                },
-                "sequencing":
-                {
-                    "generator": "manual",
-                    "sequence": [0.20, 0.18, 0.16, 0.14, 0.12, 0.10]
-                }
             }
         ]
     },
 
     "Feelpp":
     {
-        "Toolboxes": "heat",
+        "FeelppdbPath": "${HOME}/feelppdb",
+        "Toolbox": "heat",
         "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
         "usePartitioning": false,
         "partitionDirectory": "",

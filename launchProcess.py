@@ -3,7 +3,7 @@ from argparse                               import ArgumentParser
 from datetime                               import datetime
 import sys
 import os
-import subprocess
+import json
 import shutil
 
 
@@ -12,20 +12,28 @@ validToolboxes = ('alemesh', 'coefficientformpdes', 'electric', 'fluid', 'fsi', 
 validModes = ('CpuVariation', 'ModelVariation', 'TEST')         # Model not working yet
 
 
-def parseArgs():        # Usage presentation to be enhanced (because of extend?)
+# +--------------------------------------+
+# |           ARGS VALIDATION            |
+# +--------------------------------------+
+
+def parseArgs():        # Complicated usage presentation (because of extend?), could maybe be enhanced
 
     parser = ArgumentParser()
     parser.add_argument('machine', type=str, help='Name of the machine')
-    parser.add_argument('--all', '-a', action='store_true', help='Launch every test of every toolbox')
-    parser.add_argument('--toolboxes', '-tb', type=str, action='extend', nargs='+', help='Name of the toolbox (multiple names separated by :)')
-    parser.add_argument('--case', '-c', type=str, action='extend', nargs='+', help='Name of the case .cfg file (multiple names separated by :, requires -tb)')
-    parser.add_argument('--dir', '-d', type=str, action='extend', nargs='+', help='Name of the directory containing .cfg (multiple names separated by :, requires -tb)')
+    parser.add_argument('--config', '-c', type=str, action='extend', nargs='+', required=True, help='Path to the desired benchmark configuration file')
     parser.add_argument('--list', '-l', action='store_true', help='List found .cfg files')
-    parser.add_argument('--mode', '-m', type=str, action='extend', nargs='+', required=True, help='Select Reframe\'s mode to run')
+    parser.add_argument('--verbose', '-v', action='store_true', help='Run with Reframe\'s verbose')
+
+    """ Check what is needed """
+    #parser.add_argument('--toolboxes', '-tb', type=str, action='extend', nargs='+', help='Name of the toolbox (multiple names separated by :)')
+    #parser.add_argument('--all', '-a', action='store_true', help='Launch every test of every toolbox')
+    #parser.add_argument('--case', '-c', type=str, action='extend', nargs='+', help='Name of the case .cfg file (multiple names separated by :, requires -tb)')
+    #parser.add_argument('--dir', '-d', type=str, action='extend', nargs='+', help='Name of the directory containing .cfg (multiple names separated by :, requires -tb)')
     #parser.add_argument('--recursive', '-r', action='store_true', help='Launching every .cfg file from DIR')
+    #parser.add_argument('--mode', '-m', type=str, action='extend', nargs='+', required=True, help='Select Reframe\'s mode to run')
 
     args = parser.parse_args()
-    args.toolboxes, args.case, args.dir, args.mode = handleColonSeparator([args.toolboxes, args.case, args.dir, args.mode])
+    args.config = handleColonSeparator(args.config)
 
     argsValidation(args)
     #printArgs(args)
@@ -33,28 +41,21 @@ def parseArgs():        # Usage presentation to be enhanced (because of extend?)
     return args
 
 
-def handleColonSeparator(argList):
-    result = []
-    for arg in argList:
-        if arg is None:
-            result.append(None)
-
-        elif isinstance(arg, list):
-            splitted = []
-            for elem in arg:
-                if ':' in elem:
-                    splitted.extend(elem.split(':'))
-                else:
-                    splitted.append(elem)
-            result.append(splitted)
-
-        elif isinstance(arg, str):
-            if ':' in arg:
-                result.append(arg.split(':'))
+# not really useful as arguments can be passed multiple times with blank space or multiple -c
+def handleColonSeparator(arg):
+    splitted = []
+    if isinstance(arg, list):
+        for elem in arg:
+            if ':' in elem:
+                splitted.extend(elem.split(':'))
             else:
-                result.append([arg])
-    return result
+                splitted.append(elem)
+        arg = splitted
 
+    elif isinstance(arg, str):
+        if ':' in arg:
+            splitted.append(arg.split(':'))
+    return arg
 
 def argsValidation(args):
     if args.machine not in validMachines:
@@ -62,6 +63,7 @@ def argsValidation(args):
         print('Valid machines are:', validMachines)
         sys.exit(1)
 
+    """
     if args.toolboxes:
         for toolbox in args.toolboxes:
             if toolbox not in validToolboxes:
@@ -76,15 +78,10 @@ def argsValidation(args):
                 print('Valid modes are:', validModes)
                 sys.exit(1)
 
-    if args.case:
-        for case in args.case:
-            if case[-4:] != '.cfg':
-                print("Invalid .cfg file:", case)
-                sys.exit(1)
-
     if (args.case or args.dir) and not args.toolboxes:
         print('[Error] --case and --dir options require --toolbox to be specified')
         sys.exit(1)
+    """
 
 
 def printArgs(args):
@@ -98,27 +95,16 @@ def printArgs(args):
     print(f'{" > Listing:":<20} {args.list}')
 
 
-def pathBuilder():  # For report-path
+def pathBuilder():
+    """ --- Issue adressed to Reframe Dev-Team for manipulating report-path from within a test --- """
     return #TODO
 
 
-def envVarsDebug():
-    hostname = os.getenv('HOSTNAME')
-    workdir = os.getenv('WORKDIR')
-    rfmConfig = os.getenv('RFM_CONFIG_FILES')
-    minCPU = os.getenv('MIN_CPU')
-    maxCPU = os.getenv('MAX_CPU')
-    minNodes = os.getenv('MIN_NODES')
-    maxNodes = os.getenv('MAX_NODES')
+def varExporter(configPath):
+    with open(configPath, 'r') as file:
+        data = json.loads(file)
 
-    print('\n[ENV_TEST]')
-    print(' > HOSTNAME:\t', hostname)
-    print(' > WORKDIR:\t', workdir)
-    print(' > RFM_CONFIG_FILES:\t', rfmConfig)
-    print(' > MIN_CPU:\t', minCPU)
-    print(' > MAX_CPU:\t', maxCPU)
-    print(' > MIN_NODES:\t', minNodes)
-    print(' > MAX_NODES:\t', maxNodes)
+    print(data['Reframe'])
 
 
 
@@ -130,14 +116,13 @@ def envVarsDebug():
 TO BE DONE:     * --config-files list of list in JSON for multiple cases launching
                 * toolbox / case / dir combination
                 * look up --ci-generate
-                * recursive look for .cfg files
+                * loop for .cfg files
                 * usage presentation
 """
 
-
+# Needed for report-file (if passed from CL)
 date = datetime.now()
 date = date.strftime("%Y%m%d")
-reframePath = shutil.which('reframe')
 
 args = parseArgs()
 
@@ -145,55 +130,33 @@ args = parseArgs()
 """ --- Export some needed ENV_VARS --- """
 
 workdir = os.getcwd()
-os.environ['WORKDIR'] = workdir
-os.environ['HOSTNAME'] = args.machine
 home = os.getenv('HOME')
 
+os.environ['WORKDIR'] = workdir
+os.environ['HOSTNAME'] = args.machine
 os.environ['RFM_TEST_DIR'] = os.path.join(workdir, 'src/feelpp/benchmarking/reframe/regression-tests')
+os.environ['FEELPPDB_PATH'] = os.path.join(home, 'feelppdb')
+os.environ['RFM_PREFIX'] = os.path.join(workdir, 'build/loopTest')          # ou: os.path.join(os.environ['WORKDIR'], 'build/loop')
 
-os.environ['FEELPPDB_PATH'] = '/data/scratch/pierre/feelppdb'
 
-
-#print("\n[BOUCLE START]")
 counter = 0
-rfmPrefix = os.getenv('RFM_PREFIX')
+for configPath in args.config:
+    os.environ['CONFIG_PATH'] = configPath
 
-for meshIndex in ['M2']:    #, 'M3', 'M4']:
-    os.environ['MESH_INDEX'] = meshIndex
+    cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py',
+            f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.machine}.py',
+            f'-c {workdir}/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py',
+            f'--system={args.machine}',
+             '--exec-policy=async']    #async/serial
+            #f'--report-file={workdir}/build/RESULTS/ThermalBridges/case4/case4-{date}.json' ]
 
-    for solverType in ['simple', 'lsc']:
-        os.environ['SOLVER_TYPE'] = solverType
-        os.environ['RFM_PREFIX'] = os.path.join(workdir, 'build/reframe', solverType + f'-{meshIndex}')
+    cmd += ['-l'] if args.list else ['-r']
+    if args.verbose:
+        cmd += ['-v']
 
-        for toolbox in args.toolboxes:
-            os.environ['TOOLBOX'] = toolbox
-
-            for mode in args.mode:
-                
-                print(f" > [ SOLVER_TYPE = {solverType} ]")
-                print(f" > [ MESH_INDEX = {meshIndex} ]")
-
-                counter += 1
-
-                cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py',
-                        f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.machine}.py',
-                        f'--mode={mode}',
-                        f'--system={args.machine}',     # --report_file (see below)       
-                        f'--report-file={workdir}/build/runReports/{toolbox}/Eye-{solverType}-{meshIndex}.json',
-                        '--keep-stage-files' ]
-
-                str_cmd = ' '.join(['reframe'] + cmd)
-                if args.list:
-                    str_cmd += ' -l'
-
-                #print('\t > cmd:', cmd)
-                #print("\n[STR_CMD]")
-                #print(str_cmd, "\n")
-
-                os.system(str_cmd)
-                print('=' * shutil.get_terminal_size().columns)
+    os.system(' '.join(['reframe'] + cmd))
+    print('=' * shutil.get_terminal_size().columns)
+    counter += 1
 
 
 print("\n > Number of tests run:\t", counter)
-print()
-# "--report_file=${PWD}/docs/modules/${HOSTNAME}/pages/reports/${tb}/${relative_dir}/${current_date}-${base_name}.json"
