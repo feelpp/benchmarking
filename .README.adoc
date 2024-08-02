@@ -1,0 +1,38 @@
+:feelpp: Feel++
+:cpp: C++
+:project: benchmarking 
+
+= {feelpp} Template Project 
+Christophe Prud'homme <https://github.com/prudhomm[@prudhomm]>
+v2: 
+
+image:https://github.com/feelpp/benchmarking/workflows/CI/badge.svg[CI]
+
+This repository provides a basic starting point for a {feelpp} application including:
+
+- [x] {feelpp} applications in {cpp} to use {feelpp} and {feelpp} toolboxes in `src`
+- [x] documentation using asciidoc and antora
+- [x] python {feelpp} notebooks that can be downloaded from the documentation
+- [x] continuous integration including tests for the {cpp} applications
+- [x] docker image generation for the project
+
+The documentation for benchmarking is available at link:https://feelpp.github.io/benchmarking[here] and you can build on it for your project by enabling the link:https://docs.github.com/en/pages[github pages] for your repository.
+
+== Renaming the project
+
+By default the project is named  `benchmarking` if you cloned the repository `feelpp/benchmarking`.
+However if you used the previous repository as a template, then the project is renamed using the name of the repository using the script `rename.sh` at the initialization of the repository.
+If the name does not suit you, you can change it again using the script `rename.sh` and providing the new name as argument.
+
+WARNING: the script `rename.sh` will rename the project however some url might be set properly if you rename the project yourself. You need to check the following files: `docs/site.yml` and `docs/package.json` and fix the urls after the rename process is done.
+
+== Updating the {project} version
+
+The version of the project is defined in the files `CMakeLists.txt`, `docs/antora.yml` and `docs/package.json`. 
+You need to update with the same version in all files.
+
+== Release process
+
+- [x] update the version in CMakeLists.txt
+- [x] update the version in docs/antora.yml
+- [x] commit the changes with the message "Release vx.y.z". At this point the CI will generate the docker image and push it to docker hub
