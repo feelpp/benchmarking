@@ -96,14 +96,14 @@ class ToolboxTest (Setup):
         make_perf = sn.make_performance_function
 
         for i in range(lengthConstructor):
-            self.perf_variables.update( {constructor_names[i] : make_perf(constructor_line[i], 's')} )
+            self.perf_variables.update( {f'CONSTRUCTOR_{constructor_names[i]}' : make_perf(constructor_line[i], unit='s')} )
 
         for i in range(lengthSolve):            # 1st performance is ksp-niter
             unit = 's' if i!=0 else 'iteration'
-            self.perf_variables.update( {solve_names[i] : make_perf(solve_line[i], unit)} )
+            self.perf_variables.update( {f'SOLVE_{solve_names[i]}' : make_perf(solve_line[i], unit)} )
 
         for i in range(lengthPostproc):
-            self.perf_variables.update( {postprocessing_names[i] : make_perf(postprocessing_line[i], 's')} )
+            self.perf_variables.update( {f'POSTPROCESSING_{postprocessing_names[i]}' : make_perf(postprocessing_line[i], 's')} )
 
         if self.toolbox == 'heatfluid':
             self.getHeatFluidValues()
@@ -133,16 +133,16 @@ class ToolboxTest (Setup):
         make_perf = sn.make_performance_function
 
         for i in range(length_fluid_constructor):
-            self.perf_variables.update( { 'F_' + fluid_constructor_names[i] : make_perf(fluid_constructor_line[i], 's')} )
+            self.perf_variables.update( { f'CONSTRUCTOR_F_{fluid_constructor_names[i]}' : make_perf(fluid_constructor_line[i], 's')} )
 
         for i in range(length_fluid_postprocessing):
-            self.perf_variables.update( { 'F_' + fluid_postprocessing_names[i] : make_perf(fluid_postprocessing_line[i], 's')} )
+            self.perf_variables.update( { f'POSTPROCESSING_F_{fluid_postprocessing_names[i]}' : make_perf(fluid_postprocessing_line[i], 's')} )
 
         for i in range(length_heat_constructor):
-            self.perf_variables.update( { 'H_' + heat_constructor_names[i] : make_perf(heat_constructor_line[i], 's')} )
+            self.perf_variables.update( { f'CONSTRUCTOR_H_{heat_constructor_names[i]}' : make_perf(heat_constructor_line[i], 's')} )
 
         for i in range(length_heat_postprocessing):
-            self.perf_variables.update( { 'H_' + heat_postprocessing_names[i] : make_perf(heat_postprocessing_line[i], 's')} )
+            self.perf_variables.update( { f'POSTPROCESSING_H_{heat_postprocessing_names[i]}' : make_perf(heat_postprocessing_line[i], 's')} )
 
 
     @sanity_function

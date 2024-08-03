@@ -142,13 +142,14 @@ os.environ['RFM_PREFIX'] = os.path.join(workdir, 'build/loopTest')          # ou
 counter = 0
 for configPath in args.config:
     os.environ['CONFIG_PATH'] = configPath
+    configName = os.path.basename(configPath)
 
     cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py',
             f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.machine}.py',
             f'-c {workdir}/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py',
             f'--system={args.machine}',
-             '--exec-policy=async']    #async/serial
-            #f'--report-file={workdir}/build/RESULTS/ThermalBridges/case4/case4-{date}.json' ]
+             '--exec-policy=serial',    #async/serial
+            f'--report-file={workdir}/build/{date}-{configName}' ]
 
     cmd += ['-l'] if args.list else ['-r']
     if args.verbose:
