@@ -19,10 +19,10 @@
                 "type": "CpuVariation",
                 "topology":
                 {
-                    "minPhysicalCpuPerNode": 1,
-                    "maxPhysicalCpuPerNode": 4,
+                    "minPhysicalCpuPerNode": 8,
+                    "maxPhysicalCpuPerNode": 128,
                     "minNodeNumber": 1,
-                    "maxNodeNumber": 1
+                    "maxNodeNumber": 3
                 },
                 "sequencing":
                 {
@@ -35,7 +35,7 @@
 
     "Feelpp":
     {
-        "FeelppdbPath": "${HOME}/feelppdb",
+        "FeelppdbPath": "/data/scratch/pierre/feelppdb",
         "Toolbox": "heatfluid",
         "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
         "usePartitioning": false,
@@ -45,12 +45,12 @@
         {
             "config-files":
             [
-                "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/2d_laminar.cfg"
+                "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg"
             ],
             "repository":
             {
                 "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
-                "case": "Cavity/2d_laminar"
+                "case": "Cavity/3d_laminar"
             },
             "case":
             {

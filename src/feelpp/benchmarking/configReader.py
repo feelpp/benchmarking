@@ -4,6 +4,7 @@ import os
 
 
 supportedEnvVars = ('WORKDIR', 'HOME', 'USER', 'HOSTNAME', 'FEELPPDB_PATH', 'RFM_TEST_DIR')
+validToolboxes = ('electric', 'fluid', 'heat', 'heatfluid', 'solid', 'thermoelectric')    # fsi, hdg: only unsteady cases in usr/share/...
 
 
 class ConfigReader:
@@ -182,6 +183,12 @@ class FeelppConfig:
         self.casesDirectory = data['casesDirectory']
         self.partitioning = data['usePartitioning']
         self.CommandLine = CommandLineConfig(data['CommandLine'])
+        validToolboxes = ('alemesh', 'coefficientformpdes', 'electric', 'fluid', 'fsi', 'hdg', 'heat', 'heatfluid', 'solid', 'thermoelectric')
+        
+        if self.toolbox not in validToolboxes:
+            print("[Error] Unknown toolbox:\t", self.toolbox)
+            sys.exit(1)
+        
         if self.partitioning:
             if data['partitionDirectory'].strip() == '':
                 print('[Error] Partitions directory is mandatory if partitioning=true')

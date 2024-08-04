@@ -58,17 +58,15 @@ fig=report.plotSpeedup()
 fig.show()
 ----
 
-{% if machine == 'gaya' %}
 === Speedup for partial performances
-[%dynamic%raw%open,python]
-----
-fig=report.plotPartialSpeedup('init')
-fig.show()
-----
 
 [%dynamic%raw%open,python]
 ----
-fig=report.plotPartialSpeedup('solve')
-fig.show()
+if report.partial:
+    for name, value in report.partialDict.items():
+        if value != []:
+            fig = report.plotPartialSpeedup(key=name)
+            fig.show()
+else:
+    print("Performances of each part inside an execution step have not been recorded yet.")
 ----
-{% endif %}

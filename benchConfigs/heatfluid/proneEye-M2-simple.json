@@ -11,7 +11,7 @@
             "testFiles": "${WORKDIR}/src/feelpp/benchmarking/reframe/regression-tests/",
             "reportPrefix": "${WORKDIR}/docs/modules/${HOSTNAME}/pages/reports/"
         },
-        "exclusiveAccess": false,
+        "exclusiveAccess": true,
 
         "Modes":
         [
@@ -22,23 +22,21 @@
                     "minPhysicalCpuPerNode": 64,
                     "maxPhysicalCpuPerNode": 128,
                     "minNodeNumber": 1,
-                    "maxNodeNumber": 4
+                    "maxNodeNumber": 3
                 },
                 "sequencing":
                 {
                     "generator": "default",
                     "sequence": []
                 }
-            },
-            {
-                "type": "ModelVariation"
             }
         ]
     },
 
     "Feelpp":
     {
-        "Toolboxes": "heatfluid",
+        "FeelppdbPath": "/data/scratch/pierre/feelppdb",
+        "Toolbox": "heatfluid",
         "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
         "usePartitioning": false,
         "partitionDirectory": "",
@@ -48,12 +46,12 @@
             "config-files":
             [
                 "/data/home/chabannes/datasets/eye2brain/eye-prone-velocity.cfg",
-                "myprec_${SOLVER_TYPE}.cfg"
+                "myprec_simple.cfg"
             ],
             "repository":
             {
                 "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
-                "case": "eyeheatfluid/prone/mesh-convergence/pc_${SOLVER_TYPE}/${MESH_INDEX}"
+                "case": "proneEye/M2-simple"
             },
             "case":
             {

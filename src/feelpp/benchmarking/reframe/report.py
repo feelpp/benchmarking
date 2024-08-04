@@ -69,7 +69,8 @@ class Report:
         df['num_tasks'] = df['num_tasks'].astype(int)
         df = df[['num_tasks', 'perfvars']]
 
-        self.buildPartialDict()
+        if self.partial:
+            self.buildPartialDict()
         self.buildPerf(df)
         self.buildSpeedup(df)
 
@@ -111,17 +112,6 @@ class Report:
             elif name.startswith('POSTPROCESSING_'):
                 postprocessingNames.append(name.replace('POSTPROCESSING_', ''))
 
-        """
-        {   'init': ['initMesh', 'createExporters', 'graph', 'matrixVector', 'algebraicOthers'],
-            'solve': ['snes-niter', 'algebraic-newton-initial-guess', 'algebraic-jacobian', 'algebraic-residual', 'algebraic-nlsolve'],
-            'exportResults': [],
-            'H_init': ['H_initMaterialProperties', 'H_initMesh', 'H_initFunctionSpaces', 'H_initPostProcess'],
-            'H_exportResults': [],
-            'F_init': ['F_initMaterialProperties', 'F_initMesh', 'F_initFunctionSpaces'], 
-            'F_exportResults': []
-         }
-        """
-
         constructorPart = constructorNames.pop()
         solvePart = solveNames.pop()
         postprocPart = postprocessingNames.pop()
@@ -140,11 +130,13 @@ class Report:
             self.partialDict[heatPostprocessingPart] = heatPostprocessingNames
             self.partialDict[fluidConstructorPart] = fluidConstructorNames
             self.partialDict[fluidPostprocessingPart] = fluidPostprocessingNames
+
         print(" >>> [self.partialDict]\n",self.partialDict)
 
 
     def isPartialPerf(self, name):
-        return any(name in names for names in self.partialDict.values())
+        if self.partial:
+            return any(name in names for names in self.partialDict.values())
 
 
     def buildPerf(self, df):
@@ -341,8 +333,10 @@ class Report:
 
 if __name__ == "__main__":
 
-    #case_path = "/home/tanguy/Projet/benchmarking/build/heat_BuildingCase3.json"
-    case_path = "/home/tanguy/Projet/benchmarking/build/heatfluid_2dLaminar.json"
+    case_path = "/home/u4/csmi/2023/pierre/benchmarking/docs/modules/gaya/pages/reports/20240804-2dLaminar.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/build/20240804-heatfluid_2dLaminar.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/discoverer/pages/kub/scenario0/20231201-1430.json"
+
     print("\n >>> Loading report...\n")
     result = Report(file_path=case_path)
 
@@ -358,7 +352,8 @@ if __name__ == "__main__":
     figSpeedup = result.plotSpeedup()
     figSpeedup.show()
 
-    for name, value in result.partialDict.items():
-        if value != []:
-            figPartialSpeedup = result.plotPartialSpeedup(key=name)
-            figPartialSpeedup.show()
+    if result.partial:
+        for name, value in result.partialDict.items():
+            if value != []:
+                figPartialSpeedup = result.plotPartialSpeedup(key=name)
+                figPartialSpeedup.show()
