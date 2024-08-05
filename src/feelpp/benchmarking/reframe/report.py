@@ -4,6 +4,8 @@ import json
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
+from plotly.subplots import make_subplots
+from sklearn.linear_model import LinearRegression
 
 print(pd.__version__)
 
@@ -37,7 +39,7 @@ class Report:
         if os.path.basename(self.file_path) not in notPartial:
             self.partial = True
 
-        # Following attributes will be set using methods
+        # Following attributes will be set while processing the data
         self.data               = None
         self.toolbox            = ''
         self.ref_speedup        = -1
@@ -73,6 +75,9 @@ class Report:
             self.buildPartialDict()
         self.buildPerf(df)
         self.buildSpeedup(df)
+        self.linearReg(self.df_speedup)
+        if self.partial:
+            self.linearReg(self.df_partialSpeedup)
 
 
     def buildPartialDict(self):
@@ -137,6 +142,8 @@ class Report:
     def isPartialPerf(self, name):
         if self.partial:
             return any(name in names for names in self.partialDict.values())
+        else:
+            return False
 
 
     def buildPerf(self, df):
@@ -164,11 +171,11 @@ class Report:
     def buildSpeedup(self, df):
         self.ref_speedup = df['num_tasks'].min()
         mainRefs = self.df_perf[self.df_perf['num_tasks'] == self.ref_speedup]
-        print("Main performance variables:\n", mainRefs.to_markdown())
+        print("Reference performance for main parts:\n", mainRefs.to_markdown())
 
         if self.partial:
             partRefs = self.df_partialPerf[self.df_partialPerf['num_tasks'] == self.ref_speedup]
-            print("Partial performances variables\n", partRefs.to_markdown())
+            print("Reference performance for partial parts:\n", partRefs.to_markdown())
 
         for k, t in enumerate(df['num_tasks'].unique()):
             mainIndex = 0
@@ -197,6 +204,22 @@ class Report:
             self.df_partialSpeedup['optimal'] = self.df_partialSpeedup['num_tasks'].apply(lambda1)
             self.df_partialSpeedup['half optimal'] = self.df_partialSpeedup['num_tasks'].apply(lambda2)
 
+
+    def linearReg(self, df):
+
+        for perf in df['name'].unique():
+            df2 = df[df['name'] == perf]
+            x = df2['num_tasks'].values.reshape(-1,1)
+            y = df2['value'].values
+            model = LinearRegression()
+            model.fit(x,y)
+            y_pred = model.predict(x)
+            slope = model.coef_[0]
+            origin = model.intercept_
+
+            df.loc[df['name']==perf, 'linearReg_value'] = y_pred
+            df.loc[df['name']==perf, 'slope'] = slope
+            df.loc[df['name']==perf, 'origin'] = origin
 
     def extractSessionInfo(self):
         """
@@ -266,15 +289,25 @@ class Report:
         return fig
 
 
+    def plotTable(self, df):
+        table = go.Table(   header=dict(values=list(df.columns)),
+                            cells=dict(values=[df[col] for col in df.columns]))
+        return table
+
+
     def plotPerformanceByStep(self):
-        fig = go.Figure()
+        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.2, specs = [[{"type": "scatter"}], [{"type": "table"}]])
+
         for t in sorted(self.df_perf['num_tasks'].unique(), reverse=False):
             df_task = self.df_perf[self.df_perf['num_tasks'] == t]
             fig.add_trace(
-                go.Bar(x=df_task['name'], y=df_task['value'], name=str(t)))
+                go.Bar(x=df_task['name'], y=df_task['value'], name=str(t)), row=1, col=1)
 
+        table = self.plotTable(self.df_perf)
+        fig.add_trace(table, row=2, col=1)
         fig.update_layout(barmode='group', xaxis_tickangle=-45,
                           title='Performance by step', yaxis_type='log')
+
         return fig
 
 
@@ -285,26 +318,56 @@ class Report:
 
 
     def plotSpeedup(self):
-        fig = go.Figure()
+        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.2, specs = [[{"type": "scatter"}], [{"type": "table"}]])
+
         for t in self.df_speedup['name'].unique():
             df_task = self.df_speedup[self.df_speedup['name'] == t]
+            slope = df_task['slope'].unique()[0] * 100
             fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['value'],
-                          mode='lines+markers', name=f'{df_task["name"].values[0]}'))
+                        mode='lines+markers', name=f'{df_task["name"].values[0]} - {slope:.1f}%'), row=1, col=1)
 
-        fig.add_trace(go.Scatter(
-            x=self.df_speedup['num_tasks'], y=self.df_speedup['optimal'], mode='lines', name='optimal'))
-        fig.add_trace(go.Scatter(
-            x=self.df_speedup['num_tasks'], y=self.df_speedup['half optimal'], mode='lines', name='half optimal'))
-        fig.add_trace(go.Scatter(
-            x=self.df_speedup['num_tasks'], y=self.df_speedup['optimal'], fill='tonexty', mode='none', name='optimal'))
+            # Linear regression
+            #fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['y_pred'],
+            #            mode='lines', line=dict(dash='dash'), name=f'REGLIN_{df_task["name"].values[0]}', showlegend=False))
 
-        fig.layout.update(title='Speedup for main stages')
+        # Optimality traces
+        fig.add_trace(go.Scatter(
+            x=self.df_speedup['num_tasks'], y=self.df_speedup['optimal'], mode='lines', name='optimal', showlegend=True))
+        fig.add_trace(go.Scatter(
+            x=self.df_speedup['num_tasks'], y=self.df_speedup['half optimal'], mode='lines', name='half optimal', showlegend=True))
+        fig.add_trace(go.Scatter(
+            x=self.df_speedup['num_tasks'], y=self.df_speedup['optimal'], fill='tonexty', mode='none', name='optimal_fill', showlegend=True))
+
+        df = self.df_speedup[['num_tasks', 'name', 'value', 'linearReg_value', 'slope']]
+        table = self.plotTable(df)
+        fig.add_trace(table, row=2, col=1)
+
+        """
+        --> check how to toogle optimality and 
+        updatemenu = {
+            'buttons': [
+                {
+                    'label': 'Toggle Optimality',
+                    'method': 'update',
+                    'args': [{'visible': [True] * (len(fig.data) - 3) + [not trace.visible for trace in fig.data[-3:]]}]
+                }
+            ],
+            'direction': 'down',
+            'showactive': True,
+            'x': 0.17,
+            'y': 1.15,
+            'xanchor': 'left',
+            'yanchor': 'top'
+        }
+        """
+
+        fig.layout.update(title='Speedup for main stages') #, updatemenus=[updatemenu])
         return fig
 
 
-    def plotPartialSpeedup(self, key):
 
-        fig = go.Figure()
+    def plotPartialSpeedup(self, key):
+        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.2, specs = [[{"type": "scatter"}], [{"type": "table"}]])
         partialNames = self.partialDict[key]
 
         # We don't want a slope from the number of iteration
@@ -316,8 +379,9 @@ class Report:
 
         for t in partialNames:
             df_task = self.df_partialSpeedup[self.df_partialSpeedup['name'] == t]
+            slope = df_task['slope'].unique()[0] * 100
             fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['value'],
-                                     mode='lines+markers', name=f'{df_task["name"].values[0]}'))
+                                     mode='lines+markers', name=f'{df_task["name"].values[0]} - {slope:.1f}%'))
 
         fig.add_trace(go.Scatter(
             x=self.df_partialSpeedup['num_tasks'], y=self.df_partialSpeedup['optimal'], mode='lines', name='optimal'))
@@ -326,19 +390,23 @@ class Report:
         fig.add_trace(go.Scatter(
             x=self.df_partialSpeedup['num_tasks'], y=self.df_partialSpeedup['optimal'], fill='tonexty', mode='none', name='optimal'))
 
+        df = self.df_partialSpeedup[['num_tasks', 'name', 'value', 'linearReg_value', 'slope']]
+        table = self.plotTable(df)
+        fig.add_trace(table, row=2, col=1)
+
         fig.layout.update(title=f'Speed up for {key} phase')
         return fig
 
 
-
 if __name__ == "__main__":
-
-    case_path = "/home/u4/csmi/2023/pierre/benchmarking/docs/modules/gaya/pages/reports/20240804-2dLaminar.json"
-    #case_path = "/home/tanguy/Projet/benchmarking/build/20240804-heatfluid_2dLaminar.json"
-    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/discoverer/pages/kub/scenario0/20231201-1430.json"
+    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/20240804-ThermalBridgesCase3.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heatfluid/20240804-proneEye-M2-simple.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/meluxina/pages/kub/scenario0/20231211-1248.json"
 
     print("\n >>> Loading report...\n")
     result = Report(file_path=case_path)
+    print(result.df_speedup)
+    print(result.df_partialSpeedup)
 
     figStep = result.plotSteps()
     figStep.show()
