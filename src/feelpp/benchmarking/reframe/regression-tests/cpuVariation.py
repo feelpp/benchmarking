@@ -48,8 +48,8 @@ class ToolboxTest (Setup):
                                 f'--repository.prefix {self.feelOutputPrefix}',
                                 f'--repository.case {self.feelOutputSuffix}',
                                 '--repository.append.np 0',
-                                '--fail-on-unknown-option 1',
-                                '--heat-fluid.json.patch=\'{ \"op\": \"replace\", \"path\": \"/Meshes/heatfluid/Import/filename\", \"value\": \"$cfgdir/meshpartitioning/M2/mesh_o_p$np.json\"} \' ']
+                                '--fail-on-unknown-option 1']
+                                #'--heat-fluid.json.patch=\'{ \"op\": \"replace\", \"path\": \"/Meshes/heatfluid/Import/filename\", \"value\": \"$cfgdir/meshpartitioning/M2/mesh_o_p$np.json\"} \' ']
                                 #      the previous option is for usePartitioning: True]
 
         if self.toolbox == 'heatfluid':
@@ -147,4 +147,6 @@ class ToolboxTest (Setup):
 
     @sanity_function
     def checkers_success(self):
-        return sn.assert_not_found(r'\\32m \[failure\] ', self.stdout)
+        notFailed = sn.assert_not_found(r'\\32m \[failure\] ', self.stdout)
+        stopped = sn.assert_found(r'[ Stopping Feel++ ]', self.stdout)
+        return notFailed and stopped

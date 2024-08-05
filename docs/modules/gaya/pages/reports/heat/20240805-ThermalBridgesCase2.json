@@ -1,0 +1,1632 @@
+{
+  "session_info": {
+    "cmdline": "/home/u4/csmi/2023/pierre/benchmarking/.venv/bin/reframe -C /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py -C /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/gaya.py -c /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py --system=gaya --exec-policy=async --report-file=/home/u4/csmi/2023/pierre/benchmarking/docs/modules/gaya/pages/reports/heat/20240805-ThermalBridgesCase2.json -r",
+    "config_files": [
+      "<builtin>",
+      "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
+      "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/gaya.py"
+    ],
+    "data_version": "3.1",
+    "hostname": "gaya",
+    "log_files": [
+      "/tmp/rfm-3l95_a36.log"
+    ],
+    "prefix_output": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output",
+    "prefix_stage": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage",
+    "user": "pierre",
+    "version": "4.6.2",
+    "workdir": "/home/u4/csmi/2023/pierre/benchmarking",
+    "time_start": "2024-08-05T08:20:57+0200",
+    "time_end": "2024-08-05T08:22:11+0200",
+    "time_elapsed": 73.93646669387817,
+    "num_cases": 8,
+    "num_failures": 0
+  },
+  "runs": [
+    {
+      "num_cases": 8,
+      "num_failures": 0,
+      "num_aborted": 0,
+      "num_skipped": 0,
+      "runid": 0,
+      "testcases": [
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=384",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "df1e579f",
+          "jobid": "49971",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=384",
+          "nodelist": [
+            "gaya4",
+            "gaya5",
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_df1e579f",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000518185
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.51060235
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.010696384
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.022515329
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000859006
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004227173
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.8021e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.51326052
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.036743538
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.33617483
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.37345289
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.21288132
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_df1e579f",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010977983474731445,
+          "time_performance": 0.012357711791992188,
+          "time_run": 28.766072034835815,
+          "time_sanity": 0.018117427825927734,
+          "time_setup": 0.014865636825561523,
+          "time_total": 28.958738803863525,
+          "unique_name": "ToolboxTest_7",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_384",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 384,
+            "num_tasks_per_node": 128,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_384/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 384
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=256",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "561f685e",
+          "jobid": "49972",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=256",
+          "nodelist": [
+            "gaya4",
+            "gaya5"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_561f685e",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000374996
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.26908731
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002529309
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.017941555
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000476286
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00415133
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.5978e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.22860322
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.0210066
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.51239841
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.53371862
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.08190632
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_561f685e",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.01077723503112793,
+          "time_performance": 0.010335683822631836,
+          "time_run": 58.684513330459595,
+          "time_sanity": 0.0172121524810791,
+          "time_setup": 0.009532451629638672,
+          "time_total": 58.93836736679077,
+          "unique_name": "ToolboxTest_6",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_256",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 256,
+            "num_tasks_per_node": 128,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_256/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 256
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=128",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "9c8a7a39",
+          "jobid": "49973",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=128",
+          "nodelist": [
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000346312
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.98321229
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002106691
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.013035232
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.001136337
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.003361761
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.0438e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 6.9592099
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.021633279
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.105817017
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.12776549
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.929547633
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010744810104370117,
+          "time_performance": 0.012244224548339844,
+          "time_run": 49.87906742095947,
+          "time_sanity": 0.016541719436645508,
+          "time_setup": 0.009913444519042969,
+          "time_total": 50.194392681121826,
+          "unique_name": "ToolboxTest_5",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_128",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 128,
+            "num_tasks_per_node": 128,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_128/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 128
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=64",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "4c4879f1",
+          "jobid": "49974",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=64",
+          "nodelist": [
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_4c4879f1",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000338387
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.4481168
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002668729
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007554576
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.001411334
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002170401
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.4787e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.83474426
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.02001679
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.292149957
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.312417147
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.657578586
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_4c4879f1",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010656356811523438,
+          "time_performance": 0.012072086334228516,
+          "time_run": 61.39708924293518,
+          "time_sanity": 0.016749858856201172,
+          "time_setup": 0.009377479553222656,
+          "time_total": 61.7725772857666,
+          "unique_name": "ToolboxTest_4",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_64",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 64,
+            "num_tasks_per_node": 64,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_64/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 64
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=32",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "9f5fc29d",
+          "jobid": "49975",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=32",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000366941
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.29912063
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004579365
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.005745659
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002050788
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002175764
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.654e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.68314595
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.023444617
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.275668769
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.299366171
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.350290928
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010816574096679688,
+          "time_performance": 0.01092219352722168,
+          "time_run": 68.21749877929688,
+          "time_sanity": 0.017450332641601562,
+          "time_setup": 0.009299993515014648,
+          "time_total": 68.65429973602295,
+          "unique_name": "ToolboxTest_3",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_32",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 32,
+            "num_tasks_per_node": 32,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_32/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 32
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=16",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "053aa121",
+          "jobid": "49976",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=16",
+          "nodelist": [
+            "gaya5"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_053aa121",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000516904
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.09204491
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.008290527
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.005696421
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004310319
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002659289
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.9816e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.01986654
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.024683849
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.38261496
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.407549231
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.230003869
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_053aa121",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010680675506591797,
+          "time_performance": 0.010646581649780273,
+          "time_run": 66.26444911956787,
+          "time_sanity": 0.018225431442260742,
+          "time_setup": 0.009475469589233398,
+          "time_total": 66.76610445976257,
+          "unique_name": "ToolboxTest_2",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_16",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 16,
+            "num_tasks_per_node": 16,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_16/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 16
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=8",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "a90edc0c",
+          "jobid": "49977",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=8",
+          "nodelist": [
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_a90edc0c",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00030805
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.07901965
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.01492794
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.009051279
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007341545
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002381638
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.4947e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.81023944
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.026422545
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.349782508
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.37654341
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.158028445
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_a90edc0c",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010642290115356445,
+          "time_performance": 0.011235952377319336,
+          "time_run": 68.38667154312134,
+          "time_sanity": 0.01715564727783203,
+          "time_setup": 0.009449481964111328,
+          "time_total": 68.95014333724976,
+          "unique_name": "ToolboxTest_1",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_8",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 8,
+            "num_tasks_per_node": 8,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_8/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 8
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=4",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "cfbf52b6",
+          "jobid": "49978",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=4",
+          "nodelist": [
+            "gaya5"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_cfbf52b6",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000362863
+            },
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.05266283
+            },
+            {
+              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.030170122
+            },
+            {
+              "name": "CONSTRUCTOR_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.016195909
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.015532589
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004700615
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.5338e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.90015472
+            },
+            {
+              "name": "SOLVE_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 1
+            },
+            {
+              "name": "SOLVE_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.033330106
+            },
+            {
+              "name": "SOLVE_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.359945387
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.393862719
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.114729692
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_cfbf52b6",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010650634765625,
+          "time_performance": 0.011237144470214844,
+          "time_run": 73.13655757904053,
+          "time_sanity": 0.017322778701782227,
+          "time_setup": 0.009540796279907227,
+          "time_total": 73.76075720787048,
+          "unique_name": "ToolboxTest_0",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
+              "--repository.case Building/ThermalBridgesENISO10211/case2/np_4",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase2.json",
+            "toolbox": "heat",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case2/np_4/heat.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 4
+          }
+        }
+      ]
+    }
+  ],
+  "restored_cases": []
+}
