@@ -1,0 +1,1483 @@
+{
+  "session_info": {
+    "cmdline": "/home/u4/csmi/2023/pierre/benchmarking/.venv/bin/reframe -C /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py -C /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/gaya.py -c /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py --system=gaya --exec-policy=async --report-file=/home/u4/csmi/2023/pierre/benchmarking/docs/modules/gaya/pages/reports/heatfluid/20240805-3dLaminar.json -r",
+    "config_files": [
+      "<builtin>",
+      "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
+      "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/gaya.py"
+    ],
+    "data_version": "3.1",
+    "hostname": "gaya",
+    "log_files": [
+      "/tmp/rfm-061ot99f.log"
+    ],
+    "prefix_output": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output",
+    "prefix_stage": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage",
+    "user": "pierre",
+    "version": "4.6.2",
+    "workdir": "/home/u4/csmi/2023/pierre/benchmarking",
+    "time_start": "2024-08-05T09:54:15+0200",
+    "time_end": "2024-08-05T15:24:14+0200",
+    "time_elapsed": 19799.79367828369,
+    "num_cases": 5,
+    "num_failures": 0
+  },
+  "runs": [
+    {
+      "num_cases": 5,
+      "num_failures": 0,
+      "num_aborted": 0,
+      "num_skipped": 0,
+      "runid": 0,
+      "testcases": [
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=256",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "561f685e",
+          "jobid": "50053",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=256",
+          "nodelist": [
+            "gaya4",
+            "gaya5"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_561f685e",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.44540875
+            },
+            {
+              "name": "CONSTRUCTOR_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.078574031
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.252254429
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.32928677
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000146726
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 10.0927471
+            },
+            {
+              "name": "SOLVE_snes-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 7
+            },
+            {
+              "name": "SOLVE_algebraic-newton-initial-guess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.010485118
+            },
+            {
+              "name": "SOLVE_algebraic-jacobian",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.29037321
+            },
+            {
+              "name": "SOLVE_algebraic-residual",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.13185481
+            },
+            {
+              "name": "SOLVE_algebraic-nlsolve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 19757.1835
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 19757.1844
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.39775611
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0319e-05
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.2602e-05
+            },
+            {
+              "name": "CONSTRUCTOR_F_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.064827156
+            },
+            {
+              "name": "CONSTRUCTOR_F_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.089118751
+            },
+            {
+              "name": "POSTPROCESSING_F_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.1213999e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.00000001e-07
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.9787e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004438491
+            },
+            {
+              "name": "CONSTRUCTOR_H_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00032966
+            },
+            {
+              "name": "CONSTRUCTOR_H_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.021490776
+            },
+            {
+              "name": "POSTPROCESSING_H_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.87120014e-05
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_561f685e",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010527849197387695,
+          "time_performance": 0.011906147003173828,
+          "time_run": 19799.669711112976,
+          "time_sanity": 0.02441883087158203,
+          "time_setup": 0.01532435417175293,
+          "time_total": 19799.78874397278,
+          "unique_name": "ToolboxTest_4",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heatfluid",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid",
+              "--repository.case Cavity/3d_laminar/np_256",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat-fluid.scalability-save=1",
+              "--heat-fluid.heat.scalability-save=1",
+              "--heat-fluid.fluid.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 256,
+            "num_tasks_per_node": 128,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heatfluid/3dLaminar.json",
+            "toolbox": "heatfluid",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid/Cavity/3d_laminar/np_256/heatfluid.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 256
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=128",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "9c8a7a39",
+          "jobid": "50054",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=128",
+          "nodelist": [
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 6.13368471
+            },
+            {
+              "name": "CONSTRUCTOR_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.064704738
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.548529443
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.220797326
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.4001e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.89445707
+            },
+            {
+              "name": "SOLVE_snes-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 7
+            },
+            {
+              "name": "SOLVE_algebraic-newton-initial-guess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.012335172
+            },
+            {
+              "name": "SOLVE_algebraic-jacobian",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 10.2612899
+            },
+            {
+              "name": "SOLVE_algebraic-residual",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.25316489
+            },
+            {
+              "name": "SOLVE_algebraic-nlsolve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2067.11999
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2067.1222
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.15538725
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.775e-06
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.3321e-05
+            },
+            {
+              "name": "CONSTRUCTOR_F_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.056135921
+            },
+            {
+              "name": "CONSTRUCTOR_F_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.07775238
+            },
+            {
+              "name": "POSTPROCESSING_F_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.58050001e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.80000001e-07
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.9407e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00738976
+            },
+            {
+              "name": "CONSTRUCTOR_H_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000314742
+            },
+            {
+              "name": "CONSTRUCTOR_H_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.016745398
+            },
+            {
+              "name": "POSTPROCESSING_H_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.44830002e-05
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010422229766845703,
+          "time_performance": 0.012452125549316406,
+          "time_run": 2107.300082206726,
+          "time_sanity": 0.022725582122802734,
+          "time_setup": 0.009206056594848633,
+          "time_total": 2107.483498573303,
+          "unique_name": "ToolboxTest_3",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heatfluid",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid",
+              "--repository.case Cavity/3d_laminar/np_128",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat-fluid.scalability-save=1",
+              "--heat-fluid.heat.scalability-save=1",
+              "--heat-fluid.fluid.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 128,
+            "num_tasks_per_node": 128,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heatfluid/3dLaminar.json",
+            "toolbox": "heatfluid",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid/Cavity/3d_laminar/np_128/heatfluid.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 128
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=64",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "4c4879f1",
+          "jobid": "50055",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=64",
+          "nodelist": [
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_4c4879f1",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.8127804
+            },
+            {
+              "name": "CONSTRUCTOR_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.051332278
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.981729226
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.182627752
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.1818e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.84463297
+            },
+            {
+              "name": "SOLVE_snes-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 7
+            },
+            {
+              "name": "SOLVE_algebraic-newton-initial-guess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.067631342
+            },
+            {
+              "name": "SOLVE_algebraic-jacobian",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 12.6941016
+            },
+            {
+              "name": "SOLVE_algebraic-residual",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.96242645
+            },
+            {
+              "name": "SOLVE_algebraic-nlsolve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1774.88032
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1774.88282
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.748998671
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.811e-06
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.4544e-05
+            },
+            {
+              "name": "CONSTRUCTOR_F_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.121249207
+            },
+            {
+              "name": "CONSTRUCTOR_F_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.153108324
+            },
+            {
+              "name": "POSTPROCESSING_F_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.842e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.80000001e-07
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.105e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.012751233
+            },
+            {
+              "name": "CONSTRUCTOR_H_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00034066
+            },
+            {
+              "name": "CONSTRUCTOR_H_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.022474784
+            },
+            {
+              "name": "POSTPROCESSING_H_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 6.97110002e-05
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_4c4879f1",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010457277297973633,
+          "time_performance": 0.015432357788085938,
+          "time_run": 3900.038395166397,
+          "time_sanity": 0.023960351943969727,
+          "time_setup": 0.009207487106323242,
+          "time_total": 3900.296297311783,
+          "unique_name": "ToolboxTest_2",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heatfluid",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid",
+              "--repository.case Cavity/3d_laminar/np_64",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat-fluid.scalability-save=1",
+              "--heat-fluid.heat.scalability-save=1",
+              "--heat-fluid.fluid.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 64,
+            "num_tasks_per_node": 64,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heatfluid/3dLaminar.json",
+            "toolbox": "heatfluid",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid/Cavity/3d_laminar/np_64/heatfluid.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 64
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=32",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "9f5fc29d",
+          "jobid": "50056",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=32",
+          "nodelist": [
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.60689024
+            },
+            {
+              "name": "CONSTRUCTOR_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.049447162
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.87375386
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.651580263
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.2095e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 10.2567213
+            },
+            {
+              "name": "SOLVE_snes-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 7
+            },
+            {
+              "name": "SOLVE_algebraic-newton-initial-guess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.025504374
+            },
+            {
+              "name": "SOLVE_algebraic-jacobian",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 19.8737097
+            },
+            {
+              "name": "SOLVE_algebraic-residual",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.86268279
+            },
+            {
+              "name": "SOLVE_algebraic-nlsolve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2803.30173
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2803.31225
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.457186872
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.971e-06
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.4256e-05
+            },
+            {
+              "name": "CONSTRUCTOR_F_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.263612103
+            },
+            {
+              "name": "CONSTRUCTOR_F_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.397173965
+            },
+            {
+              "name": "POSTPROCESSING_F_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.65959999e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.80000001e-07
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.9797e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.023311702
+            },
+            {
+              "name": "CONSTRUCTOR_H_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000332615
+            },
+            {
+              "name": "CONSTRUCTOR_H_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.036185252
+            },
+            {
+              "name": "POSTPROCESSING_H_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.50549996e-05
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010318279266357422,
+          "time_performance": 0.012788534164428711,
+          "time_run": 6715.127240180969,
+          "time_sanity": 0.024254560470581055,
+          "time_setup": 0.009038686752319336,
+          "time_total": 6715.452887535095,
+          "unique_name": "ToolboxTest_1",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heatfluid",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid",
+              "--repository.case Cavity/3d_laminar/np_32",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat-fluid.scalability-save=1",
+              "--heat-fluid.heat.scalability-save=1",
+              "--heat-fluid.fluid.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 32,
+            "num_tasks_per_node": 32,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heatfluid/3dLaminar.json",
+            "toolbox": "heatfluid",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid/Cavity/3d_laminar/np_32/heatfluid.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 32
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "Launch testcases from the Heat Toolbox",
+          "display_name": "ToolboxTest %nbTask=16",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
+          "fixture": false,
+          "hash": "053aa121",
+          "jobid": "50057",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "ToolboxTest %nbTask=16",
+          "nodelist": [
+            "gaya6"
+          ],
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_053aa121",
+          "perfvars": [
+            {
+              "name": "CONSTRUCTOR_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.76868532
+            },
+            {
+              "name": "CONSTRUCTOR_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.060876983
+            },
+            {
+              "name": "CONSTRUCTOR_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.35174177
+            },
+            {
+              "name": "CONSTRUCTOR_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.287946689
+            },
+            {
+              "name": "CONSTRUCTOR_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.6948e-05
+            },
+            {
+              "name": "CONSTRUCTOR_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 11.6303067
+            },
+            {
+              "name": "SOLVE_snes-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iteration",
+              "value": 7
+            },
+            {
+              "name": "SOLVE_algebraic-newton-initial-guess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.104819839
+            },
+            {
+              "name": "SOLVE_algebraic-jacobian",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 33.6749155
+            },
+            {
+              "name": "SOLVE_algebraic-residual",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 16.1820761
+            },
+            {
+              "name": "SOLVE_algebraic-nlsolve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 6537.89227
+            },
+            {
+              "name": "SOLVE_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 6537.90579
+            },
+            {
+              "name": "POSTPROCESSING_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.438820624
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 6.623e-06
+            },
+            {
+              "name": "CONSTRUCTOR_F_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.133e-05
+            },
+            {
+              "name": "CONSTRUCTOR_F_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.547949586
+            },
+            {
+              "name": "CONSTRUCTOR_F_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.605110824
+            },
+            {
+              "name": "POSTPROCESSING_F_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.55710005e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.4e-07
+            },
+            {
+              "name": "CONSTRUCTOR_H_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.104e-05
+            },
+            {
+              "name": "CONSTRUCTOR_H_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.058036251
+            },
+            {
+              "name": "CONSTRUCTOR_H_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000353334
+            },
+            {
+              "name": "CONSTRUCTOR_H_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.087469073
+            },
+            {
+              "name": "POSTPROCESSING_H_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.99340003e-05
+            }
+          ],
+          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
+          "result": "success",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_053aa121",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [],
+          "time_compile": 0.010268926620483398,
+          "time_performance": 0.010611295700073242,
+          "time_run": 13268.809939622879,
+          "time_sanity": 0.022579669952392578,
+          "time_setup": 0.009073972702026367,
+          "time_total": 13269.201530218124,
+          "unique_name": "ToolboxTest_0",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "Launch testcases from the Heat Toolbox",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heatfluid",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid",
+              "--repository.case Cavity/3d_laminar/np_16",
+              "--repository.append.np 0",
+              "--fail-on-unknown-option 1",
+              "--heat-fluid.scalability-save=1",
+              "--heat-fluid.heat.scalability-save=1",
+              "--heat-fluid.fluid.scalability-save=1"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 16,
+            "num_tasks_per_node": 16,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heatfluid/3dLaminar.json",
+            "toolbox": "heatfluid",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/3d_laminar.cfg",
+            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heatfluid/Cavity/3d_laminar/np_16/heatfluid.measures/values.csv"
+          },
+          "check_params": {
+            "nbTask": 16
+          }
+        }
+      ]
+    }
+  ],
+  "restored_cases": []
+}

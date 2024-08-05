@@ -1,0 +1,69 @@
+{
+    "Reframe":
+    {
+        "globalConfig": "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
+        "hostConfig":  "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
+        "Directories":
+        {
+            "prefix": "${WORKDIR}/build/reframe/",
+            "stage": "",
+            "output": "",
+            "testFiles": "${WORKDIR}/src/feelpp/benchmarking/reframe/regression-tests/",
+            "reportPrefix": "${WORKDIR}/docs/modules/${HOSTNAME}/pages/reports/"
+        },
+        "exclusiveAccess": true,
+
+        "Modes":
+        [
+            {
+                "type": "CpuVariation",
+                "topology":
+                {
+                    "minPhysicalCpuPerNode": 64,
+                    "maxPhysicalCpuPerNode": 128,
+                    "minNodeNumber": 1,
+                    "maxNodeNumber": 3
+                },
+                "sequencing":
+                {
+                    "generator": "default",
+                    "sequence": []
+                }
+            }
+        ]
+    },
+
+    "Feelpp":
+    {
+        "FeelppdbPath": "/data/scratch/pierre/feelppdb",
+        "Toolbox": "heatfluid",
+        "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
+        "usePartitioning": false,
+        "partitionDirectory": "",
+
+        "CommandLine":
+        {
+            "config-files":
+            [
+                "/data/home/chabannes/datasets/eye2brain/eye-prone-velocity.cfg",
+                "myprec_simple.cfg"
+            ],
+            "repository":
+            {
+                "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
+                "case": "proneEye/M2-simple"
+            },
+            "case":
+            {
+                "dimension": "",
+                "discretization": ""
+            }
+        }
+    },
+
+    "Reporter":
+    {
+        "active": true,
+        "scaling": "linear / quadratic / cubic"
+    }
+}

@@ -20,14 +20,6 @@ notPartial = [  '20231201-1430.json',
                 'kub_scenario0.json'    ]
 
 
-# Names in Feel++ output document
-partialPerfNames = {'init': ['initMaterialProperties', 'initMesh', 'initFunctionSpaces', 'initPostProcess', 'graph', 'matrixVector', 'algebraicOthers'],
-                    'solve': ['ksp-niter', 'algebraic-assembly', 'algebraic-solve'] }
-
-def isPartialPerf(name):
-    return any(name in names for names in partialPerfNames.values())
-
-
 
 class Report:
     """
@@ -41,22 +33,22 @@ class Report:
     def __init__(self, file_path):
 
         self.file_path = file_path
-
         self.partial = False
         if os.path.basename(self.file_path) not in notPartial:
             self.partial = True
 
         # Following attributes will be set using methods
         self.data               = None
+        self.toolbox            = ''
         self.ref_speedup        = -1
         self.df_perf            = pd.DataFrame()
         self.df_speedup         = pd.DataFrame()
         self.df_partialPerf     = pd.DataFrame() if self.partial else None
         self.df_partialSpeedup  = pd.DataFrame() if self.partial else None
+        self.partialDict        = dict() if self.partial else None
 
         self.load()
         self.processData()
-
 
 
     def load(self):
@@ -65,26 +57,99 @@ class Report:
 
 
     def processData(self):
+        # Avoids error for reporting scale performances not launched with 'CpuVariation.py'
+        try:
+            self.toolbox = self.data['runs'][0]['testcases'][0]['check_vars']['toolbox']
+        except KeyError as e:
+            self.toolbox = ''
+
         # Needed dataframe for building df_perf and df_speedup
         df = pd.DataFrame(self.data['runs'][0]['testcases'][0:])
         df['num_tasks'] = df['check_vars'].apply(lambda x: x['num_tasks'])
         df['num_tasks'] = df['num_tasks'].astype(int)
         df = df[['num_tasks', 'perfvars']]
 
+        if self.partial:
+            self.buildPartialDict()
         self.buildPerf(df)
         self.buildSpeedup(df)
 
+
+    def buildPartialDict(self):
+        constructorNames = []
+        solveNames = []
+        postprocessingNames = []
+
+        # The building for heatfluid could have been done in a separate function,
+        # but in this way we load the data only once
+        if self.toolbox == 'heatfluid':
+            heatConstructorNames = []
+            heatPostprocessingNames = []
+            fluidConstructorNames = []
+            fluidPostprocessingNames = []
+
+        for perfvar in self.data['runs'][0]['testcases'][0]['perfvars']:
+            name = perfvar['name']
+
+            if self.toolbox == 'heatfluid':
+                if name.startswith('CONSTRUCTOR_H_'):
+                    heatConstructorNames.append(name.replace('CONSTRUCTOR_', ''))
+                    continue
+                elif name.startswith('POSTPROCESSING_H_'):
+                    heatPostprocessingNames.append(name.replace('POSTPROCESSING_', ''))
+                    continue
+                elif name.startswith('CONSTRUCTOR_F_'):
+                    fluidConstructorNames.append(name.replace('CONSTRUCTOR_', ''))
+                    continue
+                elif name.startswith('POSTPROCESSING_F_'):
+                    fluidPostprocessingNames.append(name.replace('POSTPROCESSING_', ''))
+                    continue
+
+            if name.startswith('CONSTRUCTOR_'):
+                constructorNames.append(name.replace('CONSTRUCTOR_', ''))
+            elif name.startswith('SOLVE_'):
+                solveNames.append(name.replace('SOLVE_', ''))
+            elif name.startswith('POSTPROCESSING_'):
+                postprocessingNames.append(name.replace('POSTPROCESSING_', ''))
+
+        constructorPart = constructorNames.pop()
+        solvePart = solveNames.pop()
+        postprocPart = postprocessingNames.pop()
+
+        self.partialDict[constructorPart] = constructorNames
+        self.partialDict[solvePart] = solveNames
+        self.partialDict[postprocPart] = postprocessingNames
+
+        if self.toolbox == 'heatfluid':
+            heatConstructorPart = heatConstructorNames.pop()
+            heatPostprocessingPart = heatPostprocessingNames.pop()
+            fluidConstructorPart = fluidConstructorNames.pop()
+            fluidPostprocessingPart = fluidPostprocessingNames.pop()
+
+            self.partialDict[heatConstructorPart] = heatConstructorNames
+            self.partialDict[heatPostprocessingPart] = heatPostprocessingNames
+            self.partialDict[fluidConstructorPart] = fluidConstructorNames
+            self.partialDict[fluidPostprocessingPart] = fluidPostprocessingNames
+
+        print(" >>> [self.partialDict]\n",self.partialDict)
+
+
+    def isPartialPerf(self, name):
+        if self.partial:
+            return any(name in names for names in self.partialDict.values())
 
 
     def buildPerf(self, df):
         for k, t in enumerate(df['num_tasks'].unique()):
             for perf in df['perfvars'][k]:
-                    if isPartialPerf(perf['name']):
-                        self.df_partialPerf = pd.concat([self.df_partialPerf, pd.DataFrame(
-                            [{'num_tasks': t, 'name': perf['name'], 'value': perf['value']}])], ignore_index=True)
-                    else:
-                        self.df_perf = pd.concat([self.df_perf, pd.DataFrame(
-                            [{'num_tasks': t, 'name': perf['name'], 'value': perf['value']}])], ignore_index=True)
+                name = perf['name']
+                nameWithoutPrefix = name.split('_',1)[-1]
+                if self.isPartialPerf(nameWithoutPrefix):
+                    self.df_partialPerf = pd.concat([self.df_partialPerf, pd.DataFrame(
+                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': perf['value']}])], ignore_index=True)
+                else:
+                    self.df_perf = pd.concat([self.df_perf, pd.DataFrame(
+                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': perf['value']}])], ignore_index=True)
 
         self.df_perf['name'] = self.df_perf['name'].astype(str)
         self.df_perf['value'] = self.df_perf['value'].astype(float)
@@ -109,14 +174,16 @@ class Report:
             mainIndex = 0
             partIndex = 0
             for perf in df['perfvars'][k]:
+                name = perf['name']
+                nameWithoutPrefix = name.split('_',1)[-1]
 
-                if isPartialPerf(perf['name']):
+                if self.isPartialPerf(nameWithoutPrefix):
                     self.df_partialSpeedup = pd.concat([self.df_partialSpeedup, pd.DataFrame(
-                        [{'num_tasks': t, 'name': perf['name'], 'value': partRefs['value'].values[partIndex]/perf['value']}] )], ignore_index=True)
+                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': partRefs['value'].values[partIndex]/perf['value']}] )], ignore_index=True)
                     partIndex += 1
                 else:
                     self.df_speedup = pd.concat([self.df_speedup, pd.DataFrame(
-                        [{'num_tasks': t, 'name': perf['name'], 'value': mainRefs['value'].values[mainIndex]/perf['value']}] )], ignore_index=True)
+                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': mainRefs['value'].values[mainIndex]/perf['value']}] )], ignore_index=True)
                     mainIndex += 1
 
         # The optimal speedup is ref_speedup
@@ -238,9 +305,14 @@ class Report:
     def plotPartialSpeedup(self, key):
 
         fig = go.Figure()
-        partialNames = partialPerfNames[key]
-        if key=='solve':
-            partialNames.remove('ksp-niter')
+        partialNames = self.partialDict[key]
+
+        # We don't want a slope from the number of iteration
+        if 'solve' in key:
+            for name in partialNames:
+                if '-niter' in name:
+                    partialNames.remove(name)
+                    continue
 
         for t in partialNames:
             df_task = self.df_partialSpeedup[self.df_partialSpeedup['name'] == t]
@@ -256,4 +328,32 @@ class Report:
 
         fig.layout.update(title=f'Speed up for {key} phase')
         return fig
-    
+
+
+
+if __name__ == "__main__":
+
+    case_path = "/home/u4/csmi/2023/pierre/benchmarking/docs/modules/gaya/pages/reports/20240804-2dLaminar.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/build/20240804-heatfluid_2dLaminar.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/discoverer/pages/kub/scenario0/20231201-1430.json"
+
+    print("\n >>> Loading report...\n")
+    result = Report(file_path=case_path)
+
+    figStep = result.plotSteps()
+    figStep.show()
+
+    figPerfStep = result.plotPerformanceByStep()
+    figPerfStep.show()
+
+    figPerfTask = result.plotPerformanceByTask()
+    figPerfTask.show()
+
+    figSpeedup = result.plotSpeedup()
+    figSpeedup.show()
+
+    if result.partial:
+        for name, value in result.partialDict.items():
+            if value != []:
+                figPartialSpeedup = result.plotPartialSpeedup(key=name)
+                figPartialSpeedup.show()

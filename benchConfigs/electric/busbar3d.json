@@ -1,0 +1,68 @@
+{
+    "Reframe":
+    {
+        "globalConfig": "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py -- not needed",
+        "hostConfig":  "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
+        "Directories":
+        {
+            "prefix": "${WORKDIR}/build/reframe/",
+            "stage": "",
+            "output": "",
+            "testFiles": "${WORKDIR}/src/feelpp/benchmarking/reframe/regression-tests/",
+            "reportPrefix": "${WORKDIR}/docs/modules/${HOSTNAME}/pages/reports/"
+        },
+        "exclusiveAccess": true,
+
+        "Modes":
+        [
+            {
+                "type": "CpuVariation",
+                "topology":
+                {
+                    "minPhysicalCpuPerNode": 4,
+                    "maxPhysicalCpuPerNode": 128,
+                    "minNodeNumber": 1,
+                    "maxNodeNumber": 3
+                },
+                "sequencing":
+                {
+                    "generator": "default",
+                    "sequence": []
+                }
+            }
+        ]
+    },
+
+    "Feelpp":
+    {
+        "FeelppdbPath": "/data/scratch/pierre/feelppdb",
+        "Toolbox": "electric",
+        "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
+        "usePartitioning": false,
+        "partitionDirectory": "",
+
+        "CommandLine":
+        {
+            "config-files":
+            [
+                "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg"
+            ],
+            "repository":
+            {
+                "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
+                "case": "busbar/3d"
+            },
+            "case":
+            {
+                "dimension": "",
+                "discretization": ""
+            }
+        }
+    },
+
+    "Reporter":
+    {
+        "active": true,
+        "scaling": "linear / quadratic / cubic"
+    }
+}
