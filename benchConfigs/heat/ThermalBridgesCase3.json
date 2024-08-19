@@ -1,46 +1,37 @@
 {
     "Reframe":
     {
-        "globalConfig": "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py -- not needed",
-        "hostConfig":  "/home/tanguy/Projet/benchmarking/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
+        "hostConfig":  "${WORKDIR}/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
+        "reportPrefix": "",
+        "reportSuffix": "",
         "Directories":
         {
             "prefix": "${WORKDIR}/build/reframe/",
             "stage": "",
-            "output": "",
-            "testFiles": "${WORKDIR}/src/feelpp/benchmarking/reframe/regression-tests/",
-            "reportPrefix": "${WORKDIR}/docs/modules/${HOSTNAME}/pages/reports/"
+            "output": ""
         },
-        "exclusiveAccess": true,
-
-        "Modes":
-        [
+        "Mode":
+        {
+            "type": "CpuVariation",
+            "exclusiveAccess": true,
+            "topology":
             {
-                "type": "CpuVariation",
-                "topology":
-                {
-                    "minPhysicalCpuPerNode": 4,
-                    "maxPhysicalCpuPerNode": 128,
-                    "minNodeNumber": 1,
-                    "maxNodeNumber": 3
-                },
-                "sequencing":
-                {
-                    "generator": "default",
-                    "sequence": []
-                }
+                "minPhysicalCpuPerNode": 1,
+                "maxPhysicalCpuPerNode": 4,
+                "minNodeNumber": 1,
+                "maxNodeNumber": 1
+            },
+            "sequencing":
+            {
+                "generator": "default",
+                "sequence": []
             }
-        ]
+        }
     },
 
     "Feelpp":
     {
-        "FeelppdbPath": "/data/scratch/pierre/feelppdb",
-        "Toolbox": "heat",
-        "casesDirectory": "/usr/share/feelpp/data/testcases/toolboxes",
-        "usePartitioning": false,
-        "partitionDirectory": "",
-
+        "toolbox": "heat",
         "CommandLine":
         {
             "config-files":
@@ -49,14 +40,22 @@
             ],
             "repository":
             {
-                "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/",
+                "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/${TOOLBOX}",
                 "case": "Building/ThermalBridgesENISO10211/case3"
             },
             "case":
             {
                 "dimension": "",
                 "discretization": ""
-            }
+            },
+            "jsonPatch":
+            [
+                {
+                    "op": "",
+                    "path": "",
+                    "value": ""
+                }
+            ]
         }
     },
 
