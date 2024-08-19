@@ -1,4 +1,3 @@
-
 import os
 import json
 import pandas               as pd
@@ -83,65 +82,29 @@ class Report:
 
 
     def buildPartialDict(self):
-        constructorNames = []
-        solveNames = []
-        postprocessingNames = []
-
-        # The building for heatfluid could have been done in a separate function,
-        # but in this way we load the data only once
-        if self.toolbox == 'heatfluid':
-            heatConstructorNames = []
-            heatPostprocessingNames = []
-            fluidConstructorNames = []
-            fluidPostprocessingNames = []
-
+        tmpDict = {}
         for perfvar in self.data['runs'][0]['testcases'][0]['perfvars']:
             name = perfvar['name']
+            stageName = name.split('_')[0]
 
-            if self.toolbox == 'heatfluid':
-                if name.startswith('CONSTRUCTOR_H_'):
-                    heatConstructorNames.append(name.replace('CONSTRUCTOR_', ''))
-                    continue
-                elif name.startswith('POSTPROCESSING_H_'):
-                    heatPostprocessingNames.append(name.replace('POSTPROCESSING_', ''))
-                    continue
-                elif name.startswith('CONSTRUCTOR_F_'):
-                    fluidConstructorNames.append(name.replace('CONSTRUCTOR_', ''))
-                    continue
-                elif name.startswith('POSTPROCESSING_F_'):
-                    fluidPostprocessingNames.append(name.replace('POSTPROCESSING_', ''))
-                    continue
+            if stageName not in tmpDict.keys():
+                tmpDict[stageName] = []
+            tmpDict[stageName].append(name)
 
-            if name.startswith('CONSTRUCTOR_'):
-                constructorNames.append(name.replace('CONSTRUCTOR_', ''))
-            elif name.startswith('SOLVE_'):
-                solveNames.append(name.replace('SOLVE_', ''))
-            elif name.startswith('POSTPROCESSING_'):
-                postprocessingNames.append(name.replace('POSTPROCESSING_', ''))
-
-        constructorPart = constructorNames.pop()
-        solvePart = solveNames.pop()
-        postprocPart = postprocessingNames.pop()
-
-        self.partialDict[constructorPart] = constructorNames
-        self.partialDict[solvePart] = solveNames
-        self.partialDict[postprocPart] = postprocessingNames
-
-        if self.toolbox == 'heatfluid':
-            heatConstructorPart = heatConstructorNames.pop()
-            heatPostprocessingPart = heatPostprocessingNames.pop()
-            fluidConstructorPart = fluidConstructorNames.pop()
-            fluidPostprocessingPart = fluidPostprocessingNames.pop()
-
-            self.partialDict[heatConstructorPart] = heatConstructorNames
-            self.partialDict[heatPostprocessingPart] = heatPostprocessingNames
-            self.partialDict[fluidConstructorPart] = fluidConstructorNames
-            self.partialDict[fluidPostprocessingPart] = fluidPostprocessingNames
+        self.partialDict = {}
+        for stageName, perfNameLst in tmpDict.items():
+            perfNameLst.pop()
+            perfNameLst = [name.split('_')[1] for name in perfNameLst]
+            self.partialDict.update( {stageName : perfNameLst} )
 
 
-    def isPartialPerf(self, name):
+    def isPartialPerf(self, perfName):
         if self.partial:
-            return any(name in names for names in self.partialDict.values())
+            for nameLst in self.partialDict.values():
+                for name in nameLst:
+                    if name in perfName:
+                        return True
+            return False
         else:
             return False
 
@@ -151,12 +114,13 @@ class Report:
             for perf in df['perfvars'][k]:
                 name = perf['name']
                 nameWithoutPrefix = name.split('_',1)[-1]
+
                 if self.isPartialPerf(nameWithoutPrefix):
                     self.df_partialPerf = pd.concat([self.df_partialPerf, pd.DataFrame(
-                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': perf['value']}])], ignore_index=True)
+                        [{'num_tasks': t, 'name': name, 'value': perf['value']}])], ignore_index=True)
                 else:
                     self.df_perf = pd.concat([self.df_perf, pd.DataFrame(
-                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': perf['value']}])], ignore_index=True)
+                        [{'num_tasks': t, 'name': name, 'value': perf['value']}])], ignore_index=True)
 
         self.df_perf['name'] = self.df_perf['name'].astype(str)
         self.df_perf['value'] = self.df_perf['value'].astype(float)
@@ -180,15 +144,13 @@ class Report:
             partIndex = 0
             for perf in df['perfvars'][k]:
                 name = perf['name']
-                nameWithoutPrefix = name.split('_',1)[-1]
-
-                if self.isPartialPerf(nameWithoutPrefix):
+                if self.isPartialPerf(name):
                     self.df_partialSpeedup = pd.concat([self.df_partialSpeedup, pd.DataFrame(
-                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': partRefs['value'].values[partIndex]/perf['value']}] )], ignore_index=True)
+                        [{'num_tasks': t, 'name': name, 'value': partRefs['value'].values[partIndex]/perf['value']}] )], ignore_index=True)
                     partIndex += 1
                 else:
                     self.df_speedup = pd.concat([self.df_speedup, pd.DataFrame(
-                        [{'num_tasks': t, 'name': nameWithoutPrefix, 'value': mainRefs['value'].values[mainIndex]/perf['value']}] )], ignore_index=True)
+                        [{'num_tasks': t, 'name': name, 'value': mainRefs['value'].values[mainIndex]/perf['value']}] )], ignore_index=True)
                     mainIndex += 1
 
         # The optimal speedup is ref_speedup
@@ -286,7 +248,7 @@ class Report:
         fig = go.Figure()
         for name in self.df_perf['name'].unique():
             fig.add_trace(go.Scatter(x=self.df_perf[self.df_perf['name'] == name]['num_tasks'],
-                          y=self.df_perf[self.df_perf['name'] == name]['value'], name=name, mode='lines+markers'))
+                          y=self.df_perf[self.df_perf['name'] == name]['value'], name=name.split('_')[0], mode='lines+markers'))
 
         fig.update_layout(title='Steps', yaxis_type="log")
         return fig
@@ -304,6 +266,7 @@ class Report:
 
         for t in sorted(self.df_perf['num_tasks'].unique(), reverse=False):
             df_task = self.df_perf[self.df_perf['num_tasks'] == t]
+            df_task.loc[:, 'name'] = df_task['name'].apply(lambda x: x.split('_')[0])
             fig.add_trace(go.Bar(x=df_task['name'], y=df_task['value'], name=str(t)), row=1, col=1)
 
         table = self.plotTable(self.df_perf)
@@ -314,9 +277,14 @@ class Report:
 
 
     def plotPerformanceByTask(self):
-        fig = px.bar(self.df_perf, x="num_tasks", y="value", title='Performance by task',
-                     color="name", barmode="group", log_y=True, log_x=True)
+        df = self.df_perf.copy()
+        df['name'] = df['name'].apply(lambda x: x.split('_')[0])
+
+        fig = px.bar(df, x="num_tasks", y="value", title='Performance by task',
+                    color="name", barmode="group", log_y=True, log_x=True)
+
         return fig
+
 
 
     def buildButtons(self, nbCurves):
@@ -352,13 +320,14 @@ class Report:
         fig = make_subplots(rows=2, cols=1, vertical_spacing=0.2, specs=[[{"type": "scatter"}], [{"type": "table"}]])
         colors = pc.qualitative.Plotly
 
-        # Real traces
+        # Real and regression traces
         for i,task in enumerate(self.df_speedup['name'].unique()):
             df_task = self.df_speedup[self.df_speedup['name'] == task]
             slope = df_task['slope'].unique()[0] * 100
+            mainStageName = df_task["name"].values[0].split('_')[0]
 
             fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['value'],
-                                    mode='lines+markers', name=f'{df_task["name"].values[0]}', line=dict(color=colors[i])), row=1, col=1)
+                                    mode='lines+markers', name=mainStageName, line=dict(color=colors[i])), row=1, col=1)
             fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['linearRegression'],
                                     mode='lines', name=f'{slope:.1f}%', line=dict(dash='dash', color=colors[i], width=1), visible=False), row=1, col=1)
 
@@ -370,6 +339,9 @@ class Report:
 
         # Table
         df = self.df_speedup[['num_tasks', 'name', 'value', 'linearRegression', 'slope']]
+
+        # Warning message if only df['name'] without .loc due to views
+        df.loc[:, 'name'] = df['name'].apply(lambda x: x.split('_')[0])
         table = self.plotTable(df)
         fig.add_trace(table, row=2, col=1)
 
@@ -390,14 +362,26 @@ class Report:
                     continue
 
         # Real traces
-        for i,task in enumerate(partialNames):
-            df_task = self.df_partialSpeedup[self.df_partialSpeedup['name'] == task]
-            slope = df_task['slope'].unique()[0] * 100
-            fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['value'],
-                                    mode='lines+markers', name=f'{df_task["name"].values[0]}', line=dict(color=colors[i])), row=1, col=1)
-            fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['linearRegression'],
-                                    mode='lines', name=f'{slope:.1f}%', line=dict(dash='dash', color=colors[i], width=1), visible=False), row=1, col=1)
+        colorIndex = 0
+        df = pd.DataFrame()
+        for task in self.df_partialSpeedup['name'].unique():
+            if not '-niter' in task:
+                df_task = self.df_partialSpeedup[
+                                                (self.df_partialSpeedup['name'] == task) &
+                                                (self.df_partialSpeedup['name'].str.contains(key))
+                                                ]
+                if not df_task.empty:
+                    slope = df_task['slope'].unique()[0] * 100
+                    legendName = df_task["name"].values[0].split('_')[1]
 
+                    fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['value'],
+                                            mode='lines+markers', name=legendName, line=dict(color=colors[colorIndex])),
+                                            row=1, col=1)
+                    fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['linearRegression'],
+                                            mode='lines', name=f'{slope:.1f}%', line=dict(dash='dash', color=colors[colorIndex], width=1), visible=False),
+                                            row=1, col=1)
+                    colorIndex += 1
+                    df = pd.concat([df, df_task], ignore_index=True)
         # Optimality traces
         fig.add_trace(go.Scatter(x=self.df_partialSpeedup['num_tasks'], y=self.df_partialSpeedup['optimal'], mode='lines', name='Optimal', line=dict(color='grey', width=1), visible=False))
         fig.add_trace(go.Scatter(x=self.df_partialSpeedup['num_tasks'], y=self.df_partialSpeedup['half optimal'], mode='lines', name='Semi-optimal', line=dict(color='grey', width=1), visible=False))
@@ -405,7 +389,8 @@ class Report:
         nbCurves = len(fig.data)
 
         # Table
-        df = self.df_partialSpeedup[['num_tasks', 'name', 'value', 'linearRegression', 'slope']]
+        df = df.drop(['optimal', 'half optimal', 'origin'], axis=1)
+        df.loc[:, 'name'] = df['name'].apply(lambda x: x.split('_')[1])
         table = self.plotTable(df)
         fig.add_trace(table, row=2, col=1)
 
@@ -417,10 +402,10 @@ class Report:
 # For debugging purposes:
 
 if __name__ == "__main__":
-    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/20240804-ThermalBridgesCase3.json"
-    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heatfluid/20240804-proneEye-M2-simple.json"
-    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/meluxina/pages/kub/scenario0/20231211-1248.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/local/pages/reports/heat/20240819-ThermalBridgesCase4.json"
+    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/local/pages/reports/heatfluid/20240819-2dLaminar.json"
 
+    print(f"[{case_path.upper()}]\n")
     result = Report(file_path=case_path)
 
     figStep = result.plotSteps()

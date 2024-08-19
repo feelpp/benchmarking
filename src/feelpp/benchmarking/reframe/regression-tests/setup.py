@@ -1,18 +1,13 @@
+import os
+import sys
 import reframe                  as rfm
 import reframe.core.runtime     as rt
 import reframe.utility.sanity   as sn
-
-import os
-import sys
-
-
-""" is this ok ? """
 
 root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
 sys.path.insert(0, root)
 
 from src.feelpp.benchmarking.configReader import ConfigReader
-
 
 
 def parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes):
@@ -39,10 +34,11 @@ class Setup(rfm.RunOnlyRegressionTest):
 
     valid_systems = ['*']
     valid_prog_environs = ['*']
-    workdir = os.getenv('WORKDIR')
+
+    workdir = os.environ['WORKDIR']
 
     configPath = variable(str, value=os.environ['CONFIG_PATH'])
-    config = ConfigReader('CpuVariation', configPath=str(configPath))
+    config = ConfigReader(configPath=str(configPath))
 
     minCPU = config.Reframe.Mode.topology.minPhysicalCpuPerNode
     maxCPU = config.Reframe.Mode.topology.maxPhysicalCpuPerNode
@@ -68,11 +64,8 @@ class Setup(rfm.RunOnlyRegressionTest):
     # Set scheduler and launcher options
     @run_before('run')
     def setLaunchOptions(self):
-        self.exclusive_access = self.config.Reframe.exclusiveAccess
+        self.exclusive_access = self.config.Reframe.Mode.exclusiveAccess
         self.job.launcher.options = ['-bind-to core']
-
-        #if self.current_system.name == 'local':
-        #    self.job.launcher.options.append('--use-hwthread-cpus')
 
 
     def get_column_names(self, filename):
@@ -84,7 +77,6 @@ class Setup(rfm.RunOnlyRegressionTest):
         return []
 
 
-    # The following methods will be used in CpuVariation and ModelVariation
     def pattern_generator(self, valuesNumber):
         valPattern = '([0-9e\-\+\.]+)'
         linePattern = r'^\d+[\s]+' + rf'{valPattern}[\s]+' * valuesNumber

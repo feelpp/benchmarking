@@ -1,99 +1,127 @@
-from src.feelpp.benchmarking.configReader   import ConfigReader
-from argparse                               import ArgumentParser
-from datetime                               import datetime
-import sys
 import os
 import json
-import shutil
+import glob
+from jsonschema                                         import validate, ValidationError
+from datetime                                           import datetime
+from src.feelpp.benchmarking.parser                     import *
+from src.feelpp.benchmarking.configReader               import supportedEnvVars
 
 
-validMachines = ('discoverer', 'gaya', 'karolina', 'meluxina', 'local')     # config-files missing for discoverer, karolina, meluxina
+def getDate(format="%Y%m%d"):
+    date = datetime.now()
+    return date.strftime(format)
 
 
-# +--------------------------------------+
-# |           ARGS VALIDATION            |
-# +--------------------------------------+
-
-def parseArgs():        # Complicated usage presentation (because of extend?), could maybe be enhanced
-
-    parser = ArgumentParser()
-    parser.add_argument('machine', type=str, help='Name of the machine')
-    parser.add_argument('--config', '-c', type=str, action='extend', nargs='+', help='Path to the JSON configuration file')
-    parser.add_argument('--dir', '-d', type=str, action='extend', nargs='+', help='Name of the directory containing JSON configuration file(s)')
-    parser.add_argument('--list', '-l', action='store_true', help='List tests that will be run by Reframe')
-    parser.add_argument('--verbose', '-v', action='store_true', help='Run with Reframe\'s verbose')
-
-    args = parser.parse_args()
-    args.config = handleColonSeparator(args.config)
-
-    argsValidation(args)
-    printArgs(args)
-
-    return args
-
-
-# not really useful as arguments can be passed multiple times with blank space or multiple -c
-def handleColonSeparator(arg):
-    splitted = []
-    if isinstance(arg, list):
-        for elem in arg:
-            if ':' in elem:
-                splitted.extend(elem.split(':'))
-            else:
-                splitted.append(elem)
-        arg = splitted
-
-    elif isinstance(arg, str):
-        if ':' in arg:
-            splitted.append(arg.split(':'))
-    return arg
-
-
-def argsValidation(args):
-    if args.machine not in validMachines:
-        print('[Error] Unknown machine:', args.machine)
-        print('Valid machines are:', validMachines)
-        sys.exit(1)
-
-    if not args.config and not args.dir:
-        print(f'[Error] At least one of --config or --dir option must be specified')
-        sys.exit(1)
-
-    if args.config:
-        for config in args.config:
-            if not os.path.exists(config):
-                print(f'[Error] Configuration file "{config}" not found')
-                sys.exit(1)
+def buildConfigList(args):
+    configLst = []
 
     if args.dir:
         for dir in args.dir:
-            if not os.path.isdir(dir):
-                print(f'[Error] Directory {args.dir} not found')
-                sys.exit(1)
+            path = os.path.join(dir, '**/*.json')
+            jsonFiles = glob.glob(path, recursive=True)
+
+            for file in jsonFiles:
+                basename = os.path.basename(file)
+                if args.exclude and basename in args.exclude:
+                    continue
+                if args.config and basename not in args.config:
+                    continue
+                configLst.append(file)
+
+    elif args.config:
+        configLst = args.config
+
+    return [os.path.abspath(config) for config in configLst]
 
 
+def validateConfigs(configs):
 
-def printArgs(args):
-    print('\n[LAUNCHER] Loaded command-line options:')
-    print(f'{" > Machine:":<20} {args.machine}')
-    if args.dir:
-        print(f'{" > Directory:":<20} {args.dir}')
-    if args.config:
-        print(f'{" > Config:":<20} {args.config}')
-    print(f'{" > Listing:":<20} {args.list}')
-    print(f'{" > Verbose:":<20} {args.verbose}\n')
+    schemaPath = f'{os.getcwd()}/src/feelpp/benchmarking/configSchema.json'
+
+    with open(schemaPath, 'r') as file:
+        schema = json.load(file)
+
+    unvalid = []
+    messages = []
+    for config in configs:
+        try:
+            with open(config, 'r') as file:
+                instance = json.load(file)
+            validate(instance=instance, schema=schema)
+
+        except ValidationError as e:
+            unvalid.append(config)
+            messages.append(e.message)
+
+        except json.JSONDecodeError as e:
+            unvalid.append(config)
+            messages.append(e.message)
+
+    if unvalid:
+        print("\n[Error] Corrupted configuration files. Please check before relaunch or use --exclude option.")
+        for i in range(len(unvalid)):
+            print(f"> file {i+1}:", unvalid[i])
+            print(f"\t {messages[i]}")
+        sys.exit(1)
 
 
-def pathBuilder():
-    """ --- Issue adressed to Reframe Dev-Team for manipulating report-path from within a test --- """
-    return #TODO
+def globalVarExporter(hostname, feelppdbPath):
+    os.environ['WORKDIR'] = os.getcwd()
+    os.environ['HOSTNAME'] = hostname
+    os.environ['FEELPPDB_PATH'] = feelppdbPath
 
 
-def varExporter(configPath):
+# Issue adressed to Reframe Dev-Team for manipulating report-path from within a test
+def buildReportPath(configPath, prefix, suffix, toolbox):
+
+    if prefix == '' or prefix == 'default':
+        prefix = f'{os.getcwd()}/docs/modules/{args.hostname}/pages/reports/'
+
+    if suffix == '' or suffix == 'default':
+        configName = os.path.basename(configPath)
+        suffix = f'{toolbox}/{getDate()}-{configName}'
+
+    reportPath = prefix + suffix
+    return reportPath
+
+
+def loadAndCheckConfig():
+    pass
+
+
+def buildMapToExport(configPath):
+    varMap = {}
+    varMap['CONFIG_PATH'] = configPath
+
     with open(configPath, 'r') as file:
-        data = json.loads(file)
+        data = json.load(file)
 
-    print(data['Reframe'])
+    toolbox = data['Feelpp']['toolbox']
+    varMap['TOOLBOX'] = toolbox
+    varMap['RFM_PREFIX'] = data['Reframe']['Directories']['prefix']
+    varMap['RFM_STAGE_DIR'] = data['Reframe']['Directories']['stage']
+    varMap['RFM_OUTPUT_DIR'] = data['Reframe']['Directories']['output']
+
+    prefix = data['Reframe']['reportPrefix'].strip()
+    suffix = data['Reframe']['reportSuffix'].strip()
+    varMap['RFM_REPORT_FILE'] = buildReportPath(configPath, prefix, suffix, toolbox)
+    print("[RFM_REPORT_FILE]", buildReportPath(configPath, prefix, suffix, toolbox))
+
+    return varMap
+
+
+def processEnvVars(value):
+    for var in supportedEnvVars:
+        if var in value:
+            value = value.replace(f'${{{var}}}', os.environ[f'{var}'])
+    return value
+
+
+def configVarExporter(configPath):
+    for key, value in buildMapToExport(configPath).items():
+        value = value.strip()
+        if value != '':
+            os.environ[key] = processEnvVars(value)
 
 
 
@@ -102,45 +130,40 @@ def varExporter(configPath):
 # +------------------------------------+
 
 
-# Needed for report-file (if passed from CL)
-date = datetime.now()
-date = date.strftime("%Y%m%d")
+if __name__ == '__main__':
 
-args = parseArgs()
+    workdir = os.getcwd()
 
+    args = parseArgs()
+    printArgs(args)
 
-""" --- Export some needed ENV_VARS --- """
-
-workdir = os.getcwd()
-home = os.getenv('HOME')
-
-os.environ['WORKDIR'] = workdir
-os.environ['HOSTNAME'] = args.machine
-#os.environ['RFM_TEST_DIR'] = os.path.join(workdir, 'src/feelpp/benchmarking/reframe/regression-tests')
-os.environ['FEELPPDB_PATH'] = '/data/scratch/pierre/feelppdb'
-os.environ['RFM_PREFIX'] = os.path.join(workdir, 'build/bench/')
+    configs = buildConfigList(args)
+    validateConfigs(configs)
+    globalVarExporter(args.hostname, args.feelppdb)
 
 
-counter = 0
-for configPath in args.config:
-    os.environ['CONFIG_PATH'] = configPath
-    configName = os.path.basename(configPath)
+    if args.list_files:
+        print("\nFollowing configuration files have been found and validated:")
+        for configPath in configs:
+            print(f"\t> {configPath}")
+        print(f"\nTotal: {len(configs)} file(s)")
 
+    else:
+        for configPath in configs:
 
-    cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py',
-            f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.machine}.py',
-            f'-c {workdir}/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py',
-            f'--system={args.machine}',
-             '--exec-policy=async',    #async/serial
-            f'--report-file={workdir}/docs/modules/{args.machine}/pages/reports/fluid/{date}-{configName}' ]
+            configVarExporter(configPath)
+            print(f"[{os.environ['TOOLBOX'].upper()} - {os.path.basename(configPath)}]")
 
-    cmd += ['-l'] if args.list else ['-r']
-    if args.verbose:
-        cmd += ['-v']
+            # --report-file option replaced in favour of 'RFM_REPORT_FILE' environment variable
+            cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.hostname}.py',
+                    f'-c {workdir}/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py',
+                    f'--system={args.hostname}',
+                    f'--exec-policy={args.policy}']    #async/serial
 
-    os.system(' '.join(['reframe'] + cmd))
-    print('=' * shutil.get_terminal_size().columns)
-    counter += 1
+            cmd += ['-l'] if args.list else ['-r']
+            if args.verbose:
+                cmd += ['-' + 'v' * args.verbose]
 
-
-print("\n > Number of tests run:\t", counter)
+            os.system(' '.join(['reframe'] + cmd))
+            print("\n" + '=' * shutil.get_terminal_size().columns)
+        print("\n >>> Number of tests run:", len(configs))

@@ -3,34 +3,26 @@ import sys
 import os
 
 
-supportedEnvVars = ('WORKDIR', 'HOME', 'USER', 'HOSTNAME', 'FEELPPDB_PATH', 'RFM_TEST_DIR')
+supportedEnvVars = ('HOME', 'USER', 'WORKDIR', 'HOSTNAME', 'FEELPPDB_PATH', 'TOOLBOX')
 validToolboxes = ('electric', 'fluid', 'heat', 'heatfluid', 'solid', 'thermoelectric')    # fsi, hdg: only unsteady cases in usr/share/...
 
 
 class ConfigReader:
 
-    def __init__(self, mode, configPath='./benchConfig.json'):
+    def __init__(self, configPath):
         self.configPath = configPath
         self.data = None
         self.Reframe = None
         self.Feelpp = None
         self.Reporter = None
         self.load()
-        self.processData(mode)
+        self.processData()
 
     def load(self):
-        try:
-            with open(self.configPath, 'r') as file:
-                self.data = json.load(file)
-                self.substituteEnvVars(self.data)
-
-        except FileNotFoundError:
-            print(f"Error: File {self.configPath} was not found.")
-            sys.exit(1)
-
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
-            sys.exit(1)
+        # Error handling already done in launchProcess.py
+        with open(self.configPath, 'r') as file:
+            self.data = json.load(file)
+            self.substituteEnvVars(self.data)
 
 
     def substituteEnvVars(self, data):
@@ -48,8 +40,9 @@ class ConfigReader:
                 data = data.replace(f'${{{var}}}', value)
         return data
 
-    def processData(self, mode):
-        self.Reframe = ReframeConfig(self.data['Reframe'], mode)
+
+    def processData(self):
+        self.Reframe = ReframeConfig(self.data['Reframe'])
         self.Feelpp = FeelppConfig(self.data['Feelpp'])
         self.Reporter = ReporterConfig(self.data['Reporter'])
 
@@ -61,33 +54,19 @@ class ConfigReader:
 #  =====================
 
 class ReframeConfig:
-    def __init__(self, data, mode):
-        self.globalConfig = data['globalConfig']
+    def __init__(self, data):
         self.hostConfig = data['hostConfig']
+        self.reportPrefix = data['reportPrefix']
+        self.reportSuffix = data['reportSuffix']
         self.Directories = DirectoriesConfig(data['Directories'])
-        self.exclusiveAccess = data['exclusiveAccess']
+        self.Mode = ModeConfig(data['Mode'])
 
-        for modeDict in data['Modes']:
-            if modeDict['type'] == mode:
-                mode_data = modeDict
-                break
-
-        self.Mode = ModeConfig(mode_data)
-        #self.exportEnvVars()
-
-
-    """ !! Needed before launching Reframe !! """
-    """
-    # Reframe will automatically be launched with these configuration files (colon-separated),
-    # instead of passing the -C command line option twice
-    def exportEnvVars(self):
-        os.environ['RFM_CONFIG_FILES'] = self.globalConfig + ':' + self.hostConfig
-    """
 
     def to_dict(self):
         return {
-            "General Configuration": self.globalConfig,
             "Host Configuration": self.hostConfig,
+            "Report prefix": self.reportPrefix,
+            "Report suffix": self.reportSuffix,
             "Directories": self.Directories.to_dict(),
             "Mode": self.Mode.to_dict()
         }
@@ -101,28 +80,20 @@ class DirectoriesConfig:
         self.prefix = data['prefix']
         self.stage = data['stage']
         self.output = data['output']
-        self.testFiles = data['testFiles']
-        self.reportPrefix = data['reportPrefix']
-        #self.exportEnvVars()
 
-    def exportEnvVars(self):
-        os.environ['RFM_PREFIX'] = self.prefix
-        os.environ['RFM_TEST_DIR'] = self.testFiles
-        os.environ['RFM_REPORT_PREFIX'] = self.reportPrefix
 
     def to_dict(self):
         return {
             "prefix": self.prefix,
             "stage": self.stage,
-            "output": self.output,
-            "testFiles": self.testFiles,
-            "report_path": self.report_path
+            "output": self.output
         }
 
 
 class ModeConfig:
     def __init__(self, data):
         self.name = data['type']
+        self.exclusiveAccess = data['exclusiveAccess']
         self.topology = TopologyConfig(data['topology'])
         self.sequencing = SequencingConfig(data['sequencing'])
 
@@ -140,13 +111,6 @@ class TopologyConfig:
         self.maxPhysicalCpuPerNode = data['maxPhysicalCpuPerNode']
         self.minNodeNumber = data['minNodeNumber']
         self.maxNodeNumber = data['maxNodeNumber']
-        #self.exportEnvVars()
-
-    def exportEnvVars(self):
-        os.environ['MIN_CPU'] = str(self.minPhysicalCpuPerNode)
-        os.environ['MAX_CPU'] = str(self.maxPhysicalCpuPerNode)
-        os.environ['MIN_NODES'] = str(self.minNodeNumber)
-        os.environ['MAX_NODES'] = str(self.maxNodeNumber)
 
     def to_dict(self):
         return {
@@ -159,7 +123,7 @@ class TopologyConfig:
 
 class SequencingConfig:
     def __init__(self, data):
-        # Generator: manual, power2, maxCPU, fixAllNodes        TODO
+        # Generator: manual, power2, maxCPU, fixAllNodes        #TODO
         self.generator = data['generator']
         self.sequence = data['sequence']
 
@@ -168,6 +132,7 @@ class SequencingConfig:
             "generator": self.generator,
             "sequence": self.sequence
         }
+
 
 
 #  Feelpp Configuration
@@ -179,36 +144,17 @@ class FeelppConfig:
     The files' naming scheme is the one provided by Feelpp Toolboxes, i.e. "filename_np{nbTask}"
     """
     def __init__(self, data):
-        self.toolbox = data['Toolbox']
-        self.casesDirectory = data['casesDirectory']
-        self.partitioning = data['usePartitioning']
+        self.toolbox = data['toolbox']
         self.CommandLine = CommandLineConfig(data['CommandLine'])
-        validToolboxes = ('alemesh', 'coefficientformpdes', 'electric', 'fluid', 'fsi', 'hdg', 'heat', 'heatfluid', 'solid', 'thermoelectric')
-        
+
         if self.toolbox not in validToolboxes:
             print("[Error] Unknown toolbox:\t", self.toolbox)
             sys.exit(1)
-        
-        if self.partitioning:
-            if data['partitionDirectory'].strip() == '':
-                print('[Error] Partitions directory is mandatory if partitioning=true')
-                sys.exit(1)
-            else:
-                self.partDirectory = data['partitionDirectory'].strip()
 
-        #self.exportEnvVars()
-
-    """
-    def exportEnvVars(self):
-        os.environ['FEELPP_OUTPUT_PREFIX'] = self.outputPrefix
-    """
 
     def to_dict(self):
         return {
             "Toolbox": self.toolbox,
-            "Cases Directory": self.casesDirectory,
-            "Partitioning": self.partitioning,
-            "Partition Directory": self.partPath,
             "CommandLine": self.CommandLine.to_dict()
         }
 
@@ -221,25 +167,23 @@ class CommandLineConfig:
         self.configFiles = data['config-files']
         self.repository = RepositoryConfig(data['repository'])
         self.case = CaseConfig(data['case'])
-        self.commandList = self.buildCommandList(data)
-        #self.exportEnvVars()
-
-    def exportEnvVars(self):
-        os.environ['FEELPP_CFG_PATHS'] = self.configFilesToStr()
+        self.json = JsonPatchConfig(data['jsonPatch'])
+        #self.commandList = self.buildCommandList(data)
 
 
     def configFilesToStr(self):
         return ' '.join(elem for elem in self.configFiles)
 
-    # Finally not used
+
+    # Finally not used as we need Reframe's parametrization for paths building
+    # (doesn't work yet for --json command line)
     def buildCommandList(self, data, prefix=''):
         commands = []
         for key, value in data.items():
             if (type(value) == str) and (value.strip() == ''):
                 continue
             if key == 'config-files':
-                cfgListToStr = ' '.join(str(cfg) for cfg in value)
-                commands.append(f'--{key} {cfgListToStr}')
+                commands.append(f'--{key} {self.configFilesToStr()}')
             elif isinstance(value, dict):
                 commands.extend(self.buildCommandList(value, f'{prefix}{key}.'))
             else:
@@ -251,7 +195,8 @@ class CommandLineConfig:
         return {
             "Config-files": self.configFiles,
             "Repository": self.repository.to_dict(),
-            "Case": self.case.to_dict()
+            "Case": self.case.to_dict(),
+            "Json": self.json.to_dict()
         }
 
     def __repr__(self):
@@ -285,6 +230,36 @@ class CaseConfig:
         }
 
 
+
+class JsonPatchConfig:
+    def __init__(self, data):
+        self.commands = []
+
+        if isinstance(data, list):
+            for jsonDict in data:
+                if not self.containsEmpty(jsonDict):
+                    cmd = self.buildPatchCommand(jsonDict)
+                    self.commands.append(cmd)
+
+        elif isinstance(data, dict):
+            if not self.containsEmpty(data):
+                cmd = self.buildPatchCommand(data)
+                self.commands.append(cmd)
+
+
+    def containsEmpty(self, data):
+        return any(value == '' for value in data.values())
+
+
+    def buildPatchCommand(self, data):
+        # Construction de la commande avec le JSON correctement sérialisé
+        cmd = "json.patch='" + json.dumps(data) + "'"
+        return cmd
+
+
+
+# --heat-fluid.json.patch='{ "op": "replace", "path": "/Meshes/heatfluid/Import/filename", "value": "$cfgdir/meshpartitioning/'${MESH_INDEX}'/mesh_o_p$np.json" }'
+
 #  Reporter Configuration       --> check if needed
 #  ======================
 
@@ -308,6 +283,14 @@ class ReporterConfig:
 
 if __name__ == '__main__':
 
-    config = ConfigReader(mode="CpuVariation")
-    print(config)
-    print(' > test:', config.Feelpp.CommandLine.configFilesToStr())
+    workdir = '/home/tanguy/Projet/benchmarking'
+    relativePath = 'benchConfigs/heat/ThermalBridgesCase3.json'
+
+    config = ConfigReader(configPath=os.path.join(workdir, relativePath))
+
+    print('[LOADED CONFIGURATION]\n', config)
+    print('\n[CONFIG_FILES]\n >', config.Feelpp.CommandLine.configFilesToStr())
+
+    jsonCommands = config.Feelpp.CommandLine.json.commands
+    print('\n[COMMAND_LINE_OPTIONS]\n >', jsonCommands)
+    print(jsonCommands[0])
