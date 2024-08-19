@@ -247,8 +247,10 @@ class Report:
     def plotSteps(self):
         fig = go.Figure()
         for name in self.df_perf['name'].unique():
+            if self.partial:
+                name=name.split('_')[0]
             fig.add_trace(go.Scatter(x=self.df_perf[self.df_perf['name'] == name]['num_tasks'],
-                          y=self.df_perf[self.df_perf['name'] == name]['value'], name=name.split('_')[0], mode='lines+markers'))
+                          y=self.df_perf[self.df_perf['name'] == name]['value'], name=name, mode='lines+markers'))
 
         fig.update_layout(title='Steps', yaxis_type="log")
         return fig
@@ -266,7 +268,7 @@ class Report:
 
         for t in sorted(self.df_perf['num_tasks'].unique(), reverse=False):
             df_task = self.df_perf[self.df_perf['num_tasks'] == t]
-            df_task.loc[:, 'name'] = df_task['name'].apply(lambda x: x.split('_')[0])
+            df_task.loc[:, 'name'] = df_task['name'].apply(lambda x: x.split('_')[0] if self.partial else x)
             fig.add_trace(go.Bar(x=df_task['name'], y=df_task['value'], name=str(t)), row=1, col=1)
 
         table = self.plotTable(self.df_perf)
@@ -278,7 +280,7 @@ class Report:
 
     def plotPerformanceByTask(self):
         df = self.df_perf.copy()
-        df['name'] = df['name'].apply(lambda x: x.split('_')[0])
+        df['name'] = df['name'].apply(lambda x: x.split('_')[0] if self.partial else x)
 
         fig = px.bar(df, x="num_tasks", y="value", title='Performance by task',
                     color="name", barmode="group", log_y=True, log_x=True)
@@ -324,7 +326,10 @@ class Report:
         for i,task in enumerate(self.df_speedup['name'].unique()):
             df_task = self.df_speedup[self.df_speedup['name'] == task]
             slope = df_task['slope'].unique()[0] * 100
-            mainStageName = df_task["name"].values[0].split('_')[0]
+            mainStageName = df_task["name"].values[0]
+
+            if self.partial:
+                mainStageName = mainStageName.split('_')[0]
 
             fig.add_trace(go.Scatter(x=df_task['num_tasks'], y=df_task['value'],
                                     mode='lines+markers', name=mainStageName, line=dict(color=colors[i])), row=1, col=1)
@@ -337,11 +342,11 @@ class Report:
         fig.add_trace(go.Scatter(x=self.df_speedup['num_tasks'], y=self.df_speedup['optimal'], fill='tonexty', fillcolor='rgba(0, 100, 255, 0.20)', mode='none', name='Optimal area', visible=False))
         nbCurves = len(fig.data)
 
-        # Table
+        # Table (Warning message if only df['name'] without .loc due to views)
         df = self.df_speedup[['num_tasks', 'name', 'value', 'linearRegression', 'slope']]
+        if self.partial:
+            df.loc[:, 'name'] = df['name'].apply(lambda x: x.split('_')[0])
 
-        # Warning message if only df['name'] without .loc due to views
-        df.loc[:, 'name'] = df['name'].apply(lambda x: x.split('_')[0])
         table = self.plotTable(df)
         fig.add_trace(table, row=2, col=1)
 
@@ -403,9 +408,13 @@ class Report:
 
 if __name__ == "__main__":
     #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/local/pages/reports/heat/20240819-ThermalBridgesCase4.json"
-    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/local/pages/reports/heatfluid/20240819-2dLaminar.json"
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/local/pages/reports/heatfluid/20240819-2dLaminar.json"
+    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/karolina/pages/kub/scenario0/20231207-1600.json"
 
-    print(f"[{case_path.upper()}]\n")
+    # following report-path is not up-to-date
+    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/20240805-ThermalBridgesCase4.json"
+
+    print(f"[ {case_path} ]\n")
     result = Report(file_path=case_path)
 
     figStep = result.plotSteps()

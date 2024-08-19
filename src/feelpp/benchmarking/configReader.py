@@ -222,6 +222,15 @@ class CaseConfig:
     def __init__(self, data):
         self.dimension = data['dimension']
         self.discretization = data['discretization']
+        self.commands = self.buildCaseCommands()
+
+    def buildCaseCommands(self, prefix='--case'):
+        commands = []
+        if self.dimension != '':
+            commands.append(f'{prefix}.dimension {self.dimension}')
+        if self.discretization != '':
+            commands.append(f'{prefix}.discretization {self.discretization}')
+        return commands
 
     def to_dict(self):
         return {
@@ -292,5 +301,11 @@ if __name__ == '__main__':
     print('\n[CONFIG_FILES]\n >', config.Feelpp.CommandLine.configFilesToStr())
 
     jsonCommands = config.Feelpp.CommandLine.json.commands
-    print('\n[COMMAND_LINE_OPTIONS]\n >', jsonCommands)
-    print(jsonCommands[0])
+    print('\n[JSON_COMMANDS]\n >')
+    print('\n >'.join(jsonCommands))
+
+    caseCommands = config.Feelpp.CommandLine.case.commands
+    if caseCommands:
+        print('\n[JSON_COMMANDS]\n >')
+        print(caseCommands)
+        print('\n >'.join(caseCommands))

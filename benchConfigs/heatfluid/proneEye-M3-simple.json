@@ -16,7 +16,7 @@
             "exclusiveAccess": true,
             "topology":
             {
-                "minPhysicalCpuPerNode": 8,
+                "minPhysicalCpuPerNode": 64,
                 "maxPhysicalCpuPerNode": 128,
                 "minNodeNumber": 1,
                 "maxNodeNumber": 3
@@ -36,12 +36,13 @@
         {
             "config-files":
             [
-                "/usr/share/feelpp/data/testcases/toolboxes/heatfluid/cases/NaturalConvection/cavity/2d_laminar.cfg"
+                "/data/home/chabannes/datasets/eye2brain/eye-prone-velocity.cfg",
+                "myprec_simple.cfg"
             ],
             "repository":
             {
                 "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/${TOOLBOX}",
-                "case": "Cavity/2d_laminar"
+                "case": "proneEye/M3-simple"
             },
             "case":
             {
@@ -52,8 +53,8 @@
             [
                 {
                     "op": "replace",
-                    "path": "/Meshes/heatfluid/Import/hsize",
-                    "value": "0.01"
+                    "path": "/Meshes/heatfluid/Import/filename",
+                    "value": "$cfgdir/meshpartitioning/M3/mesh_o_p$np.json"
                 }
             ]
         }

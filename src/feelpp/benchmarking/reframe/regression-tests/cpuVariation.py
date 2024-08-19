@@ -52,13 +52,15 @@ class ToolboxTest (Setup):
                                 '--fail-on-unknown-option 1']
 
         # json commands needs the '--toolbox' prefix,
-        if self.config.Feelpp.CommandLine.json.commands != []:
-
-            # scale files for heatfluid are named 'heat-fluid...'
+        if self.config.Feelpp.CommandLine.json.commands:
+            # scale files for heatfluid are named 'heat-fluid'
             toolbox = 'heat-fluid' if self.toolbox == 'heatfluid' else self.toolbox
             for cmd in self.config.Feelpp.CommandLine.json.commands:
                 cmd = f'--{toolbox}.' + cmd
                 self.executable_opts.append(cmd)
+
+        if self.config.Feelpp.CommandLine.case.commands:
+            self.executable_opts.extend(self.config.Feelpp.CommandLine.case.commands)
 
         # build scale commands with heatfluid exception handling
         if self.toolbox == 'heatfluid':

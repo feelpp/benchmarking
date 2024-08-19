@@ -16,10 +16,10 @@
             "exclusiveAccess": true,
             "topology":
             {
-                "minPhysicalCpuPerNode": 1,
-                "maxPhysicalCpuPerNode": 4,
+                "minPhysicalCpuPerNode": 4,
+                "maxPhysicalCpuPerNode": 128,
                 "minNodeNumber": 1,
-                "maxNodeNumber": 1
+                "maxNodeNumber": 3
             },
             "sequencing":
             {
@@ -51,9 +51,9 @@
             "jsonPatch":
             [
                 {
-                    "op": "",
-                    "path": "",
-                    "value": ""
+                    "op": "replace",
+                    "path": "/Meshes/heatfluid/Import/hsize",
+                    "value": "0.01"
                 }
             ]
         }
