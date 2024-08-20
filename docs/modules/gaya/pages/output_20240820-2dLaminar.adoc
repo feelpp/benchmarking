@@ -3,26 +3,16 @@
 :page-plotly: true
 :page-jupyter: true
 :page-tags: case
-:description: Performance report for gaya on 2024-08-05T16:03:46+0200
+:description: Performance report for gaya on 2024-08-20T04:44:00+0200
 :page-illustration: gaya.jpg
 :author: Your Name
-:revdate: 2024-08-05T16:03:46+0200
+:revdate: 2024-08-20T04:44:00+0200
 
 == Test Summary
 
-* Total Tests: 8
+* Total Tests: 6
 * Failures: 0
 * Testcases
-** ToolboxTest %nbTask=384
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
-** ToolboxTest %nbTask=256
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 ** ToolboxTest %nbTask=128
 [source,json]
 ----
@@ -58,7 +48,7 @@
 [%dynamic%close,python]
 ----
 from feelpp.benchmarking.reframe.report import Report
-report=Report(file_path="docs/modules/gaya/pages/reports/electric/20240805-busbar3d.json")
+report=Report(file_path="docs/modules/gaya/pages/reports/heatfluid/20240820-2dLaminar.json")
 ----
 
 === Performance by Simulation Steps

@@ -105,7 +105,6 @@ def buildMapToExport(configPath):
     prefix = data['Reframe']['reportPrefix'].strip()
     suffix = data['Reframe']['reportSuffix'].strip()
     varMap['RFM_REPORT_FILE'] = buildReportPath(configPath, prefix, suffix, toolbox)
-    print("[RFM_REPORT_FILE]", buildReportPath(configPath, prefix, suffix, toolbox))
 
     return varMap
 

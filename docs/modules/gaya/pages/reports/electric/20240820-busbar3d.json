@@ -1,30 +1,29 @@
 {
   "session_info": {
-    "cmdline": "/home/u4/csmi/2023/pierre/benchmarking/.venv/bin/reframe -C /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py -C /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/gaya.py -c /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py --system=gaya --exec-policy=async --report-file=/home/u4/csmi/2023/pierre/benchmarking/docs/modules/gaya/pages/reports/heat/20240805-ThermalBridgesCase4.json -r",
+    "cmdline": "/home/u4/csmi/2023/pierre/benchmarking/.venv/bin/reframe -C /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/gaya.py -c /home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py --system=gaya --exec-policy=serial -r",
     "config_files": [
       "<builtin>",
-      "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/reframeConfig.py",
       "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/config-files/gaya.py"
     ],
     "data_version": "3.1",
     "hostname": "gaya",
     "log_files": [
-      "/tmp/rfm-n70k44gr.log"
+      "/tmp/rfm-852xp3gn.log"
     ],
-    "prefix_output": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output",
-    "prefix_stage": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage",
+    "prefix_output": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output",
+    "prefix_stage": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage",
     "user": "pierre",
     "version": "4.6.2",
     "workdir": "/home/u4/csmi/2023/pierre/benchmarking",
-    "time_start": "2024-08-05T08:25:27+0200",
-    "time_end": "2024-08-05T08:26:38+0200",
-    "time_elapsed": 71.11058282852173,
-    "num_cases": 8,
+    "time_start": "2024-08-20T00:55:31+0200",
+    "time_end": "2024-08-20T00:57:16+0200",
+    "time_elapsed": 104.87378716468811,
+    "num_cases": 7,
     "num_failures": 0
   },
   "runs": [
     {
-      "num_cases": 8,
+      "num_cases": 7,
       "num_failures": 0,
       "num_aborted": 0,
       "num_skipped": 0,
@@ -43,7 +42,7 @@
           "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
           "fixture": false,
           "hash": "df1e579f",
-          "jobid": "49979",
+          "jobid": "50712",
           "job_stderr": "rfm_job.err",
           "job_stdout": "rfm_job.out",
           "maintainers": [],
@@ -53,126 +52,110 @@
             "gaya5",
             "gaya6"
           ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_df1e579f",
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output/gaya/public/env_gaya/ToolboxTest_df1e579f",
           "perfvars": [
             {
-              "name": "CONSTRUCTOR_initMaterialProperties",
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 10
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000219914
+              "value": 0.019078988
             },
             {
-              "name": "CONSTRUCTOR_initMesh",
+              "name": "ElectricSolve_algebraic-solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 7.43155806
+              "value": 0.10786722
             },
             {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "name": "ElectricSolve_solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.003182186
+              "value": 0.127451488
             },
             {
-              "name": "CONSTRUCTOR_initPostProcess",
+              "name": "ElectricPostProcessing_exportResults",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.0388442
+              "value": 1.3257698
             },
             {
-              "name": "CONSTRUCTOR_graph",
+              "name": "ElectricConstructor_createMesh",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.001526442
+              "value": 4.33487851
             },
             {
-              "name": "CONSTRUCTOR_matrixVector",
+              "name": "ElectricConstructor_createExporters",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.008632269
+              "value": 0.009211418
             },
             {
-              "name": "CONSTRUCTOR_algebraicOthers",
+              "name": "ElectricConstructor_graph",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 3.8302e-05
+              "value": 0.000676563
             },
             {
-              "name": "CONSTRUCTOR_init",
+              "name": "ElectricConstructor_matrixVector",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 9.96427186
+              "value": 0.005577031
             },
             {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 11
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
+              "name": "ElectricConstructor_algebraicOthers",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.078828355
+              "value": 1.605e-05
             },
             {
-              "name": "SOLVE_algebraic-solve",
+              "name": "ElectricConstructor_init",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.183095288
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.262398016
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.838272511
+              "value": 5.66142146
             }
           ],
           "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
           "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_df1e579f",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage/gaya/public/env_gaya/ToolboxTest_df1e579f",
           "scheduler": "squeue",
           "system": "gaya:public",
           "tags": [],
-          "time_compile": 0.01061558723449707,
-          "time_performance": 0.014896869659423828,
-          "time_run": 26.421567678451538,
-          "time_sanity": 0.01708054542541504,
-          "time_setup": 0.012367963790893555,
-          "time_total": 26.61591386795044,
-          "unique_name": "ToolboxTest_7",
+          "time_compile": 0.0074160099029541016,
+          "time_performance": 0.014227867126464844,
+          "time_run": 24.875209093093872,
+          "time_sanity": 0.017667531967163086,
+          "time_setup": 0.014688491821289062,
+          "time_total": 24.900221347808838,
+          "unique_name": "ToolboxTest_6",
           "check_vars": {
             "valid_prog_environs": [
               "*"
@@ -185,14 +168,14 @@
             "sourcesdir": null,
             "prebuild_cmds": [],
             "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
+            "executable": "feelpp_toolbox_electric",
             "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_384",
-              "--repository.append.np 0",
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/electric",
+              "--repository.case busbar/3d/np_384",
               "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
+              "--electric.json.patch='{\"op\": \"replace\", \"path\": \"/Meshes/electric/Import/hsize\", \"value\": 0.05}'",
+              "--electric.scalability-save=1"
             ],
             "prerun_cmds": [],
             "postrun_cmds": [],
@@ -222,10 +205,10 @@
             "build_time_limit": null,
             "extra_resources": {},
             "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_384/heat.measures/values.csv"
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/electric/busbar3d.json",
+            "toolbox": "electric",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+            "valuesPath": ""
           },
           "check_params": {
             "nbTask": 384
@@ -244,7 +227,7 @@
           "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
           "fixture": false,
           "hash": "561f685e",
-          "jobid": "49980",
+          "jobid": "50713",
           "job_stderr": "rfm_job.err",
           "job_stdout": "rfm_job.out",
           "maintainers": [],
@@ -253,126 +236,110 @@
             "gaya4",
             "gaya5"
           ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_561f685e",
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output/gaya/public/env_gaya/ToolboxTest_561f685e",
           "perfvars": [
             {
-              "name": "CONSTRUCTOR_initMaterialProperties",
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 10
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000162245
+              "value": 0.019035386
             },
             {
-              "name": "CONSTRUCTOR_initMesh",
+              "name": "ElectricSolve_algebraic-solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 5.18911939
+              "value": 0.090499831
             },
             {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "name": "ElectricSolve_solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.003312452
+              "value": 0.109838307
             },
             {
-              "name": "CONSTRUCTOR_initPostProcess",
+              "name": "ElectricPostProcessing_exportResults",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.019147022
+              "value": 1.22378821
             },
             {
-              "name": "CONSTRUCTOR_graph",
+              "name": "ElectricConstructor_createMesh",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.002009911
+              "value": 2.30493051
             },
             {
-              "name": "CONSTRUCTOR_matrixVector",
+              "name": "ElectricConstructor_createExporters",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.006528933
+              "value": 0.006400479
             },
             {
-              "name": "CONSTRUCTOR_algebraicOthers",
+              "name": "ElectricConstructor_graph",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 4.2179e-05
+              "value": 0.000609938
             },
             {
-              "name": "CONSTRUCTOR_init",
+              "name": "ElectricConstructor_matrixVector",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 7.67261906
+              "value": 0.003371892
             },
             {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 11
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
+              "name": "ElectricConstructor_algebraicOthers",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.150429162
+              "value": 1.7964e-05
             },
             {
-              "name": "SOLVE_algebraic-solve",
+              "name": "ElectricConstructor_init",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.563468038
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.714453616
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.80338128
+              "value": 3.62793048
             }
           ],
           "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
           "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_561f685e",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage/gaya/public/env_gaya/ToolboxTest_561f685e",
           "scheduler": "squeue",
           "system": "gaya:public",
           "tags": [],
-          "time_compile": 0.01044464111328125,
-          "time_performance": 0.011589527130126953,
-          "time_run": 54.77196979522705,
-          "time_sanity": 0.01817607879638672,
-          "time_setup": 0.010746002197265625,
-          "time_total": 55.02778434753418,
-          "unique_name": "ToolboxTest_6",
+          "time_compile": 0.007310628890991211,
+          "time_performance": 0.012388467788696289,
+          "time_run": 27.2072856426239,
+          "time_sanity": 0.01773214340209961,
+          "time_setup": 0.011954545974731445,
+          "time_total": 27.229378938674927,
+          "unique_name": "ToolboxTest_5",
           "check_vars": {
             "valid_prog_environs": [
               "*"
@@ -385,14 +352,14 @@
             "sourcesdir": null,
             "prebuild_cmds": [],
             "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
+            "executable": "feelpp_toolbox_electric",
             "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_256",
-              "--repository.append.np 0",
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/electric",
+              "--repository.case busbar/3d/np_256",
               "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
+              "--electric.json.patch='{\"op\": \"replace\", \"path\": \"/Meshes/electric/Import/hsize\", \"value\": 0.05}'",
+              "--electric.scalability-save=1"
             ],
             "prerun_cmds": [],
             "postrun_cmds": [],
@@ -422,10 +389,10 @@
             "build_time_limit": null,
             "extra_resources": {},
             "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_256/heat.measures/values.csv"
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/electric/busbar3d.json",
+            "toolbox": "electric",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+            "valuesPath": ""
           },
           "check_params": {
             "nbTask": 256
@@ -444,134 +411,118 @@
           "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
           "fixture": false,
           "hash": "9c8a7a39",
-          "jobid": "49981",
+          "jobid": "50714",
           "job_stderr": "rfm_job.err",
           "job_stdout": "rfm_job.out",
           "maintainers": [],
           "name": "ToolboxTest %nbTask=128",
           "nodelist": [
-            "gaya6"
+            "gaya4"
           ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
           "perfvars": [
             {
-              "name": "CONSTRUCTOR_initMaterialProperties",
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 9
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000195277
+              "value": 0.017473037
             },
             {
-              "name": "CONSTRUCTOR_initMesh",
+              "name": "ElectricSolve_algebraic-solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 4.28955753
+              "value": 0.04826171
             },
             {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "name": "ElectricSolve_solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.005357374
+              "value": 0.065989336
             },
             {
-              "name": "CONSTRUCTOR_initPostProcess",
+              "name": "ElectricPostProcessing_exportResults",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.013617677
+              "value": 0.983496994
             },
             {
-              "name": "CONSTRUCTOR_graph",
+              "name": "ElectricConstructor_createMesh",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.003890996
+              "value": 1.70125999
             },
             {
-              "name": "CONSTRUCTOR_matrixVector",
+              "name": "ElectricConstructor_createExporters",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.004553513
+              "value": 0.000833738
             },
             {
-              "name": "CONSTRUCTOR_algebraicOthers",
+              "name": "ElectricConstructor_graph",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 2.8664e-05
+              "value": 0.001257125
             },
             {
-              "name": "CONSTRUCTOR_init",
+              "name": "ElectricConstructor_matrixVector",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 6.79115097
+              "value": 0.002640016
             },
             {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 11
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
+              "name": "ElectricConstructor_algebraicOthers",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.094396024
+              "value": 1.8264e-05
             },
             {
-              "name": "SOLVE_algebraic-solve",
+              "name": "ElectricConstructor_init",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.045281237
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.140054552
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.687541808
+              "value": 3.05149987
             }
           ],
           "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
           "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage/gaya/public/env_gaya/ToolboxTest_9c8a7a39",
           "scheduler": "squeue",
           "system": "gaya:public",
           "tags": [],
-          "time_compile": 0.0104217529296875,
-          "time_performance": 0.011048555374145508,
-          "time_run": 47.568095445632935,
-          "time_sanity": 0.019440412521362305,
-          "time_setup": 0.010682344436645508,
-          "time_total": 47.8848659992218,
-          "unique_name": "ToolboxTest_5",
+          "time_compile": 0.007100582122802734,
+          "time_performance": 0.012880563735961914,
+          "time_run": 22.75095295906067,
+          "time_sanity": 0.017174482345581055,
+          "time_setup": 0.012234210968017578,
+          "time_total": 22.773130893707275,
+          "unique_name": "ToolboxTest_4",
           "check_vars": {
             "valid_prog_environs": [
               "*"
@@ -584,14 +535,14 @@
             "sourcesdir": null,
             "prebuild_cmds": [],
             "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
+            "executable": "feelpp_toolbox_electric",
             "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_128",
-              "--repository.append.np 0",
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/electric",
+              "--repository.case busbar/3d/np_128",
               "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
+              "--electric.json.patch='{\"op\": \"replace\", \"path\": \"/Meshes/electric/Import/hsize\", \"value\": 0.05}'",
+              "--electric.scalability-save=1"
             ],
             "prerun_cmds": [],
             "postrun_cmds": [],
@@ -621,10 +572,10 @@
             "build_time_limit": null,
             "extra_resources": {},
             "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_128/heat.measures/values.csv"
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/electric/busbar3d.json",
+            "toolbox": "electric",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+            "valuesPath": ""
           },
           "check_params": {
             "nbTask": 128
@@ -643,134 +594,118 @@
           "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
           "fixture": false,
           "hash": "4c4879f1",
-          "jobid": "49982",
+          "jobid": "50715",
           "job_stderr": "rfm_job.err",
           "job_stdout": "rfm_job.out",
           "maintainers": [],
           "name": "ToolboxTest %nbTask=64",
           "nodelist": [
-            "gaya6"
+            "gaya4"
           ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_4c4879f1",
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output/gaya/public/env_gaya/ToolboxTest_4c4879f1",
           "perfvars": [
             {
-              "name": "CONSTRUCTOR_initMaterialProperties",
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 10
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000191019
+              "value": 0.019442893
             },
             {
-              "name": "CONSTRUCTOR_initMesh",
+              "name": "ElectricSolve_algebraic-solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 3.78468418
+              "value": 0.051112223
             },
             {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "name": "ElectricSolve_solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.008985085
+              "value": 0.070971569
             },
             {
-              "name": "CONSTRUCTOR_initPostProcess",
+              "name": "ElectricPostProcessing_exportResults",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.005542111
+              "value": 0.555974641
             },
             {
-              "name": "CONSTRUCTOR_graph",
+              "name": "ElectricConstructor_createMesh",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.004895055
+              "value": 1.29127512
             },
             {
-              "name": "CONSTRUCTOR_matrixVector",
+              "name": "ElectricConstructor_createExporters",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.002766252
+              "value": 0.001048552
             },
             {
-              "name": "CONSTRUCTOR_algebraicOthers",
+              "name": "ElectricConstructor_graph",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 2.3544e-05
+              "value": 0.001427545
             },
             {
-              "name": "CONSTRUCTOR_init",
+              "name": "ElectricConstructor_matrixVector",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 5.98378553
+              "value": 0.002119306
             },
             {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 11
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
+              "name": "ElectricConstructor_algebraicOthers",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.108849413
+              "value": 2.658e-05
             },
             {
-              "name": "SOLVE_algebraic-solve",
+              "name": "ElectricConstructor_init",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.279250991
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.388440092
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.397221283
+              "value": 2.48873159
             }
           ],
           "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
           "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_4c4879f1",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage/gaya/public/env_gaya/ToolboxTest_4c4879f1",
           "scheduler": "squeue",
           "system": "gaya:public",
           "tags": [],
-          "time_compile": 0.010381937026977539,
-          "time_performance": 0.012804269790649414,
-          "time_run": 60.29395294189453,
-          "time_sanity": 0.0161745548248291,
-          "time_setup": 0.010455846786499023,
-          "time_total": 60.672847270965576,
-          "unique_name": "ToolboxTest_4",
+          "time_compile": 0.007683992385864258,
+          "time_performance": 0.012209177017211914,
+          "time_run": 10.46077299118042,
+          "time_sanity": 0.019408226013183594,
+          "time_setup": 0.012198686599731445,
+          "time_total": 10.48348355293274,
+          "unique_name": "ToolboxTest_3",
           "check_vars": {
             "valid_prog_environs": [
               "*"
@@ -783,14 +718,14 @@
             "sourcesdir": null,
             "prebuild_cmds": [],
             "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
+            "executable": "feelpp_toolbox_electric",
             "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_64",
-              "--repository.append.np 0",
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/electric",
+              "--repository.case busbar/3d/np_64",
               "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
+              "--electric.json.patch='{\"op\": \"replace\", \"path\": \"/Meshes/electric/Import/hsize\", \"value\": 0.05}'",
+              "--electric.scalability-save=1"
             ],
             "prerun_cmds": [],
             "postrun_cmds": [],
@@ -820,10 +755,10 @@
             "build_time_limit": null,
             "extra_resources": {},
             "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_64/heat.measures/values.csv"
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/electric/busbar3d.json",
+            "toolbox": "electric",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+            "valuesPath": ""
           },
           "check_params": {
             "nbTask": 64
@@ -842,7 +777,7 @@
           "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
           "fixture": false,
           "hash": "9f5fc29d",
-          "jobid": "49983",
+          "jobid": "50716",
           "job_stderr": "rfm_job.err",
           "job_stdout": "rfm_job.out",
           "maintainers": [],
@@ -850,126 +785,110 @@
           "nodelist": [
             "gaya4"
           ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
           "perfvars": [
             {
-              "name": "CONSTRUCTOR_initMaterialProperties",
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 9
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000190788
+              "value": 0.016330217
             },
             {
-              "name": "CONSTRUCTOR_initMesh",
+              "name": "ElectricSolve_algebraic-solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 3.64712735
+              "value": 0.036141482
             },
             {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "name": "ElectricSolve_solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.016036551
+              "value": 0.052761465
             },
             {
-              "name": "CONSTRUCTOR_initPostProcess",
+              "name": "ElectricPostProcessing_exportResults",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.00255696
+              "value": 0.30223192
             },
             {
-              "name": "CONSTRUCTOR_graph",
+              "name": "ElectricConstructor_createMesh",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.007353966
+              "value": 1.11410665
             },
             {
-              "name": "CONSTRUCTOR_matrixVector",
+              "name": "ElectricConstructor_createExporters",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.003028839
+              "value": 0.001180821
             },
             {
-              "name": "CONSTRUCTOR_algebraicOthers",
+              "name": "ElectricConstructor_graph",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 2.4666e-05
+              "value": 0.002087286
             },
             {
-              "name": "CONSTRUCTOR_init",
+              "name": "ElectricConstructor_matrixVector",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 5.85960245
+              "value": 0.00171203
             },
             {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 10
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
+              "name": "ElectricConstructor_algebraicOthers",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.104181513
+              "value": 2.104e-05
             },
             {
-              "name": "SOLVE_algebraic-solve",
+              "name": "ElectricConstructor_init",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.119242008
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.223716472
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.323709194
+              "value": 2.27872227
             }
           ],
           "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
           "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage/gaya/public/env_gaya/ToolboxTest_9f5fc29d",
           "scheduler": "squeue",
           "system": "gaya:public",
           "tags": [],
-          "time_compile": 0.010539770126342773,
-          "time_performance": 0.012632608413696289,
-          "time_run": 65.48109841346741,
-          "time_sanity": 0.016206026077270508,
-          "time_setup": 0.010474920272827148,
-          "time_total": 65.92263078689575,
-          "unique_name": "ToolboxTest_3",
+          "time_compile": 0.007237911224365234,
+          "time_performance": 0.012276172637939453,
+          "time_run": 8.172995328903198,
+          "time_sanity": 0.016683340072631836,
+          "time_setup": 0.012163877487182617,
+          "time_total": 8.195197343826294,
+          "unique_name": "ToolboxTest_2",
           "check_vars": {
             "valid_prog_environs": [
               "*"
@@ -982,14 +901,14 @@
             "sourcesdir": null,
             "prebuild_cmds": [],
             "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
+            "executable": "feelpp_toolbox_electric",
             "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_32",
-              "--repository.append.np 0",
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/electric",
+              "--repository.case busbar/3d/np_32",
               "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
+              "--electric.json.patch='{\"op\": \"replace\", \"path\": \"/Meshes/electric/Import/hsize\", \"value\": 0.05}'",
+              "--electric.scalability-save=1"
             ],
             "prerun_cmds": [],
             "postrun_cmds": [],
@@ -1019,10 +938,10 @@
             "build_time_limit": null,
             "extra_resources": {},
             "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_32/heat.measures/values.csv"
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/electric/busbar3d.json",
+            "toolbox": "electric",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+            "valuesPath": ""
           },
           "check_params": {
             "nbTask": 32
@@ -1041,134 +960,118 @@
           "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
           "fixture": false,
           "hash": "053aa121",
-          "jobid": "49984",
+          "jobid": "50717",
           "job_stderr": "rfm_job.err",
           "job_stdout": "rfm_job.out",
           "maintainers": [],
           "name": "ToolboxTest %nbTask=16",
           "nodelist": [
-            "gaya5"
+            "gaya4"
           ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_053aa121",
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output/gaya/public/env_gaya/ToolboxTest_053aa121",
           "perfvars": [
             {
-              "name": "CONSTRUCTOR_initMaterialProperties",
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 9
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000185539
+              "value": 0.020397848
             },
             {
-              "name": "CONSTRUCTOR_initMesh",
+              "name": "ElectricSolve_algebraic-solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 3.15073619
+              "value": 0.029918406
             },
             {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "name": "ElectricSolve_solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.033863651
+              "value": 0.050604277
             },
             {
-              "name": "CONSTRUCTOR_initPostProcess",
+              "name": "ElectricPostProcessing_exportResults",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.00097143
+              "value": 0.184793457
             },
             {
-              "name": "CONSTRUCTOR_graph",
+              "name": "ElectricConstructor_createMesh",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.01391357
+              "value": 0.898893241
             },
             {
-              "name": "CONSTRUCTOR_matrixVector",
+              "name": "ElectricConstructor_createExporters",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.004260976
+              "value": 0.001225606
             },
             {
-              "name": "CONSTRUCTOR_algebraicOthers",
+              "name": "ElectricConstructor_graph",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 3.197e-05
+              "value": 0.003497499
             },
             {
-              "name": "CONSTRUCTOR_init",
+              "name": "ElectricConstructor_matrixVector",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 5.17862655
+              "value": 0.001781722
             },
             {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 10
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
+              "name": "ElectricConstructor_algebraicOthers",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.097678772
+              "value": 2.1069e-05
             },
             {
-              "name": "SOLVE_algebraic-solve",
+              "name": "ElectricConstructor_init",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.091373374
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.189344627
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.173610789
+              "value": 1.93289739
             }
           ],
           "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
           "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_053aa121",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage/gaya/public/env_gaya/ToolboxTest_053aa121",
           "scheduler": "squeue",
           "system": "gaya:public",
           "tags": [],
-          "time_compile": 0.010277032852172852,
-          "time_performance": 0.0126800537109375,
-          "time_run": 62.618483543395996,
-          "time_sanity": 0.017115354537963867,
-          "time_setup": 0.010470867156982422,
-          "time_total": 63.11972904205322,
-          "unique_name": "ToolboxTest_2",
+          "time_compile": 0.0070362091064453125,
+          "time_performance": 0.012369155883789062,
+          "time_run": 6.005236864089966,
+          "time_sanity": 0.016704559326171875,
+          "time_setup": 0.012408733367919922,
+          "time_total": 6.027442216873169,
+          "unique_name": "ToolboxTest_1",
           "check_vars": {
             "valid_prog_environs": [
               "*"
@@ -1181,14 +1084,14 @@
             "sourcesdir": null,
             "prebuild_cmds": [],
             "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
+            "executable": "feelpp_toolbox_electric",
             "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_16",
-              "--repository.append.np 0",
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/electric",
+              "--repository.case busbar/3d/np_16",
               "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
+              "--electric.json.patch='{\"op\": \"replace\", \"path\": \"/Meshes/electric/Import/hsize\", \"value\": 0.05}'",
+              "--electric.scalability-save=1"
             ],
             "prerun_cmds": [],
             "postrun_cmds": [],
@@ -1218,10 +1121,10 @@
             "build_time_limit": null,
             "extra_resources": {},
             "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_16/heat.measures/values.csv"
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/electric/busbar3d.json",
+            "toolbox": "electric",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+            "valuesPath": ""
           },
           "check_params": {
             "nbTask": 16
@@ -1240,134 +1143,118 @@
           "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
           "fixture": false,
           "hash": "a90edc0c",
-          "jobid": "49985",
+          "jobid": "50718",
           "job_stderr": "rfm_job.err",
           "job_stdout": "rfm_job.out",
           "maintainers": [],
           "name": "ToolboxTest %nbTask=8",
           "nodelist": [
-            "gaya6"
+            "gaya4"
           ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_a90edc0c",
+          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/output/gaya/public/env_gaya/ToolboxTest_a90edc0c",
           "perfvars": [
             {
-              "name": "CONSTRUCTOR_initMaterialProperties",
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 9
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000181712
+              "value": 0.020620898
             },
             {
-              "name": "CONSTRUCTOR_initMesh",
+              "name": "ElectricSolve_algebraic-solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 3.19575523
+              "value": 0.030059311
             },
             {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
+              "name": "ElectricSolve_solve",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.064856748
+              "value": 0.050939837
             },
             {
-              "name": "CONSTRUCTOR_initPostProcess",
+              "name": "ElectricPostProcessing_exportResults",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.000853886
+              "value": 0.124144998
             },
             {
-              "name": "CONSTRUCTOR_graph",
+              "name": "ElectricConstructor_createMesh",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.024353044
+              "value": 0.877792059
             },
             {
-              "name": "CONSTRUCTOR_matrixVector",
+              "name": "ElectricConstructor_createExporters",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.004342847
+              "value": 0.001314633
             },
             {
-              "name": "CONSTRUCTOR_algebraicOthers",
+              "name": "ElectricConstructor_graph",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 3.4495e-05
+              "value": 0.006499636
             },
             {
-              "name": "CONSTRUCTOR_init",
+              "name": "ElectricConstructor_matrixVector",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 5.14372534
+              "value": 0.001582627
             },
             {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 10
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
+              "name": "ElectricConstructor_algebraicOthers",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.102614879
+              "value": 1.8735e-05
             },
             {
-              "name": "SOLVE_algebraic-solve",
+              "name": "ElectricConstructor_init",
               "reference": 0,
               "thres_lower": null,
               "thres_upper": null,
               "unit": "s",
-              "value": 0.115687831
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.218675692
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.168165704
+              "value": 1.88967503
             }
           ],
           "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
           "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_a90edc0c",
+          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/reframe/stage/gaya/public/env_gaya/ToolboxTest_a90edc0c",
           "scheduler": "squeue",
           "system": "gaya:public",
           "tags": [],
-          "time_compile": 0.010347127914428711,
-          "time_performance": 0.01103830337524414,
-          "time_run": 67.71951508522034,
-          "time_sanity": 0.016813039779663086,
-          "time_setup": 0.010571002960205078,
-          "time_total": 68.28127765655518,
-          "unique_name": "ToolboxTest_1",
+          "time_compile": 0.007139682769775391,
+          "time_performance": 0.01242518424987793,
+          "time_run": 5.17999792098999,
+          "time_sanity": 0.016976118087768555,
+          "time_setup": 0.012138843536376953,
+          "time_total": 5.2021989822387695,
+          "unique_name": "ToolboxTest_0",
           "check_vars": {
             "valid_prog_environs": [
               "*"
@@ -1380,14 +1267,14 @@
             "sourcesdir": null,
             "prebuild_cmds": [],
             "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
+            "executable": "feelpp_toolbox_electric",
             "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_8",
-              "--repository.append.np 0",
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/electric",
+              "--repository.case busbar/3d/np_8",
               "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
+              "--electric.json.patch='{\"op\": \"replace\", \"path\": \"/Meshes/electric/Import/hsize\", \"value\": 0.05}'",
+              "--electric.scalability-save=1"
             ],
             "prerun_cmds": [],
             "postrun_cmds": [],
@@ -1417,212 +1304,13 @@
             "build_time_limit": null,
             "extra_resources": {},
             "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_8/heat.measures/values.csv"
+            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/electric/busbar3d.json",
+            "toolbox": "electric",
+            "case": "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/3d.cfg",
+            "valuesPath": ""
           },
           "check_params": {
             "nbTask": 8
-          }
-        },
-        {
-          "build_stderr": null,
-          "build_stdout": null,
-          "dependencies_actual": [],
-          "dependencies_conceptual": [],
-          "description": "Launch testcases from the Heat Toolbox",
-          "display_name": "ToolboxTest %nbTask=4",
-          "environment": "env_gaya",
-          "fail_phase": null,
-          "fail_reason": null,
-          "filename": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py",
-          "fixture": false,
-          "hash": "cfbf52b6",
-          "jobid": "49986",
-          "job_stderr": "rfm_job.err",
-          "job_stdout": "rfm_job.out",
-          "maintainers": [],
-          "name": "ToolboxTest %nbTask=4",
-          "nodelist": [
-            "gaya5"
-          ],
-          "outputdir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/output/gaya/public/env_gaya/ToolboxTest_cfbf52b6",
-          "perfvars": [
-            {
-              "name": "CONSTRUCTOR_initMaterialProperties",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.000203233
-            },
-            {
-              "name": "CONSTRUCTOR_initMesh",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 3.37060657
-            },
-            {
-              "name": "CONSTRUCTOR_initFunctionSpaces",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.130989392
-            },
-            {
-              "name": "CONSTRUCTOR_initPostProcess",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.001020733
-            },
-            {
-              "name": "CONSTRUCTOR_graph",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.04891302
-            },
-            {
-              "name": "CONSTRUCTOR_matrixVector",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.005201598
-            },
-            {
-              "name": "CONSTRUCTOR_algebraicOthers",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 3.704e-05
-            },
-            {
-              "name": "CONSTRUCTOR_init",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 5.45173908
-            },
-            {
-              "name": "SOLVE_ksp-niter",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "iteration",
-              "value": 11
-            },
-            {
-              "name": "SOLVE_algebraic-assembly",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.13774101
-            },
-            {
-              "name": "SOLVE_algebraic-solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.097011315
-            },
-            {
-              "name": "SOLVE_solve",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.235331055
-            },
-            {
-              "name": "POSTPROCESSING_exportResults",
-              "reference": 0,
-              "thres_lower": null,
-              "thres_upper": null,
-              "unit": "s",
-              "value": 0.224243779
-            }
-          ],
-          "prefix": "/home/u4/csmi/2023/pierre/benchmarking/src/feelpp/benchmarking/reframe/regression-tests",
-          "result": "success",
-          "stagedir": "/home/u4/csmi/2023/pierre/benchmarking/build/bench/stage/gaya/public/env_gaya/ToolboxTest_cfbf52b6",
-          "scheduler": "squeue",
-          "system": "gaya:public",
-          "tags": [],
-          "time_compile": 0.010411500930786133,
-          "time_performance": 0.011748313903808594,
-          "time_run": 70.3108696937561,
-          "time_sanity": 0.015842199325561523,
-          "time_setup": 0.010562896728515625,
-          "time_total": 70.9335424900055,
-          "unique_name": "ToolboxTest_0",
-          "check_vars": {
-            "valid_prog_environs": [
-              "*"
-            ],
-            "valid_systems": [
-              "*"
-            ],
-            "descr": "Launch testcases from the Heat Toolbox",
-            "sourcepath": "",
-            "sourcesdir": null,
-            "prebuild_cmds": [],
-            "postbuild_cmds": [],
-            "executable": "feelpp_toolbox_heat",
-            "executable_opts": [
-              "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-              "--repository.prefix /data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat",
-              "--repository.case Building/ThermalBridgesENISO10211/case4/np_4",
-              "--repository.append.np 0",
-              "--fail-on-unknown-option 1",
-              "--heat.scalability-save=1"
-            ],
-            "prerun_cmds": [],
-            "postrun_cmds": [],
-            "keep_files": [],
-            "readonly_files": [],
-            "tags": [],
-            "maintainers": [],
-            "strict_check": true,
-            "num_tasks": 4,
-            "num_tasks_per_node": 4,
-            "num_gpus_per_node": null,
-            "num_cpus_per_task": 1,
-            "num_tasks_per_core": null,
-            "num_tasks_per_socket": null,
-            "use_multithreading": null,
-            "max_pending_time": null,
-            "exclusive_access": true,
-            "local": false,
-            "modules": [],
-            "env_vars": {
-              "OMP_NUM_THREADS": 1
-            },
-            "variables": {
-              "OMP_NUM_THREADS": 1
-            },
-            "time_limit": null,
-            "build_time_limit": null,
-            "extra_resources": {},
-            "build_locally": true,
-            "configPath": "/home/u4/csmi/2023/pierre/benchmarking/benchConfigs/heat/ThermalBridgesCase4.json",
-            "toolbox": "heat",
-            "case": "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg",
-            "valuesPath": "/data/scratch/pierre/feelppdb/benchmarking/toolboxes/heat/Building/ThermalBridgesENISO10211/case4/np_4/heat.measures/values.csv"
-          },
-          "check_params": {
-            "nbTask": 4
           }
         }
       ]

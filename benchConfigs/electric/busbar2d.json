@@ -31,29 +31,29 @@
 
     "Feelpp":
     {
-        "toolbox": "heat",
+        "toolbox": "electric",
         "CommandLine":
         {
             "config-files":
             [
-                "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg"
+                "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg"
             ],
             "repository":
             {
                 "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/${TOOLBOX}",
-                "case": "Building/ThermalBridgesENISO10211/case2"
+                "case": "busbar/2d"
             },
             "case":
             {
                 "dimension": "",
-                "discretization": "P2"
+                "discretization": ""
             },
             "jsonPatch":
             [
                 {
                     "op": "replace",
-                    "path": "/Meshes/heat/Import/hsize",
-                    "value": 0.00025
+                    "path": "/Meshes/electric/Import/hsize",
+                    "value": 0.05
                 }
             ]
         }

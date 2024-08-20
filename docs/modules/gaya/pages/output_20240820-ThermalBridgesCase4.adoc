@@ -3,14 +3,14 @@
 :page-plotly: true
 :page-jupyter: true
 :page-tags: case
-:description: Performance report for gaya on 2024-08-05T08:26:38+0200
+:description: Performance report for gaya on 2024-08-20T02:09:56+0200
 :page-illustration: gaya.jpg
 :author: Your Name
-:revdate: 2024-08-05T08:26:38+0200
+:revdate: 2024-08-20T02:09:56+0200
 
 == Test Summary
 
-* Total Tests: 8
+* Total Tests: 7
 * Failures: 0
 * Testcases
 ** ToolboxTest %nbTask=384
@@ -48,17 +48,12 @@
 ----
 {'OMP_NUM_THREADS': 1}
 ----
-** ToolboxTest %nbTask=4
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 
 
 [%dynamic%close,python]
 ----
 from feelpp.benchmarking.reframe.report import Report
-report=Report(file_path="docs/modules/gaya/pages/reports/heat/20240805-ThermalBridgesCase4.json")
+report=Report(file_path="docs/modules/gaya/pages/reports/heat/20240820-ThermalBridgesCase4.json")
 ----
 
 === Performance by Simulation Steps
