@@ -14,19 +14,19 @@
 * Total Tests: {{ session_info.num_cases }}
 * Failures: {{ session_info.num_failures }}
 * Testcases
-{% set env_vars = None %}
+{% set env_vars = [] %}
 {% for run in runs %}
     {% for test in run.testcases %}
-** {{ test.display_name }}
-        {% if env_vars is none and test.check_vars.env_vars %}
-            {% set env_vars = test.check_vars.env_vars %}
-        {% endif%}
+        ** {{ test.display_name }}
+        {% if env_vars is not none and test.check_vars.env_vars and env_vars == [] %}
+            {% set _ignore = env_vars.append(test.check_vars.env_vars) %}
+        {% endif %}
     {% endfor %}
 {% endfor %}
 {% if env_vars %}
 [source,json]
 ----
-{{ env_vars }}
+{{ env_vars[0] }}
 ----
 {% endif %}
 
