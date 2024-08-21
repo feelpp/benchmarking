@@ -17,6 +17,13 @@ def convert_hostname(hostname):
     # You can add more rules here if needed
     return hostname
 
+
+# Add the custom filters to the Jinja2 environment
+env.filters['convert_hostname'] = convert_hostname
+
+# Load the Jinja2 template
+template = env.get_template('template.adoc.j2')
+
 for module in ['meluxina', 'karolina', 'discoverer', 'gaya']:
     # Path to the JSON files
     json_files_path = f'{module}/pages/**/*.json'
@@ -26,12 +33,6 @@ for module in ['meluxina', 'karolina', 'discoverer', 'gaya']:
         # Load JSON data
         with open(json_file, 'r') as file:
             data = json.load(file)
-
-        # Add the custom filter to the Jinja2 environment
-        env.filters['convert_hostname'] = convert_hostname
-
-        # Load the Jinja2 template
-        template = env.get_template('template.adoc.j2')
 
         data['filename'] = json_file
 

@@ -14,46 +14,13 @@
 * Failures: 0
 * Testcases
 ** Feelpp %my_regression_parameter={'nodes': 128, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
 ** Feelpp %my_regression_parameter={'nodes': 64, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
 ** Feelpp %my_regression_parameter={'nodes': 32, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
 ** Feelpp %my_regression_parameter={'nodes': 16, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
 ** Feelpp %my_regression_parameter={'nodes': 8, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
 ** Feelpp %my_regression_parameter={'nodes': 4, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
 ** Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
 ** Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]
-[source,json]
-----
-{'APPTAINERENV_OMPI_MCA_io': 'romio321'}
-----
-
 
 [%dynamic%close,python]
 ----
@@ -88,7 +55,7 @@ fig.show()
 
 === Speedup for partial performances
 
-[%dynamic%raw%open,python]
+[%dynamic%execute%open,python]
 ----
 if report.partial:
     for name, value in report.partialDict.items():

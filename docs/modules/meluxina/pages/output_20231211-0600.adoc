@@ -20,7 +20,6 @@
 ** Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]
 ** Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]
 
-
 [%dynamic%close,python]
 ----
 from feelpp.benchmarking.reframe.report import Report
@@ -54,7 +53,7 @@ fig.show()
 
 === Speedup for partial performances
 
-[%dynamic%raw%open,python]
+[%dynamic%execute%open,python]
 ----
 if report.partial:
     for name, value in report.partialDict.items():

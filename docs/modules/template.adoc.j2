@@ -14,18 +14,21 @@
 * Total Tests: {{ session_info.num_cases }}
 * Failures: {{ session_info.num_failures }}
 * Testcases
+{% set env_vars = None %}
 {% for run in runs %}
     {% for test in run.testcases %}
 ** {{ test.display_name }}
-{% if test.check_vars.env_vars %}
-[source,json]
-----
-{{ test.check_vars.env_vars }}
-----
-{% endif %}
+        {% if env_vars is none and test.check_vars.env_vars %}
+            {% set env_vars = test.check_vars.env_vars %}
+        {% endif%}
     {% endfor %}
 {% endfor %}
-
+{% if env_vars %}
+[source,json]
+----
+{{ env_vars }}
+----
+{% endif %}
 
 [%dynamic%close,python]
 ----
@@ -60,7 +63,7 @@ fig.show()
 
 === Speedup for partial performances
 
-[%dynamic%raw%open,python]
+[%dynamic%execute%open,python]
 ----
 if report.partial:
     for name, value in report.partialDict.items():

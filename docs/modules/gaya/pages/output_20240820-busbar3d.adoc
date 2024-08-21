@@ -14,41 +14,12 @@
 * Failures: 0
 * Testcases
 ** ToolboxTest %nbTask=384
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 ** ToolboxTest %nbTask=256
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 ** ToolboxTest %nbTask=128
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 ** ToolboxTest %nbTask=64
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 ** ToolboxTest %nbTask=32
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 ** ToolboxTest %nbTask=16
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
 ** ToolboxTest %nbTask=8
-[source,json]
-----
-{'OMP_NUM_THREADS': 1}
-----
-
 
 [%dynamic%close,python]
 ----
@@ -83,7 +54,7 @@ fig.show()
 
 === Speedup for partial performances
 
-[%dynamic%raw%open,python]
+[%dynamic%execute%open,python]
 ----
 if report.partial:
     for name, value in report.partialDict.items():
