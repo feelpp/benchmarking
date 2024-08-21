@@ -417,7 +417,7 @@ if __name__ == "__main__":
     electric = os.path.join(docs_path, "modules/gaya/pages/reports/electric/20240820-busbar3d.json")
     scenario0 = os.path.join(docs_path, "modules/meluxina/pages/kub/scenario0/20231211-1248.json")
 
-    your_file = scenario0
+    your_file = thermal3
 
     print(f"[ {your_file} ]\n")
     result = Report(file_path=your_file)
