@@ -10,9 +10,6 @@ from sklearn.linear_model   import LinearRegression
 
 print(pd.__version__)
 
-# Replace 'your_file.json' with the path to your JSON file
-# file_path = 'docs/modules/meluxina/pages/20231209/kub_scenario0.json'
-
 
 # Tests with only main references
 notPartial = [  '20231201-1430.json',
@@ -264,17 +261,22 @@ class Report:
 
 
     def plotPerformanceByStep(self):
-        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.5, specs = [[{"type": "scatter"}], [{"type": "table"}]])
+        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.25, specs = [[{"type": "scatter"}], [{"type": "table"}]], row_heights=[0.6, 0.4])
 
         for t in sorted(self.df_perf['num_tasks'].unique(), reverse=False):
             df_task = self.df_perf[self.df_perf['num_tasks'] == t]
             df_task.loc[:, 'name'] = df_task['name'].apply(lambda x: x.split('_')[0] if self.partial else x)
             fig.add_trace(go.Bar(x=df_task['name'], y=df_task['value'], name=str(t)), row=1, col=1)
 
-        table = self.plotTable(self.df_perf)
+        # Table (Warning message if only df['name'] without .loc due to views)
+        df_table = self.df_perf
+        if self.partial:
+            df_table.loc[:, 'name'] = df_table['name'].apply(lambda x: x.split('_')[0])
+
+        table = self.plotTable(df_table)
         fig.add_trace(table, row=2, col=1)
 
-        fig.update_layout(barmode='group', xaxis_tickangle=-45, title='Performance by step', yaxis_type='log')
+        fig.update_layout(barmode='group', xaxis_tickangle=-45, title='Performance by step', yaxis_type='log', height=800)
         return fig
 
 
@@ -286,7 +288,6 @@ class Report:
                     color="name", barmode="group", log_y=True, log_x=True)
 
         return fig
-
 
 
     def buildButtons(self, nbCurves):
@@ -309,17 +310,17 @@ class Report:
                                     )],
                         active=-1,
                         showactive=True,
-                        x=0,
-                        xanchor="left",
-                        y=1.15,
+                        x=1,
+                        y=1.06,
+                        xanchor="right",
                         yanchor="top",
-                        direction="left"
+                        direction="right"
                     )]
         return menu
 
 
     def plotSpeedup(self):
-        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.2, specs=[[{"type": "scatter"}], [{"type": "table"}]])
+        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.1, specs=[[{"type": "scatter"}], [{"type": "table"}]], row_heights=[0.6, 0.4])
         colors = pc.qualitative.Plotly
 
         # Real and regression traces
@@ -350,12 +351,12 @@ class Report:
         table = self.plotTable(df)
         fig.add_trace(table, row=2, col=1)
 
-        fig.update_layout(title='Speedup for main stages', updatemenus=self.buildButtons(nbCurves))
+        fig.update_layout(title='Speedup for main stages', updatemenus=self.buildButtons(nbCurves), height=800)
         return fig
 
 
     def plotPartialSpeedup(self, key):
-        fig = make_subplots(rows=2, cols=1, vertical_spacing=0.2, specs = [[{"type": "scatter"}], [{"type": "table"}]])
+        fig = make_subplots(rows=2, cols=1, specs = [[{"type": "scatter"}], [{"type": "table"}]], row_heights=[0.6, 0.4])
         partialNames = self.partialDict[key]
         colors = pc.qualitative.Plotly
 
@@ -399,23 +400,27 @@ class Report:
         table = self.plotTable(df)
         fig.add_trace(table, row=2, col=1)
 
-        fig.layout.update(title=f'Speed up for {key} phase', updatemenus=self.buildButtons(nbCurves))
+        fig.layout.update(title=f'Speed up for {key} phase', updatemenus=self.buildButtons(nbCurves), height=800)
         return fig
 
 
 
-# For debugging purposes:
+# For debugging purposes with 'your_file.json':
+# Replace 'your_file' with the path to your JSON file
 
 if __name__ == "__main__":
-    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/local/pages/reports/heat/20240819-ThermalBridgesCase4.json"
-    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/local/pages/reports/heatfluid/20240819-2dLaminar.json"
-    case_path = "/home/tanguy/Projet/benchmarking/docs/modules/karolina/pages/kub/scenario0/20231207-1600.json"
 
-    # following report-path is not up-to-date
-    #case_path = "/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/20240805-ThermalBridgesCase4.json"
+    docs_path = "/home/tanguy/Projet/benchmarking/docs"
 
-    print(f"[ {case_path} ]\n")
-    result = Report(file_path=case_path)
+    thermal3 = os.path.join(docs_path, "modules/gaya/pages/reports/heat/20240820-ThermalBridgesCase3.json")
+    proneEye = os.path.join(docs_path, "modules/gaya/pages/reports/heatfluid/20240820-proneEye-M2-simple.json")
+    electric = os.path.join(docs_path, "modules/gaya/pages/reports/electric/20240820-busbar3d.json")
+    scenario0 = os.path.join(docs_path, "modules/meluxina/pages/kub/scenario0/20231211-1248.json")
+
+    your_file = scenario0
+
+    print(f"[ {your_file} ]\n")
+    result = Report(file_path=your_file)
 
     figStep = result.plotSteps()
     figStep.show()
