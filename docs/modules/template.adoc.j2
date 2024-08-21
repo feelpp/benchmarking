@@ -18,12 +18,13 @@
 {% for run in runs %}
     {% for test in run.testcases %}
         ** {{ test.display_name }}
-        {% if env_vars is not none and test.check_vars.env_vars and env_vars == [] %}
+        {% if env_vars == [] and test.check_vars.env_vars %}
             {% set _ignore = env_vars.append(test.check_vars.env_vars) %}
         {% endif %}
     {% endfor %}
 {% endfor %}
 {% if env_vars %}
+* Environment variables:
 [source,json]
 ----
 {{ env_vars[0] }}
