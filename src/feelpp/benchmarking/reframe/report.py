@@ -150,6 +150,14 @@ class Report:
                         [{'num_tasks': t, 'name': name, 'value': mainRefs['value'].values[mainIndex]/perf['value']}] )], ignore_index=True)
                     mainIndex += 1
 
+        for task in self.df_speedup['name'].unique():
+            dfNull = pd.DataFrame({'num_tasks': [0], 'name': task, 'value': [0]})
+            self.df_speedup = pd.concat([self.df_speedup, dfNull], ignore_index=True)
+
+        for task in self.df_partialSpeedup['name'].unique():
+            dfNull = pd.DataFrame({'num_tasks': [0], 'name': task, 'value': [0]})
+            self.df_partialSpeedup = pd.concat([self.df_partialSpeedup, dfNull], ignore_index=True)
+
         # The optimal speedup is ref_speedup
         lambda1 = lambda x: x/self.ref_speedup
         lambda2 = lambda x: x/(2*self.ref_speedup)
