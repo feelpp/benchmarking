@@ -85,10 +85,6 @@ def buildReportPath(configPath, prefix, suffix, toolbox):
     return reportPath
 
 
-def loadAndCheckConfig():
-    pass
-
-
 def buildMapToExport(configPath):
     varMap = {}
     varMap['CONFIG_PATH'] = configPath
@@ -138,8 +134,6 @@ if __name__ == '__main__':
 
     configs = buildConfigList(args)
     validateConfigs(configs)
-    globalVarExporter(args.hostname, args.feelppdb)
-
 
     if args.list_files:
         print("\nFollowing configuration files have been found and validated:")
@@ -148,6 +142,7 @@ if __name__ == '__main__':
         print(f"\nTotal: {len(configs)} file(s)")
 
     else:
+        globalVarExporter(args.hostname, args.feelppdb)
         for configPath in configs:
 
             configVarExporter(configPath)
