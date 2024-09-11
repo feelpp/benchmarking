@@ -130,6 +130,10 @@ class Report:
 
 
     def buildSpeedup(self, df):
+        """
+        Calculates the speedup for each extracted performance value,
+        based on the value with the lowest CPU number
+        """
         self.ref_speedup = df['num_tasks'].min()
 
         mainRefs = self.df_perf[self.df_perf['num_tasks'] == self.ref_speedup]
@@ -154,11 +158,12 @@ class Report:
             dfNull = pd.DataFrame({'num_tasks': [0], 'name': task, 'value': [0]})
             self.df_speedup = pd.concat([self.df_speedup, dfNull], ignore_index=True)
 
-        for task in self.df_partialSpeedup['name'].unique():
-            dfNull = pd.DataFrame({'num_tasks': [0], 'name': task, 'value': [0]})
-            self.df_partialSpeedup = pd.concat([self.df_partialSpeedup, dfNull], ignore_index=True)
+        if self.partial:
+            for task in self.df_partialSpeedup['name'].unique():
+                dfNull = pd.DataFrame({'num_tasks': [0], 'name': task, 'value': [0]})
+                self.df_partialSpeedup = pd.concat([self.df_partialSpeedup, dfNull], ignore_index=True)
 
-        # The optimal speedup is ref_speedup
+        # The optimal speedup is ref_speedup (= lowest CPU number)
         lambda1 = lambda x: x/self.ref_speedup
         lambda2 = lambda x: x/(2*self.ref_speedup)
 
@@ -425,7 +430,7 @@ if __name__ == "__main__":
     electric = os.path.join(docs_path, "modules/gaya/pages/reports/electric/20240820-busbar3d.json")
     scenario0 = os.path.join(docs_path, "modules/meluxina/pages/kub/scenario0/20231211-1248.json")
 
-    your_file = thermal3
+    your_file = scenario0
 
     print(f"[ {your_file} ]\n")
     result = Report(file_path=your_file)
