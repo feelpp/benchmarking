@@ -46,7 +46,7 @@ This repository uses link:https://reframe-hpc.readthedocs.io/en/stable/[ReFrame]
 
 For launching a case, it has to be configured through a JSON file. This file is needed for case-specific set up of both {reframe} and {feelpp}. Every configuration-file used for this benchmarking platform are available in `benchConfigs/`.
 
-{reframe} will extract and store the result in JSON format. These results will be computed
+{reframe} will extract and store the result in JSON format. The results will then be computed for generating an output file in _adoc_ format containing information about the run session, and also plots.
 
 _Note: Before continuing, make sure to have Feel++ installed on the system on which you want to run the test. If it's not the case, please refer to this link:https://docs.feelpp.org/user/latest/install/index.html[installation guide]._
 
@@ -59,7 +59,7 @@ git clone https://github.com/feelpp/benchmarking.git
 
 * Add a system configuration-file in `src/feelpp/benchmarking/reframe/config-files/` for your machine. Refer to link:https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#system-configuration[this] for exploring the possibilities.
 
-* Configure the case (CPU number, {feelpp} config-files, paths, ...) in a JSON file. A template is available here: `src/feelpp/benchmarking/benchConfigTemplate.json`
+* Configure the case (CPU number, {feelpp} config-files, paths, ...) with a JSON file. A template is available here: `src/feelpp/benchmarking/benchConfigTemplate.json`
 
 * Launch the test by specifying hostname, path to the {feelpp} root output directory and path to the case configuration. It is also possible to launch multiple JSON files inside a directory with the `--dir` option.
 ```bash
