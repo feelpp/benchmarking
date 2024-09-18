@@ -64,7 +64,7 @@ class Setup(rfm.RunOnlyRegressionTest):
     def setTags(self):
         self.tags = [
             "is_partial",
-            self.config.feelpp.testCase,
+            self.config.Feelpp.testCase,
             os.environ.get("EXEC_POLICY","serial")
         ]
 
