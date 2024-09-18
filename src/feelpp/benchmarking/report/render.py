@@ -69,16 +69,12 @@ class GirderHandler:
             folder_id (str): The ID of the folder to download
             output_path (str): The path to the output directory
         Returns:
-            dict : dictionnary containing the downloaded file name hierarchy
+            list: The list of downloaded files inside the output directory
         """
         self.client.downloadFolderRecursive(folder_id, output_path)
 
-        filenames = {}
-        for root, _, files in os.walk("reports"):
-            if len(files) > 0:
-                filenames[root] = files
+        return os.listdir(output_path)
 
-        return filenames
 
 
 class ConfigHandler:
@@ -128,6 +124,7 @@ def main_cli():
 
     GIRDER_ID_JSON_KEY = "girder_folder_id"
     WORKING_DIR = "./src/feelpp/benchmarking/report/"
+    LATEST_REPORTS_TO_KEEP = 5 #TODO: Use another logic
 
     parser = argparse.ArgumentParser(description="Render all benchmarking reports")
     parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default=WORKING_DIR+"config.json")
@@ -156,13 +153,14 @@ def main_cli():
             #Download the app/machine folder from girder (multiple json files, indexed by date and input dataset)
             json_filenames = girder_handler.downloadFolder(folder_id, f"{json_output_path}/{app_id}/{machine_id}")
 
+            json_filenames.sort() #TODO: CORRECT SORTING BY DATE
+            json_filenames = json_filenames[:LATEST_REPORTS_TO_KEEP]
+
             #For each report, render the JSON file to AsciiDoc
-            for json_folder, json_files in json_filenames.items():
-                for json_filename in json_files:
+            for json_filename in json_filenames:
+                if not json_filename.endswith(".json"):
+                    continue
 
-                    if not json_filename.endswith(".json"):
-                        continue
-
-                    #Render the JSON file to AsciiDoc
-                    adoc_output_path = f"{args.modules_path}/{machine_id}/pages/{json_filename.replace('.json', '.adoc')}"
-                    renderer.render(f"{json_folder}/{json_filename}", adoc_output_path)
+                #Render the JSON file to AsciiDoc
+                adoc_output_path = f"{args.modules_path}/{machine_id}/pages/{json_filename.replace('.json', '.adoc')}"
+                renderer.render(f"{json_output_path}/{app_id}/{machine_id}/{json_filename}", adoc_output_path)
