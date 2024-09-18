@@ -75,11 +75,11 @@ def globalVarExporter(hostname, feelppdbPath):
 def buildReportPath(configPath, prefix, suffix, toolbox):
 
     if prefix == '' or prefix == 'default':
-        prefix = f'{os.getcwd()}/docs/modules/{args.hostname}/pages/reports/'
+        prefix = f'{os.getcwd()}/toolboxes_reframe_reports/{toolbox}/{args.hostname}/'
 
     if suffix == '' or suffix == 'default':
         configName = os.path.basename(configPath)
-        suffix = f'{toolbox}/{getDate()}-{configName}'
+        suffix = f'{getDate()}-{configName}'
 
     reportPath = prefix + suffix
     return reportPath
