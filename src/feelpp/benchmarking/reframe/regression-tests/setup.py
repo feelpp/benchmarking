@@ -62,11 +62,11 @@ class Setup(rfm.RunOnlyRegressionTest):
 
     @run_after('init')
     def setTags(self):
-        self.tags = [
+        self.tags = {
             "is_partial",
             self.config.Feelpp.testCase,
             os.environ.get("EXEC_POLICY","serial")
-        ]
+        }
 
 
     # Set scheduler and launcher options
