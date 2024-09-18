@@ -24,7 +24,7 @@ class Renderer:
         with open(input_json, 'r') as file:
             data = json.load(file)
 
-        data['filename'] = input_json
+        data['filepath'] = input_json
 
         output = self.template.render(data)
 
@@ -164,5 +164,5 @@ def main_cli():
                         continue
 
                     #Render the JSON file to AsciiDoc
-                    adoc_output_path = f"{args.modules_path}/{machine_id}/{json_filename.replace('.json', '.adoc')}"
+                    adoc_output_path = f"{args.modules_path}/{machine_id}/pages/{json_filename.replace('.json', '.adoc')}"
                     renderer.render(f"{json_folder}/{json_filename}", adoc_output_path)
