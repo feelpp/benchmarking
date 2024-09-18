@@ -145,6 +145,7 @@ class FeelppConfig:
     """
     def __init__(self, data):
         self.toolbox = data['toolbox']
+        self.testCase = data["case_name"]
         self.CommandLine = CommandLineConfig(data['CommandLine'])
 
         if self.toolbox not in validToolboxes:

@@ -60,6 +60,14 @@ class Setup(rfm.RunOnlyRegressionTest):
     def setEnvVars(self):
         self.env_vars['OMP_NUM_THREADS'] = 1
 
+    @run_after('init')
+    def setTags(self):
+        self.tags = [
+            "is_partial",
+            self.config.feelpp.testCase,
+            os.environ.get("EXEC_POLICY","serial")
+        ]
+
 
     # Set scheduler and launcher options
     @run_before('run')

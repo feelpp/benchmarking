@@ -11,15 +11,6 @@ from sklearn.linear_model   import LinearRegression
 print(pd.__version__)
 
 
-# Tests with only main references
-notPartial = [  '20231201-1430.json',
-                '20231207-1600.json',
-                '20231209-0040.json',
-                '20231211-0600.json',
-                '20231211-1248.json',
-                'kub_scenario0.json'    ]
-
-
 
 class Report:
     """
@@ -33,21 +24,21 @@ class Report:
     def __init__(self, file_path):
 
         self.file_path = file_path
-        self.partial = False
-        if os.path.basename(self.file_path) not in notPartial:
-            self.partial = True
+
+        self.data               = None
+
+        self.load()
 
         # Following attributes will be set while processing the data
-        self.data               = None
         self.toolbox            = ''
         self.ref_speedup        = -1
         self.df_perf            = pd.DataFrame()
         self.df_speedup         = pd.DataFrame()
+        self.partial            = "is_partial" in self.data["runs"][0]["testcases"][0]["tags"]
         self.df_partialPerf     = pd.DataFrame() if self.partial else None
         self.df_partialSpeedup  = pd.DataFrame() if self.partial else None
         self.partialDict        = dict() if self.partial else None
 
-        self.load()
         self.processData()
 
 

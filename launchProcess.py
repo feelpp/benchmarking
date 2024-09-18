@@ -148,6 +148,8 @@ if __name__ == '__main__':
             configVarExporter(configPath)
             print(f"[{os.environ['TOOLBOX'].upper()} - {os.path.basename(configPath)}]")
 
+            os.environ["EXEC_POLICY"] = args.policy
+
             # --report-file option replaced in favour of 'RFM_REPORT_FILE' environment variable
             cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.hostname}.py',
                     f'-c {workdir}/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py',
