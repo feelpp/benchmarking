@@ -3,13 +3,14 @@ from jinja2 import Environment, FileSystemLoader
 import girder_client
 
 class Renderer:
-    """ Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
+    """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
 
     def __init__(self, working_dir, template_path, filters = {}):
         """ Initialize the template for the renderer
         Args:
             working_dir (str): The working directory
             template_path (str, optional): The path to the Jinja2 template
+            filters (dict, optional): The filters to add to the Jinja2 environment
         """
         env = Environment(loader=FileSystemLoader(working_dir), trim_blocks=True, lstrip_blocks=True)
         for name, filter in filters.items():
@@ -17,6 +18,7 @@ class Renderer:
         self.template = env.get_template(template_path)
 
     def render(self, output_filepath, data):
+        """ Render the JSON file to an AsciiDoc file using a Jinja2 template and the given data"""
         output = self.template.render(data)
 
         with open(output_filepath, 'w') as f:
@@ -24,17 +26,34 @@ class Renderer:
 
 
 class IndexRenderer(Renderer):
+    """ Class to render the index files for the modules """
     def __init__(self, working_dir, template_path):
+        """ Initialize the index renderer
+        Args:
+            working_dir (str): The working directory
+            template_path (str): The path to the Jinja2 template, relative to the working directory
+        """
         super().__init__(working_dir, template_path)
 
     def render(self, output_folder_path, data):
+        """ Render the index file for the module
+        Args:
+            output_folder_path (str): The path to the output directory
+            data (dict): The data to render
+        """
         output_filepath = f"{output_folder_path}/index.adoc"
         super().render(output_filepath, data)
 
 
 
 class ReportRenderer(Renderer):
+    """ Class to render the JSON files to AsciiDoc files for the benchmarking reports """
     def __init__(self, working_dir, template_path):
+        """ Initialize the report renderer
+        Args:
+            working_dir (str): The working directory
+            template_path (str): The path to the Jinja2 template, relative to the working directory
+        """
         filters = {"convert_hostname": self.convert_hostname}
         super().__init__(working_dir, template_path, filters)
 
@@ -145,11 +164,12 @@ class ConfigHandler:
         if not filepath.split(".")[-1] == extension:
             raise ValueError("The config file must be a JSON file")
 
-    def createAppDirectories(self, index_renderer, base_dir = "docs/modules/ROOT/pages"):
+    def initializeModules(self, index_renderer, base_dir = "docs/modules/ROOT/pages"):
         """ Create directories and respective index files for all modules inside the config file
         It does not create the directories for machines, an error will be raised if a machine is not found
         Args:
             index_renderer (IndexRenderer): The renderer to render the index files
+            base_dir (str, optional): The base directory to create the directories. Defaults to "docs/modules/ROOT/pages"
         """
 
         for app_id, machines in self.benchmarks.items():
@@ -212,9 +232,7 @@ def main_cli():
 
 
     index_renderer = IndexRenderer(working_dir = WORKING_DIR, template_path = "templates/index.adoc.j2")
-    config_handler.createAppDirectories(index_renderer)
-
-    exit()
+    config_handler.initializeModules(index_renderer)
 
     for app_id, machine_data in config_handler.benchmarks.items():
         assert app_id in config_handler.applications, f"Application {app_id} not found in the applications list"
