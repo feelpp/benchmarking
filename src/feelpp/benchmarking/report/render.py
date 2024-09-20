@@ -70,14 +70,27 @@ class ReportRenderer(Renderer):
         data['filepath'] = input_json
         return data
 
-    def render(self,input_json,output_folderpath):
+    def render(self,input_json,output_folderpath, machine_id, application_id, case_tags):
         """ Render the JSON file to an AsciiDoc file using a Jinja2 template
         Args:
             input_json (str): The path to the JSON file
             output_folderpath (str): The path to the output AsciiDoc file
+            case_tags (list): The list of all possible test cases for an app, to be found in the JSON file
         """
         data = self.parseData(input_json)
-        output_filepath = f"{output_folderpath}/{input_json.split("/")[-1].replace('.json', '.adoc')}"
+
+        tags = data["runs"][0]["testcases"][0]["tags"] #TODO: Make sure that all testcases and runs have same tags.
+        current_test_case = "default"
+        for case_tag in case_tags:
+            if case_tag in tags:
+                current_test_case = case_tag
+                break
+
+        data["machine_id"] = machine_id
+        data['application_id'] = application_id
+        data['test_case_id'] = current_test_case
+
+        output_filepath = f"{output_folderpath}/{current_test_case}/{input_json.split("/")[-1].replace('.json', '.adoc')}"
         super().render(output_filepath, data)
 
     @staticmethod
@@ -164,7 +177,7 @@ class ConfigHandler:
         if not filepath.split(".")[-1] == extension:
             raise ValueError("The config file must be a JSON file")
 
-    def initializeModules(self, index_renderer, base_dir = "docs/modules/ROOT/pages"):
+    def initializeModules(self, index_renderer:IndexRenderer, base_dir = "docs/modules/ROOT/pages"):
         """ Create directories and respective index files for all modules inside the config file
         It does not create the directories for machines, an error will be raised if a machine is not found
         Args:
@@ -204,8 +217,8 @@ class ConfigHandler:
                         data = {
                             "title": test_case_info["name"],
                             "description": test_case_info["description"],
-                            "layout": "case-study",
-                            "tags": f"catalog, toolbox",
+                            "layout": "toolboxes",
+                            "tags": f"catalog, toolbox, {machine_id}-{app_id}-{test_case}",
                             "parent_catalogs": f"{machine_id}-{app_id}"
                         }
                     )
@@ -237,8 +250,6 @@ def main_cli():
     for app_id, machine_data in config_handler.benchmarks.items():
         assert app_id in config_handler.applications, f"Application {app_id} not found in the applications list"
 
-        test_cases = config_handler.applications[app_id]["test_cases"]
-
         for machine_id, benchmarks_data in machine_data.items():
             assert machine_id in config_handler.machines, f"Machine {machine_id} not found in the machines list"
 
@@ -253,16 +264,17 @@ def main_cli():
             json_filenames.sort() #TODO: CORRECT SORTING BY DATE
             json_filenames = json_filenames[:LATEST_REPORTS_TO_KEEP]
 
+            test_cases = benchmarks_data["test_cases"]
 
             #For each report, render the JSON file to AsciiDoc
             for json_filename in json_filenames:
-                if not json_filename.endswith(".json"):
-                    continue
-
                 #Render the JSON file to AsciiDoc
                 output_folder_path = f"{args.modules_path}/machines/{machine_id}/pages/{app_id}/pages"
+
                 renderer.render(
                     f"{json_output_path}/{app_id}/{machine_id}/{json_filename}",
                     output_folder_path,
-                    possible_tags = [test_case["tags"] for test_case in test_cases]
+                    machine_id=machine_id,
+                    application_id=app_id,
+                    case_tags = test_cases
                 )
