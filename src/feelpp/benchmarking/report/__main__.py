@@ -1,4 +1,4 @@
-import argparse
+import argparse,os
 from feelpp.benchmarking.report.handlers import ConfigHandler, GirderHandler
 from feelpp.benchmarking.report.machine import Machine
 from feelpp.benchmarking.report.application import Application
@@ -22,49 +22,23 @@ def main_cli():
     girder_handler = GirderHandler(json_output_path)
 
     applications = ApplicationRepository(config_handler.applications)
-
     test_cases = TestCaseRepository(config_handler.applications)
-
     machines = MachineRepository(config_handler.machines)
 
     machines.link(applications, test_cases, config_handler.execution_mapping)
     applications.link(machines, test_cases, config_handler.execution_mapping)
     test_cases.link(applications, machines, config_handler.execution_mapping)
 
-    #Show hierarchy
+    index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
+
     for machine in machines:
-        print(f"Machine: {machine.display_name}")
-        for application in machine.applications:
-            print(f"\tApplication: {application.display_name}")
-            for test_case in application.test_cases:
-                print(f"\t\tTest case: {test_case.display_name}")
-
-    print("\n ----------------- \n")
-
-    #Show hierarchy from application
-    for application in applications:
-        print(f"Application: {application.display_name}")
-        for machine in application.machines:
-            print(f"\tMachine: {machine.display_name}")
-            for test_case in application.test_cases:
-                print(f"\t\tTest case: {test_case.display_name}")
-
-    print("\n ----------------- \n")
-
-    #Show hierarchy from test case
-    for test_case in test_cases:
-        print(f"Test case: {test_case.display_name}")
-        if test_case.application:
-            print(f"Application: {test_case.application.display_name}")
-        for machine in test_case.machines:
-            print(f"\tMachine: {machine.display_name}")
+        machine.initModules(os.path.join(args.modules_path,"machines"), index_renderer,"supercomputers")
 
 
     # atomic_report = AtomicReportRepository(
     #     benchmarking_config_json = config_handler.execution_mapping,
     #     download_handler = girder_handler,
     # ).atomic_reports
-
 
 
 

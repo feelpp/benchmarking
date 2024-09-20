@@ -1,10 +1,9 @@
 import os
+from feelpp.benchmarking.report.component import Component
 
-class TestCase:
+class TestCase(Component):
     def __init__(self, id, display_name, description):
-        self.id = id
-        self.display_name = display_name
-        self.description = description
+        super().__init__(id, display_name, description)
 
         self.application = None
         self.machines = []
@@ -20,14 +19,3 @@ class TestCase:
             self.machines.append(machine)
         if self not in machine.test_cases:
             machine.addTestCase(self)
-
-
-    def indexData(self):
-        return dict(
-            title = self.display_name,
-            layout = "toolboxes",
-            tags = f"catalog, toolbox, {self.parent.parent.id}-{self.parent.id}-{self.id}",
-            parent_catalogs = f"{self.parent.parent.id}-{self.parent.id}",
-            description = self.description,
-            illustration = f"ROOT:{self.id}.jpg"
-        )

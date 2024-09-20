@@ -1,10 +1,9 @@
+from feelpp.benchmarking.report.component import Component
 import os
 
-class Application:
+class Application(Component):
     def __init__(self, id, display_name, description):
-        self.id = id
-        self.display_name = display_name
-        self.description = description
+        super().__init__(id, display_name, description)
 
         self.machines = []
         self.test_cases = []
@@ -26,13 +25,3 @@ class Application:
         for test_case in self.test_cases:
             if test_case.id == atomic_report.test_case_id:
                 test_case.addAtomicReport(atomic_report)
-
-    def indexData(self):
-        return dict(
-            title = self.display_name,
-            layout = "toolboxes",
-            tags = f"catalog, toolbox, {self.parent.id}-{self.id}",
-            parent_catalogs = self.parent.id,
-            description = self.description,
-            illustration = f"ROOT:{self.id}.jpg"
-        )
