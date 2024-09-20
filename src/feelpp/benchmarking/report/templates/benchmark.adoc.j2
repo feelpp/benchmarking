@@ -1,12 +1,10 @@
-{% set machine = session_info.hostname | convert_hostname  %}
-
-= Reframe Report for {{ machine }}
+= Reframe Report for {{ machine_display_name }}
 :page-plotly: true
 :page-jupyter: true
 :page-tags: toolbox, catalog
 :parent-catalogs: {{machine_id}}-{{application_id}}-{{test_case_id}}
-:description: Performance report for {{ machine }} on {{ session_info.time_end }}
-:page-illustration: {{ machine }}.jpg
+:description: Performance report for {{ machine_display_name }} on {{ session_info.time_end }}
+:page-illustration: {{ machine_id }}.jpg
 :author: Your Name
 :revdate: {{ session_info.time_end }}
 
