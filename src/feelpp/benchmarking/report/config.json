@@ -1,27 +1,31 @@
 {
     "benchmarks": {
-        "kub": {
-            "gaya": {
+        "gaya": {
+            "kub": {
                 "girder_folder_id": "66e94b10b0e95728eb00fcfe",
                 "test_cases": ["strasbourg"]
             },
-            "meluxina": {
+            "feelpp_toolbox_electric": {
+                "girder_folder_id": "66e96853b0e95728eb01004a",
+                "test_cases": ["busbar2d", "busbar3d", "default"]
+            }
+        },
+        "meluxina": {
+            "kub": {
                 "girder_folder_id": "66e94b0ab0e95728eb00fcfd",
-                "test_cases": ["strasbourg"]
-            },
-            "discoverer": {
-                "girder_folder_id": "66e94b14b0e95728eb00fcff",
-                "test_cases": ["strasbourg"]
-            },
-            "lumi": {
-                "girder_folder_id": "66e94b03b0e95728eb00fcfc",
                 "test_cases": ["strasbourg"]
             }
         },
-        "feelpp_toolbox_electric": {
-            "gaya": {
-                "girder_folder_id": "66e96853b0e95728eb01004a",
-                "test_cases": ["busbar2d", "busbar3d", "default"]
+        "discoverer": {
+            "kub": {
+                "girder_folder_id": "66e94b14b0e95728eb00fcff",
+                "test_cases": ["strasbourg"]
+            }
+        },
+        "lumi": {
+            "kub": {
+                "girder_folder_id": "66e94b03b0e95728eb00fcfc",
+                "test_cases": ["strasbourg"]
             }
         }
     },
@@ -45,15 +49,15 @@
             "thumbnail": "electric.png",
             "test_cases": {
                 "busbar2d": {
-                    "name": "Busbar 2D",
+                    "display_name": "Busbar 2D",
                     "description": "Busbar 2D simulation"
                 },
                 "busbar3d": {
-                    "name": "Busbar 3D",
+                    "display_name": "Busbar 3D",
                     "description": "Busbar 3D simulation"
                 },
                 "default": {
-                    "name": "Default",
+                    "display_name": "Default",
                     "description": "Unkown test case"
                 }
             }
@@ -63,23 +67,23 @@
             "thumbnail": "heatTransfer.png",
             "test_cases": {
                 "thermal_bridges_case_1": {
-                    "name": "Thermal Bridges Case 1",
+                    "display_name": "Thermal Bridges Case 1",
                     "description": "Thermal bridges case 1 simulation"
                 },
                 "thermal_bridges_case_2": {
-                    "name": "Thermal Bridges Case 2",
+                    "display_name": "Thermal Bridges Case 2",
                     "description": "Thermal bridges case 2 simulation"
                 },
                 "thermal_bridges_case_3": {
-                    "name": "Thermal Bridges Case 3",
+                    "display_name": "Thermal Bridges Case 3",
                     "description": "Thermal bridges case 3 simulation"
                 },
                 "thermal_bridges_case_4": {
-                    "name": "Thermal Bridges Case 4",
+                    "display_name": "Thermal Bridges Case 4",
                     "description": "Thermal bridges case 4 simulation"
                 },
                 "thermal_bridges_case_3_async": {
-                    "name": "Thermal Bridges Case 3 Async",
+                    "display_name": "Thermal Bridges Case 3 Async",
                     "description": "Thermal bridges case 3 async simulation"
                 }
             }
@@ -89,11 +93,11 @@
             "thumbnail": "heatFluid.png",
             "test_cases": {
                 "laminar2d":{
-                    "name": "Laminar 2D",
+                    "display_name": "Laminar 2D",
                     "description": "Laminar 2D simulation"
                 },
                 "laminar3d":{
-                    "name": "Laminar 3D",
+                    "display_name": "Laminar 3D",
                     "description": "Laminar 3D simulation"
                 }
             }
@@ -103,7 +107,7 @@
             "thumbnail": "kub.jpeg",
             "test_cases":{
                 "strasbourg": {
-                    "name": "Strasbourg",
+                    "display_name": "Strasbourg",
                     "description": "KUB simulation in Strasbourg, lod0 grid M2"
                 }
             }
