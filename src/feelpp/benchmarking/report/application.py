@@ -7,6 +7,7 @@ class Application(Component):
 
         self.machines = []
         self.test_cases = []
+        self.atomic_reports = []
 
 
     def addMachine(self, machine):
@@ -22,6 +23,7 @@ class Application(Component):
                 test_case.setApplication(self)
 
     def addAtomicReport(self, atomic_report):
-        for test_case in self.test_cases:
-            if test_case.id == atomic_report.test_case_id:
-                test_case.addAtomicReport(atomic_report)
+        if atomic_report not in self.atomic_reports:
+            self.atomic_reports.append(atomic_report)
+        if self != atomic_report.application:
+            atomic_report.setApplication(self)

@@ -19,3 +19,9 @@ class TestCase(Component):
             self.machines.append(machine)
         if self not in machine.test_cases:
             machine.addTestCase(self)
+
+    def addAtomicReport(self, atomic_report):
+        if atomic_report not in self.atomic_reports:
+            self.atomic_reports.append(atomic_report)
+        if self != atomic_report.test_case:
+            atomic_report.setTestCase(self)

@@ -31,14 +31,32 @@ def main_cli():
 
     index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
 
+    machines_base_dir = os.path.join(args.modules_path,"machines")
+
     for machine in machines:
-        machine.initModules(os.path.join(args.modules_path,"machines"), index_renderer,"supercomputers")
+        machine.initModules(machines_base_dir, index_renderer,"supercomputers")
 
+    atomic_reports = AtomicReportRepository(
+        benchmarking_config_json = config_handler.execution_mapping,
+        download_handler = girder_handler,
+    )
+    atomic_reports.link(applications, machines, test_cases)
 
-    # atomic_report = AtomicReportRepository(
-    #     benchmarking_config_json = config_handler.execution_mapping,
-    #     download_handler = girder_handler,
-    # ).atomic_reports
+    report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
+
+    counter = {
+        f"{mach.id}-{app.id}-{tc.id}" : 0
+        for mach in machines
+        for app in mach.applications
+        for tc in app.test_cases
+    }
+
+    #TODO: At the moment just generate 5 reports per test case
+    for atomic_report in atomic_reports:
+        if counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.test_case_id}"] < 5:
+            atomic_report.createReport(machines_base_dir,report_renderer)
+
+        counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.test_case_id}"] += 1
 
 
 

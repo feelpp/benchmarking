@@ -12,10 +12,14 @@ class Repository:
     def __iter__(self):
         return iter(self.data)
 
+    def add(self, item):
+        if item not in self.data:
+            self.data.append(item)
+
 
 class MachineRepository(Repository):
     def __init__(self, machines_json):
-        self.data = [
+        self.data:list[Machine] = [
             Machine(
                 id = machine_id,
                 display_name = machine_info["display_name"],
@@ -37,7 +41,7 @@ class MachineRepository(Repository):
 
 class ApplicationRepository(Repository):
     def __init__(self, applications_json):
-        self.data = [
+        self.data:list[Application] = [
             Application(
                 id = app_id,
                 display_name = app_info["display_name"],
@@ -59,10 +63,10 @@ class ApplicationRepository(Repository):
 
 class TestCaseRepository(Repository):
     def __init__(self, applications_json):
-        self.data = []
+        self.data:list[TestCase] = []
         for app_id, app_info in applications_json.items():
             for test_case, test_case_info in app_info["test_cases"].items():
-                self.data.append(
+                self.add(
                     TestCase(
                         id = test_case,
                         display_name = test_case_info["display_name"],
@@ -81,9 +85,9 @@ class TestCaseRepository(Repository):
                         test_case.addMachine(machine)
 
 
-class AtomicReportRepository:
+class AtomicReportRepository(Repository):
     def __init__(self, benchmarking_config_json, download_handler):
-        self.atomic_reports:list[AtomicReport] = []
+        self.data:list[AtomicReport] = []
         self.downloadAndInitAtomicReports(benchmarking_config_json, download_handler)
 
     def downloadAndInitAtomicReports(self,benchmarking_config_json, download_handler):
@@ -93,7 +97,7 @@ class AtomicReportRepository:
                 possible_test_cases = app_info["test_cases"]
                 for json_file in json_filenames:
                     json_file = f"{download_handler.download_base_dir}/{machine_id}/{app_id}/{json_file}"
-                    self.addAtomicReport(
+                    self.add(
                         AtomicReport(
                             application_id = app_id,
                             machine_id = machine_id,
@@ -102,21 +106,14 @@ class AtomicReportRepository:
                         )
                     )
 
-    def addAtomicReport(self, atomic_report):
-        if atomic_report not in self.atomic_reports:
-            self.atomic_reports.append(atomic_report)
-
-    def linkReports(self, applications, machines, test_cases):
-        for atomic_report in self.atomic_reports:
+    def link(self, applications, machines, test_cases):
+        for atomic_report in self.data:
             application = next(filter(lambda a: a.id == atomic_report.application_id, applications))
             machine = next(filter(lambda m: m.id == atomic_report.machine_id, machines))
             test_case = next(filter(lambda t: t.id == atomic_report.test_case_id, test_cases))
 
             atomic_report.setIndexes(application, machine, test_case)
-            if atomic_report not in application.atomic_reports:
-                application.addAtomicReport(atomic_report)
-            if atomic_report not in machine.atomic_reports:
-                machine.addAtomicReport(atomic_report)
-            if atomic_report not in test_case.atomic_reports:
-                test_case.addAtomicReport(atomic_report)
+            for item in [application, machine, test_case]:
+                if atomic_report not in item.atomic_reports:
+                    item.addAtomicReport(atomic_report)
 

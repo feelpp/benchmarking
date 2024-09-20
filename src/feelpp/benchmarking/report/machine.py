@@ -6,6 +6,7 @@ class Machine(Component):
         super().__init__(id, display_name, description)
         self.applications = []
         self.test_cases = []
+        self.atomic_reports = []
 
     def addApplication(self, application):
         if application not in self.applications:
@@ -18,6 +19,12 @@ class Machine(Component):
             self.test_cases.append(test_case)
         if self not in test_case.machines:
             test_case.addMachine(self)
+
+    def addAtomicReport(self, atomic_report):
+        if atomic_report not in self.atomic_reports:
+            self.atomic_reports.append(atomic_report)
+        if atomic_report.machine != self:
+            atomic_report.setMachine(self)
 
     def initModules(self, base_dir, renderer, parent_id = "supercomputers"):
         super().initModules(base_dir, renderer, parent_id, self_tag_id=self.id)
