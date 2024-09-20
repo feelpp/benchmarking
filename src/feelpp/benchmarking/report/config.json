@@ -2,21 +2,26 @@
     "benchmarks": {
         "kub": {
             "gaya": {
-                "girder_folder_id": "66e94b10b0e95728eb00fcfe"
+                "girder_folder_id": "66e94b10b0e95728eb00fcfe",
+                "test_cases": ["strasbourg"]
             },
             "meluxina": {
-                "girder_folder_id": "66e94b0ab0e95728eb00fcfd"
+                "girder_folder_id": "66e94b0ab0e95728eb00fcfd",
+                "test_cases": ["strasbourg"]
             },
             "discoverer": {
-                "girder_folder_id": "66e94b14b0e95728eb00fcff"
+                "girder_folder_id": "66e94b14b0e95728eb00fcff",
+                "test_cases": ["strasbourg"]
             },
             "lumi": {
-                "girder_folder_id": "66e94b03b0e95728eb00fcfc"
+                "girder_folder_id": "66e94b03b0e95728eb00fcfc",
+                "test_cases": ["strasbourg"]
             }
         },
         "feelpp_toolbox_electric": {
             "gaya": {
-                "girder_folder_id": "66e96853b0e95728eb01004a"
+                "girder_folder_id": "66e96853b0e95728eb01004a",
+                "test_cases": ["busbar2d", "busbar3d"]
             }
         }
     },
@@ -37,61 +42,67 @@
     "applications": {
         "feelpp_toolbox_electric": {
             "display_name": "Feel++ electric toolbox",
-            "test_cases": [
-                {
-                    "name": "busbar 2D",
-                    "description": "Busbar 2D simulation",
-                    "tag": "busbar2d"
+            "thumbnail": "electric.png",
+            "test_cases": {
+                "busbar2d": {
+                    "name": "Busbar 2D",
+                    "description": "Busbar 2D simulation"
                 },
-                {
-                    "name": "busbar 3D",
-                    "description": "Busbar 3D simulation",
-                    "tag": "busbar3d"
+                "busbar3d": {
+                    "name": "Busbar 3D",
+                    "description": "Busbar 3D simulation"
                 }
-            ]
+            }
         },
         "feelpp_toolbox_heat": {
             "display_name": "Feel++ heat toolbox",
-            "test_cases": [
-                {
+            "thumbnail": "heatTransfer.png",
+            "test_cases": {
+                "thermal_bridges_case_1": {
+                    "name": "Thermal Bridges Case 1",
+                    "description": "Thermal bridges case 1 simulation"
+                },
+                "thermal_bridges_case_2": {
                     "name": "Thermal Bridges Case 2",
-                    "description": "Thermal bridges case 2 simulation",
-                    "tag": "thermal_bridges_case_2"
+                    "description": "Thermal bridges case 2 simulation"
                 },
-                {
+                "thermal_bridges_case_3": {
                     "name": "Thermal Bridges Case 3",
-                    "description": "Thermal bridges case 3 simulation",
-                    "tag": "thermal_bridges_case_3"
+                    "description": "Thermal bridges case 3 simulation"
                 },
-                {
+                "thermal_bridges_case_4": {
                     "name": "Thermal Bridges Case 4",
-                    "description": "Thermal bridges case 4 simulation",
-                    "tag": "thermal_bridges_case_4"
+                    "description": "Thermal bridges case 4 simulation"
                 },
-                {
+                "thermal_bridges_case_3_async": {
                     "name": "Thermal Bridges Case 3 Async",
-                    "description": "Thermal bridges case 3 async simulation",
-                    "tag": "thermal_bridges_case_3_async"
+                    "description": "Thermal bridges case 3 async simulation"
                 }
-            ]
+            }
         },
         "feelpp_toolbox_heatfluid": {
             "display_name": "Feel++ Heat Fluid toolbox",
-            "test_cases": [
-                {
+            "thumbnail": "heatFluid.png",
+            "test_cases": {
+                "laminar2d":{
                     "name": "Laminar 2D",
-                    "description": "Laminar 2D simulation",
-                    "tag": "laminar2d"
+                    "description": "Laminar 2D simulation"
                 },
-                {
-                    "name": "prone Eye M2 simple",
-                    "description": "Prone Eye M2 simple simulation",
-                    "tag": "proneEye-M2-simple"
+                "laminar3d":{
+                    "name": "Laminar 3D",
+                    "description": "Laminar 3D simulation"
                 }
-            ]
+            }
         },
         "kub": {
-            "display_name": "Ktirio Urban Buildings"
+            "display_name": "Ktirio Urban Buildings",
+            "thumbnail": "kub.jpeg",
+            "test_cases":{
+                "strasbourg": {
+                    "name": "Strasbourg",
+                    "description": "KUB simulation in Strasbourg, lod0 grid M2"
+                }
+            }
         }
     }
 }
