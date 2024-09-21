@@ -56,6 +56,3 @@ def main_cli():
             atomic_report.createReport(machines_base_dir,report_renderer)
 
         counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.test_case_id}"] += 1
-
-if __name__ == "__main__":
-    main_cli()
