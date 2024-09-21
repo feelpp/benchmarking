@@ -23,23 +23,23 @@ def main_cli():
     test_cases = TestCaseRepository(config_handler.applications, applications)
     machines = MachineRepository(config_handler.machines)
 
-    machines.link(applications, test_cases, config_handler.execution_mapping)
-    applications.link(machines, test_cases, config_handler.execution_mapping)
-    test_cases.link(applications, machines, config_handler.execution_mapping)
-
-    index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
-
-    machines_base_dir = os.path.join(args.modules_path,"machines")
-
-    for machine in machines:
-        machine.initModules(machines_base_dir, index_renderer,"supercomputers")
-
-
     atomic_reports = AtomicReportRepository(
         benchmarking_config_json = config_handler.execution_mapping,
         download_handler = girder_handler,
     )
+
+    machines.link(applications, test_cases, config_handler.execution_mapping)
+    applications.link(machines, test_cases, config_handler.execution_mapping)
+    test_cases.link(applications, machines, config_handler.execution_mapping)
+
     atomic_reports.link(applications, machines, test_cases)
+
+    index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
+
+    machines_base_dir = os.path.join(args.modules_path,"machines")
+    for machine in machines:
+        machine.initModules(machines_base_dir, index_renderer,"supercomputers")
+
 
     report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
 

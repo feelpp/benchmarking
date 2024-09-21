@@ -28,7 +28,7 @@ class GirderHandler(DownloadHandler):
         Returns:
             list: The list of downloaded files inside the output directory
         """
-        # self.client.downloadFolderRecursive(folder_id, f"{self.download_base_dir}/{output_dir}")
+        self.client.downloadFolderRecursive(folder_id, f"{self.download_base_dir}/{output_dir}")
 
         return os.listdir(f"{self.download_base_dir}/{output_dir}")
 
