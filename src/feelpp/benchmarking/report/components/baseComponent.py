@@ -6,6 +6,8 @@ class BaseComponent:
         self.display_name = display_name
         self.description = description
 
+        self.tree = {}
+
     def indexData(self,parent_id, self_tag_id):
         return dict(
             title = self.display_name,
@@ -26,3 +28,10 @@ class BaseComponent:
             os.path.join(module_path, "index.adoc"),
             self.indexData(parent_id, self_tag_id)
         )
+
+    def printHierarchy(self):
+        print(f"{self.display_name}")
+        for k, vs in self.tree.items():
+            print(f"\t{k.display_name}")
+            for v in vs:
+                print(f"\t\t{v.display_name}")

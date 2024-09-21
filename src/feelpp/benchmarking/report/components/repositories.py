@@ -16,6 +16,9 @@ class Repository:
         if item not in self.data:
             self.data.append(item)
 
+    def printHierarchy(self):
+        for item in self.data:
+            item.printHierarchy()
 
 class MachineRepository(Repository):
     def __init__(self, machines_json):
@@ -30,14 +33,14 @@ class MachineRepository(Repository):
 
     def link(self, applications, test_cases, execution_mapping):
         for machine in self.data:
-            if not machine.id in execution_mapping:
+            if machine.id not in execution_mapping:
                 continue
             for app_id, app_info in execution_mapping[machine.id].items():
                 application = next(filter(lambda a: a.id == app_id, applications))
-                machine.addApplication(application)
+                machine.tree[application] = {}
                 for test_case_id in app_info["test_cases"]:
                     test_case = next(filter(lambda t: t.id == test_case_id, test_cases))
-                    machine.addTestCase(test_case)
+                    machine.tree[application][test_case] = []
 
 class ApplicationRepository(Repository):
     def __init__(self, applications_json):
@@ -56,21 +59,23 @@ class ApplicationRepository(Repository):
                 if not application.id in machine_info:
                     continue
                 machine = next(filter(lambda m: m.id == machine_id, machines))
-                application.addMachine(machine)
+                application.tree[machine] = {}
                 for test_case_id in machine_info[application.id]["test_cases"]:
                     test_case = next(filter(lambda t: t.id == test_case_id, test_cases))
-                    application.addTestCase(test_case)
+                    application.tree[machine][test_case] = []
 
 class TestCaseRepository(Repository):
-    def __init__(self, applications_json):
+    def __init__(self, applications_json, applications):
         self.data:list[TestCase] = []
         for app_id, app_info in applications_json.items():
+            application = next(filter(lambda a: a.id == app_id, applications))
             for test_case, test_case_info in app_info["test_cases"].items():
                 self.add(
                     TestCase(
                         id = test_case,
                         display_name = test_case_info["display_name"],
-                        description = test_case_info["description"]
+                        description = test_case_info["description"],
+                        application = application
                     )
                 )
 
@@ -79,10 +84,12 @@ class TestCaseRepository(Repository):
             for machine_id, machine_info in execution_mapping.items():
                 machine = next(filter(lambda m: m.id == machine_id, machines))
                 for app_id, app_info in machine_info.items():
+                    if not test_case.id in app_info["test_cases"]:
+                        continue
                     application = next(filter(lambda a: a.id == app_id, applications))
-                    if test_case.id in app_info["test_cases"]:
-                        test_case.setApplication(application)
-                        test_case.addMachine(machine)
+                    if not application in test_case.tree:
+                        continue
+                    test_case.tree[application][machine] = []
 
 
 class AtomicReportRepository(Repository):
@@ -110,10 +117,17 @@ class AtomicReportRepository(Repository):
         for atomic_report in self.data:
             application = next(filter(lambda a: a.id == atomic_report.application_id, applications))
             machine = next(filter(lambda m: m.id == atomic_report.machine_id, machines))
-            test_case = next(filter(lambda t: t.id == atomic_report.test_case_id, test_cases))
-
+            test_case = next(filter(lambda t: t.id == atomic_report.test_case_id and application in t.tree, test_cases))
             atomic_report.setIndexes(application, machine, test_case)
-            for item in [application, machine, test_case]:
-                if atomic_report not in item.atomic_reports:
-                    item.addAtomicReport(atomic_report)
 
+            for application, tcs in machine.tree.items():
+                if test_case in tcs:
+                    machine.tree[application][test_case].append(atomic_report)
+
+            for mach, tcs in application.tree.items():
+                if test_case in tcs:
+                    application.tree[mach][test_case].append(atomic_report)
+
+            for app, machs in test_case.tree.items():
+                if mach in machs:
+                    test_case.tree[app][mach].append(atomic_report)

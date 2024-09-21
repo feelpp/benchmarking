@@ -20,7 +20,7 @@ def main_cli():
     girder_handler = GirderHandler(json_output_path)
 
     applications = ApplicationRepository(config_handler.applications)
-    test_cases = TestCaseRepository(config_handler.applications)
+    test_cases = TestCaseRepository(config_handler.applications, applications)
     machines = MachineRepository(config_handler.machines)
 
     machines.link(applications, test_cases, config_handler.execution_mapping)
@@ -45,8 +45,8 @@ def main_cli():
     counter = {
         f"{mach.id}-{app.id}-{tc.id}" : 0
         for mach in machines
-        for app in mach.applications
-        for tc in app.test_cases
+        for app,tcs in mach.tree.items()
+        for tc in tcs
     }
 
     #TODO: At the moment just generate 5 reports per test case

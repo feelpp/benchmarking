@@ -4,32 +4,11 @@ from feelpp.benchmarking.report.components.baseComponent import BaseComponent
 class Machine(BaseComponent):
     def __init__(self, id, display_name, description):
         super().__init__(id, display_name, description)
-        self.applications = []
-        self.test_cases = []
-        self.atomic_reports = []
-
-    def addApplication(self, application):
-        if application not in self.applications:
-            self.applications.append(application)
-        if self not in application.machines:
-            application.addMachine(self)
-
-    def addTestCase(self, test_case):
-        if test_case not in self.test_cases:
-            self.test_cases.append(test_case)
-        if self not in test_case.machines:
-            test_case.addMachine(self)
-
-    def addAtomicReport(self, atomic_report):
-        if atomic_report not in self.atomic_reports:
-            self.atomic_reports.append(atomic_report)
-        if atomic_report.machine != self:
-            atomic_report.setMachine(self)
 
     def initModules(self, base_dir, renderer, parent_id = "supercomputers"):
         super().initModules(base_dir, renderer, parent_id, self_tag_id=self.id)
 
-        for application in self.applications:
+        for application, test_cases in self.tree.items():
             application.initModules(os.path.join(base_dir,self.id), renderer,parent_id = self.id, self_tag_id = f"{self.id}-{application.id}")
-            for test_case in application.test_cases:
+            for test_case in test_cases:
                 test_case.initModules(os.path.join(base_dir,self.id,application.id), renderer, parent_id = f"{self.id}-{application.id}", self_tag_id = f"{self.id}-{application.id}-{test_case.id}")
