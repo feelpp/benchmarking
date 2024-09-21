@@ -125,12 +125,6 @@ class AtomicReportRepository(Repository):
             atomic_report.setIndexes(application, machine, test_case)
 
 
-            try:
-                machine.tree[application][test_case].append(atomic_report)
-            except KeyError:
-                print(f"KeyError: {machine.id} {application.id} {test_case.id}")
-                print(test_case)
-                print(machine.tree[application].keys())
-
+            machine.tree[application][test_case].append(atomic_report)
             application.tree[machine][test_case].append(atomic_report)
             test_case.tree[application][machine].append(atomic_report)
