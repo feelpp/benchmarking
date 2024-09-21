@@ -1,0 +1,59 @@
+= Reframe Report for KUB on Gaya
+:page-plotly: true
+:page-jupyter: true
+:page-tags: toolbox, catalog
+:parent-catalogs: gaya-kub-default
+:description: Performance report for Gaya on 2024-02-18T07:28:16+0100
+:page-illustration: gaya.jpg
+:author: Your Name
+:revdate: 2024-02-18T07:28:16+0100
+
+== Test Summary
+
+* Total Tests: 0
+* Failures: 0
+* Testcases
+
+[%dynamic%close,python]
+----
+from feelpp.benchmarking.reframe.report import Report
+report=Report(file_path="reports/gaya/kub/20240218-0728.json")
+----
+
+=== Performance by Simulation Steps
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByStep()
+fig.show()
+----
+
+=== Performance by Number of Tasks
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByTask()
+fig.show()
+----
+
+=== Speedup of the simulation Steps
+
+.Speedup
+[%dynamic%raw%open,python]
+----
+fig=report.plotSpeedup()
+fig.show()
+----
+
+=== Speedup for partial performances
+
+[%dynamic%raw%open,python]
+----
+if report.partial:
+    for name, value in report.partialDict.items():
+        if value != []:
+            fig = report.plotPartialSpeedup(key=name)
+            fig.show()
+else:
+    print("Performances of each part inside an execution step have not been recorded yet.")
+----

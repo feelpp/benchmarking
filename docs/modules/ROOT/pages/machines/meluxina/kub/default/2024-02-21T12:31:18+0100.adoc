@@ -1,0 +1,59 @@
+= Reframe Report for KUB on MeluXina
+:page-plotly: true
+:page-jupyter: true
+:page-tags: toolbox, catalog
+:parent-catalogs: meluxina-kub-default
+:description: Performance report for MeluXina on 2024-02-21T12:31:18+0100
+:page-illustration: meluxina.jpg
+:author: Your Name
+:revdate: 2024-02-21T12:31:18+0100
+
+== Test Summary
+
+* Total Tests: 0
+* Failures: 0
+* Testcases
+
+[%dynamic%close,python]
+----
+from feelpp.benchmarking.reframe.report import Report
+report=Report(file_path="reports/meluxina/kub/20240221-1231.json")
+----
+
+=== Performance by Simulation Steps
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByStep()
+fig.show()
+----
+
+=== Performance by Number of Tasks
+
+[%dynamic%raw%open,python]
+----
+fig=report.plotPerformanceByTask()
+fig.show()
+----
+
+=== Speedup of the simulation Steps
+
+.Speedup
+[%dynamic%raw%open,python]
+----
+fig=report.plotSpeedup()
+fig.show()
+----
+
+=== Speedup for partial performances
+
+[%dynamic%raw%open,python]
+----
+if report.partial:
+    for name, value in report.partialDict.items():
+        if value != []:
+            fig = report.plotPartialSpeedup(key=name)
+            fig.show()
+else:
+    print("Performances of each part inside an execution step have not been recorded yet.")
+----
