@@ -20,6 +20,9 @@ class Repository:
         for item in self.data:
             item.printHierarchy()
 
+    def get(self, id):
+        return next(filter(lambda x: x.id == id, self.data))
+
 class MachineRepository(Repository):
     def __init__(self, machines_json):
         self.data:list[Machine] = [
@@ -39,7 +42,7 @@ class MachineRepository(Repository):
                 application = next(filter(lambda a: a.id == app_id, applications))
                 machine.tree[application] = {}
                 for test_case_id in app_info["test_cases"]:
-                    test_case = next(filter(lambda t: t.id == test_case_id, test_cases))
+                    test_case = next(filter(lambda t: t.id == test_case_id and application in t.tree, test_cases))
                     machine.tree[application][test_case] = []
 
 class ApplicationRepository(Repository):
@@ -61,7 +64,7 @@ class ApplicationRepository(Repository):
                 machine = next(filter(lambda m: m.id == machine_id, machines))
                 application.tree[machine] = {}
                 for test_case_id in machine_info[application.id]["test_cases"]:
-                    test_case = next(filter(lambda t: t.id == test_case_id, test_cases))
+                    test_case = next(filter(lambda t: t.id == test_case_id and application in t.tree, test_cases))
                     application.tree[machine][test_case] = []
 
 class TestCaseRepository(Repository):
@@ -117,17 +120,17 @@ class AtomicReportRepository(Repository):
         for atomic_report in self.data:
             application = next(filter(lambda a: a.id == atomic_report.application_id, applications))
             machine = next(filter(lambda m: m.id == atomic_report.machine_id, machines))
-            test_case = next(filter(lambda t: t.id == atomic_report.test_case_id and application in t.tree, test_cases))
+            test_case = next(filter(lambda t: t.id == atomic_report.test_case_id and application in t.tree and machine in t.tree[application], test_cases))
+
             atomic_report.setIndexes(application, machine, test_case)
 
-            for application, tcs in machine.tree.items():
-                if test_case in tcs:
-                    machine.tree[application][test_case].append(atomic_report)
 
-            for mach, tcs in application.tree.items():
-                if test_case in tcs:
-                    application.tree[mach][test_case].append(atomic_report)
+            try:
+                machine.tree[application][test_case].append(atomic_report)
+            except KeyError:
+                print(f"KeyError: {machine.id} {application.id} {test_case.id}")
+                print(test_case)
+                print(machine.tree[application].keys())
 
-            for app, machs in test_case.tree.items():
-                if mach in machs:
-                    test_case.tree[app][mach].append(atomic_report)
+            application.tree[machine][test_case].append(atomic_report)
+            test_case.tree[application][machine].append(atomic_report)

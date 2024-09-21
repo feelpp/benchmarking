@@ -34,6 +34,7 @@ def main_cli():
     for machine in machines:
         machine.initModules(machines_base_dir, index_renderer,"supercomputers")
 
+
     atomic_reports = AtomicReportRepository(
         benchmarking_config_json = config_handler.execution_mapping,
         download_handler = girder_handler,
@@ -56,7 +57,16 @@ def main_cli():
 
         counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.test_case_id}"] += 1
 
+    print(len(atomic_reports.data))
+    machines.printHierarchy()
 
+    print ("----------")
+
+    applications.printHierarchy()
+
+    print ("----------")
+
+    test_cases.printHierarchy()
 
 if __name__ == "__main__":
     main_cli()

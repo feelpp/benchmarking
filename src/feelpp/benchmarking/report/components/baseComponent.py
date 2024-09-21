@@ -33,5 +33,5 @@ class BaseComponent:
         print(f"{self.display_name}")
         for k, vs in self.tree.items():
             print(f"\t{k.display_name}")
-            for v in vs:
-                print(f"\t\t{v.display_name}")
+            for v,reports in vs.items():
+                print(f"\t\t{v.display_name} : {len(reports)}")
