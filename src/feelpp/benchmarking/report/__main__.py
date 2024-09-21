@@ -1,8 +1,6 @@
 import argparse,os
 from feelpp.benchmarking.report.handlers import ConfigHandler, GirderHandler
-from feelpp.benchmarking.report.machine import Machine
-from feelpp.benchmarking.report.application import Application
-from feelpp.benchmarking.report.repositories import AtomicReportRepository, MachineRepository, ApplicationRepository, TestCaseRepository
+from feelpp.benchmarking.report.components.repositories import AtomicReportRepository, MachineRepository, ApplicationRepository, TestCaseRepository
 
 from feelpp.benchmarking.report.renderer import Renderer
 

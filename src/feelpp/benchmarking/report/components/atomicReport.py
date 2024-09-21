@@ -1,4 +1,3 @@
-from feelpp.benchmarking.report.renderer import Renderer
 import json, os
 
 

@@ -1,7 +1,7 @@
 import os
-from feelpp.benchmarking.report.component import Component
+from feelpp.benchmarking.report.components.baseComponent import BaseComponent
 
-class Machine(Component):
+class Machine(BaseComponent):
     def __init__(self, id, display_name, description):
         super().__init__(id, display_name, description)
         self.applications = []

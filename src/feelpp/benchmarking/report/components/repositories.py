@@ -1,7 +1,7 @@
-from feelpp.benchmarking.report.reports import AtomicReport
-from feelpp.benchmarking.report.application import Application
-from feelpp.benchmarking.report.machine import Machine
-from feelpp.benchmarking.report.testCase import TestCase
+from feelpp.benchmarking.report.components.atomicReport import AtomicReport
+from feelpp.benchmarking.report.components.application import Application
+from feelpp.benchmarking.report.components.machine import Machine
+from feelpp.benchmarking.report.components.testCase import TestCase
 
 
 class Repository:

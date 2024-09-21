@@ -1,6 +1,6 @@
 import os
 
-class Component:
+class BaseComponent:
     def __init__(self, id, display_name, description):
         self.id = id
         self.display_name = display_name
