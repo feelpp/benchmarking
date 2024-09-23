@@ -36,6 +36,10 @@ class GirderHandler(DownloadHandler):
         """
         self.client.downloadFolderRecursive(folder_id, f"{self.download_base_dir}/{output_dir}")
 
+        if not os.path.exists(f"{self.download_base_dir}/{output_dir}"):
+            print(f"Warning: folder with id {folder_id} was not correctly downloaded in {self.download_base_dir}/{output_dir}")
+            return []
+
         return os.listdir(f"{self.download_base_dir}/{output_dir}")
 
 
@@ -78,21 +82,3 @@ class ConfigHandler:
         """
         if not filepath.split(".")[-1] == extension:
             raise ValueError("The config file must be a JSON file")
-
-    def getMergedMachineInfo(self, machine_id):
-        """inner merge of 'benchmarks' and respective applications contained inside
-        Args:
-            machine_id (str): The id of the machine
-        Returns:
-            dict: The merged info
-        """
-        benchmark_info = {}
-        for app_id, app_info in self.execution_mapping.get(machine_id,{}).items():
-            benchmark_info[app_id] = {k:v for k,v in app_info.items() if k != "test_cases"}
-            benchmark_info[app_id].update({k:v for k,v in self.applications[app_id].items() if k != "test_cases"})
-            benchmark_info[app_id]["test_cases"] = {}
-            for test_case in app_info["test_cases"]:
-                benchmark_info[app_id]["test_cases"][test_case] = self.applications[app_id]["test_cases"][test_case]
-
-        return benchmark_info
-

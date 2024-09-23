@@ -1,23 +1,35 @@
-= Reframe Report for KUB on Lumi
+= Reframe Report for Feel++ electric toolbox on Gaya
 :page-plotly: true
 :page-jupyter: true
 :page-tags: toolbox, catalog
-:parent-catalogs: lumi-kub-default
-:description: Performance report for Lumi on 2024-02-16T06:53:52+0200
-:page-illustration: lumi.jpg
+:parent-catalogs: gaya-feelpp_toolbox_electric-busbar3d
+:description: Performance report for Gaya on 2024-09-23T11:11:44+0200
+:page-illustration: gaya.jpg
 :author: Your Name
-:revdate: 2024-02-16T06:53:52+0200
+:revdate: 2024-09-23T11:11:44+0200
 
 == Test Summary
 
-* Total Tests: 0
+* Total Tests: 7
 * Failures: 0
 * Testcases
+        ** ToolboxTest %nbTask=384
+        ** ToolboxTest %nbTask=256
+        ** ToolboxTest %nbTask=128
+        ** ToolboxTest %nbTask=64
+        ** ToolboxTest %nbTask=32
+        ** ToolboxTest %nbTask=16
+        ** ToolboxTest %nbTask=8
+* Environment variables:
+[source,json]
+----
+{'OMP_NUM_THREADS': 1}
+----
 
 [%dynamic%close,python]
 ----
 from feelpp.benchmarking.reframe.report import Report
-report=Report(file_path="reports/lumi/kub/20240216-0653.json")
+report=Report(file_path="reports/gaya/feelpp_toolbox_electric/20240923T110953-busbar3d.json")
 ----
 
 === Performance by Simulation Steps

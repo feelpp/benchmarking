@@ -9,7 +9,7 @@ class Repository:
     Designed for containing and manipulating a unique list of items
     """
     def __init__(self):
-        pass
+        self.data = []
 
     def __iter__(self):
         """ Iterator for the repository """
@@ -31,6 +31,11 @@ class Repository:
     def get(self, id):
         """ Get an item by its id """
         return next(filter(lambda x: x.id == id, self.data))
+
+    def link(self, other_components, execution_mapping):
+        """ Pure virtual function to link the items of the repository to other components.
+         It will update the tree attribute of the items """
+        pass
 
 class MachineRepository(Repository):
     """ Repository for machines """
