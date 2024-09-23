@@ -1,24 +1,34 @@
-= Reframe Report for KUB on Discoverer
+= Reframe Report for Feel++ electric toolbox on Gaya
 :page-plotly: true
 :page-jupyter: true
 :page-tags: toolbox, catalog
-:parent-catalogs: discoverer-kub-strasbourg
-:description: Performance report for Discoverer on 2024-02-21T23:29:12+0200
-:page-illustration: discoverer.jpg
+:parent-catalogs: gaya-feelpp_toolbox_electric-busbar2d
+:description: Performance report for Gaya on 2024-09-23T11:00:48+0200
+:page-illustration: gaya.jpg
 :author: Your Name
-:revdate: 2024-02-21T23:29:12+0200
+:revdate: 2024-09-23T11:00:48+0200
 
 == Test Summary
 
-* Total Tests: 1
+* Total Tests: 6
 * Failures: 0
 * Testcases
-        ** KUBCheck %city=strasbourg %grid=M2 %lod=lod0 %nodes=1 %tasks_per_node=128
+        ** ToolboxTest %nbTask=128
+        ** ToolboxTest %nbTask=64
+        ** ToolboxTest %nbTask=32
+        ** ToolboxTest %nbTask=16
+        ** ToolboxTest %nbTask=8
+        ** ToolboxTest %nbTask=4
+* Environment variables:
+[source,json]
+----
+{'OMP_NUM_THREADS': 1}
+----
 
 [%dynamic%close,python]
 ----
 from feelpp.benchmarking.reframe.report import Report
-report=Report(file_path="reports/discoverer/kub/20240221-2328.json")
+report=Report(file_path="reports/gaya/feelpp_toolbox_electric/20240923-busbar2d.json")
 ----
 
 === Performance by Simulation Steps
