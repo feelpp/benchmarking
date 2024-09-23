@@ -9,7 +9,7 @@ class Repository:
     Designed for containing and manipulating a unique list of items
     """
     def __init__(self):
-        pass
+        self.data = []
 
     def __iter__(self):
         """ Iterator for the repository """
