@@ -36,6 +36,10 @@ class GirderHandler(DownloadHandler):
         """
         self.client.downloadFolderRecursive(folder_id, f"{self.download_base_dir}/{output_dir}")
 
+        if not os.path.exists(f"{self.download_base_dir}/{output_dir}"):
+            print(f"Warning: folder with id {folder_id} was not correctly downloaded in {self.download_base_dir}/{output_dir}")
+            return []
+
         return os.listdir(f"{self.download_base_dir}/{output_dir}")
 
 
