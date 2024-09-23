@@ -79,7 +79,7 @@ def buildReportPath(configPath, prefix, suffix, toolbox):
 
     if suffix == '' or suffix == 'default':
         configName = os.path.basename(configPath)
-        suffix = f'{getDate()}-{configName}'
+        suffix = f'{getDate(format="%Y%m%dT%H%M%S")}-{configName}'
 
     reportPath = prefix + suffix
     return reportPath
