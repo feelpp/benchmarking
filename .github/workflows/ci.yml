@@ -38,6 +38,9 @@ on:
           - girder
           - ckan
 
+  repository_dispatch:
+    types: [benchmark-uploaded]
+
 jobs:
 
   build_wheel:
@@ -136,7 +139,7 @@ jobs:
     runs-on: self-ubuntu-22.04
     name: Update benchmarks
     needs: update_config
-    if: !contains(github.event.head_commit.message, 'benchmarks skip') && (github.event_name == 'pull_request')
+    if: "!contains(github.event.head_commit.message, 'benchmarks skip') && (github.event_name == 'pull_request')"
     steps:
       - name: Download
         uses: actions/download-artifact@v3
