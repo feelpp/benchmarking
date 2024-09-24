@@ -42,39 +42,6 @@ jobs:
         name: wheel-artifacts
         path: dist/*.whl
 
-  update_benchmarks:
-    runs-on: self-ubuntu-22.04
-    name: Update benchmarks
-    needs: build_wheel
-    if: "!contains(github.event.head_commit.message, 'benchmarks skip')"
-    steps:
-      - name: Download
-        uses: actions/download-artifact@v3
-        with:
-          name: wheel-artifacts
-      - name: Install
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          pip3 install -r requirements.txt
-          pip3 install dist/*.whl
-      - name: Update benchmarks
-        run: |
-          source .venv/bin/activate
-          render-benchmarks \
-            --config_file ./src/feelpp/benchmarking/report/config.json \
-            --json_output_path reports \
-            --modules_path ./docs/modules/ROOT/pages
-        env:
-          GIRDER_API_KEY: ${{ secrets.GIRDER }}
-      - name: Push benchmarks
-        if: contains(github.event.head_commit.message, 'benchmarks push') || github.event_name == 'pull_request'
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Add/Update benchmarks"
-          branch: ${{ github.head_ref }}
-          file_pattern: "docs/modules/**"
-
   docs:
     runs-on: self-ubuntu-22.04
     name: Build Antora Site
