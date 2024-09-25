@@ -1,7 +1,9 @@
+import os
 import shutil
 import glob
-from setup import *
-
+import reframe                  as rfm
+import reframe.utility.sanity   as sn
+from setup                      import Setup
 
 @rfm.simple_test
 class ToolboxTest (Setup):
@@ -10,34 +12,27 @@ class ToolboxTest (Setup):
 
     toolbox = variable(str, value='')
     case = variable(str, value='')
-    valuesPath = variable(str, value='')
-
-
-    """ check what is needed """
-    #checkers = variable(str, value='')             --> NEEDED
-    #visualization = variable(str, value='')        --> DON'T THINK SO (complicated: use of export-scene-macro.py)
-    #partitioning = variable(str, value='')         --> MAYBE
+    #physical_values_path = variable(str, value='')
 
 
     @run_after('init')
     def setVariables(self):
-        self.toolbox = self.config.Feelpp.toolbox
-        self.case = self.config.Feelpp.CommandLine.configFilesToStr()
-
+        self.toolbox = self.config.feelpp.toolbox
+        self.case = self.config.feelpp.command_line.configFilesToStr()
 
     @run_after('init')
     def buildPaths(self):
         # Extends output path with 'np_{task_number}'
-        self.feelOutputSuffix = os.path.join(self.config.Feelpp.CommandLine.repository.case, f'np_{self.nbTask}')
-        self.feelOutputPath = os.path.join(self.config.Feelpp.CommandLine.repository.prefix, f'{self.feelOutputSuffix}')
-        #self.valuesPath = os.path.join(self.feelOutputPath, f'{self.toolbox}.measures/values.csv')
+        self.feel_output_suffix = os.path.join(self.config.feelpp.command_line.repository.case, f'np_{self.nb_task}')
+        self.feel_output_path = os.path.join(self.config.feelpp.command_line.repository.prefix, f'{self.feel_output_suffix}')
+        #self.physical_values_path = os.path.join(self.feel_output_path, f'{self.toolbox}.measures/values.csv')
 
 
     @run_before('run')
     def cleanFolder(self):
-        if os.path.exists(self.feelOutputPath):
+        if os.path.exists(self.feel_output_path):
             print(" >>> Cleaning Feelpp output folder...")
-            shutil.rmtree(self.feelOutputPath)
+            shutil.rmtree(self.feel_output_path)
         else:
             print(" >>> New folder will be created...")
 
@@ -47,32 +42,32 @@ class ToolboxTest (Setup):
 
         self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-files {self.case}',
-                                f'--repository.prefix {self.config.Feelpp.CommandLine.repository.prefix}',
-                                f'--repository.case {self.feelOutputSuffix}',
+                                f'--repository.prefix {self.config.feelpp.command_line.repository.prefix}',
+                                f'--repository.case {self.feel_output_suffix}',
                                 '--fail-on-unknown-option 1']
 
         # json commands needs the '--toolbox' prefix,
-        if self.config.Feelpp.CommandLine.json.commands:
+        if self.config.feelpp.command_line.json.commands:
             # scale files for heatfluid are named 'heat-fluid'
             toolbox = 'heat-fluid' if self.toolbox == 'heatfluid' else self.toolbox
-            for cmd in self.config.Feelpp.CommandLine.json.commands:
+            for cmd in self.config.feelpp.command_line.json.commands:
                 cmd = f'--{toolbox}.' + cmd
                 self.executable_opts.append(cmd)
 
-        if self.config.Feelpp.CommandLine.case.commands:
-            self.executable_opts.extend(self.config.Feelpp.CommandLine.case.commands)
+        if self.config.feelpp.command_line.case.commands:
+            self.executable_opts.extend(self.config.feelpp.command_line.case.commands)
 
         # build scale commands with heatfluid exception handling
         if self.toolbox == 'heatfluid':
-            scaleCommands = [   '--heat-fluid.scalability-save=1', '--heat-fluid.heat.scalability-save=1', '--heat-fluid.fluid.scalability-save=1']
+            scale_commands = [   '--heat-fluid.scalability-save=1', '--heat-fluid.heat.scalability-save=1', '--heat-fluid.fluid.scalability-save=1']
         else:
-            scaleCommands = [f'--{self.toolbox}.scalability-save=1']
+            scale_commands = [f'--{self.toolbox}.scalability-save=1']
 
-        self.executable_opts.extend(scaleCommands)
+        self.executable_opts.extend(scale_commands)
 
 
     def findScaleFiles(self, keyword='scalibility', extension='.data'):
-        pattern = os.path.join(self.feelOutputPath, f'*{keyword}*{extension}')
+        pattern = os.path.join(self.feel_output_path, f'*{keyword}*{extension}')
         files = glob.glob(pattern)
         return files
 
@@ -82,22 +77,22 @@ class ToolboxTest (Setup):
 
         self.perf_variables = {}
         make_perf = sn.make_performance_function
-        scaleFiles = self.findScaleFiles()
-        for filePath in scaleFiles:
-            names = self.get_column_names(filePath)
-            perfNumber = len(names)
-            line = self.extractLine(self.pattern_generator(perfNumber), filePath, perfNumber)
+        scale_files = self.findScaleFiles()
+        for file_path in scale_files:
+            names = self.get_column_names(file_path)
+            perf_number = len(names)
+            line = self.extractLine(self.pattern_generator(perf_number), file_path, perf_number)
 
-            perfStage = filePath.split('scalibility.')[-1].split('.data')[0]
-            for i in range(perfNumber):
+            perf_stage = file_path.split('scalibility.')[-1].split('.data')[0]
+            for i in range(perf_number):
                 unit = 's'
-                if i == 0 and 'Solve' in perfStage:
+                if i == 0 and 'Solve' in perf_stage:
                     unit = 'iter'
-                self.perf_variables.update( {f'{perfStage}_{names[i]}' : make_perf(line[i], unit=unit)} )
+                self.perf_variables.update( {f'{perf_stage}_{names[i]}' : make_perf(line[i], unit=unit)} )
 
 
     @sanity_function
     def checkers_success(self):
-        notFailed = sn.assert_not_found(r'\\32m \[failure\] ', self.stdout)
-        stopped = sn.assert_found(r'[ Stopping Feel++ ]', self.stdout)
-        return notFailed and stopped
+        not_failed = assert_not_found(r'\\32m \[failure\] ', self.stdout)
+        stopped = assert_found(r'[ Stopping Feel++ ]', self.stdout)
+        return not_failed and stopped

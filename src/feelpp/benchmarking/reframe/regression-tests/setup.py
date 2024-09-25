@@ -3,30 +3,26 @@ import sys
 import reframe                  as rfm
 import reframe.core.runtime     as rt
 import reframe.utility.sanity   as sn
-
-root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
-sys.path.insert(0, root)
-
-from src.feelpp.benchmarking.configReader import ConfigReader
+from feelpp.benchmarking.configReader import ConfigReader
 
 
-def parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes):
+def parametrizeTaskNumber(min_cpu, max_cpu, min_nodes, max_nodes):
 
     for part in rt.runtime().system.partitions:
-        nbTask = minCPU
-        yield nbTask
-        while (nbTask < part.processor.num_cpus) and (nbTask < maxCPU):
-            nbTask <<= 1
-            yield nbTask
+        nb_task = min_cpu
+        yield nb_task
+        while (nb_task < part.processor.num_cpus) and (nb_task < max_cpu):
+            nb_task <<= 1
+            yield nb_task
 
-        if not (minNodes == 1 and maxNodes == 1):
-            if maxNodes < part.devices[0].num_devices:
-                nbNodes = maxNodes
+        if not (min_nodes == 1 and max_nodes == 1):
+            if max_nodes < part.devices[0].num_devices:
+                nb_nodes = max_nodes
             else:
-                nbNodes = part.devices[0].num_devices
-            for i in range(minNodes+1, nbNodes+1):
-                nbTask = i * part.processor.num_cpus
-                yield nbTask
+                nb_nodes = part.devices[0].num_devices
+            for i in range(min_nodes+1, nb_nodes+1):
+                nb_task = i * part.processor.num_cpus
+                yield nb_task
 
 
 @rfm.simple_test
@@ -37,36 +33,31 @@ class Setup(rfm.RunOnlyRegressionTest):
 
     workdir = os.environ['WORKDIR']
 
-    configPath = variable(str, value=os.environ['CONFIG_PATH'])
-    config = ConfigReader(configPath=str(configPath))
+    config_path = variable(str, value=os.environ['CONFIG_PATH'])
+    config = ConfigReader(str(config_path))
 
-    minCPU = config.Reframe.Mode.topology.minPhysicalCpuPerNode
-    maxCPU = config.Reframe.Mode.topology.maxPhysicalCpuPerNode
-    minNodes = config.Reframe.Mode.topology.minNodeNumber
-    maxNodes = config.Reframe.Mode.topology.maxNodeNumber
+    min_cpu = config.reframe.mode.topology.min_physical_cpus_per_node
+    max_cpu = config.reframe.mode.topology.max_physical_cpus_per_node
+    min_nodes = config.reframe.mode.topology.min_node_number
+    max_nodes = config.reframe.mode.topology.max_node_number
 
-    nbTask = parameter(parametrizeTaskNumber(minCPU, maxCPU, minNodes, maxNodes))
+    nb_task = parameter(parametrizeTaskNumber(min_cpu, max_cpu, min_nodes, max_nodes))
 
-
-    # @run_after('init') does not work because of .current_partition
     @run_before('run')
     def setTaskNumber(self):
-        self.num_tasks_per_node = min(self.nbTask, self.current_partition.processor.num_cpus)
+        self.num_tasks_per_node = min(self.nb_task, self.current_partition.processor.num_cpus)
         self.num_cpus_per_task = 1
-        self.num_tasks = self.nbTask
-
+        self.num_tasks = self.nb_task
 
     @run_after('init')
     def setEnvVars(self):
         self.env_vars['OMP_NUM_THREADS'] = 1
 
-
     # Set scheduler and launcher options
     @run_before('run')
     def setLaunchOptions(self):
-        self.exclusive_access = self.config.Reframe.Mode.exclusiveAccess
+        self.exclusive_access = self.config.reframe.mode.exclusive_access
         self.job.launcher.options = ['-bind-to core']
-
 
     def get_column_names(self, filename):
         with open(filename, 'r') as file:
@@ -76,13 +67,11 @@ class Setup(rfm.RunOnlyRegressionTest):
                     return header[2:]               # exclude '# nProc'
         return []
 
-
-    def pattern_generator(self, valuesNumber):
-        valPattern = '([0-9e\-\+\.]+)'
-        linePattern = r'^\d+[\s]+' + rf'{valPattern}[\s]+' * valuesNumber
-        linePattern = linePattern[:-1] + '*'
-        return linePattern
-
+    def pattern_generator(self, values_number):
+        val_pattern = '([0-9e\-\+\.]+)'
+        line_pattern = r'^\d+[\s]+' + rf'{val_pattern}[\s]+' * values_number
+        line_pattern = line_pattern[:-1] + '*'
+        return line_pattern
 
     def extractLine(self, pattern, path, length, line=0):
         tags = range(1, length+1)

@@ -1,91 +1,95 @@
 import os
+import sys
 import json
 import glob
-from jsonschema                                         import validate, ValidationError
-from datetime                                           import datetime
-from src.feelpp.benchmarking.parser                     import *
-from src.feelpp.benchmarking.configReader               import supportedEnvVars
+import shutil
+from jsonschema                         import validate, ValidationError
+from datetime                           import datetime
+from feelpp.benchmarking.parser         import parseArgs, printArgs
+from feelpp.benchmarking.configReader   import supported_env_vars
 
 
-def getDate(format="%Y%m%d"):
-    date = datetime.now()
-    return date.strftime(format)
+def getParentFolder():
+    return os.path.abspath(os.path.dirname(__file__))
 
 
 def buildConfigList(args):
-    configLst = []
+    configs = []
 
     if args.dir:
         for dir in args.dir:
             path = os.path.join(dir, '**/*.json')
-            jsonFiles = glob.glob(path, recursive=True)
+            json_files = glob.glob(path, recursive=True)
 
-            for file in jsonFiles:
+            for file in json_files:
                 basename = os.path.basename(file)
                 if args.exclude and basename in args.exclude:
                     continue
                 if args.config and basename not in args.config:
                     continue
-                configLst.append(file)
+                configs.append(file)
 
     elif args.config:
-        configLst = args.config
+        configs = args.config
 
-    return [os.path.abspath(config) for config in configLst]
+    return [os.path.abspath(config) for config in configs]
 
 
 def validateConfigs(configs):
+    parent_folder = getParentFolder()
+    schema_path = f'{parent_folder}/src/feelpp/benchmarking/configSchema.json'
 
-    schemaPath = f'{os.getcwd()}/src/feelpp/benchmarking/configSchema.json'
-
-    with open(schemaPath, 'r') as file:
+    with open(schema_path, 'r') as file:
         schema = json.load(file)
 
     unvalid = []
     messages = []
+    instance = None
     for config in configs:
         try:
             with open(config, 'r') as file:
                 instance = json.load(file)
-            validate(instance=instance, schema=schema)
-
-        except ValidationError as e:
-            unvalid.append(config)
-            messages.append(e.message)
-
         except json.JSONDecodeError as e:
             unvalid.append(config)
-            messages.append(e.message)
+            messages.append(f"Invalid JSON format: {e.msg}")
+
+        if instance:
+            try:
+                validate(instance=instance, schema=schema)
+            except ValidationError as e:
+                unvalid.append(config)
+                messages.append(f"Validation error: {e.message}")
 
     if unvalid:
         print("\n[Error] Corrupted configuration files. Please check before relaunch or use --exclude option.")
         for i in range(len(unvalid)):
             print(f"> file {i+1}:", unvalid[i])
-            print(f"\t {messages[i]}")
+            print(f"\t  {messages[i]}")
         sys.exit(1)
 
 
 def globalVarExporter(hostname, feelppdbPath):
-    os.environ['WORKDIR'] = os.getcwd()
+    os.environ['WORKDIR'] = getParentFolder()
     os.environ['HOSTNAME'] = hostname
     os.environ['FEELPPDB_PATH'] = feelppdbPath
 
 
-# Issue adressed to Reframe Dev-Team for manipulating report-path from within a test
-def buildReportPath(configPath, prefix, suffix, toolbox):
+def buildReportPath(configPath, prefix, suffix, toolbox, hostname, format="%Y%m%dT%H%M%S"):
+    date = datetime.now().strftime(format)
+    parent_folder = getParentFolder()
 
     if prefix == '' or prefix == 'default':
-        prefix = f'{os.getcwd()}/docs/modules/{args.hostname}/pages/reports/'
+        prefix = f'{parent_folder}/docs/modules/{hostname}/pages/reports/'
 
     if suffix == '' or suffix == 'default':
         configName = os.path.basename(configPath)
-        suffix = f'{toolbox}/{getDate()}-{configName}'
+        suffix = f'{toolbox}/{date}-{configName}'
 
     reportPath = prefix + suffix
     return reportPath
 
 
-def buildMapToExport(configPath):
+def buildMapToExport(configPath, hostname):
     varMap = {}
     varMap['CONFIG_PATH'] = configPath
 
@@ -100,35 +104,27 @@ def buildMapToExport(configPath):
 
     prefix = data['Reframe']['reportPrefix'].strip()
     suffix = data['Reframe']['reportSuffix'].strip()
-    varMap['RFM_REPORT_FILE'] = buildReportPath(configPath, prefix, suffix, toolbox)
+    varMap['RFM_REPORT_FILE'] = buildReportPath(configPath, prefix, suffix, toolbox, hostname)
 
     return varMap
 
 
 def processEnvVars(value):
-    for var in supportedEnvVars:
+    for var in supported_env_vars:
         if var in value:
             value = value.replace(f'${{{var}}}', os.environ[f'{var}'])
     return value
 
 
-def configVarExporter(configPath):
-    for key, value in buildMapToExport(configPath).items():
+def configVarExporter(configPath, hostname):
+    for key, value in buildMapToExport(configPath, hostname).items():
         value = value.strip()
         if value != '':
             os.environ[key] = processEnvVars(value)
 
 
-
-# +------------------------------------+
-# |              MAIN                  |
-# +------------------------------------+
-
-
-if __name__ == '__main__':
-
-    workdir = os.getcwd()
-
+def launchReframe():
+    parent_folder = getParentFolder()
     args = parseArgs()
     printArgs(args)
 
@@ -145,12 +141,12 @@ if __name__ == '__main__':
         globalVarExporter(args.hostname, args.feelppdb)
         for configPath in configs:
 
-            configVarExporter(configPath)
+            configVarExporter(configPath, args.hostname)
             print(f"[{os.environ['TOOLBOX'].upper()} - {os.path.basename(configPath)}]")
 
             # --report-file option replaced in favour of 'RFM_REPORT_FILE' environment variable
-            cmd = [ f'-C {workdir}/src/feelpp/benchmarking/reframe/config-files/{args.hostname}.py',
-                    f'-c {workdir}/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py',
+            cmd = [ f'-C {parent_folder}/src/feelpp/benchmarking/reframe/config-files/{args.hostname}.py',
+                    f'-c {parent_folder}/src/feelpp/benchmarking/reframe/regression-tests/cpuVariation.py',
                     f'--system={args.hostname}',
                     f'--exec-policy={args.policy}']    #async/serial
 
@@ -161,3 +157,8 @@ if __name__ == '__main__':
             os.system(' '.join(['reframe'] + cmd))
             print("\n" + '=' * shutil.get_terminal_size().columns)
         print("\n >>> Number of tests run:", len(configs))
+
+
+
+if __name__ == '__main__':
+    launchReframe()

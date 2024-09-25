@@ -3,24 +3,24 @@ import sys
 import os
 
 
-supportedEnvVars = ('HOME', 'USER', 'WORKDIR', 'HOSTNAME', 'FEELPPDB_PATH', 'TOOLBOX')
-validToolboxes = ('electric', 'fluid', 'heat', 'heatfluid', 'solid', 'thermoelectric')    # fsi, hdg: only unsteady cases in usr/share/...
+supported_env_vars = ('HOME', 'USER', 'WORKDIR', 'HOSTNAME', 'FEELPPDB_PATH', 'TOOLBOX')
+valid_toolboxes = ('electric', 'fluid', 'heat', 'heatfluid', 'solid', 'thermoelectric')    # fsi, hdg: only unsteady cases in usr/share/...
 
 
 class ConfigReader:
 
-    def __init__(self, configPath):
-        self.configPath = configPath
+    def __init__(self, config_path):
+        self.config_path = config_path
         self.data = None
-        self.Reframe = None
-        self.Feelpp = None
-        self.Reporter = None
+        self.reframe = None
+        self.feelpp = None
+        self.reporter = None
         self.load()
         self.processData()
 
     def load(self):
         # Error handling already done in launchProcess.py
-        with open(self.configPath, 'r') as file:
+        with open(self.config_path, 'r') as file:
             self.data = json.load(file)
             self.substituteEnvVars(self.data)
 
@@ -35,16 +35,16 @@ class ConfigReader:
                 data[i] = self.substituteEnvVars(data[i])
 
         elif isinstance(data, str):
-            for var in supportedEnvVars:
+            for var in supported_env_vars:
                 value = os.getenv(var, '')
                 data = data.replace(f'${{{var}}}', value)
         return data
 
 
     def processData(self):
-        self.Reframe = ReframeConfig(self.data['Reframe'])
-        self.Feelpp = FeelppConfig(self.data['Feelpp'])
-        self.Reporter = ReporterConfig(self.data['Reporter'])
+        self.reframe = ReframeConfig(self.data['Reframe'])
+        self.feelpp = FeelppConfig(self.data['Feelpp'])
+        self.reporter = ReporterConfig(self.data['Reporter'])
 
     def __repr__(self):
         return json.dumps(self.data, indent=4)
@@ -55,20 +55,20 @@ class ConfigReader:
 
 class ReframeConfig:
     def __init__(self, data):
-        self.hostConfig = data['hostConfig']
-        self.reportPrefix = data['reportPrefix']
-        self.reportSuffix = data['reportSuffix']
-        self.Directories = DirectoriesConfig(data['Directories'])
-        self.Mode = ModeConfig(data['Mode'])
+        self.host_config = data['hostConfig']
+        self.report_prefix = data['reportPrefix']
+        self.report_suffix = data['reportSuffix']
+        self.directories = DirectoriesConfig(data['Directories'])
+        self.mode = ModeConfig(data['Mode'])
 
 
     def to_dict(self):
         return {
-            "Host Configuration": self.hostConfig,
-            "Report prefix": self.reportPrefix,
-            "Report suffix": self.reportSuffix,
-            "Directories": self.Directories.to_dict(),
-            "Mode": self.Mode.to_dict()
+            "Host Configuration": self.host_config,
+            "Report prefix": self.report_prefix,
+            "Report suffix": self.report_suffix,
+            "Directories": self.directories.to_dict(),
+            "Mode": self.mode.to_dict()
         }
 
     def __repr__(self):
@@ -93,7 +93,7 @@ class DirectoriesConfig:
 class ModeConfig:
     def __init__(self, data):
         self.name = data['type']
-        self.exclusiveAccess = data['exclusiveAccess']
+        self.exclusive_access = data['exclusiveAccess']
         self.topology = TopologyConfig(data['topology'])
         self.sequencing = SequencingConfig(data['sequencing'])
 
@@ -107,17 +107,17 @@ class ModeConfig:
 
 class TopologyConfig:
     def __init__(self, data):
-        self.minPhysicalCpuPerNode = data['minPhysicalCpuPerNode']
-        self.maxPhysicalCpuPerNode = data['maxPhysicalCpuPerNode']
-        self.minNodeNumber = data['minNodeNumber']
-        self.maxNodeNumber = data['maxNodeNumber']
+        self.min_physical_cpus_per_node = data['minPhysicalCpuPerNode']
+        self.max_physical_cpus_per_node = data['maxPhysicalCpuPerNode']
+        self.min_node_number = data['minNodeNumber']
+        self.max_node_number = data['maxNodeNumber']
 
     def to_dict(self):
         return {
-            "minPhysicalCpuPerNode": self.minPhysicalCpuPerNode,
-            "maxPhysicalCpuPerNode": self.maxPhysicalCpuPerNode,
-            "minNodeNumber": self.minNodeNumber,
-            "maxNodeNumber": self.maxNodeNumber
+            "minPhysicalCpuPerNode": self.min_physical_cpus_per_node,
+            "maxPhysicalCpuPerNode": self.max_physical_cpus_per_node,
+            "minNodeNumber": self.min_node_number,
+            "maxNodeNumber": self.max_node_number
         }
 
 
@@ -145,9 +145,9 @@ class FeelppConfig:
     """
     def __init__(self, data):
         self.toolbox = data['toolbox']
-        self.CommandLine = CommandLineConfig(data['CommandLine'])
+        self.command_line = CommandLineConfig(data['CommandLine'])
 
-        if self.toolbox not in validToolboxes:
+        if self.toolbox not in valid_toolboxes:
             print("[Error] Unknown toolbox:\t", self.toolbox)
             sys.exit(1)
 
@@ -155,7 +155,7 @@ class FeelppConfig:
     def to_dict(self):
         return {
             "Toolbox": self.toolbox,
-            "CommandLine": self.CommandLine.to_dict()
+            "CommandLine": self.command_line.to_dict()
         }
 
     def __repr__(self):
@@ -164,32 +164,13 @@ class FeelppConfig:
 
 class CommandLineConfig:
     def __init__(self, data):
-        self.configFiles = data['config-files']
+        self.config_files = data['config-files']
         self.repository = RepositoryConfig(data['repository'])
         self.case = CaseConfig(data['case'])
         self.json = JsonPatchConfig(data['jsonPatch'])
-        #self.commandList = self.buildCommandList(data)
-
 
     def configFilesToStr(self):
-        return ' '.join(elem for elem in self.configFiles)
-
-
-    # Finally not used as we need Reframe's parametrization for paths building
-    # (doesn't work yet for --json command line)
-    def buildCommandList(self, data, prefix=''):
-        commands = []
-        for key, value in data.items():
-            if (type(value) == str) and (value.strip() == ''):
-                continue
-            if key == 'config-files':
-                commands.append(f'--{key} {self.configFilesToStr()}')
-            elif isinstance(value, dict):
-                commands.extend(self.buildCommandList(value, f'{prefix}{key}.'))
-            else:
-                commands.append(f'--{prefix}{key} {value}')
-        return commands
-
+        return ' '.join(elem for elem in self.config_files)
 
     def to_dict(self):
         return {
@@ -266,9 +247,6 @@ class JsonPatchConfig:
         return cmd
 
 
-
-# --heat-fluid.json.patch='{ "op": "replace", "path": "/Meshes/heatfluid/Import/filename", "value": "$cfgdir/meshpartitioning/'${MESH_INDEX}'/mesh_o_p$np.json" }'
-
 #  Reporter Configuration       --> check if needed
 #  ======================
 
@@ -285,27 +263,3 @@ class ReporterConfig:
 
     def __repr__(self):
         return json.dumps(self.to_dict(), indent=4)
-
-
-
-# For debugging purposes
-
-if __name__ == '__main__':
-
-    workdir = '/home/tanguy/Projet/benchmarking'
-    relativePath = 'benchConfigs/heat/ThermalBridgesCase3.json'
-
-    config = ConfigReader(configPath=os.path.join(workdir, relativePath))
-
-    print('[LOADED CONFIGURATION]\n', config)
-    print('\n[CONFIG_FILES]\n >', config.Feelpp.CommandLine.configFilesToStr())
-
-    jsonCommands = config.Feelpp.CommandLine.json.commands
-    print('\n[JSON_COMMANDS]\n >')
-    print('\n >'.join(jsonCommands))
-
-    caseCommands = config.Feelpp.CommandLine.case.commands
-    if caseCommands:
-        print('\n[JSON_COMMANDS]\n >')
-        print(caseCommands)
-        print('\n >'.join(caseCommands))
