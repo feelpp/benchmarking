@@ -153,7 +153,7 @@ class FeelppConfig(Config):
     def __init__(self, data):
         self.toolbox = data['toolbox']
         self.testCase = data["case_name"]
-        self.CommandLine = CommandLineConfig(data['CommandLine'])
+        self.commandLine = CommandLineConfig(data['CommandLine'])
 
         if self.toolbox not in valid_toolboxes:
             print("[Error] Unknown toolbox:\t", self.toolbox)
@@ -163,7 +163,7 @@ class FeelppConfig(Config):
     def to_dict(self):
         return {
             "Toolbox": self.toolbox,
-            "CommandLine": self.CommandLine.to_dict()
+            "CommandLine": self.commandLine.to_dict()
         }
 
 

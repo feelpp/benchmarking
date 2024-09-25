@@ -18,13 +18,13 @@ class ToolboxTest (Setup):
     @run_after('init')
     def setVariables(self):
         self.toolbox = self.config.feelpp.toolbox
-        self.case = self.config.feelpp.command_line.configFilesToStr()
+        self.case = self.config.feelpp.commandLine.configFilesToStr()
 
     @run_after('init')
     def buildPaths(self):
         # Extends output path with 'np_{task_number}'
-        self.feel_output_suffix = os.path.join(self.config.feelpp.command_line.repository.case, f'np_{self.nb_task}')
-        self.feel_output_path = os.path.join(self.config.feelpp.command_line.repository.prefix, f'{self.feel_output_suffix}')
+        self.feel_output_suffix = os.path.join(self.config.feelpp.commandLine.repository.case, f'np_{self.nb_task}')
+        self.feel_output_path = os.path.join(self.config.feelpp.commandLine.repository.prefix, f'{self.feel_output_suffix}')
         #self.physical_values_path = os.path.join(self.feel_output_path, f'{self.toolbox}.measures/values.csv')
 
 
@@ -42,20 +42,20 @@ class ToolboxTest (Setup):
 
         self.executable = f'feelpp_toolbox_{self.toolbox}'
         self.executable_opts = [f'--config-files {self.case}',
-                                f'--repository.prefix {self.config.feelpp.command_line.repository.prefix}',
+                                f'--repository.prefix {self.config.feelpp.commandLine.repository.prefix}',
                                 f'--repository.case {self.feel_output_suffix}',
                                 '--fail-on-unknown-option 1']
 
         # json commands needs the '--toolbox' prefix,
-        if self.config.feelpp.command_line.json.commands:
+        if self.config.feelpp.commandLine.json.commands:
             # scale files for heatfluid are named 'heat-fluid'
             toolbox = 'heat-fluid' if self.toolbox == 'heatfluid' else self.toolbox
-            for cmd in self.config.feelpp.command_line.json.commands:
+            for cmd in self.config.feelpp.commandLine.json.commands:
                 cmd = f'--{toolbox}.' + cmd
                 self.executable_opts.append(cmd)
 
-        if self.config.feelpp.command_line.case.commands:
-            self.executable_opts.extend(self.config.feelpp.command_line.case.commands)
+        if self.config.feelpp.commandLine.case.commands:
+            self.executable_opts.extend(self.config.feelpp.commandLine.case.commands)
 
         # build scale commands with heatfluid exception handling
         if self.toolbox == 'heatfluid':
