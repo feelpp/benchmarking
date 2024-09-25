@@ -147,8 +147,8 @@ def launchReframe():
             os.environ["EXEC_POLICY"] = args.policy
 
             # --report-file option replaced in favour of 'RFM_REPORT_FILE' environment variable
-            cmd = [ f'-C {parent_folder}/src/feelpp/benchmarking/feelpp_toolboxes/reframe/config-files/{args.hostname}.py',
-                    f'-c {parent_folder}/src/feelpp/benchmarking/feelpp_toolboxes/reframe/regression-tests/cpuVariation.py',
+            cmd = [ f'-C {parent_folder}/reframe/config-files/{args.hostname}.py',
+                    f'-c {parent_folder}/reframe/regression-tests/cpuVariation.py',
                     f'--system={args.hostname}',
                     f'--exec-policy={args.policy}']    #async/serial
 
