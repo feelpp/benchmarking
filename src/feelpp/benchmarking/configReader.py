@@ -53,7 +53,17 @@ class ConfigReader:
 #  Reframe Configuration
 #  =====================
 
-class ReframeConfig:
+class Config:
+    def __init__(self, data):
+        pass
+
+    def to_dict(self):
+        pass
+
+    def __repr__(self):
+        return json.dumps(self.to_dict(), indent=4)
+
+class ReframeConfig(Config):
     def __init__(self, data):
         self.host_config = data['hostConfig']
         self.report_prefix = data['reportPrefix']
@@ -71,11 +81,8 @@ class ReframeConfig:
             "Mode": self.mode.to_dict()
         }
 
-    def __repr__(self):
-        return json.dumps(self.to_dict(), indent=4)
 
-
-class DirectoriesConfig:
+class DirectoriesConfig(Config):
     def __init__(self, data):
         self.prefix = data['prefix']
         self.stage = data['stage']
@@ -90,7 +97,7 @@ class DirectoriesConfig:
         }
 
 
-class ModeConfig:
+class ModeConfig(Config):
     def __init__(self, data):
         self.name = data['type']
         self.exclusive_access = data['exclusiveAccess']
@@ -105,7 +112,7 @@ class ModeConfig:
         }
 
 
-class TopologyConfig:
+class TopologyConfig(Config):
     def __init__(self, data):
         self.min_physical_cpus_per_node = data['minPhysicalCpuPerNode']
         self.max_physical_cpus_per_node = data['maxPhysicalCpuPerNode']
@@ -121,7 +128,7 @@ class TopologyConfig:
         }
 
 
-class SequencingConfig:
+class SequencingConfig(Config):
     def __init__(self, data):
         # Generator: manual, power2, maxCPU, fixAllNodes        #TODO
         self.generator = data['generator']
@@ -138,7 +145,7 @@ class SequencingConfig:
 #  Feelpp Configuration
 #  =====================
 
-class FeelppConfig:
+class FeelppConfig(Config):
     """
     If partitioning set to false, you need to specify a single directory which contains every partitioning file.
     The files' naming scheme is the one provided by Feelpp Toolboxes, i.e. "filename_np{nbTask}"
@@ -158,11 +165,8 @@ class FeelppConfig:
             "CommandLine": self.command_line.to_dict()
         }
 
-    def __repr__(self):
-        return json.dumps(self.to_dict(), indent=4)
 
-
-class CommandLineConfig:
+class CommandLineConfig(Config):
     def __init__(self, data):
         self.config_files = data['config-files']
         self.repository = RepositoryConfig(data['repository'])
@@ -180,11 +184,8 @@ class CommandLineConfig:
             "Json": self.json.to_dict()
         }
 
-    def __repr__(self):
-        return json.dumps(self.to_dict(), indent=4)
 
-
-class RepositoryConfig:
+class RepositoryConfig(Config):
     def __init__(self, data):
         self.prefix = data['prefix']
         self.case = data['case']
@@ -195,11 +196,8 @@ class RepositoryConfig:
             "Case": self.case
         }
 
-    def __repr__(self):
-        return json.dumps(self.to_dict(), indent=4)
 
-
-class CaseConfig:
+class CaseConfig(Config):
     def __init__(self, data):
         self.dimension = data['dimension']
         self.discretization = data['discretization']
@@ -221,7 +219,7 @@ class CaseConfig:
 
 
 
-class JsonPatchConfig:
+class JsonPatchConfig(Config):
     def __init__(self, data):
         self.commands = []
 
@@ -250,7 +248,7 @@ class JsonPatchConfig:
 #  Reporter Configuration       --> check if needed
 #  ======================
 
-class ReporterConfig:
+class ReporterConfig(Config):
     def __init__(self, data):
         self.active = data['active']
         self.scaling = data['scaling']
@@ -260,6 +258,3 @@ class ReporterConfig:
             "active": self.active,
             "scaling": self.scaling
         }
-
-    def __repr__(self):
-        return json.dumps(self.to_dict(), indent=4)
