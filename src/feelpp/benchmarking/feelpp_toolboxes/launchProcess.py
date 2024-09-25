@@ -37,7 +37,7 @@ def buildConfigList(args):
 
 def validateConfigs(configs):
     parent_folder = getParentFolder()
-    schema_path = f'{parent_folder}/src/feelpp/benchmarking/configSchema.json'
+    schema_path = f'{parent_folder}/config/configSchema.json'
 
     with open(schema_path, 'r') as file:
         schema = json.load(file)
