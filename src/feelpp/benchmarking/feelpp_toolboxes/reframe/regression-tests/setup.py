@@ -3,7 +3,7 @@ import sys
 import reframe                  as rfm
 import reframe.core.runtime     as rt
 import reframe.utility.sanity   as sn
-from feelpp.benchmarking.configReader import ConfigReader
+from feelpp.benchmarking.feelpp_toolboxes.config.configReader import ConfigReader
 
 
 def parametrizeTaskNumber(min_cpu, max_cpu, min_nodes, max_nodes):
