@@ -159,8 +159,3 @@ def launchReframe():
             os.system(' '.join(['reframe'] + cmd))
             print("\n" + '=' * shutil.get_terminal_size().columns)
         print("\n >>> Number of tests run:", len(configs))
-
-
-
-if __name__ == '__main__':
-    launchReframe()
