@@ -8,8 +8,6 @@ import plotly.colors        as pc
 from plotly.subplots        import make_subplots
 from sklearn.linear_model   import LinearRegression
 
-print(pd.__version__)
-
 
 
 class Report:
@@ -58,7 +56,7 @@ class Report:
         df = pd.DataFrame(self.data['runs'][0]['testcases'][0:])
         df['num_tasks'] = df['check_vars'].apply(lambda x: x['num_tasks'])
         df['num_tasks'] = df['num_tasks'].astype(int)
-        df = df[['num_tasks', 'perfvars']]
+        df = df[['num_tasks', 'perfvars', 'time_run']]
 
         if self.partial:
             self.buildPartialDict()
@@ -98,26 +96,26 @@ class Report:
 
 
     def buildPerf(self, df):
+        print(df)
         for k, t in enumerate(df['num_tasks'].unique()):
-            for perf in df['perfvars'][k]:
-                name = perf['name']
-                nameWithoutPrefix = name.split('_',1)[-1]
+            if not df['perfvars'].empty:
+                for perf in df['perfvars'][k]:
+                    name = perf['name']
+                    nameWithoutPrefix = name.split('_', 1)[-1]
 
-                if self.isPartialPerf(nameWithoutPrefix):
-                    self.df_partialPerf = pd.concat([self.df_partialPerf, pd.DataFrame(
-                        [{'num_tasks': t, 'name': name, 'value': perf['value']}])], ignore_index=True)
-                else:
-                    self.df_perf = pd.concat([self.df_perf, pd.DataFrame(
-                        [{'num_tasks': t, 'name': name, 'value': perf['value']}])], ignore_index=True)
+                    if self.isPartialPerf(nameWithoutPrefix):
+                        self.df_partialPerf = pd.concat([self.df_partialPerf, pd.DataFrame(
+                            [{'num_tasks': t, 'name': name, 'value': perf['value']}])], ignore_index=True)
+                    else:
+                        self.df_perf = pd.concat([self.df_perf, pd.DataFrame(
+                            [{'num_tasks': t, 'name': name, 'value': perf['value']}])], ignore_index=True)
 
-        self.df_perf['name'] = self.df_perf['name'].astype(str)
-        self.df_perf['value'] = self.df_perf['value'].astype(float)
-        self.df_perf['num_tasks'] = self.df_perf['num_tasks'].astype(int)
+                self.df_perf = self.df_perf.astype({'num_tasks': 'int', 'name': 'str', 'value': 'float'})
+                if self.partial:
+                    self.df_partialPerf = self.df_partialPerf.astype({'num_tasks': 'int', 'name': 'str', 'value': 'float'})
 
-        if self.partial:
-            self.df_partialPerf['name'] = self.df_partialPerf['name'].astype(str)
-            self.df_partialPerf['value'] = self.df_partialPerf['value'].astype(float)
-            self.df_partialPerf['num_tasks'] = self.df_partialPerf['num_tasks'].astype(int)
+            #for time in df['time_run']:
+            #    self.df_perf = pd.concat([self.df_perf, pd.DataFrame([{'num_tasks': t, 'name': 'time_run', 'value': time}])], ignore_index=True)
 
 
     def buildSpeedup(self, df):
@@ -408,22 +406,7 @@ class Report:
         return fig
 
 
-
-# For debugging purposes with 'your_file.json':
-# Replace 'your_file' with the path to your JSON file
-
-if __name__ == "__main__":
-
-    docs_path = "/home/tanguy/Projet/benchmarking/docs"
-
-    thermal3 = os.path.join(docs_path, "modules/gaya/pages/reports/heat/20240820-ThermalBridgesCase3.json")
-    proneEye = os.path.join(docs_path, "modules/gaya/pages/reports/heatfluid/20240820-proneEye-M2-simple.json")
-    electric = os.path.join(docs_path, "modules/gaya/pages/reports/electric/20240820-busbar3d.json")
-    scenario0 = os.path.join(docs_path, "modules/meluxina/pages/kub/scenario0/20231211-1248.json")
-
-    your_file = scenario0
-
-    print(f"[ {your_file} ]\n")
+def debug(your_file):
     result = Report(file_path=your_file)
 
     figStep = result.plotSteps()
@@ -443,3 +426,9 @@ if __name__ == "__main__":
             if value != []:
                 figPartialSpeedup = result.plotPartialSpeedup(key=name)
                 figPartialSpeedup.show()
+
+
+if __name__ == "__main__":
+    #your_file="/home/tanguy/Projet/benchmarking/docs/modules/meluxina/pages/kub/scenario0/20231209-0040.json"
+    your_file="/home/tanguy/Projet/benchmarking/docs/modules/gaya/pages/reports/heat/20240820-ThermalBridgesCase3.json"
+    debug(your_file=your_file)
