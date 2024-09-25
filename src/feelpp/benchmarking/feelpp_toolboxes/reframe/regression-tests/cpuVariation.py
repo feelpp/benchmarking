@@ -93,6 +93,6 @@ class ToolboxTest (Setup):
 
     @sanity_function
     def checkers_success(self):
-        not_failed = assert_not_found(r'\\32m \[failure\] ', self.stdout)
-        stopped = assert_found(r'[ Stopping Feel++ ]', self.stdout)
+        not_failed = sn.assert_not_found(r'\\32m \[failure\] ', self.stdout)
+        stopped = sn.assert_found(r'[ Stopping Feel++ ]', self.stdout)
         return not_failed and stopped
