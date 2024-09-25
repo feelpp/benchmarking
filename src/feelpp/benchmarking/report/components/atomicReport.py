@@ -2,7 +2,7 @@ import json, os
 
 class AtomicReport:
     """ Class representing an atomic report. i.e. a report indexed by date, test case, application and machine.
-        Holds the data of benchmarks for a specific set of parameters. 
+        Holds the data of benchmarks for a specific set of parameters.
         For example, in contains multiple executions with different number of cores, or different input files (but same test case), for a single machine and application.
     """
     def __init__(self, application_id, machine_id, json_file, possible_test_cases):
