@@ -3,7 +3,7 @@ name: Regression tests
 on:
   push: #TODO: REMOVE THIS
     branches:
-      - '**'
+      - 'main'
 
   workflow_dispatch:
     inputs:
@@ -31,6 +31,9 @@ on:
         default: 'All'
         options:
           - 'All'
+
+  repository_dispatch:
+    types: [benchmark-application]
 
 jobs:
 
@@ -92,10 +95,9 @@ jobs:
 
       - name: Set inputs
         id: set-inputs
-        run: |
+        run: | #TODO: factor
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             machine=machine=${{ github.event.inputs.machine }}
-
             input_application=${{ github.event.inputs.application }}
             config_dir="src/feelpp/benchmarking/feelpp_toolboxes/config/benchConfigs/"
             if [[ input_application == "Electric" ]]; then
@@ -105,15 +107,24 @@ jobs:
             elif [[ input_application == "HeatFluid" ]]; then
               config_dir+="heatfluid/"
             fi
-
             input_use_case=${{ github.event.inputs.use_case }}
             if [[ input_use_case != "All" ]]; then
               echo "Use case not implemented for this toolbox"
             fi
-
+          elif [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
+            machine=machine=${{ github.event.client_payload.machine }}
+            input_application=${{ github.event.client_payload.application }}
+            config_dir="src/feelpp/benchmarking/feelpp_toolboxes/config/benchConfigs/"
+            if [[ input_application == "Electric" ]]; then
+              config_dir+="electric/"
+            elif [[ input_application == "Heat" ]]; then
+              config_dir+="heat/"
+            elif [[ input_application == "HeatFluid" ]]; then
+              config_dir+="heatfluid/"
+            fi
           else
             machine=gaya
-            config_dir="src/feelpp/benchmarking/feelpp_toolboxes/config/benchConfigs/electric/"
+            config_dir="src/feelpp/benchmarking/feelpp_toolboxes/config/benchConfigs/"
           fi
 
           echo "machine=$machine" >> $GITHUB_OUTPUT
@@ -126,7 +137,7 @@ jobs:
           --feelppdb /data/scratch/cladellash/feelppdb/ \
           --dir ${{ steps.set-inputs.outputs.config_dir }}
         env:
-          GIRDER_API_KEY : ${{ secrets.GIRDER }}
+          GIRDER_API_KEY : ${{ secrets.GIRDER }}
 
   update_benchmarks:
     runs-on: self-ubuntu-22.04
