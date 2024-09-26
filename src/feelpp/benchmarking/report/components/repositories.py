@@ -38,6 +38,13 @@ class Repository:
         pass
 
     def initModules(self, base_dir, renderer, parent_id = "catalog-index"):
+        """ Calls the initModules method of each item in the repository.
+        Args:
+            base_dir (str): The base directory for the modules
+            renderer (Renderer): The renderer to use
+            parent_id (str,optional): The catalog id of the parent component. Defaults to "supercomputers".
+
+        """
         for item in self.data:
             item.initModules(base_dir, renderer, parent_id)
 

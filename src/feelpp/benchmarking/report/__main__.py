@@ -44,7 +44,8 @@ def main_cli():
 
     index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
 
-    machines.initModules(os.path.join(args.modules_path,"machines"), index_renderer, parent_id="catalog-index")
+    machines_base_dir = os.path.join(args.modules_path,"machines")
+    machines.initModules(machines_base_dir, index_renderer, parent_id="catalog-index")
 
     report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
 
