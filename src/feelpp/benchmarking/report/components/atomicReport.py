@@ -5,14 +5,14 @@ class AtomicReport:
         Holds the data of benchmarks for a specific set of parameters.
         For example, in contains multiple executions with different number of cores, or different input files (but same test case), for a single machine and application.
     """
-    def __init__(self, application_id, machine_id, json_file, possible_test_cases):
+    def __init__(self, application_id, machine_id, json_file, possible_use_cases):
         """ Constructor for the AtomicReport class
         An atomic report is identified by a single application, machine and test case
         Args:
             application_id (str): The id of the application
             machine_id (str): The id of the machine
             json_file (str): The path to the JSON file
-            possible_test_cases (list): The possible test cases that can be found.
+            possible_use_cases (list): The possible test cases that can be found.
                                         Only the first found will be set
         """
         self.data = self.parseJson(json_file)
@@ -21,23 +21,23 @@ class AtomicReport:
 
         self.application_id = application_id
         self.machine_id = machine_id
-        self.test_case_id = self.findTestCase(possible_test_cases)
+        self.use_case_id = self.findTestCase(possible_use_cases)
 
         self.application = None
         self.machine = None
-        self.test_case = None
+        self.use_case = None
 
-    def setIndexes(self, application, machine, test_case):
+    def setIndexes(self, application, machine, use_case):
         """ Set the indexes for the atomic report.
         Along with the date, they should form a unique identifier for the report.
         Args:
             application (Application): The application
             machine (Machine): The machine
-            test_case (TestCase): The test case
+            use_case (TestCase): The test case
         """
         self.machine = machine
         self.application = application
-        self.test_case = test_case
+        self.use_case = use_case
 
     def parseJson(self, input_json):
         """ Parse the JSON file to add or modify some fields
@@ -53,21 +53,21 @@ class AtomicReport:
 
         return data
 
-    def findTestCase(self, possible_test_cases):
+    def findTestCase(self, possible_use_cases):
         """ Find the test case of the report
         Args:
-            possible_test_cases (list): The possible test cases that can be found.
+            possible_use_cases (list): The possible test cases that can be found.
                                         Only the first found will be set
         """
-        test_case = "default"
+        use_case = "default"
         if len(self.data["runs"]) == 0 or len(self.data["runs"][0]["testcases"]) == 0:
-            return test_case
+            return use_case
 
-        for test_case in possible_test_cases:
-            if test_case in self.data["runs"][0]["testcases"][0]["tags"]:
-                return test_case
+        for use_case in possible_use_cases:
+            if use_case in self.data["runs"][0]["testcases"][0]["tags"]:
+                return use_case
 
-        return test_case
+        return use_case
 
     def filename(self):
         """ Build the filename for the report
@@ -82,7 +82,7 @@ class AtomicReport:
             view (str): Whether to render as machines>apps or apps>machines. Default is "machines". Options are "machines" and "applications"
         """
         if view == "machines":
-            self.data["parent_catalogs"] = f"{self.machine_id}-{self.application_id}-{self.test_case_id}"
+            self.data["parent_catalogs"] = f"{self.machine_id}-{self.application_id}-{self.use_case_id}"
         elif view == "applications":
             raise NotImplementedError("Applications view is not implemented yet")
 
@@ -98,7 +98,7 @@ class AtomicReport:
         """
 
         if base_dir.endswith("machines"):
-            output_folder_path = f"{base_dir}/{self.machine_id}/{self.application_id}/{self.test_case_id}"
+            output_folder_path = f"{base_dir}/{self.machine_id}/{self.application_id}/{self.use_case_id}"
         elif base_dir.endswith("applications"):
             raise NotImplementedError("Applications view is not implemented yet")
         else:

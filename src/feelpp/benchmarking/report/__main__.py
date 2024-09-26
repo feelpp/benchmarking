@@ -20,7 +20,7 @@ def main_cli():
     girder_handler = GirderHandler(json_output_path)
 
     applications = ApplicationRepository(config_handler.applications)
-    test_cases = TestCaseRepository(config_handler.applications, applications)
+    use_cases = TestCaseRepository(config_handler.applications, applications)
     machines = MachineRepository(config_handler.machines)
 
     atomic_reports = AtomicReportRepository(
@@ -28,11 +28,11 @@ def main_cli():
         download_handler = girder_handler,
     )
 
-    machines.link(applications, test_cases, config_handler.execution_mapping)
-    applications.link(machines, test_cases, config_handler.execution_mapping)
-    test_cases.link(applications, machines, config_handler.execution_mapping)
+    machines.link(applications, use_cases, config_handler.execution_mapping)
+    applications.link(machines, use_cases, config_handler.execution_mapping)
+    use_cases.link(applications, machines, config_handler.execution_mapping)
 
-    atomic_reports.link(applications, machines, test_cases)
+    atomic_reports.link(applications, machines, use_cases)
 
     index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
 
@@ -52,7 +52,7 @@ def main_cli():
 
     #TODO: At the moment just generate 5 reports per test case
     for atomic_report in atomic_reports:
-        if counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.test_case_id}"] < 5:
+        if counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.use_case_id}"] < 5:
             atomic_report.createReport(machines_base_dir,report_renderer)
 
-        counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.test_case_id}"] += 1
+        counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.use_case_id}"] += 1

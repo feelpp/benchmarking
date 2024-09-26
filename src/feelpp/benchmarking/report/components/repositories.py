@@ -54,12 +54,12 @@ class MachineRepository(Repository):
             for machine_id, machine_info in machines_json.items()
     ]
 
-    def link(self, applications, test_cases, execution_mapping):
+    def link(self, applications, use_cases, execution_mapping):
         """ Create the links between the machines and the applications and test cases depending on the execution mapping
         Will update the tree attribute of the machines, creating a dictionary of applications and test cases
         Args:
             applications (list[Application]): The list of applications
-            test_cases (list[TestCase]): The list of test cases
+            use_cases (list[TestCase]): The list of test cases
             execution_mapping (dict): The execution mapping
         """
         for machine in self.data:
@@ -68,9 +68,9 @@ class MachineRepository(Repository):
             for app_id, app_info in execution_mapping[machine.id].items():
                 application = next(filter(lambda a: a.id == app_id, applications))
                 machine.tree[application] = {}
-                for test_case_id in app_info["test_cases"]:
-                    test_case = next(filter(lambda t: t.id == test_case_id and application in t.tree, test_cases))
-                    machine.tree[application][test_case] = []
+                for use_case_id in app_info["use_cases"]:
+                    use_case = next(filter(lambda t: t.id == use_case_id and application in t.tree, use_cases))
+                    machine.tree[application][use_case] = []
 
 class ApplicationRepository(Repository):
     """ Repository for applications """
@@ -89,12 +89,12 @@ class ApplicationRepository(Repository):
             for app_id, app_info in applications_json.items()
     ]
 
-    def link(self, machines, test_cases, execution_mapping):
+    def link(self, machines, use_cases, execution_mapping):
         """ Create the links between the applications and the machines and test cases depending on the execution mapping
         Will update the tree attribute of the applications, creating a dictionary of machines and test cases
         Args:
             machines (list[Machine]): The list of machines
-            test_cases (list[TestCase]): The list of test cases
+            use_cases (list[TestCase]): The list of test cases
             execution_mapping (dict): The execution mapping
         """
         for application in self.data:
@@ -103,9 +103,9 @@ class ApplicationRepository(Repository):
                     continue
                 machine = next(filter(lambda m: m.id == machine_id, machines))
                 application.tree[machine] = {}
-                for test_case_id in machine_info[application.id]["test_cases"]:
-                    test_case = next(filter(lambda t: t.id == test_case_id and application in t.tree, test_cases))
-                    application.tree[machine][test_case] = []
+                for use_case_id in machine_info[application.id]["use_cases"]:
+                    use_case = next(filter(lambda t: t.id == use_case_id and application in t.tree, use_cases))
+                    application.tree[machine][use_case] = []
 
 class TestCaseRepository(Repository):
     """ Repository for test cases """
@@ -120,12 +120,12 @@ class TestCaseRepository(Repository):
         self.data:list[TestCase] = []
         for app_id, app_info in applications_json.items():
             application = next(filter(lambda a: a.id == app_id, applications))
-            for test_case, test_case_info in app_info["test_cases"].items():
+            for use_case, use_case_info in app_info["use_cases"].items():
                 self.add(
                     TestCase(
-                        id = test_case,
-                        display_name = test_case_info["display_name"],
-                        description = test_case_info["description"],
+                        id = use_case,
+                        display_name = use_case_info["display_name"],
+                        description = use_case_info["description"],
                         application = application
                     )
                 )
@@ -139,16 +139,16 @@ class TestCaseRepository(Repository):
             machines (list[Machine]): The list of machines
             execution_mapping (dict): The execution mapping
         """
-        for test_case in self.data:
+        for use_case in self.data:
             for machine_id, machine_info in execution_mapping.items():
                 machine = next(filter(lambda m: m.id == machine_id, machines))
                 for app_id, app_info in machine_info.items():
-                    if not test_case.id in app_info["test_cases"]:
+                    if not use_case.id in app_info["use_cases"]:
                         continue
                     application = next(filter(lambda a: a.id == app_id, applications))
-                    if not application in test_case.tree:
+                    if not application in use_case.tree:
                         continue
-                    test_case.tree[application][machine] = []
+                    use_case.tree[application][machine] = []
 
 
 class AtomicReportRepository(Repository):
@@ -173,7 +173,7 @@ class AtomicReportRepository(Repository):
         for machine_id, machine_info in benchmarking_config_json.items():
             for app_id, app_info in machine_info.items():
                 json_filenames = download_handler.downloadFolder(app_info["girder_folder_id"], output_dir=f"{machine_id}/{app_id}")
-                possible_test_cases = app_info["test_cases"]
+                possible_use_cases = app_info["use_cases"]
                 for json_file in json_filenames:
                     json_file = f"{download_handler.download_base_dir}/{machine_id}/{app_id}/{json_file}"
                     self.add(
@@ -181,27 +181,27 @@ class AtomicReportRepository(Repository):
                             application_id = app_id,
                             machine_id = machine_id,
                             json_file = json_file,
-                            possible_test_cases = possible_test_cases
+                            possible_use_cases = possible_use_cases
                         )
                     )
 
-    def link(self, applications, machines, test_cases):
+    def link(self, applications, machines, use_cases):
         """ Create the links between the atomic reports and the applications, machines and test cases
         An atomic report is identified by a single application, machine and test case
         the report is added to the respective tree of the application, machine and test case
         Args:
             applications (list[Application]): The list of applications
             machines (list[Machine]): The list of machines
-            test_cases (list[TestCase]): The list of test cases
+            use_cases (list[TestCase]): The list of test cases
         """
         for atomic_report in self.data:
             application = next(filter(lambda a: a.id == atomic_report.application_id, applications))
             machine = next(filter(lambda m: m.id == atomic_report.machine_id, machines))
-            test_case = next(filter(lambda t: t.id == atomic_report.test_case_id and application in t.tree and machine in t.tree[application], test_cases))
+            use_case = next(filter(lambda t: t.id == atomic_report.use_case_id and application in t.tree and machine in t.tree[application], use_cases))
 
-            atomic_report.setIndexes(application, machine, test_case)
+            atomic_report.setIndexes(application, machine, use_case)
 
 
-            machine.tree[application][test_case].append(atomic_report)
-            application.tree[machine][test_case].append(atomic_report)
-            test_case.tree[application][machine].append(atomic_report)
+            machine.tree[application][use_case].append(atomic_report)
+            application.tree[machine][use_case].append(atomic_report)
+            use_case.tree[application][machine].append(atomic_report)
