@@ -48,7 +48,7 @@ jobs:
       run: |
         python3 -m venv .venv
         source .venv/bin/activate
-        pip3 install -I -r requirements.txt
+        pip3 install -r requirements.txt
     - name: Compile
       run: |
         pip3 wheel --no-deps --wheel-dir dist .
@@ -121,6 +121,7 @@ jobs:
 
       - name: Run Regression Tests
         run: | #TODO: PARAMETRIZE FEELPPDB
+          source .venv/bin/activate
           benchmark-toolbox ${{ steps.set-inputs.outputs.machine }} \
           --feelppdb /data/scratch/cladellash/feelppdb/ \
           --dir ${{ steps.set-inputs.outputs.config_dir }}
