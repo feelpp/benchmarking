@@ -63,13 +63,13 @@ class MachineRepository(Repository):
             execution_mapping (dict): The execution mapping
         """
         for machine in self.data:
-            if machine.id not in execution_mapping:
-                continue
-            for app_id, app_info in execution_mapping[machine.id].items():
+            for app_id, app_info in execution_mapping.items():
                 application = next(filter(lambda a: a.id == app_id, applications))
+                if machine.id not in app_info:
+                    continue
                 machine.tree[application] = {}
-                for use_case_id in app_info["use_cases"]:
-                    use_case = next(filter(lambda t: t.id == use_case_id and application in t.tree, use_cases))
+                for use_case_id in app_info[machine.id]["use_cases"]:
+                    use_case = next(filter(lambda t: t.id == use_case_id, use_cases))
                     machine.tree[application][use_case] = []
 
 class ApplicationRepository(Repository):
@@ -98,37 +98,32 @@ class ApplicationRepository(Repository):
             execution_mapping (dict): The execution mapping
         """
         for application in self.data:
-            for machine_id, machine_info in execution_mapping.items():
-                if not application.id in machine_info:
-                    continue
+            if not application.id in execution_mapping:
+                continue
+            for machine_id, machine_info in execution_mapping[application.id].items():
                 machine = next(filter(lambda m: m.id == machine_id, machines))
-                application.tree[machine] = {}
-                for use_case_id in machine_info[application.id]["use_cases"]:
-                    use_case = next(filter(lambda t: t.id == use_case_id and application in t.tree, use_cases))
-                    application.tree[machine][use_case] = []
+                for use_case_id in machine_info["use_cases"]:
+                    use_case = next(filter(lambda t: t.id == use_case_id, use_cases))
+                    if use_case not in application.tree:
+                        application.tree[use_case] = {}
+                    application.tree[use_case][machine] = []
 
 class TestCaseRepository(Repository):
     """ Repository for test cases """
-    def __init__(self, applications_json, applications):
+    def __init__(self, use_cases_json):
         """ Constructor for the TestCaseRepository class.
         Initializes the test cases from the JSON data, uniquely.
-        A test case is strictly linked to a single application
         Args:
-            applications_json (dict): The JSON data for the applications
-            applications (list[Application]): The list of applications
+            use_cases_json (dict): The JSON metadata for the test cases
         """
-        self.data:list[TestCase] = []
-        for app_id, app_info in applications_json.items():
-            application = next(filter(lambda a: a.id == app_id, applications))
-            for use_case, use_case_info in app_info["use_cases"].items():
-                self.add(
-                    TestCase(
-                        id = use_case,
-                        display_name = use_case_info["display_name"],
-                        description = use_case_info["description"],
-                        application = application
-                    )
-                )
+        self.data:list[TestCase] = [
+            TestCase(
+                id = use_case_id,
+                display_name = use_case_info["display_name"],
+                description = use_case_info["description"]
+            )
+            for use_case_id, use_case_info in use_cases_json.items()
+        ]
 
     def link(self, applications, machines, execution_mapping):
         """ Create the links between the test cases and the applications and machines depending on the execution mapping
@@ -140,13 +135,12 @@ class TestCaseRepository(Repository):
             execution_mapping (dict): The execution mapping
         """
         for use_case in self.data:
-            for machine_id, machine_info in execution_mapping.items():
-                machine = next(filter(lambda m: m.id == machine_id, machines))
-                for app_id, app_info in machine_info.items():
-                    if not use_case.id in app_info["use_cases"]:
-                        continue
-                    application = next(filter(lambda a: a.id == app_id, applications))
-                    if not application in use_case.tree:
+            for app_id, app_info in execution_mapping.items():
+                application = next(filter(lambda a: a.id == app_id, applications))
+                use_case.tree[application] = {}
+                for machine_id, machine_info  in app_info.items():
+                    machine = next(filter(lambda m: m.id == machine_id, machines))
+                    if not use_case.id in machine_info["use_cases"]:
                         continue
                     use_case.tree[application][machine] = []
 
@@ -170,12 +164,13 @@ class AtomicReportRepository(Repository):
             benchmarking_config_json (dict): The benchmarking config JSON data
             download_handler (GirderHandler): The GirderHandler object to download the reports
         """
-        for machine_id, machine_info in benchmarking_config_json.items():
-            for app_id, app_info in machine_info.items():
-                json_filenames = download_handler.downloadFolder(app_info["girder_folder_id"], output_dir=f"{machine_id}/{app_id}")
-                possible_use_cases = app_info["use_cases"]
+        for app_id, app_info in benchmarking_config_json.items():
+            for machine_id, machine_info in app_info.items():
+                outdir = f"{app_id}/{machine_id}"
+                json_filenames = download_handler.downloadFolder(machine_info["girder_folder_id"], output_dir=outdir)
+                possible_use_cases = machine_info["use_cases"]
                 for json_file in json_filenames:
-                    json_file = f"{download_handler.download_base_dir}/{machine_id}/{app_id}/{json_file}"
+                    json_file = f"{download_handler.download_base_dir}/{outdir}/{json_file}"
                     self.add(
                         AtomicReport(
                             application_id = app_id,
@@ -203,5 +198,5 @@ class AtomicReportRepository(Repository):
 
 
             machine.tree[application][use_case].append(atomic_report)
-            application.tree[machine][use_case].append(atomic_report)
+            application.tree[use_case][machine].append(atomic_report)
             use_case.tree[application][machine].append(atomic_report)

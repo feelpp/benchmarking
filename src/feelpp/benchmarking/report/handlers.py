@@ -60,6 +60,7 @@ class ConfigHandler:
 
         self.machines = config["machines"]
         self.applications = config["applications"]
+        self.use_cases = config["use_cases"]
         self.execution_mapping = config["execution_mapping"]
 
     def checkFileExists(self, filepath):

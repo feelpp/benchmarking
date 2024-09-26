@@ -20,19 +20,28 @@ def main_cli():
     girder_handler = GirderHandler(json_output_path)
 
     applications = ApplicationRepository(config_handler.applications)
-    use_cases = TestCaseRepository(config_handler.applications, applications)
+    use_cases = TestCaseRepository(config_handler.use_cases)
     machines = MachineRepository(config_handler.machines)
+
+    machines.link(applications, use_cases, config_handler.execution_mapping)
+    applications.link(machines, use_cases, config_handler.execution_mapping)
+    use_cases.link(applications, machines, config_handler.execution_mapping)
+
+    machines.printHierarchy()
+    print("-----------------")
+    applications.printHierarchy()
+    print("-----------------")
+    use_cases.printHierarchy()
+
 
     atomic_reports = AtomicReportRepository(
         benchmarking_config_json = config_handler.execution_mapping,
         download_handler = girder_handler,
     )
 
-    machines.link(applications, use_cases, config_handler.execution_mapping)
-    applications.link(machines, use_cases, config_handler.execution_mapping)
-    use_cases.link(applications, machines, config_handler.execution_mapping)
-
     atomic_reports.link(applications, machines, use_cases)
+
+
 
     index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
 
