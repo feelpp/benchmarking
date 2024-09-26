@@ -84,7 +84,7 @@ class AtomicReport:
         if view == "machines":
             self.data["parent_catalogs"] = f"{self.machine_id}-{self.application_id}-{self.use_case_id}"
         elif view == "applications":
-            raise NotImplementedError("Applications view is not implemented yet")
+            self.data["parent_catalogs"] = f"{self.application_id}-{self.use_case_id}-{self.machine_id}"
 
         self.data["application_display_name"] = self.application.display_name
         self.data["machine_id"] = self.machine.id
@@ -99,15 +99,16 @@ class AtomicReport:
 
         if base_dir.endswith("machines"):
             output_folder_path = f"{base_dir}/{self.machine_id}/{self.application_id}/{self.use_case_id}"
+            self.updateData("machines")
         elif base_dir.endswith("applications"):
-            raise NotImplementedError("Applications view is not implemented yet")
+            output_folder_path = f"{base_dir}/{self.application_id}/{self.use_case_id}/{self.machine_id}"
+            self.updateData("applications")
         else:
             raise ValueError("The base_directory must be either 'machines' or 'applications', and must be located under ROOT/pages")
 
         if not os.path.exists(output_folder_path):
             raise FileNotFoundError(f"The folder {output_folder_path} does not exist. Modules should be initialized beforehand ")
 
-        self.updateData()
 
         renderer.render(
             f"{output_folder_path}/{self.filename()}.adoc",
