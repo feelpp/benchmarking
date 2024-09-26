@@ -96,14 +96,14 @@ def buildMapToExport(configPath, hostname):
     with open(configPath, 'r') as file:
         data = json.load(file)
 
-    toolbox = data['Feelpp']['toolbox']
+    toolbox = data['feelpp']['toolbox']
     varMap['TOOLBOX'] = toolbox
-    varMap['RFM_PREFIX'] = data['Reframe']['Directories']['prefix']
-    varMap['RFM_STAGE_DIR'] = data['Reframe']['Directories']['stage']
-    varMap['RFM_OUTPUT_DIR'] = data['Reframe']['Directories']['output']
+    varMap['RFM_PREFIX'] = data['reframe']['directories']['prefix']
+    varMap['RFM_STAGE_DIR'] = data['reframe']['directories']['stage']
+    varMap['RFM_OUTPUT_DIR'] = data['reframe']['directories']['output']
 
-    prefix = data['Reframe']['reportPrefix'].strip()
-    suffix = data['Reframe']['reportSuffix'].strip()
+    prefix = data['reframe']['report_prefix'].strip()
+    suffix = data['reframe']['report_suffix'].strip()
     varMap['RFM_REPORT_FILE'] = buildReportPath(configPath, prefix, suffix, toolbox, hostname)
 
     return varMap

@@ -1,25 +1,25 @@
 {
-    "Reframe":
+    "reframe":
     {
-        "hostConfig":  "${WORKDIR}/src/feelpp/benchmarking/feelpp_toolboxes/reframe/config-files/${HOSTNAME}.py",
-        "reportPrefix": "",
-        "reportSuffix": "",
-        "Directories":
+        "host_config":  "${WORKDIR}/src/feelpp/benchmarking/feelpp_toolboxes/reframe/config-files/${HOSTNAME}.py",
+        "report_prefix": "",
+        "report_suffix": "",
+        "directories":
         {
             "prefix": "${WORKDIR}/build/reframe/",
             "stage": "",
             "output": ""
         },
-        "Mode":
+        "mode":
         {
             "type": "CpuVariation",
-            "exclusiveAccess": true,
+            "exclusive_access": true,
             "topology":
             {
-                "minPhysicalCpuPerNode": 4,
-                "maxPhysicalCpuPerNode": 128,
-                "minNodeNumber": 1,
-                "maxNodeNumber": 1
+                "min_physical_cpu_per_node": 4,
+                "max_physical_cpu_per_node": 128,
+                "min_node_number": 1,
+                "max_node_number": 1
             },
             "sequencing":
             {
@@ -29,13 +29,13 @@
         }
     },
 
-    "Feelpp":
+    "feelpp":
     {
         "toolbox": "electric",
         "case_name": "busbar2d",
-        "CommandLine":
+        "command_line":
         {
-            "config-files":
+            "config_files":
             [
                 "/usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg"
             ],
@@ -49,7 +49,7 @@
                 "dimension": "",
                 "discretization": ""
             },
-            "jsonPatch":
+            "json_patch":
             [
                 {
                     "op": "replace",
@@ -60,7 +60,7 @@
         }
     },
 
-    "Reporter":
+    "reporter":
     {
         "active": true,
         "scaling": "linear / quadratic / cubic"

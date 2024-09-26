@@ -1,25 +1,25 @@
 {
-    "Reframe":
+    "reframe":
     {
-        "hostConfig":  "${WORKDIR}/src/feelpp/benchmarking/feelpp_toolboxes/reframe/config-files/${HOSTNAME}.py",
-        "reportPrefix": "",
-        "reportSuffix": "",
-        "Directories":
+        "host_config":  "${WORKDIR}/src/feelpp/benchmarking/feelpp_toolboxes/reframe/config-files/${HOSTNAME}.py",
+        "report_prefix": "",
+        "report_suffix": "",
+        "directories":
         {
             "prefix": "${WORKDIR}/build/reframe/",
             "stage": "",
             "output": ""
         },
-        "Mode":
+        "mode":
         {
             "type": "CpuVariation",
-            "exclusiveAccess": true,
+            "exclusive_access": true,
             "topology":
             {
-                "minPhysicalCpuPerNode": 64,
-                "maxPhysicalCpuPerNode": 128,
-                "minNodeNumber": 1,
-                "maxNodeNumber": 3
+                "min_physical_cpu_per_node": 64,
+                "max_physical_cpu_per_node": 128,
+                "min_node_number": 1,
+                "max_node_number": 3
             },
             "sequencing":
             {
@@ -29,13 +29,13 @@
         }
     },
 
-    "Feelpp":
+    "feelpp":
     {
         "toolbox": "heatfluid",
         "case_name": "prone_eye_M3_lsc",
-        "CommandLine":
+        "command_line":
         {
-            "config-files":
+            "config_files":
             [
                 "/data/home/chabannes/datasets/eye2brain/eye-prone-velocity.cfg",
                 "myprec_lsc.cfg"
@@ -50,7 +50,7 @@
                 "dimension": "",
                 "discretization": ""
             },
-            "jsonPatch":
+            "json_patch":
             [
                 {
                     "op": "replace",
@@ -61,7 +61,7 @@
         }
     },
 
-    "Reporter":
+    "reporter":
     {
         "active": true,
         "scaling": "linear / quadratic / cubic"

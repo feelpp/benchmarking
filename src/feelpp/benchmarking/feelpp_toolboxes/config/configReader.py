@@ -42,9 +42,9 @@ class ConfigReader:
 
 
     def processData(self):
-        self.reframe = ReframeConfig(self.data['Reframe'])
-        self.feelpp = FeelppConfig(self.data['Feelpp'])
-        self.reporter = ReporterConfig(self.data['Reporter'])
+        self.reframe = ReframeConfig(self.data['reframe'])
+        self.feelpp = FeelppConfig(self.data['feelpp'])
+        self.reporter = ReporterConfig(self.data['reporter'])
 
     def __repr__(self):
         return json.dumps(self.data, indent=4)
@@ -65,11 +65,11 @@ class Config:
 
 class ReframeConfig(Config):
     def __init__(self, data):
-        self.host_config = data['hostConfig']
-        self.report_prefix = data['reportPrefix']
-        self.report_suffix = data['reportSuffix']
-        self.directories = DirectoriesConfig(data['Directories'])
-        self.mode = ModeConfig(data['Mode'])
+        self.host_config = data['host_config']
+        self.report_prefix = data['report_prefix']
+        self.report_suffix = data['report_suffix']
+        self.directories = DirectoriesConfig(data['directories'])
+        self.mode = ModeConfig(data['mode'])
 
 
     def to_dict(self):
@@ -100,7 +100,7 @@ class DirectoriesConfig(Config):
 class ModeConfig(Config):
     def __init__(self, data):
         self.name = data['type']
-        self.exclusive_access = data['exclusiveAccess']
+        self.exclusive_access = data['exclusive_access']
         self.topology = TopologyConfig(data['topology'])
         self.sequencing = SequencingConfig(data['sequencing'])
 
@@ -114,10 +114,10 @@ class ModeConfig(Config):
 
 class TopologyConfig(Config):
     def __init__(self, data):
-        self.min_physical_cpus_per_node = data['minPhysicalCpuPerNode']
-        self.max_physical_cpus_per_node = data['maxPhysicalCpuPerNode']
-        self.min_node_number = data['minNodeNumber']
-        self.max_node_number = data['maxNodeNumber']
+        self.min_physical_cpus_per_node = data['min_physical_cpu_per_node']
+        self.max_physical_cpus_per_node = data['max_physical_cpu_per_node']
+        self.min_node_number = data['min_node_number']
+        self.max_node_number = data['max_node_number']
 
     def to_dict(self):
         return {
@@ -153,7 +153,7 @@ class FeelppConfig(Config):
     def __init__(self, data):
         self.toolbox = data['toolbox']
         self.testCase = data["case_name"]
-        self.commandLine = CommandLineConfig(data['CommandLine'])
+        self.commandLine = CommandLineConfig(data['command_line'])
 
         if self.toolbox not in valid_toolboxes:
             print("[Error] Unknown toolbox:\t", self.toolbox)
@@ -169,10 +169,10 @@ class FeelppConfig(Config):
 
 class CommandLineConfig(Config):
     def __init__(self, data):
-        self.config_files = data['config-files']
+        self.config_files = data['config_files']
         self.repository = RepositoryConfig(data['repository'])
         self.case = CaseConfig(data['case'])
-        self.json = JsonPatchConfig(data['jsonPatch'])
+        self.json = JsonPatchConfig(data['json_patch'])
 
     def configFilesToStr(self):
         return ' '.join(elem for elem in self.config_files)
