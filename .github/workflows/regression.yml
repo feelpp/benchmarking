@@ -111,3 +111,5 @@ jobs:
           benchmark-toolbox ${{ steps.set-inputs.outputs.machine }} \
           --feelppdb /data/scratch/cladellash/feelppdb/ \
           --dir ${{ steps.set-inputs.outputs.config_dir }}
+        env:
+          GIRDER_API_KEY : ${{ secrets.GIRDER }}
