@@ -1,7 +1,7 @@
 from feelpp.benchmarking.report.components.atomicReport import AtomicReport
 from feelpp.benchmarking.report.components.application import Application
 from feelpp.benchmarking.report.components.machine import Machine
-from feelpp.benchmarking.report.components.testCase import TestCase
+from feelpp.benchmarking.report.components.testCase import UseCase
 
 
 class Repository:
@@ -70,7 +70,7 @@ class MachineRepository(Repository):
         Will update the tree attribute of the machines, creating a dictionary of applications and test cases
         Args:
             applications (list[Application]): The list of applications
-            use_cases (list[TestCase]): The list of test cases
+            use_cases (list[UseCase]): The list of test cases
             execution_mapping (dict): The execution mapping
         """
         for machine in self.data:
@@ -105,7 +105,7 @@ class ApplicationRepository(Repository):
         Will update the tree attribute of the applications, creating a dictionary of machines and test cases
         Args:
             machines (list[Machine]): The list of machines
-            use_cases (list[TestCase]): The list of test cases
+            use_cases (list[UseCase]): The list of test cases
             execution_mapping (dict): The execution mapping
         """
         for application in self.data:
@@ -119,16 +119,16 @@ class ApplicationRepository(Repository):
                         application.tree[use_case] = {}
                     application.tree[use_case][machine] = []
 
-class TestCaseRepository(Repository):
+class UseCaseRepository(Repository):
     """ Repository for test cases """
     def __init__(self, use_cases_json):
-        """ Constructor for the TestCaseRepository class.
+        """ Constructor for the UseCaseRepository class.
         Initializes the test cases from the JSON data, uniquely.
         Args:
             use_cases_json (dict): The JSON metadata for the test cases
         """
-        self.data:list[TestCase] = [
-            TestCase(
+        self.data:list[UseCase] = [
+            UseCase(
                 id = use_case_id,
                 display_name = use_case_info["display_name"],
                 description = use_case_info["description"]
@@ -198,7 +198,7 @@ class AtomicReportRepository(Repository):
         Args:
             applications (list[Application]): The list of applications
             machines (list[Machine]): The list of machines
-            use_cases (list[TestCase]): The list of test cases
+            use_cases (list[UseCase]): The list of test cases
         """
         for atomic_report in self.data:
             application = next(filter(lambda a: a.id == atomic_report.application_id, applications))

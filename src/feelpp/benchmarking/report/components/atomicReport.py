@@ -21,7 +21,7 @@ class AtomicReport:
 
         self.application_id = application_id
         self.machine_id = machine_id
-        self.use_case_id = self.findTestCase(possible_use_cases)
+        self.use_case_id = self.findUseCase(possible_use_cases)
 
         self.application = None
         self.machine = None
@@ -33,7 +33,7 @@ class AtomicReport:
         Args:
             application (Application): The application
             machine (Machine): The machine
-            use_case (TestCase): The test case
+            use_case (UseCase): The test case
         """
         self.machine = machine
         self.application = application
@@ -53,7 +53,7 @@ class AtomicReport:
 
         return data
 
-    def findTestCase(self, possible_use_cases):
+    def findUseCase(self, possible_use_cases):
         """ Find the test case of the report
         Args:
             possible_use_cases (list): The possible test cases that can be found.

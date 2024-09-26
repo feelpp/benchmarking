@@ -1,6 +1,6 @@
 import argparse,os
 from feelpp.benchmarking.report.handlers import ConfigHandler, GirderHandler
-from feelpp.benchmarking.report.components.repositories import AtomicReportRepository, MachineRepository, ApplicationRepository, TestCaseRepository
+from feelpp.benchmarking.report.components.repositories import AtomicReportRepository, MachineRepository, ApplicationRepository, UseCaseRepository
 
 from feelpp.benchmarking.report.renderer import Renderer
 
@@ -20,7 +20,7 @@ def main_cli():
     girder_handler = GirderHandler(json_output_path)
 
     applications = ApplicationRepository(config_handler.applications)
-    use_cases = TestCaseRepository(config_handler.use_cases)
+    use_cases = UseCaseRepository(config_handler.use_cases)
     machines = MachineRepository(config_handler.machines)
 
     atomic_reports = AtomicReportRepository(
