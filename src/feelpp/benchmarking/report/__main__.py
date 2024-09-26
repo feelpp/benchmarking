@@ -23,9 +23,17 @@ def main_cli():
     use_cases = TestCaseRepository(config_handler.use_cases)
     machines = MachineRepository(config_handler.machines)
 
+    atomic_reports = AtomicReportRepository(
+        benchmarking_config_json = config_handler.execution_mapping,
+        download_handler = girder_handler,
+    )
+
     machines.link(applications, use_cases, config_handler.execution_mapping)
     applications.link(machines, use_cases, config_handler.execution_mapping)
     use_cases.link(applications, machines, config_handler.execution_mapping)
+
+    atomic_reports.link(applications, machines, use_cases)
+
 
     machines.printHierarchy()
     print("-----------------")
@@ -34,21 +42,9 @@ def main_cli():
     use_cases.printHierarchy()
 
 
-    atomic_reports = AtomicReportRepository(
-        benchmarking_config_json = config_handler.execution_mapping,
-        download_handler = girder_handler,
-    )
-
-    atomic_reports.link(applications, machines, use_cases)
-
-
-
     index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
 
-    machines_base_dir = os.path.join(args.modules_path,"machines")
-    for machine in machines:
-        machine.initModules(machines_base_dir, index_renderer,"catalog-index")
-
+    machines.initModules(os.path.join(args.modules_path,"machines"), index_renderer, parent_id="catalog-index")
 
     report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
 

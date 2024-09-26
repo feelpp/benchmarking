@@ -37,6 +37,10 @@ class Repository:
          It will update the tree attribute of the items """
         pass
 
+    def initModules(self, base_dir, renderer, parent_id = "catalog-index"):
+        for item in self.data:
+            item.initModules(base_dir, renderer, parent_id)
+
 class MachineRepository(Repository):
     """ Repository for machines """
     def __init__(self, machines_json):

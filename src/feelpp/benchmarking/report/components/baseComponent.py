@@ -35,13 +35,16 @@ class BaseComponent:
 
     def initModule(self, base_dir, renderer, parent_id, self_tag_id):
         """ Initialize the modules for the component.
-        Creates the directory for the component and renders the index.adoc file
+        Creates the directories for the component and renders the index.adoc file
         Args:
             base_dir (str): The base directory for the modules
             renderer (Renderer): The renderer to use
             parent_id (str): The catalog id of the parent component
             self_tag_id (str): The catalog id of the current component, to be used by their children as parent
         """
+        if not os.path.exists(base_dir):
+            os.mkdir(base_dir)
+
         module_path = os.path.join(base_dir, self.id)
 
         if not os.path.exists(module_path):
@@ -52,7 +55,7 @@ class BaseComponent:
             self.indexData(parent_id, self_tag_id)
         )
 
-    def initModules(self, base_dir, renderer, parent_id = "catalog-index"):
+    def initModules(self, base_dir, renderer, parent_id):
         """ Initialize the modules for the component.
         Creates the directories recursively for the component and its children and renders the index.adoc files for each.
 
