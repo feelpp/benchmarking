@@ -67,7 +67,11 @@ jobs:
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'regression skip')"
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
 
       - name: Create Virtual Environment
         run: |
