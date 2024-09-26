@@ -7,6 +7,7 @@ from jsonschema                         import validate, ValidationError
 from datetime                           import datetime
 from feelpp.benchmarking.feelpp_toolboxes.parser         import parseArgs, printArgs
 from feelpp.benchmarking.feelpp_toolboxes.config.configReader   import supported_env_vars
+from feelpp.benchmarking.report.handlers import GirderHandler
 
 
 def getParentFolder():
@@ -106,6 +107,8 @@ def buildMapToExport(configPath, hostname):
     suffix = data['reframe']['report_suffix'].strip()
     varMap['RFM_REPORT_FILE'] = buildReportPath(configPath, prefix, suffix, toolbox, hostname)
 
+    varMap['GIRDER_FOLDER_ID'] = data['reframe']['directories']['girder_folder_id']
+
     return varMap
 
 
@@ -157,5 +160,12 @@ def launchReframe():
                 cmd += ['-' + 'v' * args.verbose]
 
             os.system(' '.join(['reframe'] + cmd))
+
+            #============ UPLOAD REPORTS TO GIRDER ================#
+            girder_handler = GirderHandler(download_base_dir=None)
+            girder_handler.uploadFileToFolder(os.environ['RFM_REPORT_FILE'],os.environ['GIRDER_FOLDER_ID'])
+            #======================================================#
+
+
             print("\n" + '=' * shutil.get_terminal_size().columns)
         print("\n >>> Number of tests run:", len(configs))

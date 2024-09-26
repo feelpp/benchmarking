@@ -87,6 +87,7 @@ class DirectoriesConfig(Config):
         self.prefix = data['prefix']
         self.stage = data['stage']
         self.output = data['output']
+        self.girder_folder_id = data['girder_folder_id']
 
 
     def to_dict(self):

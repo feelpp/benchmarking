@@ -42,6 +42,13 @@ class GirderHandler(DownloadHandler):
 
         return os.listdir(f"{self.download_base_dir}/{output_dir}")
 
+    def uploadFileToFolder(self, input_filepath, folder_id):
+        """ Upload a local file to an existing folder in Girder
+        Args:
+            input_filepath: The path of the file to upload
+            folder_id (str): The ID of the Girder folder to upload to
+        """
+        self.client.upload(filePattern=input_filepath, parentId=folder_id, parentType="folder")
 
 
 class ConfigHandler:
