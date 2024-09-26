@@ -33,7 +33,7 @@ class BaseComponent:
             illustration = f"ROOT:{self.id}.jpg"
         )
 
-    def initModules(self, base_dir, renderer, parent_id, self_tag_id):
+    def initModule(self, base_dir, renderer, parent_id, self_tag_id):
         """ Initialize the modules for the component.
         Creates the directory for the component and renders the index.adoc file
         Args:
@@ -51,6 +51,21 @@ class BaseComponent:
             os.path.join(module_path, "index.adoc"),
             self.indexData(parent_id, self_tag_id)
         )
+
+    def initModules(self, base_dir, renderer, parent_id = "catalog-index"):
+        """ Initialize the modules for the component.
+        Creates the directories recursively for the component and its children and renders the index.adoc files for each.
+
+        Args:
+            base_dir (str): The base directory for the modules
+            renderer (Renderer): The renderer to use
+            parent_id (str,optional): The catalog id of the parent component. Defaults to "supercomputers".
+        """
+        self.initModule( base_dir, renderer, parent_id, self.id)
+        for child, grandchildren in self.tree.items():
+            child.initModule(os.path.join(base_dir,self.id), renderer, parent_id = self.id, self_tag_id = f"{self.id}-{child.id}")
+            for grandchild in grandchildren:
+                grandchild.initModule(os.path.join(base_dir,self.id,child.id), renderer, parent_id = f"{self.id}-{child.id}", self_tag_id = f"{self.id}-{child.id}-{grandchild.id}")
 
     def printHierarchy(self):
         """ Print the hierarchy of the component """

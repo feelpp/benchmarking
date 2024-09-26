@@ -47,7 +47,7 @@ def main_cli():
 
     machines_base_dir = os.path.join(args.modules_path,"machines")
     for machine in machines:
-        machine.initModules(machines_base_dir, index_renderer,"supercomputers")
+        machine.initModules(machines_base_dir, index_renderer,"catalog-index")
 
 
     report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
