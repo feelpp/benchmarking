@@ -1,6 +1,9 @@
 name: Regression tests
 
 on:
+  pull_request:
+    branches:
+      - '**'
 
   workflow_dispatch:
     inputs:
@@ -86,25 +89,30 @@ jobs:
         id: set-inputs
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "machine=${{ github.event.inputs.machine }}" >> $GITHUB_OUTPUT
+            machine=machine=${{ github.event.inputs.machine }}
 
             input_application=${{ github.event.inputs.application }}
             config_dir="src/feelpp/benchmarking/feelpp_toolboxes/config/benchConfigs/"
-            if [[ input_application == "Electric" ]]
+            if [[ input_application == "Electric" ]]; then
               config_dir+="electric/"
-            elif [[ input_application == "Heat" ]]
+            elif [[ input_application == "Heat" ]]; then
               config_dir+="heat/"
-            elif [[ input_application == "HeatFluid" ]]
+            elif [[ input_application == "HeatFluid" ]]; then
               config_dir+="heatfluid/"
             fi
 
             input_use_case=${{ github.event.inputs.use_case }}
-            if [[ input_use_case != "All" ]]
+            if [[ input_use_case != "All" ]]; then
               echo "Use case not implemented for this toolbox"
             fi
 
-            echo "config_dir=$config_dir" >> $GITHUB_OUTPUT;
+          else
+            machine=gaya
+            config_dir="src/feelpp/benchmarking/feelpp_toolboxes/config/benchConfigs/electric/"
           fi
+
+          echo "machine=$machine" >> $GITHUB_OUTPUT
+          echo "config_dir=$config_dir" >> $GITHUB_OUTPUT;
 
       - name: Run Regression Tests
         run: | #TODO: PARAMETRIZE FEELPPDB
