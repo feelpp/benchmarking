@@ -44,21 +44,21 @@ def main_cli():
 
     index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
 
-    machines_base_dir = os.path.join(args.modules_path,"machines")
-    machines.initModules(machines_base_dir, index_renderer, parent_id="catalog-index")
+    applications_base_dir = os.path.join(args.modules_path,"applications")
+    applications.initModules(applications_base_dir, index_renderer, parent_id="catalog-index")
 
     report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
 
     counter = {
-        f"{mach.id}-{app.id}-{tc.id}" : 0
-        for mach in machines
-        for app,tcs in mach.tree.items()
-        for tc in tcs
+        f"{app.id}-{mach.id}-{tc.id}" : 0
+        for app in applications
+        for tc in app.tree
+        for mach in app.tree[tc]
     }
 
     #TODO: At the moment just generate 5 reports per test case
     for atomic_report in atomic_reports:
-        if counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.use_case_id}"] < 5:
-            atomic_report.createReport(machines_base_dir,report_renderer)
+        if counter[f"{atomic_report.application_id}-{atomic_report.machine_id}-{atomic_report.use_case_id}"] < 5:
+            atomic_report.createReport(applications_base_dir,report_renderer)
 
-        counter[f"{atomic_report.machine_id}-{atomic_report.application_id}-{atomic_report.use_case_id}"] += 1
+        counter[f"{atomic_report.application_id}-{atomic_report.machine_id}-{atomic_report.use_case_id}"] += 1
