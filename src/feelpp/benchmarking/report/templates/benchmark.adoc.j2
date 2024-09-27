@@ -13,12 +13,12 @@
 * Total Tests: {{ session_info.num_cases }}
 * Failures: {{ session_info.num_failures }}
 * Testcases
-{% set env_vars = [] %}
+{% set env_vars=[] %}
 {% for run in runs %}
     {% for test in run.testcases %}
         ** {{ test.display_name }}
         {% if env_vars == [] and test.check_vars.env_vars %}
-            {% set _ignore = env_vars.append(test.check_vars.env_vars) %}
+            {% set _ignore=env_vars.append(test.check_vars.env_vars) %}
         {% endif %}
     {% endfor %}
 {% endfor %}
@@ -36,48 +36,51 @@ from feelpp.benchmarking.report.components.controllers.atomicReportController im
 from feelpp.benchmarking.report.components.models.atomicReportModel import AtomicReportModel
 from feelpp.benchmarking.report.components.views.atomicReportView import AtomicReportView
 from feelpp.benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+----
 
-model = AtomicReportModel("{{ filepath }}")
-view = AtomicReportView()
-controller = AtomicReportController(model,view)
+[%dynamic%close%hide_code,python]
+----
+model=AtomicReportModel("{{ filepath }}")
+view=AtomicReportView()
+controller=AtomicReportController(model,view)
 ----
 
 === Performance by Simulation Steps
 
-[%dynamic%hide_code,python]
+[%dynamic%close%hide_code,python]
 ----
-performance_strategy = PerformanceStrategy("s",["nbTasks"])
+performance_strategy=PerformanceStrategy("s",["nb_task"])
 ----
 
 [%dynamic%raw%open%hide_code,python]
 ----
-fig = controller.generatePerformancePlot(performance_strategy)
+fig=controller.generatePerformancePlot(performance_strategy)
 fig.show()
 ----
 
 [%dynamic%raw%open%hide_code,python]
 ----
-table = controller.generatePerformanceTable(performance_strategy)
-table.show()
+fig=controller.generatePerformanceTable(performance_strategy)
+fig.show()
 ----
 
 === Speedup of the simulation Steps
 
-[%dynamic%hide_code,python]
+[%dynamic,python]
 ----
-speedup_strategy = SpeedupStrategy("nbTask")
+speedup_strategy=SpeedupStrategy("nb_task")
 ----
 
 .Speedup
 [%dynamic%raw%open%hide_code,python]
 ----
-fig = controller.generateSpeedupPlot(speedup_strategy)
+fig=controller.generateSpeedupPlot(speedup_strategy)
 fig.show()
 ----
 
 [%dynamic%raw%open%hide_code,python]
 ----
-fig = controller.generateSpeedupTable(speedup_strategy)
+fig=controller.generateSpeedupTable(speedup_strategy)
 fig.show()
 ----
 
@@ -85,10 +88,10 @@ fig.show()
 
 [%dynamic%raw%open%hide_code,python]
 ----
-if model.partial:
+if model.is_partial:
     for stage_name in model.stages:
-        speedup_strategy = SpeedupStrategy(dimension="nbTask", stage=stage_name)
-        fig = controller.generateSpeedupPlot(speedup_strategy)
+        speedup_strategy=SpeedupStrategy(dimension="nb_task", stage=stage_name)
+        fig=controller.generateSpeedupPlot(speedup_strategy)
         fig.show()
 else:
     print("Performances of each part inside an execution step have not been recorded yet.")
