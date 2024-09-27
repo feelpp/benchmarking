@@ -1,4 +1,8 @@
 import json, os
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 class AtomicReport:
     """ Class representing an atomic report. i.e. a report indexed by date, test case, application and machine.
@@ -114,3 +118,193 @@ class AtomicReport:
             f"{output_folder_path}/{self.filename()}.adoc",
             self.data
         )
+
+
+class AtomicReportModel:
+    """Model component for the atomic report """
+    def __init__(self, file_path):
+        """ Parses the JSON data, extracts the dimensions of the tests and builds a master df used by other classes"""
+        data = self.parseJson(file_path)
+
+        self.extractDimensions(data)
+        self.buildMasterDf(data)
+
+    def parseJson(self, file_path):
+        """ Load a json file
+        Args:
+            file_path (str): The JSON file to parse
+        """
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            data = data["runs"][0] #TODO: support multiple runs
+
+        return data
+
+    def extractDimensions(self,data):
+        """Get the check_params object keys from the first testcase.
+        Check that the rest of the cases have the same fields
+        Args:
+            Data (dict): The loaded JSON data
+        Returns:
+            dimensions (list): List of keys representing the parameters of the tests (nb_tasks, mesh_size, solvers, ...)
+        """
+
+        dimensions = data["testcases"][0]["check_params"].keys()
+
+        for testcase in data["testcases"]:
+            dims = testcase["check_params"]
+            assert set(dimensions) == set(dims), f"A testcase has different dimensions {dimensions} and {dims}"
+
+        self.dimensions = dimensions
+
+    def buildMasterDf(self,data):
+        """Build a dataframe where each row is indexed by a perfvar and its respective values
+        Args:
+            data (dict): The parsed JSON data
+        """
+        processed_data = []
+
+        for i,testcase in enumerate(data["testcases"]):
+            for perfvar in testcase["perfvars"]:
+                tmp_dct = {}
+                tmp_dct["testcase_i"] = i
+                tmp_dct["performance_variable"] = perfvar["name"]
+                tmp_dct["value"] = float(perfvar["value"])
+                tmp_dct["unit"] = perfvar["unit"]
+                tmp_dct["reference"] = float(perfvar["reference"]) if perfvar["reference"] else np.nan
+                tmp_dct["thres_lower"] = float(perfvar["thres_lower"]) if perfvar["thres_lower"] else np.nan
+                tmp_dct["thres_upper"] = float(perfvar["thres_upper"]) if perfvar["thres_upper"] else np.nan
+                tmp_dct["status"] = tmp_dct["thres_lower"] <= tmp_dct["value"] <= tmp_dct["thres_upper"] if not np.isnan(tmp_dct["thres_lower"]) and not np.isnan(tmp_dct["thres_upper"]) else np.nan
+                tmp_dct["absolute_error"] = np.abs(tmp_dct["value"] - tmp_dct["reference"])
+                tmp_dct["is_partial"] = "is_partial" in testcase["tags"] and len(tmp_dct["performance_variable"].split("_"))>1
+                tmp_dct["stage_name"] = tmp_dct["performance_variable"].split("_")[0]
+                tmp_dct["partial_name"] = tmp_dct["performance_variable"].split("_")[1] if tmp_dct["is_partial"] else None
+                tmp_dct["testcase_time_run"] = testcase["time_run"]
+
+                for dim, v in testcase["check_params"].items():
+                    tmp_dct[dim] = v
+
+                processed_data.append(tmp_dct)
+
+        self.master_df = pd.DataFrame(processed_data)
+
+    def getDataForMetric(self, strategy):
+        """ Apply a strategy to extract data for a specific metric
+        Args:
+            strategy (MetricStrategy): The strategy used to calculate or calculate the metric
+        Returns:
+            pd.DataFrame: Processed data for the specific metric.
+        """
+        return strategy.calculate(self.master_df)
+
+class MetricStrategy:
+    """ Abstract Strategy class for metrics"""
+    def calculate(self,data):
+        """ Calculates a metric from the data
+        Args:
+            data (pd.DataFrame): data to extract the metric from
+        """
+        raise NotImplementedError
+
+
+class PerformanceByStageStrategy(MetricStrategy):
+    """ Strategy to get the performance of a reframe test by the stage"""
+    def __init__(self, unit, dimensions):
+        """ Set the unit and dimensiosn
+        Args:
+            unit (str): Unit to filter by in order to not combine different values (e.g. Don't mix seconds with iterations)
+            dimensions (list[str]): List of dimensions to index by (e.g. Mesh size, number of tasks, solvers, etc.)
+        """
+        self.unit = unit
+        self.dimensions = dimensions
+
+    def calculate(self, df):
+        """ Groups the dataframe by stage name
+        Args:
+            df (pd.DataFrame) : the master dataframe
+        Return:
+            pd.DataFrame : Pivot dataframe having dimensions as index and stage names as columns
+        """
+        pivot = pd.pivot_table(df[df["unit"] == self.unit], values="value", index=self.dimensions,columns="stage_name",aggfunc="sum")
+        if isinstance(pivot.index, pd.MultiIndex):
+            raise NotImplementedError
+        return pivot
+
+class SpeedupByStageStrategy(MetricStrategy):
+    def __init__(self,dimension):
+        self.dimension = dimension
+
+    def calculate(self,df):
+        pivot = PerformanceByStageStrategy(unit="s",dimensions=[self.dimension]).calculate(df)
+        pivot["Total"] = pivot.sum(axis=1)
+        speedup = pd.DataFrame(pivot.loc[pivot.index.min(),:]/pivot)
+        speedup["Optimal"] = speedup.index / speedup.index.min()
+        speedup["HalfOptimal"] = speedup.index / (2*speedup.index.min())
+        return speedup
+
+class AtomicReportView:
+    """ View component for the Atomic Report, it contains all figure generation related code """
+    def plotScatters(self,df, title, yaxis_label):
+        """ Create a plot with multiple lines
+        Args:
+            df (pd.DataFrame): Dataframe to create plot from, index goes to x axis and columns are line plots.
+                                Values go on y-axis. The x-axis label is inferred from the dataframe's index name.
+            title (str) : Title of the figure
+            yaxis_label (str): Label of the y-axis
+        Returns:
+            go.Figure : Figure with multiple scatter plots
+        """
+        return go.Figure(
+            data = [
+                go.Scatter(
+                    x = df.index,
+                    y = df.loc[:,column],
+                    name = column,
+                )
+                for column in df.columns
+            ],
+            layout=go.Layout(
+                title=title,
+                xaxis=dict( title = df.index.name ),
+                yaxis=dict( title = yaxis_label )
+            )
+        )
+
+    def plotTable(self,df, precision = 3):
+        """ Create a plotly table with the same structure as the input dataframe
+        Args:
+            df (pd.DataFrame): Dataframe to create the table from.
+        """
+        return go.Figure(
+            go.Table(
+                header=dict(values= [df.index.name] + df.columns.tolist()),
+                cells=dict(
+                    values=[df.index.values.tolist()] + [df[col] for col in df.columns],
+                    format=[f'.{precision}f' if t ==np.float64 else '' for t in [df.index.dtype] + df.dtypes.values.tolist()]
+                )
+            )
+        )
+
+
+class AtomicReportController:
+    """ Controller component of the Atomic Report, it orchestrates the model with the view"""
+    def __init__(self, model, view):
+        """
+        Args:
+            model (AtomicReportModel): The atomic report model component
+            view (AtomicReportView): The atomic report view component
+        """
+        self.model = model
+        self.view = view
+
+    def generatePerformanceByStagePlot(self, strategy):
+        """ Create multi-line scatter plot representing the performance of a test by stage.
+        Args:
+            strategy (MetricStrategy): The strategy used for metric extraction
+        """
+        data = self.model.getDataForMetric(strategy)
+        return self.view.plotScatters(data,title="Performance By Stage",yaxis_label="s")
+
+    def generatePerformanceByStageTable(self, strategy):
+        data = self.model.getDataForMetric(strategy)
+        return self.view.plotTable(data)
