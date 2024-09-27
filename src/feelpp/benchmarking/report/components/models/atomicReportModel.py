@@ -11,7 +11,7 @@ class AtomicReportModel:
         self.extractIsPartialReport(data)
         self.extractDimensions(data)
         self.buildMasterDf(data)
-        self.stages = self.master_df["stage_name"].unique().values.tolist()
+        self.stages = self.master_df["stage_name"].unique().tolist()
 
     def parseJson(self, file_path):
         """ Load a json file
@@ -36,7 +36,7 @@ class AtomicReportModel:
             "is_partial" in tc["tags"] if self.is_partial else
             "is_partial" not in tc["tags"]
             )
-            for tc in data["testcase"]
+            for tc in data["testcases"]
         ), "Inconsistency in partial tag"
 
 
