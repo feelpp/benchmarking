@@ -62,10 +62,11 @@ class SpeedupStrategy(MetricStrategy):
 
         for col in pivot.columns:
             model = LinearRegression()
-            x = speedup.index.values.reshape(-1,1)
-            y = speedup.loc[:,col].values
+            tmp = speedup.loc[:,col].dropna(axis=0)
+            x = tmp.index.values.reshape(-1,1)
+            y = tmp.values
             model.fit(x,y)
-            speedup.loc[:,col+"_linearReg"] = model.predict(x)
+            speedup.loc[tmp.index,col+"_linearReg"] = model.predict(x)
 
         speedup["Optimal"] = speedup.index / speedup.index.min()
         speedup["HalfOptimal"] = speedup.index / (2*speedup.index.min())
