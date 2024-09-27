@@ -33,8 +33,10 @@ class PerformanceStrategy(MetricStrategy):
         """
         if not self.stage:
             pivot = pd.pivot_table(df[(df["unit"] == self.unit)], values="value", index=self.dimensions,columns="stage_name",aggfunc="sum")
+            pivot.name = None
         else:
             pivot = pd.pivot_table(df[(df["unit"] == self.unit)&(df["stage_name"] == self.stage)], values="value", index=self.dimensions,columns="partial_name",aggfunc="sum")
+            pivot.name = self.stage
 
         if isinstance(pivot.index, pd.MultiIndex):
             raise NotImplementedError
@@ -67,6 +69,8 @@ class SpeedupStrategy(MetricStrategy):
 
         speedup["Optimal"] = speedup.index / speedup.index.min()
         speedup["HalfOptimal"] = speedup.index / (2*speedup.index.min())
+
+        speedup.name = self.stage
 
         return speedup
 

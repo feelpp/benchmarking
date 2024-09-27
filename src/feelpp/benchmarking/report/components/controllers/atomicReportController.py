@@ -15,7 +15,7 @@ class AtomicReportController:
             strategy (MetricStrategy): The strategy used for metric extraction
         """
         data = self.model.getDataForMetric(strategy)
-        return self.view.plotScatters(data,title="Performance",yaxis_label="s")
+        return self.view.plotScatters(data,title="Performance" + (f" for {data.name} stage" if data.name else ""), yaxis_label="s")
 
     def generatePerformanceTable(self, strategy):
         """Create a plotly table for performance
@@ -31,7 +31,7 @@ class AtomicReportController:
             strategy (MetricStrategy): The strategy used for metric extraction
         """
         data = self.model.getDataForMetric(strategy)
-        return self.view.plotSpeedup(data,title="Speedup")
+        return self.view.plotSpeedup(data,title="Speedup" +  (f" for {data.name} stage" if data.name else ""))
 
     def generateSpeedupTable(self, strategy):
         """Create a plotly table for speedup

@@ -65,6 +65,27 @@ class AtomicReportModel:
         processed_data = []
 
         for i,testcase in enumerate(data["testcases"]):
+            if not testcase["perfvars"]:
+                tmp_dct = {
+                    "testcase_i" :i,
+                    "performance_variable": "",
+                    "value": None,
+                    "unit": "",
+                    "reference": None,
+                    "thres_lower": None,
+                    "thres_upper": None,
+                    "status": None,
+                    "absolute_error": None,
+                    "is_partial": False,
+                    "stage_name": None,
+                    "partial_name": None,
+                    "testcase_time_run": testcase["time_run"]
+                }
+                for dim, v in testcase["check_params"].items():
+                    tmp_dct[dim] = v
+                processed_data.append(tmp_dct)
+                continue
+
             for perfvar in testcase["perfvars"]:
                 tmp_dct = {}
                 tmp_dct["testcase_i"] = i
