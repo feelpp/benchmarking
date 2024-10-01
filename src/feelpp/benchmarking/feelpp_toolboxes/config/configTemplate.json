@@ -1,0 +1,96 @@
+{
+    "application": {
+        "executable": "feelpp_toolbox_heat",
+        "use_case_name":"busbar2d",
+        "options": [
+            "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+            "--repository.prefix /data/scratch/cladellash/feelppdb/benchmarking/toolboxes/heat",
+            "--repository.case busbar/2d",
+            "--fail-on-unknown-option 1",
+            "--heat.scalability-save=1"
+        ],
+        "outputs": [
+            {
+                "instance_path": "/data/scratch/cladellash/feelppdb/toolboxes/heat/ThermalBridgesENISO10211/Case2/",
+                "relative_filepath": "heat.measures/values.csv",
+                "format": "csv"
+            }
+        ],
+        "scalability": {
+            "directory": "/data/scratch/cladellash/feelppdb/toolboxes/heat/ThermalBridgesENISO10211/Case2/",
+            "stages": [
+                {
+                    "name":"HeatConstructor",
+                    "file":"heat.scalibility.HeatConstructor.data"
+                },
+                {
+                    "name":"HeatPostProcessing",
+                    "file":"heat.scalibility.HeatPostProcessing.data"
+                },
+                {
+                    "name":"HeatSolve",
+                    "file":"heat.scalibility.HeatSolve.data"
+                }
+            ],
+            "has_partial_performance":true
+        },
+        "sanity": {
+            "success": [
+                "[ Stopping Feel++ ]"
+            ],
+            "error": [
+                "| [failure] |"
+            ]
+        }
+    },
+    "reframe": {
+        "exclusive_access":true,
+        "valid_systems":["*"],
+        "valid_prog_environs":["*"],
+        "policy":"async",
+        "hosts":{
+            "hostnames":["gaya"],
+            "config_directory": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/feelpp_toolboxes/config/config-files/"
+        },
+        "directories": {
+            "stage": "/data/home/cladellash/benchmarking/build/rerame/stage/",
+            "output": "/data/home/cladellash/benchmarking/build/rerame/output/"
+        },
+        "parameters": {
+            "nb_tasks": {
+                "active": true,
+                "type": "continuous",
+                "topology": {
+                    "min_cores_per_node": 4,
+                    "max_cores_per_node": 128,
+                    "min_nodes": 1,
+                    "max_nodes": 1
+                },
+                "sequencing": {
+                    "generator": "default",
+                    "sequence": []
+                }
+            },
+            "mesh_sizes": {
+                "active": true,
+                "type": "continuous",
+                "hsize_range": {
+                    "min":0.05,
+                    "max":1.5
+                },
+                "sequencing": {
+                    "generator": "default",
+                    "sequence": []
+                }
+            },
+            "meshes": {
+                "active": false,
+                "type": "discrete"
+            },
+            "solvers": {
+                "active": false,
+                "type": "discrete"
+            }
+        }
+    }
+}
