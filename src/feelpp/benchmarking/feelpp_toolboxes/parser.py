@@ -9,49 +9,49 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 
 class CustomHelpFormatter(RawTextHelpFormatter):
     """
-    Disables 'nargs' and 'choices' special formatting:
-        * in usage:         - removes ARG [ARG ...] for nargs
-        * in option_group:  - removes ARG [ARG ...] for nargs
-                            - removes {choice1, choice2, ...} for choices
+    Class for formatting the usage and the options display of the parser
     """
-
     def _format_action_invocation(self, action):
+        """ Override of RawTextHelpFormatter method
+        Removes ARG [ARG ...] for nargs and {choice1, choice2, ...} in option_group
+        """
         if action.option_strings:
             return ', '.join(action.option_strings)
         else:
             return super()._format_action_invocation(action)
 
-
     def _format_usage(self, usage, actions, groups, prefix):
-        """ Removes ARG [ARG ...] for nargs """
+        """ Override of RawTextHelpFormatter method
+        Removes ARG [ARG ...] for nargs in usage
+        """
         print("")
         usage = f"Usage: {self._prog} "
-        usageArgs = []
+        usage_args = []
 
         for action in actions:
             # Options
             if action.option_strings:
                 if action.choices:
-                    choicesTxt = ','.join(action.choices)
-                    usageArgs.append(f"[{action.option_strings[0]} {{{choicesTxt}}}]")
+                    choices_str = ','.join(action.choices)
+                    usage_args.append(f"[{action.option_strings[0]} {{{choices_str}}}]")
                 elif action.nargs:
-                    usageArgs.append(f"[{action.option_strings[0]} {action.metavar} ...]")
+                    usage_args.append(f"[{action.option_strings[0]} {action.metavar} ...]")
                 elif action.required:
-                    usageArgs.append(f"{action.option_strings[0]} {action.metavar}")
+                    usage_args.append(f"{action.option_strings[0]} {action.metavar}")
                 elif action.metavar != None:
-                    usageArgs.append(f"[{action.option_strings[0]} {action.metavar}]")
+                    usage_args.append(f"[{action.option_strings[0]} {action.metavar}]")
                 else:
-                    usageArgs.append(f"[{action.option_strings[0]}]")
+                    usage_args.append(f"[{action.option_strings[0]}]")
 
             # Positional arguments
             else:
-                usageArgs.append(f"{action.dest.upper()}")
+                usage_args.append(f"{action.dest.upper()}")
 
-        return usage + ' '.join(usageArgs) + "\n"
+        return usage + ' '.join(usage_args) + "\n"
 
 
 class Parser():
-
+    """ Class for parsing and validating command-line arguments"""
     def __init__(self):
         self.parser = ArgumentParser(formatter_class=CustomHelpFormatter, add_help=False)
         self.valid_hostnames = ['gaya', 'local', 'discoverer', 'karolina', 'meluxina']
