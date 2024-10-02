@@ -24,7 +24,7 @@ class CommandBuilder:
         return f'{self.getRepositoryRootDir() / "build" / "reframe"}'
 
     def buildReportFilePath(self):
-        return f'{self.getRepositoryRootDir() / "reframe_reports" / self.machine_config.hostname / "report-{sessionid}.json"}'
+        return f'{self.getRepositoryRootDir() / "reports" / self.machine_config.hostname / "report-{sessionid}.json"}'
 
     def build_command(self):
         cmd = [
