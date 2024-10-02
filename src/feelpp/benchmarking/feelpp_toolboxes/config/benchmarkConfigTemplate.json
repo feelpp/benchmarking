@@ -1,34 +1,35 @@
 {
-    "executable": "feelpp_toolbox_heat",
+    "executable": "feelpp_toolbox_electric",
     "use_case_name":"busbar2d",
     "options": [
         "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
-        "--repository.prefix /data/scratch/cladellash/feelppdb/benchmarking/toolboxes/heat",
+        "--repository.prefix /data/scratch/cladellash/feelppdb/benchmarking/toolboxes/electric",
         "--repository.case busbar2d",
         "--fail-on-unknown-option 1",
-        "--heat.scalability-save=1"
+        "--electric.scalability-save=1",
+        "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 0.05}'"
     ],
     "outputs": [
         {
-            "instance_path": "/data/scratch/cladellash/feelppdb/toolboxes/heat/ThermalBridgesENISO10211/Case2/",
-            "relative_filepath": "heat.measures/values.csv",
+            "instance_path": "/data/scratch/cladellash/feelppdb/toolboxes/electric/busbar2d/",
+            "relative_filepath": "electric.measures/values.csv",
             "format": "csv"
         }
     ],
     "scalability": {
-        "directory": "/data/scratch/cladellash/feelppdb/toolboxes/heat/ThermalBridgesENISO10211/Case2/",
+        "directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric/busbar2d/",
         "stages": [
             {
                 "name":"HeatConstructor",
-                "file":"heat.scalibility.HeatConstructor.data"
+                "file":"electric.scalibility.HeatConstructor.data"
             },
             {
                 "name":"HeatPostProcessing",
-                "file":"heat.scalibility.HeatPostProcessing.data"
+                "file":"electric.scalibility.HeatPostProcessing.data"
             },
             {
                 "name":"HeatSolve",
-                "file":"heat.scalibility.HeatSolve.data"
+                "file":"electric.scalibility.HeatSolve.data"
             }
         ],
         "has_partial_performance":true
