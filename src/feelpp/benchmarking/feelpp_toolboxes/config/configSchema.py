@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, field_validator, model_validator, RootModel
 from typing import Literal, Union, Annotated
 from annotated_types import Len
 import shutil, os
@@ -53,25 +53,6 @@ class Parameters(BaseModel):
     meshes: MeshesParameter
     solvers: SolversParameter
 
-
-class Hosts(BaseModel):
-    hostnames: Annotated[list[str], Len(min_length=1)]
-    config_directory: str
-
-    @field_validator("config_directory",mode="before")
-    @classmethod
-    def removeTrailingSlash(cls,v):
-        if v[-1] == "/":
-            v = v[:-1]
-        return v
-
-    @model_validator(mode="after")
-    def checkFileExists(self):
-        for hostname in self.hostnames:
-            hostname_cfg_path = f"{self.config_directory}/{hostname}.py"
-            assert os.path.exists(hostname_cfg_path), f"{hostname_cfg_path} does not exist"
-        return self
-
 class Sanity(BaseModel):
     success:list[str]
     error:list[str]
@@ -97,7 +78,7 @@ class ConfigFile(BaseModel):
     outputs: list[AppOutput]
     scalability: Scalability
     sanity: Sanity
-    parameters = Parameters
+    parameters: Parameters
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
@@ -106,19 +87,18 @@ class ConfigFile(BaseModel):
         return v
 
 
-class ReframeDirectories(BaseModel):
-    stage: str
-    output: str
-
 class MachineConfig(BaseModel):
     hostname:str
     active: bool
     config_file:str
     execution_policy:Literal["serial","async"]
-    reframe_directories: ReframeDirectories
+    reframe_stage:str
+    reframe_output:str
     exclusive_access:bool
     valid_systems:list[str] = ["*"],
     valid_prog_environs:list[str] = ["*"]
+    launch_options: list[str]
+    omp_num_threads: int
 
-class ExecutionConfigFile(BaseModel):
-    __root__: Annotated[list[MachineConfig], Len(min_length=1)]
+class ExecutionConfigFile(RootModel):
+    Annotated[list[MachineConfig], Len(min_length=1)]

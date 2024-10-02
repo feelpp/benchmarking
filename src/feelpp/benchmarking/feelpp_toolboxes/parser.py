@@ -2,8 +2,6 @@ import os
 import sys
 import glob
 import shutil
-import json
-from jsonschema import validate, ValidationError
 from argparse import ArgumentParser, RawTextHelpFormatter
 
 
@@ -54,7 +52,6 @@ class Parser():
     """ Class for parsing and validating command-line arguments"""
     def __init__(self):
         self.parser = ArgumentParser(formatter_class=CustomHelpFormatter, add_help=False)
-        self.valid_hostnames = ['gaya', 'local', 'discoverer', 'karolina', 'meluxina']
         self.addArgs()
         self.args = self.parser.parse_args()
         self.processArgs()
@@ -68,15 +65,11 @@ class Parser():
         self.buildConfigList()
 
     def addArgs(self):
-        positional = self.parser.add_argument_group("Positional arguments")
-        positional.add_argument('hostname', type=str, choices=self.valid_hostnames, help='Name of the machine \nValid choices: {%(choices)s}', metavar='hostname')
-
         options = self.parser.add_argument_group("Options")
-        #options.add_argument('--report-prefix', '-r', type=str, nargs='+', metavar='REPORT', help='Prefix for Reframe\'s run-report path \nSuffixe is always: \'{date}-{configBasename}.json\'')
+        options.add_argument('--exec-config', '-ec', required=True, type=str, metavar='EXEC_CONFIG', help='Path to JSON reframe execution configuration file, specific to a machine.')
         options.add_argument('--config', '-c', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON configuration files \nIn combination with --dir, specify only basenames for selecting JSON files')
         options.add_argument('--dir', '-d', type=str, nargs='+', action='extend', default=[], metavar='DIR', help='Name of the directory containing JSON configuration files')
         options.add_argument('--exclude', '-e', type=str, nargs='+', action='extend', default=[], metavar='EXCLUDE', help='To use in combination with --dir, mentioned files will not be launched')
-        options.add_argument('--policy', '-p', type=str, choices=['async', 'serial'], default='serial', metavar='POLICY', help='Reframe\'s execution policy: {%(choices)s} (default: serial)')
         options.add_argument('--list', '-l', action='store_true', help='List all parametrized tests that will be run by Reframe')
         options.add_argument('--list-files', '-lf', action='store_true', help='List all benchmarking configuration file found')
         options.add_argument('--verbose', '-v', action='count', default=0, help='Select Reframe\'s verbose level by specifying multiple v\'s')
@@ -90,6 +83,12 @@ class Parser():
         if self.args.config and len(self.args.dir) > 1:
             print(f'[Error] --dir and --config combination can only handle one DIR')
             sys.exit(1)
+
+        if not self.args.exec_config:
+            print(f'[Error] --exec-config should be specified')
+            sys.exit(1)
+
+
 
     def checkDirectoriesExist(self):
         not_found = []

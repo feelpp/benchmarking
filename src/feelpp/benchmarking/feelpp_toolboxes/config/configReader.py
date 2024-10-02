@@ -1,21 +1,7 @@
-import json, sys, os
-from feelpp.benchmarking.feelpp_toolboxes.config.configSchema import ConfigFile
+import json, os
 
-
-
-#https://stackoverflow.com/questions/6760685/what-is-the-best-way-of-implementing-singleton-in-python
-class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        else:
-            cls._instances[cls].__init__(*args, **kwargs)
-        return cls._instances[cls]
-
-
-class ConfigReader(metaclass=Singleton):
-    """ Singleton class to load config files"""
+class ConfigReader:
+    """ Class to load config files"""
     def __init__(self, config_path, schema):
         """
         Args:

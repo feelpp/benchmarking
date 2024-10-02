@@ -1,20 +1,26 @@
 from feelpp.benchmarking.feelpp_toolboxes.reframe.parameters import NbTasks
 from feelpp.benchmarking.feelpp_toolboxes.config.configReader import ConfigReader
+from feelpp.benchmarking.feelpp_toolboxes.config.configSchema import ConfigFile,MachineConfig
 from feelpp.benchmarking.feelpp_toolboxes.reframe.validation import ValidationHandler
 import os
 import reframe as rfm
 
 @rfm.simple_test
-class RegressionTest(rfm.RunOnlyRegressionTest):
+class ReframeSetup(rfm.RunOnlyRegressionTest):
 
-    config = ConfigReader(str(os.environ['JSON_CONFIG_PATH'])).config
+    machine_config = ConfigReader(str(os.environ.get("EXEC_CONFIG_PATH")),MachineConfig).config
+    app_config = ConfigReader(str(os.environ.get('JSON_CONFIG_PATH')),ConfigFile).config
 
-    valid_systems = config.reframe.valid_systems
-    valid_prog_environs = config.reframe.valid_prog_environs
 
-    validation_handler = ValidationHandler(config.application.sanity)
+    valid_systems = machine_config.valid_systems
+    valid_prog_environs = machine_config.valid_prog_environs
 
-    for param_name, param_data in config.reframe.parameters:
+
+    validation_handler = ValidationHandler(app_config.sanity)
+
+    use_case = variable(str,value = app_config.use_case_name)
+
+    for param_name, param_data in app_config.parameters:
         if not param_data.active:
             continue
 
@@ -33,27 +39,27 @@ class RegressionTest(rfm.RunOnlyRegressionTest):
 
     @run_after('init')
     def setEnvVars(self):
-        self.env_vars['OMP_NUM_THREADS'] = 1
+        self.env_vars['OMP_NUM_THREADS'] = self.machine_config.omp_num_threads
 
     @run_after('init')
     def setTags(self):
         self.tags = {
-            "is_partial",
-            self.config.application.use_case_name,
-            os.environ.get("EXEC_POLICY","serial")
+            self.machine_config.execution_policy
         }
 
     @run_before('run')
     def setLaunchOptions(self):
-        self.exclusive_access = self.config.reframe.exclusive_access
-        self.job.launcher.options = ['-bind-to core']
-
+        self.exclusive_access = self.machine_config.exclusive_access
+        self.job.launcher.options = self.machine_config.launch_options
 
     @run_before('run')
     def setExecutableOpts(self):
-        self.executable = self.config.application.executable
-        self.executable_opts = self.config.application.options
+        self.executable = self.app_config.executable
+        self.executable_opts = self.app_config.options
 
+
+@rfm.simple_test
+class RegressionTest(ReframeSetup):
 
     @sanity_function
     def sanityCheck(self):
