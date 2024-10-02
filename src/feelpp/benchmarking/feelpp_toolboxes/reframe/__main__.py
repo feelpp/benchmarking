@@ -1,7 +1,7 @@
 import os
 from feelpp.benchmarking.feelpp_toolboxes.parser import Parser
 from feelpp.benchmarking.feelpp_toolboxes.config.configReader import ConfigReader
-from feelpp.benchmarking.feelpp_toolboxes.config.configSchema import MachineConfig
+from feelpp.benchmarking.feelpp_toolboxes.config.configSchemas import MachineConfig
 from pathlib import Path
 
 

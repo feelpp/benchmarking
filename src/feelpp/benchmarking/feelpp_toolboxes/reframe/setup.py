@@ -1,7 +1,7 @@
 
 from feelpp.benchmarking.feelpp_toolboxes.reframe.parameters import NbTasks
 from feelpp.benchmarking.feelpp_toolboxes.config.configReader import ConfigReader
-from feelpp.benchmarking.feelpp_toolboxes.config.configSchema import ConfigFile,MachineConfig
+from feelpp.benchmarking.feelpp_toolboxes.config.configSchemas import ConfigFile,MachineConfig
 from feelpp.benchmarking.feelpp_toolboxes.reframe.validation import ValidationHandler
 import reframe as rfm
 import os
