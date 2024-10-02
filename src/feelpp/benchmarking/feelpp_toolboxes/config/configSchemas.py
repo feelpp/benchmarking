@@ -1,12 +1,8 @@
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, field_validator, model_validator, RootModel
 from typing import Literal, Union, Annotated
 from annotated_types import Len
 import shutil, os
 
-#-----REFRAME-------------------#
-
-
-#----------Parameters-------#
 class BaseParameter(BaseModel):
     active: bool
     type: Literal["continuous","discrete"]
@@ -57,44 +53,6 @@ class Parameters(BaseModel):
     meshes: MeshesParameter
     solvers: SolversParameter
 
-#---------------------------#
-
-class ReframeDirectories(BaseModel):
-    stage: str
-    output: str
-
-class Hosts(BaseModel):
-    hostnames: Annotated[list[str], Len(min_length=1)]
-    config_directory: str
-
-    @field_validator("config_directory",mode="before")
-    @classmethod
-    def removeTrailingSlash(cls,v):
-        if v[-1] == "/":
-            v = v[:-1]
-        return v
-
-    @model_validator(mode="after")
-    def checkFileExists(self):
-        for hostname in self.hostnames:
-            hostname_cfg_path = f"{self.config_directory}/{hostname}.py"
-            assert os.path.exists(hostname_cfg_path), f"{hostname_cfg_path} does not exist"
-        return self
-
-
-class Reframe(BaseModel):
-    exclusive_access:bool
-    valid_systems: list[str]
-    valid_prog_environs: list[str]
-    policy:Literal["serial","async"]
-    hosts: Hosts
-    directories: ReframeDirectories
-    parameters: Parameters
-
-#--------------------------------#
-
-#----------APPLICATION----------#
-
 class Sanity(BaseModel):
     success:list[str]
     error:list[str]
@@ -113,13 +71,14 @@ class AppOutput(BaseModel):
     relative_filepath: str
     format: str
 
-class Application(BaseModel):
+class ConfigFile(BaseModel):
     executable: str
     use_case_name: str
     options: list[str]
     outputs: list[AppOutput]
     scalability: Scalability
     sanity: Sanity
+    parameters: Parameters
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
@@ -128,11 +87,15 @@ class Application(BaseModel):
         return v
 
 
-#--------------------------------#
+class MachineConfig(BaseModel):
+    hostname:str
+    active: bool
+    execution_policy:Literal["serial","async"]
+    exclusive_access:bool
+    valid_systems:list[str] = ["*"],
+    valid_prog_environs:list[str] = ["*"]
+    launch_options: list[str]
+    omp_num_threads: int
 
-class ConfigFile(BaseModel):
-    application : Application
-    reframe: Reframe
-
-
-
+class ExecutionConfigFile(RootModel):
+    Annotated[list[MachineConfig], Len(min_length=1)]
