@@ -90,10 +90,7 @@ class ConfigFile(BaseModel):
 class MachineConfig(BaseModel):
     hostname:str
     active: bool
-    config_file:str
     execution_policy:Literal["serial","async"]
-    reframe_stage:str
-    reframe_output:str
     exclusive_access:bool
     valid_systems:list[str] = ["*"],
     valid_prog_environs:list[str] = ["*"]
