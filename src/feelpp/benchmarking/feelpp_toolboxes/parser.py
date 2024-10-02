@@ -66,14 +66,12 @@ class Parser():
         if self.args.dir:
             self.checkDirectoriesExist()
         self.buildConfigList()
-        self.validateConfigs()
 
     def addArgs(self):
         positional = self.parser.add_argument_group("Positional arguments")
         positional.add_argument('hostname', type=str, choices=self.valid_hostnames, help='Name of the machine \nValid choices: {%(choices)s}', metavar='hostname')
 
         options = self.parser.add_argument_group("Options")
-        options.add_argument('--feelppdb', '-f', type=str, required=True, metavar='PATH', help='Path to feelppdb folder (required)')
         #options.add_argument('--report-prefix', '-r', type=str, nargs='+', metavar='REPORT', help='Prefix for Reframe\'s run-report path \nSuffixe is always: \'{date}-{configBasename}.json\'')
         options.add_argument('--config', '-c', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON configuration files \nIn combination with --dir, specify only basenames for selecting JSON files')
         options.add_argument('--dir', '-d', type=str, nargs='+', action='extend', default=[], metavar='DIR', help='Name of the directory containing JSON configuration files')
@@ -122,42 +120,6 @@ class Parser():
             configs = [config for config in configs if os.path.basename(config) not in self.args.exclude]
 
         self.args.config = [os.path.abspath(config) for config in configs]
-
-
-    def validateConfigs(self):
-        parent_folder = os.path.abspath(os.path.dirname(__file__))
-        schema_path = f'{parent_folder}/config/configSchema.json'
-
-        with open(schema_path, 'r') as file:
-            schema = json.load(file)
-
-        unvalid = []
-        messages = []
-        for config in self.args.config:
-            instance = None
-            try:
-                with open(config, 'r') as file:
-                    instance = json.load(file)
-            except FileNotFoundError as e:
-                unvalid.append(config)
-                messages.append(f"File not found: {e.strerror}")
-            except json.JSONDecodeError as e:
-                unvalid.append(config)
-                messages.append(f"Invalid JSON format: {e.msg}")
-
-            if instance:
-                try:
-                    validate(instance=instance, schema=schema)
-                except ValidationError as e:
-                    unvalid.append(config)
-                    messages.append(f"Validation error: {e.message}")
-
-        if unvalid:
-            print("\n[Error] Corrupted configuration files. Please check before relaunch or use --exclude option.")
-            for i in range(len(unvalid)):
-                print(f"> file {i+1}:", unvalid[i])
-                print(f"\t  {messages[i]}")
-            sys.exit(1)
 
     def listFilesAndExit(self):
         print("\nFollowing configuration files have been found and validated:")

@@ -1,26 +1,18 @@
-import os, argparse
-from feelpp.benchmarking.feelpp_toolboxes.config.configReader import ConfigReader
-
+import os
+from feelpp.benchmarking.feelpp_toolboxes.parser import Parser
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+	parser = Parser()
+	parser.printArgs()
 
-    positional = parser.add_argument_group("Positional arguments")
-    positional.add_argument('hostname', type=str, choices=['gaya'], help='Name of the machine \nValid choices: {%(choices)s}', metavar='hostname')
+	for config_filepath in parser.args.config:
+		os.environ["JSON_CONFIG_PATH"] = config_filepath
 
-    options = parser.add_argument_group("Options")
-    options.add_argument('--config', '-c', type=str)
-    options.add_argument('--policy', '-p', type=str, choices=['async', 'serial'], default='serial', metavar='POLICY', help='Reframe\'s execution policy: {%(choices)s} (default: serial)')
+		cmd = [ 'reframe',
+				f'-C ./src/feelpp/benchmarking/feelpp_toolboxes/config/config-files/{parser.args.hostname}.py',
+				f'-c ./src/feelpp/benchmarking/feelpp_toolboxes/reframe/regression-tests/regression.py',
+				f'--system={parser.args.hostname}',
+				f'--exec-policy={parser.args.policy}',
+				'-r','-v' ]
 
-    args = parser.parse_args()
-
-    os.environ["JSON_CONFIG_PATH"] = args.config
-
-    cmd = [ 'reframe',
-            f'-C ./src/feelpp/benchmarking/feelpp_toolboxes/config/config-files/{args.hostname}.py',
-            f'-c ./src/feelpp/benchmarking/feelpp_toolboxes/reframe/regression-tests/regression.py',
-            f'--system={args.hostname}',
-            f'--exec-policy={args.policy}',
-            '-r','-v']
-
-    os.system(' '.join(cmd))
+		os.system(' '.join(cmd))
