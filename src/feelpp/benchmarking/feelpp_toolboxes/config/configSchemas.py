@@ -60,11 +60,11 @@ class Sanity(BaseModel):
 class Stage(BaseModel):
     name:str
     file:str
+    format:Literal["csv","tsv","json"]
 
 class Scalability(BaseModel):
     directory: str
     stages: list[Stage]
-    has_partial_performance:bool
 
 class AppOutput(BaseModel):
     instance_path: str

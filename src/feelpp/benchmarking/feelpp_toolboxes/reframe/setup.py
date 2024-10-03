@@ -3,6 +3,8 @@ from feelpp.benchmarking.feelpp_toolboxes.reframe.parameters import NbTasks
 from feelpp.benchmarking.feelpp_toolboxes.config.configReader import ConfigReader
 from feelpp.benchmarking.feelpp_toolboxes.config.configSchemas import ConfigFile,MachineConfig
 from feelpp.benchmarking.feelpp_toolboxes.reframe.validation import ValidationHandler
+from feelpp.benchmarking.feelpp_toolboxes.reframe.scalability import ScalabilityHandler
+
 import reframe as rfm
 import os
 
@@ -59,6 +61,8 @@ class AppSetup(Setup):
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):
 
+    #TODO CRASH if code fail
+
     machine_setup = MachineSetup()
 
     app_setup = AppSetup()
@@ -74,11 +78,13 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 raise NotImplementedError
 
     validation_handler = ValidationHandler(app_setup.config.sanity)
+    scalability_handler = ScalabilityHandler(app_setup.config.scalability)
 
     @run_after('init')
     def setupAfterInit(self):
         self.machine_setup.setupAfterInit(self)
         self.app_setup.setupAfterInit(self)
+        self.scalability_handler.cleanupScalabilityFiles()
 
     @run_before('run')
     def setupBeforeRun(self):

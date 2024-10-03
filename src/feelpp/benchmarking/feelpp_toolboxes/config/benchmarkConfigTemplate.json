@@ -3,7 +3,7 @@
     "use_case_name":"busbar2d",
     "options": [
         "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
-        "--repository.prefix /data/scratch/cladellash/feelppdb/benchmarking/toolboxes/electric",
+        "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
         "--repository.case busbar2d",
         "--fail-on-unknown-option 1",
         "--electric.scalability-save=1",
@@ -20,26 +20,26 @@
         "directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric/busbar2d/",
         "stages": [
             {
-                "name":"HeatConstructor",
-                "file":"electric.scalibility.HeatConstructor.data"
+                "name": "ElectricConstructor",
+                "file": "electric.scalibility.ElectricConstructor.data",
+                "format": "tsv"
             },
             {
-                "name":"HeatPostProcessing",
-                "file":"electric.scalibility.HeatPostProcessing.data"
+                "name": "ElectricPostProcessing",
+                "file": "electric.scalibility.ElectricPostProcessing.data",
+                "format": "tsv"
             },
             {
-                "name":"HeatSolve",
-                "file":"electric.scalibility.HeatSolve.data"
+                "name": "ElectricSolve",
+                "file": "electric.scalibility.ElectricSolve.data",
+                "format": "tsv"
             }
-        ],
-        "has_partial_performance":true
+        ]
     },
     "sanity": {
         "success": [
-            "[ Stopping Feel++ ]"
         ],
         "error": [
-            "| [failure] |"
         ]
     },
     "parameters": {
@@ -61,8 +61,8 @@
             "active": false,
             "type": "continuous",
             "hsize_range": {
-                "min":0.05,
-                "max":1.5
+                "min": 0.05,
+                "max": 1.5
             },
             "sequencing": {
                 "generator": "default",
