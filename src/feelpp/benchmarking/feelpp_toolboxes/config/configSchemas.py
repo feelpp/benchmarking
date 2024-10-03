@@ -96,6 +96,8 @@ class MachineConfig(BaseModel):
     valid_prog_environs:list[str] = ["*"]
     launch_options: list[str]
     omp_num_threads: int
+    reframe_base_dir:str
+    reports_base_dir:str
 
 class ExecutionConfigFile(RootModel):
     Annotated[list[MachineConfig], Len(min_length=1)]

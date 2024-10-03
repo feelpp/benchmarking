@@ -19,9 +19,9 @@ class Setup:
         pass
 
 class MachineSetup(Setup):
-    def __init__(self):
+    def __init__(self,config_filepath):
         super().__init__()
-        self.config = ConfigReader(str(os.environ.get("EXEC_CONFIG_PATH")),MachineConfig).config
+        self.config = ConfigReader(config_filepath,MachineConfig).config
 
     def setupAfterInit(self,rfm_test):
         self.setValidEnvironments(rfm_test)
@@ -47,9 +47,9 @@ class MachineSetup(Setup):
 
 
 class AppSetup(Setup):
-    def __init__(self):
+    def __init__(self,config_filepath):
         super().__init__()
-        self.config = ConfigReader(str(os.environ.get('JSON_CONFIG_PATH')),ConfigFile).config
+        self.config = ConfigReader(config_filepath,ConfigFile).config
 
     def setupBeforeRun(self,rfm_test):
         self.setExecutable(rfm_test)
@@ -60,12 +60,10 @@ class AppSetup(Setup):
 
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):
+    machine_config_path = variable(str)
 
-    #TODO CRASH if code fail
+    app_setup = AppSetup(str(os.environ.get("APP_CONFIG_FILEPATH")))
 
-    machine_setup = MachineSetup()
-
-    app_setup = AppSetup()
     use_case = variable(str,value=app_setup.config.use_case_name)
 
     for param_name, param_data in app_setup.config.parameters:
@@ -79,6 +77,10 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     validation_handler = ValidationHandler(app_setup.config.sanity)
     scalability_handler = ScalabilityHandler(app_setup.config.scalability)
+
+    @run_after('init')
+    def initSetups(self):
+        self.machine_setup = MachineSetup(self.machine_config_path)
 
     @run_after('init')
     def setupAfterInit(self):

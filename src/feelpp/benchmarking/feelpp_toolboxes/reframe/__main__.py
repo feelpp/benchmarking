@@ -24,24 +24,25 @@ class CommandBuilder:
         return f'{self.getRepositoryRootDir() / "build" / "reframe"}'
 
     def buildReportFilePath(self):
-        return f'{self.getRepositoryRootDir() / "reports" / self.machine_config.hostname / "report-{sessionid}.json"}'
+        return f'{os.path.join(self.machine_config.reports_base_dir,self.machine_config.hostname,"report-{sessionid}.json")}'
 
     def build_command(self):
         cmd = [
             'reframe',
             f'-C {self.buildConfigFilePath()}',
             f'-c {self.buildRegressionTestFilePath()}',
+            f'-S machine_config_path={self.parser.args.exec_config}',
             f'--system={self.machine_config.hostname}',
             f'--exec-policy={self.machine_config.execution_policy}',
-            f'--prefix={self.buildReframePrefixPath()}',
+            f'--prefix={self.machine_config.reframe_base_dir}',
             f'--report-file={self.buildReportFilePath()}',
+            f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             '-r',
-            f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}'
         ]
         return ' '.join(cmd)
 
 
-if __name__ == "__main__":
+def main_cli():
     parser = Parser()
     parser.printArgs()
 
@@ -49,11 +50,11 @@ if __name__ == "__main__":
 
     cmd_builder = CommandBuilder(machine_config,parser)
 
-    os.environ["EXEC_CONFIG_PATH"] = parser.args.exec_config
-
     for config_filepath in parser.args.config:
-        os.environ["JSON_CONFIG_PATH"] = config_filepath
-
+        os.environ["APP_CONFIG_FILEPATH"] = config_filepath
         reframe_cmd = cmd_builder.build_command()
-
         os.system(reframe_cmd)
+
+
+if __name__ == "__main__":
+    main_cli()
