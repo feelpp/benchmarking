@@ -11,17 +11,14 @@ class CommandBuilder:
         self.parser = parser
 
     @staticmethod
-    def getRepositoryRootDir():
-        return Path(__file__).resolve().parent.parents[4]
+    def getScriptRootDir():
+        return Path(__file__).resolve().parent
 
     def buildConfigFilePath(self):
-        return f'{self.getRepositoryRootDir() / "src/feelpp/benchmarking/reframe/config/machineConfigs" / self.machine_config.hostname}.py'
+        return f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.hostname}.py'
 
     def buildRegressionTestFilePath(self):
-        return f'{self.getRepositoryRootDir() / "src/feelpp/benchmarking/reframe/regression.py"}'
-
-    def buildReframePrefixPath(self):
-        return f'{self.getRepositoryRootDir() / "build" / "reframe"}'
+        return f'{self.getScriptRootDir() / "regression.py"}'
 
     def buildReportFilePath(self):
         return f'{os.path.join(self.machine_config.reports_base_dir,self.machine_config.hostname,"report-{sessionid}.json")}'
