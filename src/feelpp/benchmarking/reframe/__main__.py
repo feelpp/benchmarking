@@ -12,6 +12,7 @@ class CommandBuilder:
     def __init__(self, machine_config, parser):
         self.machine_config = machine_config
         self.parser = parser
+        self.current_date = datetime.now().strftime("%Y_%m_%dT%H_%M_%S")
 
     @staticmethod
     def getScriptRootDir():
@@ -24,8 +25,7 @@ class CommandBuilder:
         return f'{self.getScriptRootDir() / "regression.py"}'
 
     def buildReportFilePath(self,executable):
-        current_date = datetime.now().strftime("%Y_%m_%dT%H_%M_%S")
-        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.hostname,f"{current_date}.json"))
+        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.hostname,f"{self.current_date}.json"))
 
     def build_command(self,executable):
         cmd = [
