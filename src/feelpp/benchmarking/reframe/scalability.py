@@ -41,7 +41,7 @@ class ScalabilityHandler:
 
 
                     for i, col in enumerate(columns[1:]): #UNIT TEMPORARY HOTFIX
-                        perf_variables.update( { f"{stage.name}_{col}" : sn.make_performance_function(vars[i],unit="item" if col.endswith("-iter") else "s")  })
+                        perf_variables.update( { f"{stage.name}_{col}" : sn.make_performance_function(vars[i],unit="item" if col.endswith("-niter") else "s")  })
 
                 case _:
                     raise NotImplementedError
