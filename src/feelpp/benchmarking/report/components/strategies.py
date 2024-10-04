@@ -31,6 +31,7 @@ class PerformanceStrategy(MetricStrategy):
         Return:
             pd.DataFrame : Pivot dataframe having dimensions as index and stage names as columns
         """
+        #TODO: THIS IS WRONG, THE TOTAL COLUMN SHOULD BE SPECIFIED IN THE JSON
         if not self.stage:
             pivot = pd.pivot_table(df[(df["unit"] == self.unit)], values="value", index=self.dimensions,columns="stage_name",aggfunc="sum")
             pivot.name = None
