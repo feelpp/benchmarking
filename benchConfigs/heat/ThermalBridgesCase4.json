@@ -1,0 +1,67 @@
+{
+    "Reframe":
+    {
+        "hostConfig":  "${WORKDIR}/src/feelpp/benchmarking/reframe/config-files/${HOSTNAME}.py",
+        "reportPrefix": "",
+        "reportSuffix": "",
+        "Directories":
+        {
+            "prefix": "${WORKDIR}/build/reframe/",
+            "stage": "",
+            "output": ""
+        },
+        "Mode":
+        {
+            "type": "CpuVariation",
+            "exclusiveAccess": true,
+            "topology":
+            {
+                "minPhysicalCpuPerNode": 8,
+                "maxPhysicalCpuPerNode": 128,
+                "minNodeNumber": 1,
+                "maxNodeNumber": 3
+            },
+            "sequencing":
+            {
+                "generator": "default",
+                "sequence": []
+            }
+        }
+    },
+
+    "Feelpp":
+    {
+        "toolbox": "heat",
+        "CommandLine":
+        {
+            "config-files":
+            [
+                "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case4.cfg"
+            ],
+            "repository":
+            {
+                "prefix": "${FEELPPDB_PATH}/benchmarking/toolboxes/${TOOLBOX}",
+                "case": "Building/ThermalBridgesENISO10211/case4"
+            },
+            "case":
+            {
+                "dimension": "",
+                "discretization": "P2"
+            },
+            "jsonPatch":
+            [
+                {
+                    "op": "replace",
+                    "path": "/Meshes/heat/Import/hsize",
+                    "value": 0.01
+                }
+            ]
+        }
+    },
+
+    "Reporter":
+    {
+        "active": true,
+        "scaling": "linear / quadratic / cubic"
+    }
+}
