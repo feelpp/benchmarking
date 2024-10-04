@@ -27,6 +27,8 @@ class AtomicReport:
         self.machine = None
         self.use_case = None
 
+        self.data["empty"] = all(testcase["perfvars"]==None for run in self.data["runs"] for testcase in run["testcases"])
+
     def setIndexes(self, application, machine, use_case):
         """ Set the indexes for the atomic report.
         Along with the date, they should form a unique identifier for the report.
@@ -114,3 +116,5 @@ class AtomicReport:
             f"{output_folder_path}/{self.filename()}.adoc",
             self.data
         )
+
+

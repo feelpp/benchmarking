@@ -26,52 +26,89 @@
 {'OMP_NUM_THREADS': 1}
 ----
 
-[%dynamic%close,python]
+
+[%dynamic%close%hide_code,python]
 ----
 try:
-    from feelpp.benchmarking.feelpp_toolboxes.reframe.report import Report
+    from feelpp.benchmarking.report.components.controllers.atomicReportController import AtomicReportController
+    from feelpp.benchmarking.report.components.models.atomicReportModel import AtomicReportModel
+    from feelpp.benchmarking.report.components.views.atomicReportView import AtomicReportView
+    from feelpp.benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
 except ImportError:
     import sys
     sys.path.append("./src/feelpp")
-    from benchmarking.feelpp_toolboxes.reframe.report import Report
+    from benchmarking.report.components.controllers.atomicReportController import AtomicReportController
+    from benchmarking.report.components.models.atomicReportModel import AtomicReportModel
+    from benchmarking.report.components.views.atomicReportView import AtomicReportView
+    from benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
 
-report=Report(file_path="reports/feelpp_toolbox_electric/gaya/20241004T103652-busbar3d.json")
+----
+
+[%dynamic%close%hide_code,python]
+----
+model=AtomicReportModel("reports/feelpp_toolbox_electric/gaya/20241004T103652-busbar3d.json")
+view=AtomicReportView()
+controller=AtomicReportController(model,view)
 ----
 
 === Performance by Simulation Steps
 
-[%dynamic%raw%open,python]
+[%dynamic%hide_code,python]
 ----
-fig=report.plotPerformanceByStep()
+performance_strategy=PerformanceStrategy("s",["nb_task"])
+----
+
+.Performance
+[%dynamic%open%hide_code%raw,python]
+----
+fig=controller.generatePerformancePlot(performance_strategy)
 fig.show()
 ----
 
-=== Performance by Number of Tasks
-
-[%dynamic%raw%open,python]
+[%dynamic%open%hide_code%raw,python]
 ----
-fig=report.plotPerformanceByTask()
+fig=controller.generatePerformanceTable(performance_strategy)
 fig.show()
 ----
 
 === Speedup of the simulation Steps
 
-.Speedup
-[%dynamic%raw%open,python]
+[%dynamic%hide_code,python]
 ----
-fig=report.plotSpeedup()
+speedup_strategy=SpeedupStrategy("nb_task")
+----
+
+.Speedup
+[%dynamic%raw%open%hide_code,python]
+----
+fig=controller.generateSpeedupPlot(speedup_strategy)
+fig.show()
+----
+
+[%dynamic%raw%open%hide_code,python]
+----
+fig=controller.generateSpeedupTable(speedup_strategy)
 fig.show()
 ----
 
 === Speedup for partial performances
 
-[%dynamic%raw%open,python]
+[%dynamic%raw%open%hide_code,python]
 ----
-if report.partial:
-    for name, value in report.partialDict.items():
-        if value != []:
-            fig = report.plotPartialSpeedup(key=name)
-            fig.show()
+if model.is_partial:
+    for stage_name in model.stages:
+        speedup_strategy=SpeedupStrategy(dimension="nb_task", stage=stage_name)
+        fig=controller.generateSpeedupPlot(speedup_strategy)
+        fig.show()
 else:
     print("Performances of each part inside an execution step have not been recorded yet.")
 ----
+
+
+++++
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+</style>
+++++
