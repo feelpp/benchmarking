@@ -179,7 +179,6 @@ class AtomicReportRepository(Repository):
             for machine_id, machine_info in app_info.items():
                 outdir = f"{app_id}/{machine_id}"
                 json_filenames = download_handler.downloadFolder(machine_info["girder_folder_id"], output_dir=outdir)
-                possible_use_cases = machine_info["use_cases"]
                 for json_file in json_filenames:
                     json_file = f"{download_handler.download_base_dir}/{outdir}/{json_file}"
                     self.add(
@@ -187,7 +186,6 @@ class AtomicReportRepository(Repository):
                             application_id = app_id,
                             machine_id = machine_id,
                             json_file = json_file,
-                            possible_use_cases = possible_use_cases
                         )
                     )
 
