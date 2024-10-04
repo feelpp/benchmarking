@@ -1,7 +1,8 @@
 import os
+from datetime import datetime
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
-from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig
+from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
 
 
@@ -20,10 +21,11 @@ class CommandBuilder:
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'
 
-    def buildReportFilePath(self):
-        return f'{os.path.join(self.machine_config.reports_base_dir,self.machine_config.hostname,"report-{sessionid}.json")}'
+    def buildReportFilePath(self,executable):
+        current_date = datetime.now().strftime("%Y_%m_%dT%H_%M_%S")
+        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.hostname,f"{current_date}.json"))
 
-    def build_command(self):
+    def build_command(self,executable):
         cmd = [
             'reframe',
             f'-C {self.buildConfigFilePath()}',
@@ -32,7 +34,7 @@ class CommandBuilder:
             f'--system={self.machine_config.hostname}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
-            f'--report-file={self.buildReportFilePath()}',
+            f'--report-file={self.buildReportFilePath(executable)}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             '-r',
         ]
@@ -49,7 +51,8 @@ def main_cli():
 
     for config_filepath in parser.args.config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
-        reframe_cmd = cmd_builder.build_command()
+        app_config = ConfigReader(config_filepath,ConfigFile).config
+        reframe_cmd = cmd_builder.build_command(app_config.executable)
         os.system(reframe_cmd)
 
 
