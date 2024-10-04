@@ -56,7 +56,6 @@ class SpeedupStrategy(MetricStrategy):
             pd.DataFrame, Dataframe having the dimension (nb_cores, mesh size) in index and stage as columns ( including total, optimal and half-optimal speedup)
         """
         pivot = PerformanceStrategy(unit="s",dimensions=[self.dimension],stage=self.stage).calculate(df)
-        pivot["Total"] = pivot.sum(axis=1)
 
         speedup = pd.DataFrame(pivot.loc[pivot.index.min(),:]/pivot)
 
