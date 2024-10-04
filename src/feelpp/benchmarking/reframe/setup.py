@@ -19,7 +19,7 @@ class Setup:
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        raise NotImplementedError
+        pass
 
     def setupBeforeRun(self, rfm_test):
         """ Pure virtual function
@@ -27,7 +27,7 @@ class Setup:
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        raise NotImplementedError
+        pass
 
 class MachineSetup(Setup):
     """ Machine related setup"""
