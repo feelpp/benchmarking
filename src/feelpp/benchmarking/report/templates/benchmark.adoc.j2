@@ -34,10 +34,19 @@
 
 [%dynamic%close%hide_code,python]
 ----
-from feelpp.benchmarking.report.components.controllers.atomicReportController import AtomicReportController
-from feelpp.benchmarking.report.components.models.atomicReportModel import AtomicReportModel
-from feelpp.benchmarking.report.components.views.atomicReportView import AtomicReportView
-from feelpp.benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+try:
+    from feelpp.benchmarking.report.components.controllers.atomicReportController import AtomicReportController
+    from feelpp.benchmarking.report.components.models.atomicReportModel import AtomicReportModel
+    from feelpp.benchmarking.report.components.views.atomicReportView import AtomicReportView
+    from feelpp.benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+except ImportError:
+    import sys
+    sys.path.append("./src/feelpp")
+    from benchmarking.report.components.controllers.atomicReportController import AtomicReportController
+    from benchmarking.report.components.models.atomicReportModel import AtomicReportModel
+    from benchmarking.report.components.views.atomicReportView import AtomicReportView
+    from benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+
 ----
 
 [%dynamic%close%hide_code,python]
