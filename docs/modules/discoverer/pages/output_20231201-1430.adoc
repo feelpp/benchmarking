@@ -13,13 +13,12 @@
 * Total Tests: 6
 * Failures: 0
 * Testcases
-** Feelpp %my_regression_parameter={'nodes': 32, 'tasks_per_node': 128} %inputs=[]
-** Feelpp %my_regression_parameter={'nodes': 16, 'tasks_per_node': 128} %inputs=[]
-** Feelpp %my_regression_parameter={'nodes': 8, 'tasks_per_node': 128} %inputs=[]
-** Feelpp %my_regression_parameter={'nodes': 4, 'tasks_per_node': 128} %inputs=[]
-** Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]
-** Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]
-
+        ** Feelpp %my_regression_parameter={'nodes': 32, 'tasks_per_node': 128} %inputs=[]
+        ** Feelpp %my_regression_parameter={'nodes': 16, 'tasks_per_node': 128} %inputs=[]
+        ** Feelpp %my_regression_parameter={'nodes': 8, 'tasks_per_node': 128} %inputs=[]
+        ** Feelpp %my_regression_parameter={'nodes': 4, 'tasks_per_node': 128} %inputs=[]
+        ** Feelpp %my_regression_parameter={'nodes': 2, 'tasks_per_node': 128} %inputs=[]
+        ** Feelpp %my_regression_parameter={'nodes': 1, 'tasks_per_node': 128} %inputs=[]
 
 [%dynamic%close,python]
 ----
@@ -27,7 +26,7 @@ from feelpp.benchmarking.reframe.report import Report
 report=Report(file_path="docs/modules/discoverer/pages/kub/scenario0/20231201-1430.json")
 ----
 
-=== Performance by Simulation Steps 
+=== Performance by Simulation Steps
 
 [%dynamic%raw%open,python]
 ----
@@ -48,7 +47,19 @@ fig.show()
 .Speedup
 [%dynamic%raw%open,python]
 ----
-print(report.speedup())
 fig=report.plotSpeedup()
 fig.show()
+----
+
+=== Speedup for partial performances
+
+[%dynamic%raw%open,python]
+----
+if report.partial:
+    for name, value in report.partialDict.items():
+        if value != []:
+            fig = report.plotPartialSpeedup(key=name)
+            fig.show()
+else:
+    print("Performances of each part inside an execution step have not been recorded yet.")
 ----
