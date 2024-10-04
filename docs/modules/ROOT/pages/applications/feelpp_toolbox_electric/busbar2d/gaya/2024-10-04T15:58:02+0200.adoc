@@ -3,19 +3,25 @@
 :page-jupyter: true
 :page-tags: toolbox, catalog
 :parent-catalogs: feelpp_toolbox_electric-busbar2d-gaya
-:description: Performance report for Gaya on 2024-10-04T14:05:07+0200
+:description: Performance report for Gaya on 2024-10-04T15:58:33+0200
 :page-illustration: gaya.jpg
 :author: Your Name
-:revdate: 2024-10-04T14:05:07+0200
+:revdate: 2024-10-04T15:58:33+0200
 
 == Test Summary
 
-* Total Tests: 3
+* Total Tests: 9
 * Failures: 0
 * Testcases
-        ** RegressionTest %nb_tasks=16
-        ** RegressionTest %nb_tasks=8
-        ** RegressionTest %nb_tasks=4
+        ** RegressionTest %nb_tasks=16 %hsize=1.5
+        ** RegressionTest %nb_tasks=16 %hsize=0.775
+        ** RegressionTest %nb_tasks=16 %hsize=0.05
+        ** RegressionTest %nb_tasks=8 %hsize=1.5
+        ** RegressionTest %nb_tasks=8 %hsize=0.775
+        ** RegressionTest %nb_tasks=8 %hsize=0.05
+        ** RegressionTest %nb_tasks=4 %hsize=1.5
+        ** RegressionTest %nb_tasks=4 %hsize=0.775
+        ** RegressionTest %nb_tasks=4 %hsize=0.05
 * Environment variables:
 [source,json]
 ----
@@ -42,7 +48,7 @@ except ImportError:
 
 [%dynamic%close%hide_code,python]
 ----
-model=AtomicReportModel("reports/feelpp_toolbox_electric/gaya/2024_10_04T14_04_57.json")
+model=AtomicReportModel("reports/feelpp_toolbox_electric/gaya/2024_10_04T15_58_02.json")
 view=AtomicReportView()
 controller=AtomicReportController(model,view)
 ----
