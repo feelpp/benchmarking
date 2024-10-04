@@ -1,5 +1,5 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel
-from typing import Literal, Union, Annotated
+from typing import Literal, Union, Annotated, Optional
 from annotated_types import Len
 import shutil, os
 
@@ -28,8 +28,24 @@ class Topology(BaseModel):
         return self
 
 class Sequencing(BaseModel):
-    generator:Literal["default"]
+    generator:Literal["default","step","n_steps"]
     sequence:list[int]
+    step: Optional[float|int] = None
+    n_steps: Optional[int] = None
+
+
+    @model_validator(mode="after")
+    def checkGeneratorOptions(self):
+        match self.generator:
+            case "default": #Default discretization parametrization is step = (max - min) // 3
+                self.n_steps = 3
+            case "step":
+                assert self.step is not None
+            case "n_steps":
+                assert self.n_steps is not None
+            case _:
+                raise ValueError("Unkown generator")
+        return self
 
 class NbTasksParameter(BaseParameter):
     topology:Topology
@@ -39,20 +55,30 @@ class HsizeRange(BaseModel):
     min: float
     max: float
 
-class MeshSizesParameter(BaseParameter):
-    hsize_range: HsizeRange
-    sequencing: Sequencing
+class DiscretizationParameter(BaseParameter):
+    hsize_range:Optional[HsizeRange] = None
+    sequencing: Optional[Sequencing] = None
+    meshes_filepaths: Optional[list[str]] = None
 
-class MeshesParameter(BaseParameter):
-    pass
+    @model_validator(mode="after")
+    def checkTypeDataConsistency(self):
+        if self.type == "continuous":
+            assert self.meshes_filepaths is None and self.hsize_range is not None and self.sequencing is not None
+        elif self.type == "discrete":
+            assert self.meshes_filepaths is not None and self.hsize_range is None and self.sequencing is None
+        return self
 
 class SolversParameter(BaseParameter):
-    pass
+    @field_validator('type',mode="before")
+    @classmethod
+    def checkDiscrete(cls, v):
+        """Fails if type!='discrete'"""
+        assert v == "discrete", "Sovlers parameter must be of type discrete"
+        return v
 
 class Parameters(BaseModel):
     nb_tasks: NbTasksParameter
-    mesh_sizes: MeshSizesParameter
-    meshes: MeshesParameter
+    discretization: DiscretizationParameter
     solvers: SolversParameter
 
 class Sanity(BaseModel):

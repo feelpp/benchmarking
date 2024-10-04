@@ -1,4 +1,5 @@
 import reframe.core.runtime as rt
+import numpy as np
 
 class Parameter:
     """ Abstract calss for parameters """
@@ -36,3 +37,27 @@ class NbTasks(Parameter):
                 for i in range(self.param_config.topology.min_nodes+1, nb_nodes+1):
                     nb_task = i * part.processor.num_cpus
                     yield nb_task
+
+class Discretization(Parameter):
+    """ Parameter representing the discretization of the input data (mesh size, different meshes) """
+    def __init__(self, param_config):
+        super().__init__(param_config)
+
+    def parametrize(self):
+        if self.param_config.type == "continuous":
+            match self.param_config.sequencing.generator:
+                case "default" | "n_steps":
+                    step = (self.param_config.hsize_range.max - self.param_config.hsize_range.min) / (self.param_config.sequencing.n_steps - 1)
+                case "step":
+                    step = self.param_config.sequencing.step
+                case _:
+                    raise NotImplementedError
+
+            for current_h in np.arange( self.param_config.hsize_range.min,  self.param_config.hsize_range.max+step, step):
+                if current_h <= self.param_config.hsize_range.max:
+                    yield current_h
+
+        elif self.param_config.type == "discrete":
+            pass
+        else:
+            raise ValueError("[ THIS ERROR SHOULD NEVER BE SEEN ] Param type must be continuous or discrete.")

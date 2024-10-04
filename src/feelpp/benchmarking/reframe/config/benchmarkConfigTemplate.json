@@ -8,7 +8,7 @@
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
         "--electric.scalability-save=1",
-        "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 0.05 }'"
+        "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": {{parameters.discretization.value}} }'"
     ],
     "outputs": [
         {
@@ -63,21 +63,18 @@
                 "sequence": []
             }
         },
-        "mesh_sizes": {
-            "active": false,
+        "discretization": {
+            "active": true,
             "type": "continuous",
             "hsize_range": {
                 "min": 0.05,
                 "max": 1.5
             },
             "sequencing": {
-                "generator": "default",
+                "generator": "n_steps",
+                "n_steps":3,
                 "sequence": []
             }
-        },
-        "meshes": {
-            "active": false,
-            "type": "discrete"
         },
         "solvers": {
             "active": false,

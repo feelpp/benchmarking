@@ -1,12 +1,12 @@
 
-from feelpp.benchmarking.reframe.parameters import NbTasks
+from feelpp.benchmarking.reframe.parameters import NbTasks,Discretization
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineConfig
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
 
 import reframe as rfm
-import os
+import os, re
 
 class Setup:
     """ Abstract class for setup """
@@ -111,6 +111,18 @@ class AppSetup(Setup):
         rfm_test.executable = self.config.executable
         rfm_test.executable_opts = self.config.options
 
+    def updateOptions(self,replace):
+        """ Replaces template values {{stored.like.this}} with their actual values
+        Args:
+            replace (dict): key,value pairs representing the placeholder name and the actual value to replace with
+        """
+
+        # Update options using a list comprehension
+        self.config.options = [
+            re.compile(r"\{\{(.*?)\}\}").sub(lambda match: replace.get(match.group(1).strip(), match.group(0)), option)
+            for option in self.config.options
+        ]
+
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):
     """ Reframe test used to setup the regression test"""
@@ -127,6 +139,9 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         match param_name:
             case "nb_tasks":
                 nb_tasks = parameter(NbTasks(param_data).parametrize())
+            case "discretization":
+                if param_data.type=="continuous":
+                    hsize = parameter(Discretization(param_data).parametrize())
             case _:
                 raise NotImplementedError
 
@@ -146,22 +161,20 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.scalability_handler.cleanupScalabilityFiles()
 
     @run_before('run')
-    def setupBeforeRun(self):
-        """ Sets the necessary pre-run configurations"""
-        self.machine_setup.setupBeforeRun(self)
-        self.app_setup.setupBeforeRun(self)
-
-    @run_before('run')
     def setupParameters(self):
         """ Assings parameters to actual reframe attributes, depending on the test"""
         if hasattr(self,"nb_tasks"):
             self.num_tasks_per_node = min(self.nb_tasks, self.current_partition.processor.num_cpus)
             self.num_cpus_per_task = 1
             self.num_tasks = self.nb_tasks
-        if hasattr(self, "mesh_size"):
-            raise NotImplementedError
-        if hasattr(self, "meshes"):
-            raise NotImplementedError
-        if hasattr(self, "solvers"):
-            raise NotImplementedError
+        if hasattr(self, "hsize"):
+            self.app_setup.updateOptions({
+                "parameters.discretization.value":str(self.hsize)
+            })
 
+
+    @run_before('run')
+    def setupBeforeRun(self):
+        """ Sets the necessary pre-run configurations"""
+        self.machine_setup.setupBeforeRun(self)
+        self.app_setup.setupBeforeRun(self)

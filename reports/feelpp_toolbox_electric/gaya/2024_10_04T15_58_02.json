@@ -1,0 +1,1710 @@
+{
+  "session_info": {
+    "cmdline": "/data/home/cladellash/benchmarking/.venv/bin/reframe -C /data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/config/machineConfigs/gaya.py -c /data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py -S machine_config_path=/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json --system=gaya --exec-policy=serial --prefix=/data/home/cladellash/benchmarking/build/reframe --report-file=/data/home/cladellash/benchmarking/reports/feelpp_toolbox_electric/gaya/2024_10_04T15_58_02.json -v -r",
+    "config_files": [
+      "<builtin>",
+      "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/config/machineConfigs/gaya.py"
+    ],
+    "data_version": "3.1",
+    "hostname": "gaya",
+    "log_files": [
+      "/tmp/rfm-7y2d2oes.log"
+    ],
+    "prefix_output": "/data/home/cladellash/benchmarking/build/reframe/output",
+    "prefix_stage": "/data/home/cladellash/benchmarking/build/reframe/stage",
+    "user": "cladellash",
+    "version": "4.6.2",
+    "workdir": "/data/home/cladellash/benchmarking",
+    "time_start": "2024-10-04T15:58:02+0200",
+    "time_end": "2024-10-04T15:58:33+0200",
+    "time_elapsed": 31.205239057540894,
+    "num_cases": 9,
+    "num_failures": 0
+  },
+  "runs": [
+    {
+      "num_cases": 9,
+      "num_failures": 0,
+      "num_aborted": 0,
+      "num_skipped": 0,
+      "runid": 0,
+      "testcases": [
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=16 %hsize=1.5",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "e8f3c684",
+          "jobid": "54154",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=16 %hsize=1.5",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_e8f3c684",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.084062815
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00075474
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.0812e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000821676
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.6341e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.092770469
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.099112651
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.003701956
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.005280415
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.009123446
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_e8f3c684",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.006308078765869141,
+          "time_performance": 0.01231241226196289,
+          "time_run": 4.188681602478027,
+          "time_sanity": 0.010715246200561523,
+          "time_setup": 0.009215116500854492,
+          "time_total": 4.206667423248291,
+          "unique_name": "RegressionTest_8",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 16,
+            "num_tasks_per_node": 16,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 16,
+            "hsize": 1.5
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=16 %hsize=0.775",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "d83865e9",
+          "jobid": "54155",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=16 %hsize=0.775",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_d83865e9",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.084062815
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00075474
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.0812e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000821676
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.6341e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.092770469
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.099112651
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.003701956
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.005280415
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.009123446
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_d83865e9",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.006209611892700195,
+          "time_performance": 0.01176905632019043,
+          "time_run": 3.9079227447509766,
+          "time_sanity": 0.010889768600463867,
+          "time_setup": 0.008937835693359375,
+          "time_total": 3.92553448677063,
+          "unique_name": "RegressionTest_7",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 16,
+            "num_tasks_per_node": 16,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 16,
+            "hsize": 0.775
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=16 %hsize=0.05",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "e24eca76",
+          "jobid": "54156",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=16 %hsize=0.05",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_e24eca76",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.084062815
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.00075474
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.0812e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000821676
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.6341e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.092770469
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.099112651
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.003701956
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.005280415
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.009123446
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_e24eca76",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.006170749664306641,
+          "time_performance": 0.012133121490478516,
+          "time_run": 4.199021339416504,
+          "time_sanity": 0.011829137802124023,
+          "time_setup": 0.008693456649780273,
+          "time_total": 4.216396331787109,
+          "unique_name": "RegressionTest_6",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 16,
+            "num_tasks_per_node": 16,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 16,
+            "hsize": 0.05
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=8 %hsize=1.5",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "f3c82895",
+          "jobid": "54157",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=8 %hsize=1.5",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_f3c82895",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.064450685
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000587616
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.4901e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000667826
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.6171e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.071986003
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.070745939
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002983413
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004148856
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007238279
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_f3c82895",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.0061948299407958984,
+          "time_performance": 0.013852596282958984,
+          "time_run": 3.0526509284973145,
+          "time_sanity": 0.010546684265136719,
+          "time_setup": 0.008441686630249023,
+          "time_total": 3.069725513458252,
+          "unique_name": "RegressionTest_5",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 8,
+            "num_tasks_per_node": 8,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 8,
+            "hsize": 1.5
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=8 %hsize=0.775",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "59b48e03",
+          "jobid": "54158",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=8 %hsize=0.775",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_59b48e03",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.064450685
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000587616
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.4901e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000667826
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.6171e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.071986003
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.070745939
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002983413
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004148856
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007238279
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_59b48e03",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.00641632080078125,
+          "time_performance": 0.011542320251464844,
+          "time_run": 3.2289624214172363,
+          "time_sanity": 0.010875701904296875,
+          "time_setup": 0.009017229080200195,
+          "time_total": 3.2469425201416016,
+          "unique_name": "RegressionTest_4",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 8,
+            "num_tasks_per_node": 8,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 8,
+            "hsize": 0.775
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=8 %hsize=0.05",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "cac0413b",
+          "jobid": "54159",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=8 %hsize=0.05",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_cac0413b",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.064450685
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000587616
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.4901e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000667826
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.6171e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.071986003
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.070745939
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002983413
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.004148856
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007238279
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_cac0413b",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.006264686584472656,
+          "time_performance": 0.01237177848815918,
+          "time_run": 3.920919418334961,
+          "time_sanity": 0.010914087295532227,
+          "time_setup": 0.008838415145874023,
+          "time_total": 3.9386069774627686,
+          "unique_name": "RegressionTest_3",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 8,
+            "num_tasks_per_node": 8,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 8,
+            "hsize": 0.05
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=4 %hsize=1.5",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "9ef564b6",
+          "jobid": "54160",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=4 %hsize=1.5",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_9ef564b6",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.050526988
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000378943
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.1834e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000626098
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.5619e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.057761408
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.046406004
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002892381
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.0040602
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007048492
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_9ef564b6",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.006224155426025391,
+          "time_performance": 0.012347936630249023,
+          "time_run": 2.5669026374816895,
+          "time_sanity": 0.010532855987548828,
+          "time_setup": 0.008547306060791016,
+          "time_total": 2.5842254161834717,
+          "unique_name": "RegressionTest_2",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 4,
+            "hsize": 1.5
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=4 %hsize=0.775",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "b3cda231",
+          "jobid": "54161",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=4 %hsize=0.775",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_b3cda231",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.050526988
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000378943
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.1834e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000626098
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.5619e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.057761408
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.046406004
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002892381
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.0040602
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007048492
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_b3cda231",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.006143808364868164,
+          "time_performance": 0.01225900650024414,
+          "time_run": 3.0385854244232178,
+          "time_sanity": 0.010489702224731445,
+          "time_setup": 0.009004831314086914,
+          "time_total": 3.056182384490967,
+          "unique_name": "RegressionTest_1",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 4,
+            "hsize": 0.775
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks=4 %hsize=0.05",
+          "environment": "env_gaya",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "9320dee1",
+          "jobid": "54162",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks=4 %hsize=0.05",
+          "nodelist": [
+            "gaya4"
+          ],
+          "outputdir": "/data/home/cladellash/benchmarking/build/reframe/output/gaya/public/env_gaya/RegressionTest_9320dee1",
+          "perfvars": [
+            {
+              "name": "ElectricConstructor_createMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.050526988
+            },
+            {
+              "name": "ElectricConstructor_createExporters",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000378943
+            },
+            {
+              "name": "ElectricConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.1834e-05
+            },
+            {
+              "name": "ElectricConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000626098
+            },
+            {
+              "name": "ElectricConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.5619e-05
+            },
+            {
+              "name": "ElectricConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.057761408
+            },
+            {
+              "name": "ElectricPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.046406004
+            },
+            {
+              "name": "ElectricSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 1.0
+            },
+            {
+              "name": "ElectricSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.002892381
+            },
+            {
+              "name": "ElectricSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.0040602
+            },
+            {
+              "name": "ElectricSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.007048492
+            }
+          ],
+          "prefix": "/data/home/cladellash/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/home/cladellash/benchmarking/build/reframe/stage/gaya/public/env_gaya/RegressionTest_9320dee1",
+          "scheduler": "squeue",
+          "system": "gaya:public",
+          "tags": [
+            "serial"
+          ],
+          "time_compile": 0.0061817169189453125,
+          "time_performance": 0.011505365371704102,
+          "time_run": 2.86790132522583,
+          "time_sanity": 0.0108795166015625,
+          "time_setup": 0.008771181106567383,
+          "time_total": 2.8853073120117188,
+          "unique_name": "RegressionTest_0",
+          "check_vars": {
+            "valid_prog_environs": [
+              "*"
+            ],
+            "valid_systems": [
+              "*"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_electric",
+            "executable_opts": [
+              "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+              "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
+              "--repository.case busbar2d",
+              "--fail-on-unknown-option 1",
+              "--electric.scalability-save=1",
+              "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 1.5 }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "serial"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": false,
+            "local": false,
+            "modules": [],
+            "env_vars": {
+              "OMP_NUM_THREADS": 1
+            },
+            "variables": {
+              "OMP_NUM_THREADS": 1
+            },
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/home/cladellash/benchmarking/src/feelpp/benchmarking/reframe/config/gayaExec.json",
+            "use_case": "busbar2d"
+          },
+          "check_params": {
+            "nb_tasks": 4,
+            "hsize": 0.05
+          }
+        }
+      ]
+    }
+  ],
+  "restored_cases": []
+}
