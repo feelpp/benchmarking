@@ -5,9 +5,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-'feelpp.benchmarking.feelpp_toolboxes.config' = ['*.json','benchConfigs/*.json']
-
 [project]
 name = "benchmarking"
 version = "0.0.1"
@@ -48,7 +45,7 @@ test = ["pytest"]
 
 [project.scripts]
 render-benchmarks = "feelpp.benchmarking.report.__main__:main_cli"
-benchmark-toolbox = "feelpp.benchmarking.feelpp_toolboxes.launchProcess:launchReframe"
+execute-benchmark = "feelpp.benchmarking.reframe.__main__:main_cli"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

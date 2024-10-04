@@ -1,5 +1,5 @@
 import reframe as rfm
-from feelpp.benchmarking.feelpp_toolboxes.reframe.setup import ReframeSetup
+from feelpp.benchmarking.reframe.setup import ReframeSetup
 
 @rfm.simple_test
 class RegressionTest(ReframeSetup):

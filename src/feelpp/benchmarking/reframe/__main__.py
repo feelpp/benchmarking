@@ -1,7 +1,7 @@
 import os
-from feelpp.benchmarking.feelpp_toolboxes.parser import Parser
-from feelpp.benchmarking.feelpp_toolboxes.config.configReader import ConfigReader
-from feelpp.benchmarking.feelpp_toolboxes.config.configSchemas import MachineConfig
+from feelpp.benchmarking.reframe.parser import Parser
+from feelpp.benchmarking.reframe.config.configReader import ConfigReader
+from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig
 from pathlib import Path
 
 
@@ -15,10 +15,10 @@ class CommandBuilder:
         return Path(__file__).resolve().parent.parents[4]
 
     def buildConfigFilePath(self):
-        return f'{self.getRepositoryRootDir() / "src/feelpp/benchmarking/feelpp_toolboxes/config/config-files" / self.machine_config.hostname}.py'
+        return f'{self.getRepositoryRootDir() / "src/feelpp/benchmarking/reframe/config/machineConfigs" / self.machine_config.hostname}.py'
 
     def buildRegressionTestFilePath(self):
-        return f'{self.getRepositoryRootDir() / "src/feelpp/benchmarking/feelpp_toolboxes/reframe/regression.py"}'
+        return f'{self.getRepositoryRootDir() / "src/feelpp/benchmarking/reframe/regression.py"}'
 
     def buildReframePrefixPath(self):
         return f'{self.getRepositoryRootDir() / "build" / "reframe"}'
