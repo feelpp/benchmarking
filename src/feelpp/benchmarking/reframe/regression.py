@@ -3,6 +3,8 @@ from feelpp.benchmarking.reframe.setup import ReframeSetup
 
 @rfm.simple_test
 class RegressionTest(ReframeSetup):
+    """ Class to execute reframe test.
+    It should contain sanity functions and performance variable setting"""
 
 
     @run_before('performance')

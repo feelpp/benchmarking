@@ -59,12 +59,18 @@ class Parser():
             self.listFilesAndExit()
 
     def processArgs(self):
+        """ Pipeline to process arguments. Will:
+            - validate the options
+            - check that directories exist
+            - building a configuration file list
+        """
         self.validateOptions()
         if self.args.dir:
             self.checkDirectoriesExist()
         self.buildConfigList()
 
     def addArgs(self):
+        """ Add the necessary arguments to the parser"""
         options = self.parser.add_argument_group("Options")
         options.add_argument('--exec-config', '-ec', required=True, type=str, metavar='EXEC_CONFIG', help='Path to JSON reframe execution configuration file, specific to a machine.')
         options.add_argument('--config', '-c', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON configuration files \nIn combination with --dir, specify only basenames for selecting JSON files')
@@ -76,6 +82,7 @@ class Parser():
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
 
     def validateOptions(self):
+        """ Checks that required args are present, and that they latch the expected format"""
         if not self.args.config and not self.args.dir:
             print(f'[Error] At least one of --config or --dir option must be specified')
             sys.exit(1)
@@ -91,6 +98,7 @@ class Parser():
 
 
     def checkDirectoriesExist(self):
+        """ Check that directories passed as arguments exist in the filesystem"""
         not_found = []
         for dir in self.args.dir:
             if not os.path.isdir(dir):
@@ -103,6 +111,8 @@ class Parser():
             sys.exit(1)
 
     def buildConfigList(self):
+        """ Find configuration filepaths specified by the --dir argument and build a list acordingly.
+        If --config is passed, then a list with a single config filepath is set"""
         configs = []
         if self.args.dir:
             for dir in self.args.dir:
@@ -121,6 +131,7 @@ class Parser():
         self.args.config = [os.path.abspath(config) for config in configs]
 
     def listFilesAndExit(self):
+        """ Print configuration filepaths and exits"""
         print("\nFollowing configuration files have been found and validated:")
         for config_path in self.args.config:
             print(f"\t> {config_path}")
@@ -128,6 +139,7 @@ class Parser():
         sys.exit(0)
 
     def printArgs(self):
+        """ Prints arguments on the standard output"""
         print("\n[Loaded command-line options]")
         for arg in vars(self.args):
             print(f"\t > {arg + ':' :<{20}} {getattr(self.args, arg)}")

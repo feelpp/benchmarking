@@ -16,11 +16,13 @@ class Topology(BaseModel):
     @field_validator("min_nodes","min_cores_per_node")
     @classmethod
     def checkMinValues(cls, v):
+        """ Checks that min values are greater or eq than 1"""
         assert v >= 1, "Minimal values should be >= 1"
         return v
 
     @model_validator(mode="after")
     def checkMaxValues(self):
+        """ Checks that max values are greater or eq than min values"""
         assert self.max_nodes >= self.min_nodes, "Max node number should be >= min"
         assert self.max_cores_per_node >= self.min_cores_per_node, "Max cores per node should be >= min"
         return self
@@ -82,6 +84,7 @@ class ConfigFile(BaseModel):
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
+        """ Check if executable is found on the system """
         if shutil.which(v) is None:
             raise ValueError(f"Executable not found or not installed: {v}")
         return v
