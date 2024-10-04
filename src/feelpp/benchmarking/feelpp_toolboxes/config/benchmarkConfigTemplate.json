@@ -1,23 +1,24 @@
 {
     "executable": "feelpp_toolbox_electric",
+    "output_directory":"/data/scratch/cladellash/feelppdb/toolboxes/electric",
     "use_case_name":"busbar2d",
     "options": [
         "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
-        "--repository.prefix /data/scratch/cladellash/feelppdb/toolboxes/electric",
-        "--repository.case busbar2d",
+        "--repository.prefix {{output_directory}}",
+        "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
         "--electric.scalability-save=1",
-        "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 0.05}'"
+        "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": 0.05 }'"
     ],
     "outputs": [
         {
-            "instance_path": "/data/scratch/cladellash/feelppdb/toolboxes/electric/busbar2d/",
+            "instance_path": "{{output_directory}}/{{use_case_name}}/",
             "relative_filepath": "electric.measures/values.csv",
             "format": "csv"
         }
     ],
     "scalability": {
-        "directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric/busbar2d/",
+        "directory": "{{output_directory}}/{{use_case_name}}/",
         "stages": [
             {
                 "name": "ElectricConstructor",
