@@ -73,6 +73,12 @@ class AppOutput(BaseModel):
     relative_filepath: str
     format: str
 
+class Upload(BaseModel):
+    active:bool
+    platform:Literal["girder","ckan"]
+    folder_id:str | int
+
+
 class ConfigFile(BaseModel):
     executable: str
     use_case_name: str
@@ -80,6 +86,7 @@ class ConfigFile(BaseModel):
     outputs: list[AppOutput]
     scalability: Scalability
     sanity: Sanity
+    upload: Upload
     parameters: Parameters
 
     @field_validator('executable', mode="before")

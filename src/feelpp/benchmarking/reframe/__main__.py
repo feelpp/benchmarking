@@ -4,6 +4,8 @@ from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
+from feelpp.benchmarking.report.handlers import GirderHandler
+
 
 
 class CommandBuilder:
@@ -54,6 +56,19 @@ def main_cli():
         app_config = ConfigReader(config_filepath,ConfigFile).config
         reframe_cmd = cmd_builder.build_command(app_config.executable)
         os.system(reframe_cmd)
+
+        #============ UPLOAD REPORTS TO GIRDER ================#
+        if app_config.upload.active:
+            match app_config.upload.platform:
+                case "girder":
+                    girder_handler = GirderHandler(download_base_dir=None)
+                    girder_handler.uploadFileToFolder(
+                        cmd_builder.buildReportFilePath(app_config.executable),
+                        app_config.upload.folder_id
+                    )
+                case _:
+                    raise NotImplementedError
+        #======================================================#
 
 
 if __name__ == "__main__":
