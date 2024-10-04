@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 import plotly.express as px
 from numpy import float64 as float64
+from pandas import MultiIndex
 
 class AtomicReportView:
     """ View component for the Atomic Report, it contains all figure generation related code """
@@ -14,21 +15,46 @@ class AtomicReportView:
         Returns:
             go.Figure : Figure with multiple scatter plots
         """
-        return go.Figure(
-            data = [
-                go.Scatter(
-                    x = df.index,
-                    y = df.loc[:,column],
-                    name = column,
+
+        if isinstance(df.index,MultiIndex):
+            if len(df.index.names)>2:
+                print("WARNING: Too many dimensions, only two dimensions will be plotted.")
+
+            colors = px.colors.qualitative.Alphabet
+
+            fig = go.Figure()
+            for i,col in enumerate(df.columns):
+                for j,dim in enumerate(df.index.get_level_values(1).unique().values):
+                    dim_name = df.index.names[1]
+                    partial_df = df.xs(dim,level=dim_name,axis=0)
+                    fig.add_trace(
+                        go.Scatter(
+                            x = partial_df.index,
+                            y = partial_df.loc[:,col],
+                            name=f"{col}",
+                            line=dict(color=colors[i]),
+                            showlegend=j==0,
+                            text=f"{dim_name} = {dim}",
+                            legendgroup=col,
+                        )
+                    )
+            return fig
+        else:
+            return go.Figure(
+                data = [
+                    go.Scatter(
+                        x = df.index,
+                        y = df.loc[:,column],
+                        name = column,
+                    )
+                    for column in df.columns
+                ],
+                layout=go.Layout(
+                    title=title,
+                    xaxis=dict( title = df.index.name ),
+                    yaxis=dict( title = yaxis_label )
                 )
-                for column in df.columns
-            ],
-            layout=go.Layout(
-                title=title,
-                xaxis=dict( title = df.index.name ),
-                yaxis=dict( title = yaxis_label )
             )
-        )
 
     def plotTable(self,df, precision = 3):
         """ Create a plotly table with the same structure as the input dataframe

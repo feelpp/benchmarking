@@ -39,8 +39,6 @@ class PerformanceStrategy(MetricStrategy):
             pivot = pd.pivot_table(df[(df["unit"] == self.unit)&(df["stage_name"] == self.stage)], values="value", index=self.dimensions,columns="partial_name",aggfunc="sum")
             pivot.name = self.stage
 
-        if isinstance(pivot.index, pd.MultiIndex):
-            raise NotImplementedError
         return pivot
 
 class SpeedupStrategy(MetricStrategy):
