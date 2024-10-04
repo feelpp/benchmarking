@@ -62,6 +62,7 @@ class AppSetup(Setup):
 class ReframeSetup(rfm.RunOnlyRegressionTest):
     machine_config_path = variable(str)
 
+    #TODO: Find a way to avoid env variables
     app_setup = AppSetup(str(os.environ.get("APP_CONFIG_FILEPATH")))
 
     use_case = variable(str,value=app_setup.config.use_case_name)
