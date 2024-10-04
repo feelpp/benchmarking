@@ -1,0 +1,133 @@
+{
+    "type": "object",
+    "properties": {
+        "Reframe": {
+            "type": "object",
+            "properties": {
+                "hostConfig": { "type": "string" },
+                "reportPrefix": { "type": "string" },
+                "reportSuffix": { "type": "string" },
+                "Directories": {
+                    "type": "object",
+                    "properties": {
+                        "prefix": { "type": "string" },
+                        "stage": { "type": "string" },
+                        "output": { "type": "string" }
+                    },
+                    "required": ["prefix"]
+                },
+                "Mode": {
+                    "type": "object",
+                    "properties": {
+                        "type": { "type": "string" },
+                        "exclusiveAccess": { "type": "boolean" },
+                        "topology": {
+                            "type": "object",
+                            "properties": {
+                                "minPhysicalCpuPerNode": { "type": "integer" },
+                                "maxPhysicalCpuPerNode": { "type": "integer" },
+                                "minNodeNumber": { "type": "integer" },
+                                "maxNodeNumber": { "type": "integer" }
+                            },
+                            "required": [
+                                "minPhysicalCpuPerNode",
+                                "maxPhysicalCpuPerNode",
+                                "minNodeNumber",
+                                "maxNodeNumber"
+                            ]
+                        },
+                        "sequencing": {
+                            "type": "object",
+                            "properties": {
+                                "generator": { "type": "string" },
+                                "sequence": {
+                                    "type": "array",
+                                    "items": { "type": "string" }
+                                }
+                            },
+                            "required": ["generator", "sequence"]
+                        }
+                    },
+                    "required": ["type", "exclusiveAccess", "topology", "sequencing"]
+                }
+            },
+            "required": ["hostConfig", "reportPrefix", "reportSuffix", "Directories", "Mode"]
+        },
+        "Feelpp": {
+            "type": "object",
+            "properties": {
+                "toolbox": { "type": "string" },
+                "CommandLine": {
+                    "type": "object",
+                    "properties": {
+                        "config-files": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                        },
+                        "repository": {
+                            "type": "object",
+                            "properties": {
+                                "prefix": { "type": "string" },
+                                "case": { "type": "string" }
+                            },
+                            "required": ["prefix", "case"]
+                        },
+                        "case": {
+                            "type": "object",
+                            "properties": {
+                                "dimension": { "type": "string" },
+                                "discretization": { "type": "string" }
+                            }
+                        },
+                        "jsonPatch": {
+                            "oneOf": [
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "op": { "type": "string" },
+                                            "path": { "type": "string" },
+                                            "value": {
+                                                "oneOf": [
+                                                    { "type": "string" },
+                                                    { "type": "number" }
+                                                ]
+                                            }
+                                        },
+                                        "required": ["op", "path", "value"]
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "op": { "type": "string" },
+                                        "path": { "type": "string" },
+                                        "value": {
+                                            "oneOf": [
+                                                { "type": "string" },
+                                                { "type": "number" }
+                                            ]
+                                        }
+                                    },
+                                    "required": ["op", "path", "value"]
+                                }
+                            ]
+                        }
+                    },
+                    "required": ["config-files", "repository", "jsonPatch"]
+                }
+            },
+            "required": ["toolbox", "CommandLine"]
+        },
+        "Reporter": {
+            "type": "object",
+            "properties": {
+                "active": { "type": "boolean" },
+                "scaling": { "type": "string" }
+            },
+            "required": ["active", "scaling"]
+        }
+    },
+    "required": ["Reframe", "Feelpp", "Reporter"]
+}
