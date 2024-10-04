@@ -1,10 +1,11 @@
 :feelpp: Feel++
 :cpp: C++
-:project: benchmarking 
+:project: benchmarking
+:reframe: ReFrame
 
-= {feelpp} Template Project 
+= {feelpp} Template Project
 Christophe Prud'homme <https://github.com/prudhomm[@prudhomm]>
-v2: 
+v2:
 
 image:https://github.com/feelpp/benchmarking/workflows/CI/badge.svg[CI]
 
@@ -28,7 +29,7 @@ WARNING: the script `rename.sh` will rename the project however some url might b
 
 == Updating the {project} version
 
-The version of the project is defined in the files `CMakeLists.txt`, `docs/antora.yml` and `docs/package.json`. 
+The version of the project is defined in the files `CMakeLists.txt`, `docs/antora.yml` and `docs/package.json`.
 You need to update with the same version in all files.
 
 == Release process
@@ -36,3 +37,36 @@ You need to update with the same version in all files.
 - [x] update the version in CMakeLists.txt
 - [x] update the version in docs/antora.yml
 - [x] commit the changes with the message "Release vx.y.z". At this point the CI will generate the docker image and push it to docker hub
+
+== Running the benchmark
+
+=== Overview
+
+This repository uses link:https://reframe-hpc.readthedocs.io/en/stable/[ReFrame] for launching multiple tests parametrized by the number of CPU. Every system needs a configuration-file for architecture and environment description. This file contains for example the number of accessible nodes and CPU.
+
+For launching a case, it has to be configured through a JSON file. This file is needed for case-specific set up of both {reframe} and {feelpp}. Every configuration-file used for this benchmarking platform are available in `benchConfigs/`.
+
+{reframe} will extract and store the result in JSON format. The results will then be computed for generating an output file in _adoc_ format containing information about the run session, and also plots.
+
+_Note: Before continuing, make sure to have Feel++ installed on the system on which you want to run the test. If it's not the case, please refer to this link:https://docs.feelpp.org/user/latest/install/index.html[installation guide]._
+
+=== Step-by-step guide
+
+* Clone the repository on the machine 
+```bash
+git clone https://github.com/feelpp/benchmarking.git
+```
+
+* Add a system configuration-file in `src/feelpp/benchmarking/reframe/config-files/` for your machine. Refer to link:https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#system-configuration[this] for exploring the possibilities.
+
+* Configure the case (CPU number, {feelpp} config-files, paths, ...) with a JSON file. A template is available here: `src/feelpp/benchmarking/benchConfigTemplate.json`
+
+* Launch the test by specifying hostname, path to the {feelpp} root output directory and path to the case configuration. It is also possible to launch multiple JSON files inside a directory with the `--dir` option.
+```bash
+python launchProcess.py hostname --feelppdb your_path --config config1.json config2.json
+```
+* Generate _.adoc_ output files for the documentation site. `render.py` will recursively look for {reframe} run-reports inside `docs/modules/`
+```bash
+python docs/modules/render.py
+```
+* Push and merge into the main branch of the repository for updating the documentation site
