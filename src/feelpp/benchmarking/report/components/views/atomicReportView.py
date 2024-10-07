@@ -5,8 +5,8 @@ from pandas import MultiIndex
 
 class AtomicReportView:
     """ View component for the Atomic Report, it contains all figure generation related code """
-    def plotScatters(self,df, title, yaxis_label):
-        """ Create a plot with multiple lines
+    def plotScatters(self, df, title, yaxis_label):
+        """ Create a plot with multiple lines. If df is multiindex, sliders are added to animate the figure.
         Args:
             df (pd.DataFrame): Dataframe to create plot from, index goes to x axis and columns are line plots.
                                 Values go on y-axis. The x-axis label is inferred from the dataframe's index name.
@@ -20,25 +20,54 @@ class AtomicReportView:
             if len(df.index.names)>2:
                 print("WARNING: Too many dimensions, only two dimensions will be plotted.")
 
-            colors = px.colors.qualitative.Alphabet
+            frames = []
 
-            fig = go.Figure()
-            for i,col in enumerate(df.columns):
-                for j,dim in enumerate(df.index.get_level_values(1).unique().values):
-                    dim_name = df.index.names[1]
-                    partial_df = df.xs(dim,level=dim_name,axis=0)
-                    fig.add_trace(
-                        go.Scatter(
-                            x = partial_df.index,
-                            y = partial_df.loc[:,col],
-                            name=f"{col}",
-                            line=dict(color=colors[i]),
-                            showlegend=j==0,
-                            text=f"{dim_name} = {dim}",
-                            legendgroup=col,
+            anim_dimension = 1
+            anim_dimension_values = df.index.get_level_values(anim_dimension).unique().values
+            anim_dimension_name = df.index.names[anim_dimension]
+
+            ranges=[]
+            range_epsilon= 0.01
+
+            for j,dim in enumerate(anim_dimension_values):
+                partial_df = df.xs(dim,level=anim_dimension_name,axis=0)
+                frames.append([
+                    go.Scatter(
+                        x = partial_df.index,
+                        y = partial_df.loc[:,col],
+                        name=col
+                    )
+                    for c,col in enumerate(partial_df.columns)
+                ])
+                ranges.append([
+                    partial_df.min().min() - partial_df.min().min()*range_epsilon,
+                    partial_df.max().max() + partial_df.min().min()*range_epsilon
+                ])
+
+            fig = go.Figure(
+                data = frames[0],
+                frames = [
+                    go.Frame(
+                        data = f,
+                        name=f"frame_{i}",
+                        layout=dict(
+                            yaxis=dict(range = ranges[i])
                         )
                     )
+                    for i,f in enumerate(frames)],
+                layout=go.Layout(
+                    yaxis=dict(range = ranges[0],title=yaxis_label),
+                    xaxis=dict(title=partial_df.index.name),
+                    title=title,
+                    sliders=[dict(
+                        active=0, currentvalue=dict(prefix=f"{anim_dimension_name}= "), transition = dict(duration= 0),
+                        steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
+                    )]
+                )
+            )
+
             return fig
+
         else:
             return go.Figure(
                 data = [

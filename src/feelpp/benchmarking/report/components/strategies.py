@@ -21,6 +21,7 @@ class PerformanceStrategy(MetricStrategy):
             stage (str): Name of the stage to filter. If None, the performance by stage is computed. Defaults to None.
         """
         self.unit = unit
+        assert 1 <= len(dimensions) <=2, "More than two dimensions are not supported"
         self.dimensions = dimensions
         self.stage = stage
 
