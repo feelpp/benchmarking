@@ -69,6 +69,7 @@ class SpeedupStrategy(MetricStrategy):
 
         speedup["Optimal"] = speedup.index / speedup.index.min()
         speedup["HalfOptimal"] = speedup.index / (2*speedup.index.min())
+        speedup.loc[speedup.index.min(),"HalfOptimal"] = 1
 
         speedup.name = self.stage
 
