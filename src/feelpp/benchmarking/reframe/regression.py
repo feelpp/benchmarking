@@ -3,6 +3,8 @@ from feelpp.benchmarking.reframe.setup import ReframeSetup
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
 
+import shutil
+
 @rfm.simple_test
 class RegressionTest(ReframeSetup):
     """ Class to execute reframe test.
@@ -24,3 +26,8 @@ class RegressionTest(ReframeSetup):
             and
             self.validation_handler.check_errors(self.stdout)
         )
+
+    @run_after('cleanup')
+    def cleanupApplicationFiles(self):
+        #TODO: CAN BE DANGEROUS ?
+        shutil.rmtree(self.app_setup.config.scalability.directory)
