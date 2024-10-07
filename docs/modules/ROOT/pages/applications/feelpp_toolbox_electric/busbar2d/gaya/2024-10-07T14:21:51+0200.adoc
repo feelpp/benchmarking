@@ -1,0 +1,119 @@
+= Reframe Report for Feel++ electric toolbox on Gaya
+:page-plotly: true
+:page-jupyter: true
+:page-tags: toolbox, catalog
+:parent-catalogs: feelpp_toolbox_electric-busbar2d-gaya
+:description: Performance report for Gaya on 2024-10-07T14:24:29+0200
+:page-illustration: gaya.jpg
+:author: Your Name
+:revdate: 2024-10-07T14:24:29+0200
+
+== Test Summary
+
+* Total Tests: 15
+* Failures: 0
+* Testcases
+        ** RegressionTest %nb_tasks=128 %hsize=0.2
+        ** RegressionTest %nb_tasks=128 %hsize=0.125
+        ** RegressionTest %nb_tasks=128 %hsize=0.05
+        ** RegressionTest %nb_tasks=64 %hsize=0.2
+        ** RegressionTest %nb_tasks=64 %hsize=0.125
+        ** RegressionTest %nb_tasks=64 %hsize=0.05
+        ** RegressionTest %nb_tasks=32 %hsize=0.2
+        ** RegressionTest %nb_tasks=32 %hsize=0.125
+        ** RegressionTest %nb_tasks=32 %hsize=0.05
+        ** RegressionTest %nb_tasks=16 %hsize=0.2
+        ** RegressionTest %nb_tasks=16 %hsize=0.125
+        ** RegressionTest %nb_tasks=16 %hsize=0.05
+        ** RegressionTest %nb_tasks=8 %hsize=0.2
+        ** RegressionTest %nb_tasks=8 %hsize=0.125
+        ** RegressionTest %nb_tasks=8 %hsize=0.05
+* Environment variables:
+[source,json]
+----
+{'OMP_NUM_THREADS': 1}
+----
+
+
+[%dynamic%close%hide_code,python]
+----
+try:
+    from feelpp.benchmarking.report.components.controllers.atomicReportController import AtomicReportController
+    from feelpp.benchmarking.report.components.models.atomicReportModel import AtomicReportModel
+    from feelpp.benchmarking.report.components.views.atomicReportView import AtomicReportView
+    from feelpp.benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+except ImportError:
+    import sys
+    sys.path.append("./src/feelpp")
+    from benchmarking.report.components.controllers.atomicReportController import AtomicReportController
+    from benchmarking.report.components.models.atomicReportModel import AtomicReportModel
+    from benchmarking.report.components.views.atomicReportView import AtomicReportView
+    from benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+
+----
+
+[%dynamic%close%hide_code,python]
+----
+model=AtomicReportModel("reports/feelpp_toolbox_electric/gaya/2024_10_07T14_21_50.json")
+view=AtomicReportView()
+controller=AtomicReportController(model,view)
+----
+
+=== Performance by Simulation Steps
+
+[%dynamic%hide_code,python]
+----
+performance_strategy=PerformanceStrategy("s",["nb_tasks","hsize"])
+----
+
+.Performance
+[%dynamic%open%hide_code,python]
+----
+fig=controller.generatePerformancePlot(performance_strategy)
+fig.show()
+----
+
+[%dynamic%open%hide_code%raw,python]
+----
+fig=controller.generatePerformanceTable(performance_strategy)
+fig.show()
+----
+
+=== Speedup of the simulation Steps
+
+[%dynamic%hide_code,python]
+----
+speedup_strategy=SpeedupStrategy("nb_tasks")
+----
+
+.Speedup
+[%dynamic%raw%open%hide_code,python]
+----
+fig=controller.generateSpeedupPlot(speedup_strategy)
+fig.show()
+----
+
+[%dynamic%raw%open%hide_code,python]
+----
+fig=controller.generateSpeedupTable(speedup_strategy)
+fig.show()
+----
+
+=== Speedup for partial performances
+
+[%dynamic%raw%open%hide_code,python]
+----
+for stage_name in model.stages:
+    speedup_strategy=SpeedupStrategy(dimension="nb_tasks", stage=stage_name)
+    fig=controller.generateSpeedupPlot(speedup_strategy)
+    fig.show()
+----
+
+
+++++
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+</style>
+++++
