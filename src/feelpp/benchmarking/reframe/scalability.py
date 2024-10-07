@@ -8,12 +8,6 @@ class ScalabilityHandler:
         self.stages =  scalability_config.stages
         self.filepaths = {k.name: os.path.join(self.directory,k.file) for k in self.stages}
 
-    def cleanupScalabilityFiles(self):
-        """ Deletes scalability files based on the provided filepaths. Should be run before the init step of a reframe test """
-        for filepath in self.filepaths.values():
-            if os.path.exists(filepath):
-                os.remove(filepath)
-
     def getPerformanceVariables(self,index):
         """ Opens and parses the performance variable values depending on the config setup.
         Args:
