@@ -1,5 +1,5 @@
 
-from feelpp.benchmarking.reframe.parameters import NbTasks,Discretization
+from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineConfig
 
@@ -160,18 +160,13 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     use_case = variable(str,value=app_setup.config.use_case_name)
 
-    for param_name, param_data in app_setup.config.parameters:
-        if not param_data.active:
-            continue
-        match param_name:
-            case "nb_tasks":
-                nb_tasks = parameter(NbTasks(param_data).parametrize())
-            case "discretization":
-                if param_data.type=="continuous":
-                    hsize = parameter(Discretization(param_data).parametrize())
-            case _:
-                raise NotImplementedError
+    parameters = []
 
+    for param_config in app_setup.config.parameters:
+        if param_config.active:
+            parameters.append(param_config.name)
+            param_values = list(ParameterFactory.create(param_config).parametrize())
+            exec(f"{param_config.name}=parameter({param_values})")
 
     @run_after('init')
     def initSetups(self):
@@ -191,15 +186,16 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def setupParameters(self):
-        """ Assings parameters to actual reframe attributes, depending on the test"""
-        if hasattr(self,"nb_tasks"):
-            self.num_tasks_per_node = min(self.nb_tasks, self.current_partition.processor.num_cpus)
-            self.num_cpus_per_task = 1
-            self.num_tasks = self.nb_tasks
-        if hasattr(self, "hsize"):
-            self.app_setup.updateConfig({ "parameters.discretization.value":str(self.hsize) })
+        for param_name in self.parameters:
+            value = getattr(self,param_name)
+            if param_name == "nb_tasks":
+                self.num_tasks_per_node = min(value, self.current_partition.processor.num_cpus)
+                self.num_cpus_per_task = 1
+                self.num_tasks = value
+            else:
+                self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
 
-        self.app_setup.updateConfig({ "instance": str(self.hashcode) })
+        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
 
 
     @run_before('run')

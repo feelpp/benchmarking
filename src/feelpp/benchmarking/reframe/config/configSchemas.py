@@ -3,11 +3,11 @@ from typing import Literal, Union, Annotated, Optional
 from annotated_types import Len
 import shutil, os
 
-class BaseParameter(BaseModel):
-    active: bool
-    type: Literal["continuous","discrete"]
+class BaseRange(BaseModel):
+    generator: Literal["double","linear","random","ordered"]
+    mode: Literal["cores","step","list"]
 
-class Topology(BaseModel):
+class CoresRange(BaseRange):
     min_cores_per_node: int
     max_cores_per_node: int
     min_nodes: int
@@ -27,59 +27,40 @@ class Topology(BaseModel):
         assert self.max_cores_per_node >= self.min_cores_per_node, "Max cores per node should be >= min"
         return self
 
-class Sequencing(BaseModel):
-    generator:Literal["default","step","n_steps"]
-    sequence:list[int]
+    @field_validator("mode",mode="after")
+    @classmethod
+    def checkMode(cls,v):
+        assert v == "cores", "Incorrect mode for Cores range"
+        return v
+
+class StepRange(BaseRange):
+    min: float | int
+    max: float | int
+
     step: Optional[float|int] = None
     n_steps: Optional[int] = None
 
-
-    @model_validator(mode="after")
-    def checkGeneratorOptions(self):
-        match self.generator:
-            case "default": #Default discretization parametrization is step = (max - min) // 3
-                self.n_steps = 3
-            case "step":
-                assert self.step is not None
-            case "n_steps":
-                assert self.n_steps is not None
-            case _:
-                raise ValueError("Unkown generator")
-        return self
-
-class NbTasksParameter(BaseParameter):
-    topology:Topology
-    sequencing: Sequencing
-
-class HsizeRange(BaseModel):
-    min: float
-    max: float
-
-class DiscretizationParameter(BaseParameter):
-    hsize_range:Optional[HsizeRange] = None
-    sequencing: Optional[Sequencing] = None
-    meshes_filepaths: Optional[list[str]] = None
-
-    @model_validator(mode="after")
-    def checkTypeDataConsistency(self):
-        if self.type == "continuous":
-            assert self.meshes_filepaths is None and self.hsize_range is not None and self.sequencing is not None
-        elif self.type == "discrete":
-            assert self.meshes_filepaths is not None and self.hsize_range is None and self.sequencing is None
-        return self
-
-class SolversParameter(BaseParameter):
-    @field_validator('type',mode="before")
+    @field_validator("mode",mode="after")
     @classmethod
-    def checkDiscrete(cls, v):
-        """Fails if type!='discrete'"""
-        assert v == "discrete", "Sovlers parameter must be of type discrete"
+    def checkMode(cls,v):
+        assert v == "step", "Incorrect mode for Step range"
         return v
 
-class Parameters(BaseModel):
-    nb_tasks: NbTasksParameter
-    discretization: DiscretizationParameter
-    solvers: SolversParameter
+class ListRange(BaseRange):
+    sequence : Annotated[list[str | float | int], Len(min_length=1)]
+
+    @field_validator("mode",mode="after")
+    @classmethod
+    def checkMode(cls,v):
+        assert v == "list", "Incorrect mode for List range"
+        return v
+
+
+class Parameter(BaseModel):
+    name:str
+    active:bool
+    range: Union[CoresRange,StepRange,ListRange]
+
 
 class Sanity(BaseModel):
     success:list[str]
@@ -113,7 +94,7 @@ class ConfigFile(BaseModel):
     scalability: Scalability
     sanity: Sanity
     upload: Upload
-    parameters: Parameters
+    parameters: list[Parameter]
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
