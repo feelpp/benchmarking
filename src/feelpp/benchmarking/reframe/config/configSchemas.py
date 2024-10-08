@@ -92,7 +92,8 @@ class PlotAxis(BaseModel):
 
 class Plot(BaseModel):
     title:str
-    type:Literal["scatter","speedup"]
+    plot_types:list[Literal["scatter","table"]]
+    transformation:Literal["performance","speedup"]
     variables:list[str]
     names:list[str]
     xaxis:PlotAxis
@@ -103,7 +104,8 @@ class Plot(BaseModel):
     @field_validator("xaxis","animation_axis", mode="after")
     def checExecutableInstalled(cls, v):
         """ Checks that the parameter field is specified for xaxis and animation field"""
-        assert v.parameter is not None
+        if v:
+            assert v.parameter is not None
         return v
 
 
@@ -131,10 +133,11 @@ class ConfigFile(BaseModel):
         """ Checks that the plot axis parameter field corresponds to existing parameters"""
         for plot in self.plots:
             assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
-            assert plot.animation_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.animation_axis.parameter}"
+            if plot.animation_axis:
+                assert plot.animation_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.animation_axis.parameter}"
             if plot.yaxis.parameter:
                 assert plot.animation_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
-
+        return self
 
 class MachineConfig(BaseModel):
     hostname:str

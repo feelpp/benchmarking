@@ -53,8 +53,8 @@
             "active": true,
             "range": {
                 "mode": "cores",
-                "min_cores_per_node": 8,
-                "max_cores_per_node": 32,
+                "min_cores_per_node": 1,
+                "max_cores_per_node": 16,
                 "min_nodes": 1,
                 "max_nodes": 1,
                 "generator": "double"
@@ -72,10 +72,12 @@
             }
         }
     ],
-    "plots": [
+    "plots":
+    [
         {
             "title": "ElectricConstrucor step performance",
-            "type": "scatter",
+            "plot_types":[ "scatter","table"],
+            "transformation":"performance",
             "variables": [
                 "ElectricConstructor_createMesh",
                 "ElectricConstructor_createExporters",
@@ -96,17 +98,14 @@
                 "parameter": "nb_tasks",
                 "label": "Number of tasks"
             },
-            "animation_axis": {
-                "parameter": "hsize",
-                "label": "h size"
-            },
             "yaxis": {
                 "label": "execution time (s)"
             }
         },
         {
             "title": "Electric Post Processing step performance",
-            "type": "scatter",
+            "plot_types":["scatter"],
+            "transformation":"performance",
             "variables": [
                 "ElectricPostProcessing_exportResults"
             ],
@@ -127,7 +126,8 @@
         },
         {
             "title": "Electric Solve step performance",
-            "type": "scatter",
+            "plot_types":["scatter"],
+            "transformation":"performance",
             "variables": [
                 "ElectricSolve_algebraic-assembly",
                 "ElectricSolve_algebraic-solve",
@@ -152,7 +152,8 @@
         },
         {
             "title": "Speedup by step",
-            "type": "speedup",
+            "plot_types":["scatter"],
+            "transformation":"speedup",
             "variables": [
                 "ElectricConstructor_init",
                 "ElectricPostProcessing_exportResults",
