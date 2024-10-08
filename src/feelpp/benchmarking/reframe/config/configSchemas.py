@@ -86,6 +86,27 @@ class Upload(BaseModel):
     folder_id:str | int
 
 
+class PlotAxis(BaseModel):
+    parameter: Optional[str] = None
+    label:str
+
+class Plot(BaseModel):
+    title:str
+    type:Literal["scatter","speedup"]
+    variables:list[str]
+    names:list[str]
+    xaxis:PlotAxis
+    animation_axis:Optional[PlotAxis] = None
+    yaxis:PlotAxis
+
+
+    @field_validator("xaxis","animation_axis", mode="after")
+    def checExecutableInstalled(cls, v):
+        """ Checks that the parameter field is specified for xaxis and animation field"""
+        assert v.parameter is not None
+        return v
+
+
 class ConfigFile(BaseModel):
     executable: str
     use_case_name: str
@@ -95,6 +116,7 @@ class ConfigFile(BaseModel):
     sanity: Sanity
     upload: Upload
     parameters: list[Parameter]
+    plots: list[Plot]
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
@@ -102,6 +124,16 @@ class ConfigFile(BaseModel):
         if shutil.which(v) is None:
             raise ValueError(f"Executable not found or not installed: {v}")
         return v
+
+
+    @model_validator(mode="after")
+    def checkPlotAxisParameters(self):
+        """ Checks that the plot axis parameter field corresponds to existing parameters"""
+        for plot in self.plots:
+            assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
+            assert plot.animation_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.animation_axis.parameter}"
+            if plot.yaxis.parameter:
+                assert plot.animation_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
 
 
 class MachineConfig(BaseModel):
