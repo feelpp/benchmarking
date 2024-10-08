@@ -20,9 +20,6 @@ class GirderHandler(DownloadHandler):
         super().__init__(download_base_dir = download_base_dir)
         self.base_url = "https://girder.math.unistra.fr/api/v1"
         self.initClient()
-        self.client.addItemUploadCallback(self.itemCallback)
-
-        self.item_id = None
 
     def initClient(self):
         """ Initialize the Girder client """
@@ -45,29 +42,15 @@ class GirderHandler(DownloadHandler):
 
         return os.listdir(f"{self.download_base_dir}/{output_dir}")
 
-    def itemCallback(self,item,filepath):
-        """ Callback to return the id of a created item"""
-        self.item_id = item['_id']
-
-    def uploadFileToFolder(self, input_filepath, parent_id):
+    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True):
         """ Upload a local file to an existing folder/item in Girder
         Args:
-            input_filepath: The path of the file to upload
+            file_pattern: The file pattern of the files to upload
             parent_id (str): The ID of the Girder folder/item to upload to
             parent_type (str) : "folder" or "item". Defaults to "folder"
+            leaf_folder_as_items (bool): Whether to upload leaf folders as items or files
         """
-        self.client.upload(filePattern=input_filepath, parentId=parent_id, parentType="folder")
-
-    def uploadStringToItem(self, content, name, parent_id, parent_type):
-        """ Writes a string into a temporary file,
-            uploads the file to an existing folder/item in Girder,
-            deletes the local file
-        Args:
-            content(str): The content to upload
-            name: the file name to upload as
-            parent_id (str): The ID of the Girder tem to upload to
-        """
-        self.client.uploadFile(parentId = parent_id,stream=io.StringIO(content),name=name,size=len(content),parentType=parent_type)
+        self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items)
 
 
 class ConfigHandler:

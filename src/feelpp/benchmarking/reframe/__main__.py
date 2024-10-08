@@ -63,18 +63,19 @@ def main_cli():
                 case "girder":
                     girder_handler = GirderHandler(download_base_dir=None)
                     rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)
+                    rfm_report_dir = rfm_report_filepath.replace(".json","")
+
+                    os.mkdir(rfm_report_dir)
+                    os.rename(rfm_report_filepath,os.path.join(rfm_report_dir,"reframe_report.json"))
+
+                    with open(os.path.join(rfm_report_dir,"plots.json"),"w") as f:
+                        f.write(json.dumps([p.model_dump() for p in app_config.plots]))
+
 
                     #Upload reframe report
-                    girder_handler.uploadFileToFolder(
-                        rfm_report_filepath,
+                    girder_handler.upload(
+                        rfm_report_dir,
                         app_config.upload.folder_id
-                    )
-                    #Upload plots data
-                    girder_handler.uploadStringToItem(
-                        json.dumps([p.model_dump() for p in app_config.plots]),
-                        rfm_report_filepath.split("/")[-1].replace(".json","_plots.json"),
-                        girder_handler.item_id, #Can cause bugs because of async?
-                        parent_type="item"
                     )
                 case _:
                     raise NotImplementedError
