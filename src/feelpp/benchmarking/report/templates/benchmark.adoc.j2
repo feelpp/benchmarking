@@ -35,74 +35,29 @@
 [%dynamic%close%hide_code,python]
 ----
 try:
-    from feelpp.benchmarking.report.components.controllers.atomicReportController import AtomicReportController
-    from feelpp.benchmarking.report.components.models.atomicReportModel import AtomicReportModel
-    from feelpp.benchmarking.report.components.views.atomicReportView import AtomicReportView
-    from feelpp.benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+    from feelpp.benchmarking.report.components.atomicReport import AtomicReportController
+    from feelpp.benchmarking.report.components.atomicReport import AtomicReportModel
+    from feelpp.benchmarking.report.components.atomicReport import AtomicReportView
+
 except ImportError:
     import sys
     sys.path.append("./src/feelpp")
-    from benchmarking.report.components.controllers.atomicReportController import AtomicReportController
-    from benchmarking.report.components.models.atomicReportModel import AtomicReportModel
-    from benchmarking.report.components.views.atomicReportView import AtomicReportView
-    from benchmarking.report.components.strategies import PerformanceStrategy, SpeedupStrategy
+    from benchmarking.report.components.atomicReport import AtomicReportController
+    from benchmarking.report.components.atomicReport import AtomicReportModel
+    from benchmarking.report.components.atomicReport import AtomicReportView
 
 ----
 
 [%dynamic%close%hide_code,python]
 ----
 model=AtomicReportModel("{{ filepath }}")
-view=AtomicReportView()
+view=AtomicReportView("{{ plots_config_filepath }}")
 controller=AtomicReportController(model,view)
 ----
 
-=== Performance by Simulation Steps
-
-[%dynamic%hide_code,python]
+[%dynamic%open%raw%hide_code,python]
 ----
-performance_strategy=PerformanceStrategy("s",["nb_tasks","hsize"])
-----
-
-.Performance
-[%dynamic%open%hide_code,python]
-----
-fig=controller.generatePerformancePlot(performance_strategy)
-fig.show()
-----
-
-[%dynamic%open%hide_code%raw,python]
-----
-fig=controller.generatePerformanceTable(performance_strategy)
-fig.show()
-----
-
-=== Speedup of the simulation Steps
-
-[%dynamic%hide_code,python]
-----
-speedup_strategy=SpeedupStrategy("nb_tasks")
-----
-
-.Speedup
-[%dynamic%raw%open%hide_code,python]
-----
-fig=controller.generateSpeedupPlot(speedup_strategy)
-fig.show()
-----
-
-[%dynamic%raw%open%hide_code,python]
-----
-fig=controller.generateSpeedupTable(speedup_strategy)
-fig.show()
-----
-
-=== Speedup for partial performances
-
-[%dynamic%raw%open%hide_code,python]
-----
-for stage_name in model.stages:
-    speedup_strategy=SpeedupStrategy(dimension="nb_tasks", stage=stage_name)
-    fig=controller.generateSpeedupPlot(speedup_strategy)
+for fig in controller.generateAll():
     fig.show()
 ----
 
