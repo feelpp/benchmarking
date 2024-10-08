@@ -5,7 +5,7 @@ from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
 from feelpp.benchmarking.report.handlers import GirderHandler
-
+import json
 
 
 class CommandBuilder:
@@ -62,9 +62,19 @@ def main_cli():
             match app_config.upload.platform:
                 case "girder":
                     girder_handler = GirderHandler(download_base_dir=None)
+                    rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)
+
+                    #Upload reframe report
                     girder_handler.uploadFileToFolder(
-                        cmd_builder.buildReportFilePath(app_config.executable),
+                        rfm_report_filepath,
                         app_config.upload.folder_id
+                    )
+                    #Upload plots data
+                    girder_handler.uploadStringToItem(
+                        json.dumps([p.model_dump() for p in app_config.plots]),
+                        rfm_report_filepath.split("/")[-1].replace(".json","_plots.json"),
+                        girder_handler.item_id, #Can cause bugs because of async?
+                        parent_type="item"
                     )
                 case _:
                     raise NotImplementedError
