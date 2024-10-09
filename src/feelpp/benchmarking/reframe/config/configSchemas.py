@@ -1,5 +1,5 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel
-from typing import Literal, Union, Annotated, Optional
+from typing import Literal, Union, Optional
 from annotated_types import Len
 import shutil, os
 
@@ -47,7 +47,7 @@ class StepRange(BaseRange):
         return v
 
 class ListRange(BaseRange):
-    sequence : Annotated[list[str | float | int], Len(min_length=1)]
+    sequence : list[str | float | int]
 
     @field_validator("mode",mode="after")
     @classmethod
@@ -55,6 +55,11 @@ class ListRange(BaseRange):
         assert v == "list", "Incorrect mode for List range"
         return v
 
+    @field_validator("sequence",mode="before")
+    @classmethod
+    def checkMode(cls,v):
+        assert len(v)>1, "Sequence must contain at least one element"
+        return v
 
 class Parameter(BaseModel):
     name:str
@@ -152,4 +157,4 @@ class MachineConfig(BaseModel):
     reports_base_dir:str
 
 class ExecutionConfigFile(RootModel):
-    Annotated[list[MachineConfig], Len(min_length=1)]
+    list[MachineConfig]
