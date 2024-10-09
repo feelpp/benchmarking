@@ -42,10 +42,47 @@ jobs:
         name: wheel-artifacts
         path: dist/*.whl
 
+  generate_reports:
+    runs-on: self-ubuntu-22.04
+    needs: build_wheel
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+      - name: Create Virtual Environment
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip3 install -r requirements.txt
+      - name: Download wheel
+        uses: actions/download-artifact@v4
+        with:
+          name: wheel-artifacts
+          path: dist
+      - name: Install wheel
+        run: |
+          source .venv/bin/activate
+          python3 -m pip install --force-reinstall dist/*.whl
+      - name: Remove non-existent reports
+        run: |
+          rm -r ./docs/modules/pages/applications
+      - name: Render reports
+        run: |
+          source .venv/bin/activate
+          render-benchmarks
+      - name: Push reports
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update reports"
+          branch: ${{ github.head_ref }}
+          file_pattern: "docs/modules/*"
+
   docs:
     runs-on: self-ubuntu-22.04
     name: Build Antora Site
-    needs: build_wheel
+    needs: generate_reports
     if: "!contains(github.event.head_commit.message, 'docs skip')"
     steps:
     - uses: actions/checkout@v4
