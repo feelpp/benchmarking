@@ -84,8 +84,8 @@ class StrategyFactory:
             plot_config (Plot). Pydantic object with the plot configuration information
         """
         dimensions = [plot_config.xaxis.parameter]
-        if plot_config.animation_axis and plot_config.animation_axis.parameter:
-            dimensions.append(plot_config.animation_axis.parameter)
+        if plot_config.secondary_axis and plot_config.secondary_axis.parameter:
+            dimensions.append(plot_config.secondary_axis.parameter)
         if plot_config.yaxis and plot_config.yaxis.parameter:
             dimensions.append(plot_config.yaxis.parameter)
 

@@ -97,13 +97,13 @@ class Plot(BaseModel):
     variables:list[str]
     names:list[str]
     xaxis:PlotAxis
-    animation_axis:Optional[PlotAxis] = None
+    secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
 
 
-    @field_validator("xaxis","animation_axis", mode="after")
+    @field_validator("xaxis","secondary_axis", mode="after")
     def checExecutableInstalled(cls, v):
-        """ Checks that the parameter field is specified for xaxis and animation field"""
+        """ Checks that the parameter field is specified for xaxis and secondary_axis field"""
         if v:
             assert v.parameter is not None
         return v
@@ -133,10 +133,10 @@ class ConfigFile(BaseModel):
         """ Checks that the plot axis parameter field corresponds to existing parameters"""
         for plot in self.plots:
             assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
-            if plot.animation_axis:
-                assert plot.animation_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.animation_axis.parameter}"
+            if plot.secondary_axis:
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.secondary_axis.parameter}"
             if plot.yaxis.parameter:
-                assert plot.animation_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
         return self
 
 class MachineConfig(BaseModel):

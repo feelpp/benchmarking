@@ -29,18 +29,18 @@ class ScatterFigure(Figure):
         Args:
             df (pd.DataFrame). The transformed dataframe (must be multiindex)
         Returns:
-            go.Figure: Scatter animation where the animation axis corresponds to a specified parameter
+            go.Figure: Scatter animation where the secondary_ axis corresponds to a specified parameter
         """
         frames = []
 
-        anim_dimension_values = df.index.get_level_values(self.config.animation_axis.parameter).unique().values
+        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
 
         range_epsilon= 0.01
 
         ranges=[]
 
         for j,dim in enumerate(anim_dimension_values):
-            partial_df = df.xs(dim,level=self.config.animation_axis.parameter,axis=0)
+            partial_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
             frames.append([
                 go.Scatter(
                     x = partial_df.index,
@@ -70,7 +70,7 @@ class ScatterFigure(Figure):
                 xaxis=dict(title=self.config.xaxis.label),
                 title=self.config.title,
                 sliders=[dict(
-                    active=0, currentvalue=dict(prefix=f"{self.config.animation_axis.label} = "), transition = dict(duration= 0),
+                    active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
                     steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
                 )]
             )
@@ -182,18 +182,18 @@ class StackedBarFigure(Figure):
         """
         fig = px.bar(
             df.reset_index().astype({
-                self.config.animation_axis.parameter:"str",
+                self.config.secondary_axis.parameter:"str",
                 self.config.xaxis.parameter:"str"
             }).rename(
                 columns = {
                     k:v
                     for k,v in zip(
-                        self.config.variables + [self.config.xaxis.parameter, self.config.animation_axis.parameter],
-                        self.config.names + [self.config.xaxis.label, self.config.animation_axis.label],
+                        self.config.variables + [self.config.xaxis.parameter, self.config.secondary_axis.parameter],
+                        self.config.names + [self.config.xaxis.label, self.config.secondary_axis.label],
                     )
                 },
             ),
-            x=self.config.animation_axis.label,
+            x=self.config.secondary_axis.label,
             y=self.config.names,
             facet_col=self.config.xaxis.label,
         )
