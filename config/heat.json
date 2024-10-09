@@ -13,8 +13,7 @@
     ],
     "outputs": [
         {
-            "instance_path": "{{output_directory}}/{{use_case_name}}/",
-            "relative_filepath": "heat.measures/values.csv",
+            "filepath": "{{output_directory}}/{{use_case_name}}/heat.measures/values.csv",
             "format": "csv"
         }
     ],
@@ -54,7 +53,7 @@
             "range": {
                 "mode": "cores",
                 "min_cores_per_node": 1,
-                "max_cores_per_node": 16,
+                "max_cores_per_node": 1,
                 "min_nodes": 1,
                 "max_nodes": 1,
                 "generator": "double"
@@ -67,7 +66,7 @@
                 "mode": "step",
                 "min": 0.05,
                 "max": 0.95,
-                "n_steps": 3,
+                "n_steps": 2,
                 "generator": "linear"
             }
         }
@@ -250,6 +249,11 @@
             "yaxis": {
                 "label": "Speedup"
             }
+        }
+    ],
+    "partials":[
+        {
+            "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc"
         }
     ]
 }

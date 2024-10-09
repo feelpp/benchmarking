@@ -5,7 +5,7 @@ from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
 from feelpp.benchmarking.report.handlers import GirderHandler
-import json
+import json, shutil
 
 
 class CommandBuilder:
@@ -71,6 +71,12 @@ def main_cli():
                     with open(os.path.join(rfm_report_dir,"plots.json"),"w") as f:
                         f.write(json.dumps([p.model_dump() for p in app_config.plots]))
 
+                    #Copy output partials into the directory
+                    if len(app_config.partials)>0:
+                        partials_dir = os.path.join(rfm_report_dir,"partials")
+                        os.mkdir(partials_dir)
+                        for partial in app_config.partials:
+                            shutil.copy2(partial.filepath,partials_dir)
 
                     #Upload reframe report
                     girder_handler.upload(

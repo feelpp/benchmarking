@@ -76,9 +76,8 @@ class Scalability(BaseModel):
     stages: list[Stage]
 
 class AppOutput(BaseModel):
-    instance_path: str
-    relative_filepath: str
-    format: str
+    filepath: str
+    format: Literal["csv","adoc"]
 
 class Upload(BaseModel):
     active:bool
@@ -109,6 +108,9 @@ class Plot(BaseModel):
         return v
 
 
+class Partial(BaseModel):
+    filepath:str
+
 class ConfigFile(BaseModel):
     executable: str
     use_case_name: str
@@ -119,6 +121,7 @@ class ConfigFile(BaseModel):
     upload: Upload
     parameters: list[Parameter]
     plots: list[Plot]
+    partials: list[Partial]
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
