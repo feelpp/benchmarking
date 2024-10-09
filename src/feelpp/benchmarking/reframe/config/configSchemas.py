@@ -92,7 +92,7 @@ class PlotAxis(BaseModel):
 
 class Plot(BaseModel):
     title:str
-    plot_types:list[Literal["scatter","table"]]
+    plot_types:list[Literal["scatter","table","stacked_bar"]]
     transformation:Literal["performance","speedup"]
     variables:list[str]
     names:list[str]

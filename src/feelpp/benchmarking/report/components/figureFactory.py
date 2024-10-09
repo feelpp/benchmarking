@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+import plotly.express as px
 import pandas as pd
 from numpy import float64 as float64
 
@@ -117,7 +118,7 @@ class TableFigure(Figure):
         super().__init__(plot_config, transformation_strategy)
         self.precision = 3
 
-    def createMultiindexTable(self,df):
+    def createMultiindex(self,df):
         """ Creates a plotly table from a multiindex dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe (must be multiindex)
@@ -161,11 +162,84 @@ class TableFigure(Figure):
         """
         df = self.transformation_strategy.calculate(df)
 
-        if isinstance(df,pd.MultiIndex):
+        if isinstance(df.index,pd.MultiIndex):
             return self.createMultiindex(df)
         else:
             return self.createSimple(df)
 
+
+class StackedBarFigure(Figure):
+    """ Concrete Figure class for stacked bar charts"""
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createGrouped(self,df):
+        """ Creates a stacked and grouped plotly bar chart from a multiindex dataframe
+            Args:
+                df (pd.DataFrame). The transformed dataframe (must be multiindex)
+            Returns:
+                go.Figure. Containing a stacked and grouped bar traces for a multiindex dataframe
+        """
+        fig = px.bar(
+            df.reset_index().astype({
+                self.config.animation_axis.parameter:"str",
+                self.config.xaxis.parameter:"str"
+            }).rename(
+                columns = {
+                    k:v
+                    for k,v in zip(
+                        self.config.variables + [self.config.xaxis.parameter, self.config.animation_axis.parameter],
+                        self.config.names + [self.config.xaxis.label, self.config.animation_axis.label],
+                    )
+                },
+            ),
+            x=self.config.animation_axis.label,
+            y=self.config.names,
+            facet_col=self.config.xaxis.label,
+        )
+        fig.update_layout(
+            yaxis=dict(title=self.config.yaxis.label),
+            title = self.config.title
+        )
+        return fig
+
+    def createSimple(self,df):
+        """ Creates a stacked plotly bar chart from a single indexed dataframe
+            Args:
+                df (pd.DataFrame). The transformed dataframe
+            Returns:
+                go.Figure. Containing a stacked bar traces.
+        """
+        return go.Figure(
+            data = [
+                go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=name)
+                for col,name in zip(df.columns,self.config.names)
+            ],
+            layout=go.Layout(
+                barmode="stack",
+                xaxis=dict(
+                    title = self.config.xaxis.label
+                ),
+                yaxis=dict(
+                    title = self.config.yaxis.label
+                ),
+                title = self.config.title
+            )
+        )
+
+    def createFigure(self,df):
+        """ Creates a stacked bar figure from the master dataframe
+        Args:
+            df (pd.DataFrame). The master dataframe containing all reframe test data
+        Returns:
+            go.Figure: Plotly figure corresponding to the Stacked Bar type
+        """
+        df = self.transformation_strategy.calculate(df)
+
+        if isinstance(df.index,pd.MultiIndex):
+            return self.createGrouped(df)
+        else:
+            return self.createSimple(df)
 
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
@@ -183,6 +257,8 @@ class FigureFactory:
                     figures.append(ScatterFigure(plot_config,strategy))
                 case "table":
                     figures.append(TableFigure(plot_config,strategy))
+                case "stacked_bar":
+                    figures.append(StackedBarFigure(plot_config,strategy))
                 case _:
                     raise NotImplementedError
 
