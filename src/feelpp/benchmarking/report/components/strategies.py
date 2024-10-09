@@ -29,6 +29,24 @@ class PerformanceStrategy(TransformationStrategy):
         """
         return pd.pivot_table(df,values="value",columns="performance_variable",index=self.dimensions,aggfunc="mean").loc[:,self.variables]
 
+class RelativePerformanceStrategy(PerformanceStrategy):
+    """ Strategy that pivots a dataframe on given dimensions and computes the relative (%) values to the sum of the columns"""
+    def __init__(self, dimensions, variables):
+        super().__init__(dimensions, variables)
+
+    def calculate(self,df):
+        """ Pivots dataframe, setting "performance_variable" values as columns, "value" as cell values, and dimensions as indexes.
+            Then filters depending on the specified variables
+            If the dataframe contains duplicated values for a given dimension, the values are aggregated (mean).
+            Finally, the relative values to the total (percentage) are computed, for each one of the columns.
+        Args:
+            df (pd.DataFrame): The master dataframe containing all the data from the reframe test
+        Returns:
+            pd.DataFrame: The pivoted and filtered relative (%) values dataframe (can be multiindex)
+        """
+        pivot = super().calculate(df)
+        return 100*((pivot.T / pivot.sum(axis=1)).T)
+
 class SpeedupStrategy(TransformationStrategy):
     """ Strategy that computes the speedup of a dataset on given dimensions """
     def __init__(self,dimensions,variables):
@@ -79,6 +97,11 @@ class StrategyFactory:
                 )
             case "speedup":
                 return SpeedupStrategy(
+                    dimensions=dimensions,
+                    variables=plot_config.variables
+                )
+            case "relative_performance":
+                return RelativePerformanceStrategy(
                     dimensions=dimensions,
                     variables=plot_config.variables
                 )
