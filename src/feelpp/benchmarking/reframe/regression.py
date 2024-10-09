@@ -27,7 +27,7 @@ class RegressionTest(ReframeSetup):
             self.validation_handler.check_errors(self.stdout)
         )
 
-    @run_after('cleanup')
-    def cleanupApplicationFiles(self):
-        #TODO: CAN BE DANGEROUS ?
-        shutil.rmtree(self.app_setup.config.scalability.directory)
+    # @run_after('cleanup')
+    # def cleanupApplicationFiles(self):
+    #     #TODO: CAN BE DANGEROUS ?
+    #     shutil.rmtree(self.app_setup.config.scalability.directory)
