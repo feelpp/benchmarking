@@ -49,7 +49,7 @@ view=AtomicReportView("reports/feelpp_toolbox_heat/gaya/2024_10_09T15_37_13/plot
 controller=AtomicReportController(model,view)
 ----
 
-[%dynamic%open%raw%hide_code,python]
+[%dynamic%open%hide_code,python]
 ----
 for fig in controller.generateAll():
     fig.show()
@@ -60,6 +60,13 @@ for fig in controller.generateAll():
 <style>
 details>.title::before, details>.title::after {
     visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+    line-height:0;
 }
 </style>
 ++++
