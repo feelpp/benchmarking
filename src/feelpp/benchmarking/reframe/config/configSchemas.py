@@ -1,6 +1,5 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel
-from typing import Literal, Union, Optional
-from annotated_types import Len
+from typing import Literal, Union, Optional, List
 import shutil, os
 
 class BaseRange(BaseModel):
@@ -34,10 +33,10 @@ class CoresRange(BaseRange):
         return v
 
 class StepRange(BaseRange):
-    min: float | int
-    max: float | int
+    min: Union[float,int]
+    max: Union[float,int]
 
-    step: Optional[float|int] = None
+    step: Optional[Union[float,int]] = None
     n_steps: Optional[int] = None
 
     @field_validator("mode",mode="after")
@@ -47,7 +46,7 @@ class StepRange(BaseRange):
         return v
 
 class ListRange(BaseRange):
-    sequence : list[str | float | int]
+    sequence : List[Union[float,int,str]]
 
     @field_validator("mode",mode="after")
     @classmethod
@@ -68,8 +67,8 @@ class Parameter(BaseModel):
 
 
 class Sanity(BaseModel):
-    success:list[str]
-    error:list[str]
+    success:List[str]
+    error:List[str]
 
 class Stage(BaseModel):
     name:str
@@ -78,7 +77,7 @@ class Stage(BaseModel):
 
 class Scalability(BaseModel):
     directory: str
-    stages: list[Stage]
+    stages: List[Stage]
 
 class AppOutput(BaseModel):
     instance_path: str
@@ -88,7 +87,7 @@ class AppOutput(BaseModel):
 class Upload(BaseModel):
     active:bool
     platform:Literal["girder","ckan"]
-    folder_id:str | int
+    folder_id: Union[str,int]
 
 
 class PlotAxis(BaseModel):
@@ -97,10 +96,10 @@ class PlotAxis(BaseModel):
 
 class Plot(BaseModel):
     title:str
-    plot_types:list[Literal["scatter","table","stacked_bar"]]
+    plot_types:List[Literal["scatter","table","stacked_bar"]]
     transformation:Literal["performance","relative_performance","speedup"]
-    variables:list[str]
-    names:list[str]
+    variables:List[str]
+    names:List[str]
     xaxis:PlotAxis
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
@@ -117,13 +116,13 @@ class Plot(BaseModel):
 class ConfigFile(BaseModel):
     executable: str
     use_case_name: str
-    options: list[str]
-    outputs: list[AppOutput]
+    options: List[str]
+    outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
     upload: Upload
-    parameters: list[Parameter]
-    plots: list[Plot]
+    parameters: List[Parameter]
+    plots: List[Plot]
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
@@ -149,12 +148,12 @@ class MachineConfig(BaseModel):
     active: bool
     execution_policy:Literal["serial","async"]
     exclusive_access:bool
-    valid_systems:list[str] = ["*"],
-    valid_prog_environs:list[str] = ["*"]
-    launch_options: list[str]
+    valid_systems:List[str] = ["*"],
+    valid_prog_environs:List[str] = ["*"]
+    launch_options: List[str]
     omp_num_threads: int
     reframe_base_dir:str
     reports_base_dir:str
 
 class ExecutionConfigFile(RootModel):
-    list[MachineConfig]
+    List[MachineConfig]
