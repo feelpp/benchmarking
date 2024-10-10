@@ -60,7 +60,7 @@ controller=AtomicReportController(model,view)
 
 [%dynamic%hide_code,python]
 ----
-performance_strategy=PerformanceStrategy("s",["nb_task"])
+performance_strategy=PerformanceStrategy("s",["nb_tasks"])
 ----
 
 .Performance
@@ -80,7 +80,7 @@ fig.show()
 
 [%dynamic%hide_code,python]
 ----
-speedup_strategy=SpeedupStrategy("nb_task")
+speedup_strategy=SpeedupStrategy("nb_tasks")
 ----
 
 .Speedup
@@ -102,7 +102,7 @@ fig.show()
 ----
 if model.is_partial:
     for stage_name in model.stages:
-        speedup_strategy=SpeedupStrategy(dimension="nb_task", stage=stage_name)
+        speedup_strategy=SpeedupStrategy(dimension="nb_tasks", stage=stage_name)
         fig=controller.generateSpeedupPlot(speedup_strategy)
         fig.show()
 else:

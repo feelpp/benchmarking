@@ -31,6 +31,7 @@ class PerformanceStrategy(MetricStrategy):
         Return:
             pd.DataFrame : Pivot dataframe having dimensions as index and stage names as columns
         """
+        #TODO: THIS IS WRONG, THE TOTAL COLUMN SHOULD BE SPECIFIED IN THE JSON
         if not self.stage:
             pivot = pd.pivot_table(df[(df["unit"] == self.unit)], values="value", index=self.dimensions,columns="stage_name",aggfunc="sum")
             pivot.name = None
@@ -56,7 +57,6 @@ class SpeedupStrategy(MetricStrategy):
             pd.DataFrame, Dataframe having the dimension (nb_cores, mesh size) in index and stage as columns ( including total, optimal and half-optimal speedup)
         """
         pivot = PerformanceStrategy(unit="s",dimensions=[self.dimension],stage=self.stage).calculate(df)
-        pivot["Total"] = pivot.sum(axis=1)
 
         speedup = pd.DataFrame(pivot.loc[pivot.index.min(),:]/pivot)
 
