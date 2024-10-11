@@ -77,7 +77,7 @@ class ScatterFigure(Figure):
                     active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
                     steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
                 )],
-                legend=dict(title=self.config.color_axis.label)
+                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
             )
         )
 
@@ -98,7 +98,8 @@ class ScatterFigure(Figure):
             layout=go.Layout(
                 title=self.config.title,
                 xaxis=dict( title = self.config.xaxis.label ),
-                yaxis=dict( title = self.config.yaxis.label )
+                yaxis=dict( title = self.config.yaxis.label ),
+                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
             )
         )
 
@@ -204,7 +205,8 @@ class StackedBarFigure(Figure):
         )
         fig.update_layout(
             yaxis=dict(title=self.config.yaxis.label),
-            title = self.config.title
+            title = self.config.title,
+            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
         return fig
 
@@ -228,7 +230,8 @@ class StackedBarFigure(Figure):
                 yaxis=dict(
                     title = self.config.yaxis.label
                 ),
-                title = self.config.title
+                title = self.config.title,
+                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
             )
         )
 
