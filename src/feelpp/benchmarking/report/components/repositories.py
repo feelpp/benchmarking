@@ -154,6 +154,8 @@ class UseCaseRepository(Repository):
                     if not use_case.id in machine_info["use_cases"]:
                         continue
                     use_case.tree[application][machine] = []
+                if use_case.tree[application] == {}:
+                    del use_case.tree[application]
 
 
 class AtomicReportRepository(Repository):
