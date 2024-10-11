@@ -1,8 +1,6 @@
 import os
-import pandas as pd
 from feelpp.benchmarking.report.components.baseComponent import BaseComponent
-from feelpp.benchmarking.report.components.figureFactory import FigureFactory
-from feelpp.benchmarking.reframe.config.configSchemas import Plot
+from feelpp.benchmarking.report.components.models import MachineModel
 
 class Machine(BaseComponent):
     """ Class representing a machine module/component.
@@ -76,59 +74,3 @@ class Machine(BaseComponent):
                         use_case_display_name = use_case.display_name
                     )
                 )
-
-
-class MachineModel:
-    """ Model component of the useCase.
-        This class holds the aggregated data for all atomic reports in a use case.
-    """
-    def __init__(self, atomic_models_dfs):
-        self.master_df = self.buildMasterDf( atomic_models_dfs )
-
-    def buildMasterDf(self,atomic_models_dfs):
-        """ creates a dataframe holding all master dataframes from atomic reports.
-            Facilitates pivoting and aggregation
-        Args:
-            atomic_models_dfs (dict[pd.DataFrame]). Dict with atomic report master dataframes (serialized with to_dict(orient='dict')), keys are report's start and end times as tuple
-        """
-        parsed_dfs = []
-        for date, df in atomic_models_dfs.items():
-            parsed_df = pd.DataFrame.from_records(df)
-            parsed_df["time_start"] = date
-            parsed_dfs.append(parsed_df)
-
-        return pd.concat(parsed_dfs ,axis=0)
-
-
-
-class MachineController:
-    """ Controller component of the Machine component, it orchestrates the model with the view"""
-    def __init__(self, model, view):
-        """
-        Args:
-            model (MachineModel): The use case model component
-            view (MachineView): The use case view component
-        """
-        self.model = model
-        self.view = view
-
-    def generateAll(self):
-        """ Creates plotly figures for each plot specified on the view config file
-        Returns a list of plotly figures.
-        """
-        #TODO: Can be a generator
-        figs = []
-        for plot_config in self.view.plots_config:
-            for plot in FigureFactory.create(plot_config):
-                figs.append(plot.createFigure(self.model.master_df))
-        return figs
-
-
-class MachineView:
-    """ View component for the Machine Report, it contains all figure generation related code """
-    def __init__(self,plots_config):
-        """ parses the plots config. This JSON tells what plots to show and how to display them
-        Args:
-            plots_config (dict): Configuration on how to plot the values
-        """
-        self.plots_config = [Plot(**d) for d in plots_config]

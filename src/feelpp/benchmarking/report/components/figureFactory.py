@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 import plotly.express as px
-import pandas as pd
+from pandas import MultiIndex
 from numpy import float64 as float64
 
 from feelpp.benchmarking.report.components.strategies import StrategyFactory
@@ -112,7 +112,7 @@ class ScatterFigure(Figure):
         """
         df = self.transformation_strategy.calculate(df)
 
-        if isinstance(df.index,pd.MultiIndex):
+        if isinstance(df.index,MultiIndex):
             return self.createAnimation(df)
         else:
             return self.createSimple(df)
@@ -168,7 +168,7 @@ class TableFigure(Figure):
         """
         df = self.transformation_strategy.calculate(df)
 
-        if isinstance(df.index,pd.MultiIndex):
+        if isinstance(df.index,MultiIndex):
             return self.createMultiindex(df)
         else:
             return self.createSimple(df)
@@ -244,7 +244,7 @@ class StackedBarFigure(Figure):
         """
         df = self.transformation_strategy.calculate(df)
 
-        if isinstance(df.index,pd.MultiIndex):
+        if isinstance(df.index,MultiIndex):
             return self.createGrouped(df)
         else:
             return self.createSimple(df)
