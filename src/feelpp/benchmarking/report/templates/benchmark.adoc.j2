@@ -24,8 +24,8 @@ from feelpp.benchmarking.report.components.atomicReport import AtomicReportView
 
 [%dynamic%close%hide_code,python]
 ----
-model=AtomicReportModel("{{ filepath }}")
-view=AtomicReportView("{{ plots_config_filepath }}")
+model=AtomicReportModel({{ runs }} )
+view=AtomicReportView({{ plots_config }})
 controller=AtomicReportController(model,view)
 ----
 

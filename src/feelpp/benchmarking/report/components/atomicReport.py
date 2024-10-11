@@ -5,18 +5,6 @@ import numpy as np
 import pandas as pd
 
 
-class Model:
-    @staticmethod
-    def parseJson(file_path):
-        """ Load a json file
-        Args:
-            file_path (str): The JSON file to parse
-        """
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-        return data
-
-
 class AtomicReport:
     """ Class representing an atomic report. i.e. a report indexed by date, test case, application and machine.
         Holds the data of benchmarks for a specific set of parameters.
@@ -31,11 +19,12 @@ class AtomicReport:
             reframe_report_json (str): The path to the reframe report JSON file
             plot_config_json (str): The path to the plot configuration file (usually comes with the reframe report)
         """
-        data = Model.parseJson(reframe_report_json)
+        data = self.parseJson(reframe_report_json)
+        self.plots_config = self.parseJson(plot_config_json)
 
         self.filepath = reframe_report_json
-        self.plots_config_filepath = plot_config_json
         self.session_info = data["session_info"]
+        self.runs = data["runs"]
         self.date = data["session_info"]["time_start"]
 
         self.application_id = application_id
@@ -48,6 +37,8 @@ class AtomicReport:
 
         self.empty = all(testcase["perfvars"]==None for run in data["runs"] for testcase in run["testcases"])
 
+        self.model = AtomicReportModel(self.runs)
+
     def setIndexes(self, application, machine, use_case):
         """ Set the indexes for the atomic report.
         Along with the date, they should form a unique identifier for the report.
@@ -59,6 +50,15 @@ class AtomicReport:
         self.machine = machine
         self.application = application
         self.use_case = use_case
+
+    def parseJson(self,file_path):
+        """ Load a json file
+        Args:
+            file_path (str): The JSON file to parse
+        """
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+        return data
 
     def findUseCase(self,data):
         """ Find the test case of the report
@@ -92,11 +92,11 @@ class AtomicReport:
                 parent_catalogs = f"{self.application_id}-{self.use_case_id}-{self.machine_id}",
                 application_display_name = self.application.display_name,
                 machine_id = self.machine.id, machine_display_name = self.machine.display_name,
-                filepath = self.filepath,
-                plots_config_filepath = self.plots_config_filepath,
                 session_info = self.session_info,
+                runs = self.runs,
                 date = self.date,
-                empty = self.empty
+                empty = self.empty,
+                plots_config = self.plots_config
             )
         )
 
@@ -116,29 +116,27 @@ class AtomicReportController:
         """ Creates plotly figures for each plot specified on the view config file
         Returns a list of plotly figures.
         """
-        #TODO: Can be a generator
-        figs = []
         for plot_config in self.view.plots_config:
             for plot in FigureFactory.create(plot_config):
-                figs.append(plot.createFigure(self.model.master_df))
-        return figs
+                yield plot.createFigure(self.model.master_df)
 
 
-class AtomicReportModel(Model):
+class AtomicReportModel:
     """Model component for the atomic report """
-    def __init__(self, file_path):
-        """ Parses the JSON data, extracts the dimensions of the tests and builds a master df used by other classes"""
-        self.data = self.parseJson(file_path)
-        self.master_df = self.buildMasterDf(self.data)
+    def __init__(self, runs):
+        """ Extracts the dimensions of the tests and builds a master df used by other classes"""
+        self.master_df = self.buildMasterDf(runs)
 
-    def buildMasterDf(self,data):
+    def buildMasterDf(self,runs):
         """Build a dataframe where each row is indexed by a perfvar and its respective values
         Args:
-            data (dict): The parsed JSON data
+            runs list[dict]: The reframe runs with testcases
+        returns
+            pd.DataFrame: The master dataframe
         """
         processed_data = []
 
-        for i,testcase in enumerate(data["runs"][0]["testcases"]): #TODO: support multiple runs
+        for i,testcase in enumerate(runs[0]["testcases"]): #TODO: support multiple runs
             if not testcase["perfvars"]:
                 tmp_dct = {
                     "testcase_i" :i,
@@ -151,8 +149,6 @@ class AtomicReportModel(Model):
                     "status": None,
                     "absolute_error": None,
                     "testcase_time_run": testcase["time_run"],
-                    "time_start":data["session_info"]["time_start"],
-                    "time_end":data["session_info"]["time_end"]
                 }
                 for dim, v in testcase["check_params"].items():
                     tmp_dct[dim] = v
@@ -171,8 +167,6 @@ class AtomicReportModel(Model):
                 tmp_dct["status"] = tmp_dct["thres_lower"] <= tmp_dct["value"] <= tmp_dct["thres_upper"] if not np.isnan(tmp_dct["thres_lower"]) and not np.isnan(tmp_dct["thres_upper"]) else np.nan
                 tmp_dct["absolute_error"] = np.abs(tmp_dct["value"] - tmp_dct["reference"])
                 tmp_dct["testcase_time_run"] = testcase["time_run"]
-                tmp_dct["time_start"] = pd.to_datetime(data["session_info"]["time_start"])
-                tmp_dct["time_end"] = pd.to_datetime(data["session_info"]["time_end"])
 
                 for dim, v in testcase["check_params"].items():
                     tmp_dct[dim] = v
@@ -183,8 +177,9 @@ class AtomicReportModel(Model):
 
 class AtomicReportView:
     """ View component for the Atomic Report, it contains all figure generation related code """
-    def __init__(self,plots_config_path):
-        """ Opens and parses the plots config file. This file tells what plots to show and how to display them"""
-        with open(plots_config_path, 'r') as file:
-            data = json.load(file)
-        self.plots_config = [Plot(**d) for d in data]
+    def __init__(self,plots_config):
+        """ Parses the plots config list. This JSON tells what plots to show and how to display them
+        Args:
+            plots_config list[dict]. List with dictionaries specifying plots configuration.
+        """
+        self.plots_config = [Plot(**d) for d in plots_config]
