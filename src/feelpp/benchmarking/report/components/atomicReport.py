@@ -4,6 +4,19 @@ from feelpp.benchmarking.reframe.config.configSchemas import Plot
 import numpy as np
 import pandas as pd
 
+
+class Model:
+    @staticmethod
+    def parseJson(file_path):
+        """ Load a json file
+        Args:
+            file_path (str): The JSON file to parse
+        """
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+        return data
+
+
 class AtomicReport:
     """ Class representing an atomic report. i.e. a report indexed by date, test case, application and machine.
         Holds the data of benchmarks for a specific set of parameters.
@@ -18,21 +31,22 @@ class AtomicReport:
             reframe_report_json (str): The path to the reframe report JSON file
             plot_config_json (str): The path to the plot configuration file (usually comes with the reframe report)
         """
-        self.data = self.parseJson(reframe_report_json)
+        data = Model.parseJson(reframe_report_json)
 
-        self.data["plots_config_filepath"] = plot_config_json
-
-        self.date = self.data["session_info"]["time_start"]
+        self.filepath = reframe_report_json
+        self.plots_config_filepath = plot_config_json
+        self.session_info = data["session_info"]
+        self.date = data["session_info"]["time_start"]
 
         self.application_id = application_id
         self.machine_id = machine_id
-        self.use_case_id = self.findUseCase()
+        self.use_case_id = self.findUseCase(data)
 
         self.application = None
         self.machine = None
         self.use_case = None
 
-        self.data["empty"] = all(testcase["perfvars"]==None for run in self.data["runs"] for testcase in run["testcases"])
+        self.empty = all(testcase["perfvars"]==None for run in data["runs"] for testcase in run["testcases"])
 
     def setIndexes(self, application, machine, use_case):
         """ Set the indexes for the atomic report.
@@ -46,25 +60,11 @@ class AtomicReport:
         self.application = application
         self.use_case = use_case
 
-    def parseJson(self, input_json):
-        """ Parse the JSON file to add or modify some fields
-        Args:
-            input_json (str): The path to the JSON file
-        Returns:
-            dict: The parsed JSON file
-        """
-        with open(input_json, 'r') as file:
-            data = json.load(file)
-
-        data['filepath'] = input_json
-
-        return data
-
-    def findUseCase(self):
+    def findUseCase(self,data):
         """ Find the test case of the report
         """
-        use_case = self.data["runs"][0]["testcases"][0]["check_vars"]["use_case"]
-        assert all( testcase["check_vars"]["use_case"] == use_case for run in self.data["runs"] for testcase in run["testcases"]), "useCase differ from one testcase to another"
+        use_case = data["runs"][0]["testcases"][0]["check_vars"]["use_case"]
+        assert all( testcase["check_vars"]["use_case"] == use_case for run in data["runs"] for testcase in run["testcases"]), "useCase differ from one testcase to another"
         return use_case
 
     def filename(self):
@@ -74,20 +74,6 @@ class AtomicReport:
         """
         return f"{self.date}"
 
-    def updateData(self, view = "machines"):
-        """ Update the data attribute to be rendered in the report, depending on the set parameters
-        Args:
-            view (str): Whether to render as machines>apps or apps>machines. Default is "machines". Options are "machines" and "applications"
-        """
-        if view == "machines":
-            self.data["parent_catalogs"] = f"{self.machine_id}-{self.application_id}-{self.use_case_id}"
-        elif view == "applications":
-            self.data["parent_catalogs"] = f"{self.application_id}-{self.use_case_id}-{self.machine_id}"
-
-        self.data["application_display_name"] = self.application.display_name
-        self.data["machine_id"] = self.machine.id
-        self.data["machine_display_name"] = self.machine.display_name
-
     def createReport(self, base_dir, renderer):
         """ Create the report for the atomic report
         Args:
@@ -95,22 +81,23 @@ class AtomicReport:
             renderer (Renderer): The renderer to use
         """
 
-        if base_dir.endswith("machines"):
-            output_folder_path = f"{base_dir}/{self.machine_id}/{self.application_id}/{self.use_case_id}"
-            self.updateData("machines")
-        elif base_dir.endswith("applications"):
-            output_folder_path = f"{base_dir}/{self.application_id}/{self.use_case_id}/{self.machine_id}"
-            self.updateData("applications")
-        else:
-            raise ValueError("The base_directory must be either 'machines' or 'applications', and must be located under ROOT/pages")
+        output_folder_path = f"{base_dir}/{self.application_id}/{self.use_case_id}/{self.machine_id}"
 
         if not os.path.exists(output_folder_path):
             raise FileNotFoundError(f"The folder {output_folder_path} does not exist. Modules should be initialized beforehand ")
 
-
         renderer.render(
             f"{output_folder_path}/{self.filename()}.adoc",
-            self.data
+            dict(
+                parent_catalogs = f"{self.application_id}-{self.use_case_id}-{self.machine_id}",
+                application_display_name = self.application.display_name,
+                machine_id = self.machine.id, machine_display_name = self.machine.display_name,
+                filepath = self.filepath,
+                plots_config_filepath = self.plots_config_filepath,
+                session_info = self.session_info,
+                date = self.date,
+                empty = self.empty
+            )
         )
 
 
@@ -137,21 +124,12 @@ class AtomicReportController:
         return figs
 
 
-class AtomicReportModel:
+class AtomicReportModel(Model):
     """Model component for the atomic report """
     def __init__(self, file_path):
         """ Parses the JSON data, extracts the dimensions of the tests and builds a master df used by other classes"""
-        self.buildMasterDf( self.parseJson(file_path) )
-
-    def parseJson(self, file_path):
-        """ Load a json file
-        Args:
-            file_path (str): The JSON file to parse
-        """
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-        return data
-
+        self.data = self.parseJson(file_path)
+        self.master_df = self.buildMasterDf(self.data)
 
     def buildMasterDf(self,data):
         """Build a dataframe where each row is indexed by a perfvar and its respective values
@@ -201,7 +179,7 @@ class AtomicReportModel:
 
                 processed_data.append(tmp_dct)
 
-        self.master_df = pd.DataFrame(processed_data)
+        return pd.DataFrame(processed_data)
 
 class AtomicReportView:
     """ View component for the Atomic Report, it contains all figure generation related code """
