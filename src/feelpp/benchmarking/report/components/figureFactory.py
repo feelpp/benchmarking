@@ -47,7 +47,11 @@ class ScatterFigure(Figure):
                     y = partial_df.loc[:,col],
                     name=name
                 )
-                for name,col in zip(self.config.names,partial_df.columns)
+                for name,col in (
+                    zip(self.config.names,partial_df.columns)
+                    if len(self.config.names) == len(partial_df.columns)
+                    else zip(partial_df.columns,partial_df.columns)
+                )
             ])
             ranges.append([
                 partial_df.min().min() - partial_df.min().min()*range_epsilon,
@@ -72,7 +76,8 @@ class ScatterFigure(Figure):
                 sliders=[dict(
                     active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
                     steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
-                )]
+                )],
+                legend=dict(title=self.config.color_axis.label)
             )
         )
 

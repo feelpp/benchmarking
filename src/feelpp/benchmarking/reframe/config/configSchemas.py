@@ -97,12 +97,13 @@ class PlotAxis(BaseModel):
 class Plot(BaseModel):
     title:str
     plot_types:List[Literal["scatter","table","stacked_bar"]]
-    transformation:Literal["performance","relative_performance","speedup"]
+    transformation:Literal["performance","relative_performance","performance_sum","speedup"]
     variables:List[str]
     names:List[str]
     xaxis:PlotAxis
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
+    color_axis:Optional[PlotAxis] = None
 
 
     @field_validator("xaxis","secondary_axis", mode="after")
