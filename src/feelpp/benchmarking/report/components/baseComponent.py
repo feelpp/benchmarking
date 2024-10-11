@@ -62,13 +62,28 @@ class BaseComponent:
         Args:
             base_dir (str): The base directory for the modules
             renderer (Renderer): The renderer to use
-            parent_id (str,optional): The catalog id of the parent component. Defaults to "supercomputers".
+            parent_id (str,optional): The catalog id of the parent component.
         """
         self.initModule( base_dir, renderer, parent_id, self.id)
         for child, grandchildren in self.tree.items():
             child.initModule(os.path.join(base_dir,self.id), renderer, parent_id = self.id, self_tag_id = f"{self.id}-{child.id}")
             for grandchild in grandchildren:
                 grandchild.initModule(os.path.join(base_dir,self.id,child.id), renderer, parent_id = f"{self.id}-{child.id}", self_tag_id = f"{self.id}-{child.id}-{grandchild.id}")
+
+
+    def createOverview(self, base_dir, renderer, data):
+        """ Create an overview page for the component
+        Args:
+            base_dir (str): The base directory for the module
+            renderer (Renderer): The renderer to use
+            data (dict): The data to be passed to the template
+        """
+        output_folder_path = os.path.join(base_dir, self.id)
+
+        if not os.path.exists(output_folder_path):
+            raise FileNotFoundError(f"The folder {output_folder_path} does not exist. Modules should be initialized beforehand ")
+
+        renderer.render(f"{output_folder_path}/overview.adoc", data )
 
     def printHierarchy(self):
         """ Print the hierarchy of the component """

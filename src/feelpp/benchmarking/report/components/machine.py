@@ -57,15 +57,10 @@ class Machine(BaseComponent):
         """
         for app, use_cases in self.tree.items():
             for use_case, reports in use_cases.items():
-
-                output_folder_path = f"{base_dir}/{app.id}/{use_case.id}/{self.id}"
-
-                if not os.path.exists(output_folder_path):
-                    raise FileNotFoundError(f"The folder {output_folder_path} does not exist. Modules should be initialized beforehand ")
-
-                renderer.render(
-                    f"{output_folder_path}/overview.adoc",
-                    dict(
+                super().createOverview(
+                    os.path.join(base_dir,app.id,use_case.id),
+                    renderer,
+                    data = dict(
                         reports_dfs = { report.date: report.model.master_df.to_dict(orient='dict') for report in reports },
                         plots_config = self.plots_config,
                         parent_catalogs = f"{app.id}-{use_case.id}-{self.id}",

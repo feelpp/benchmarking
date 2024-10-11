@@ -26,17 +26,12 @@ class UseCase(BaseComponent):
         """
 
         for app, machines in self.tree.items():
-
-                output_folder_path = f"{base_dir}/{app.id}/{self.id}"
-
-                if not os.path.exists(output_folder_path):
-                    raise FileNotFoundError(f"The folder {output_folder_path} does not exist. Modules should be initialized beforehand ")
-
-                renderer.render(
-                    f"{output_folder_path}/overview.adoc",
-                    dict(
-                        parent_catalogs = f"{app.id}-{self.id}",
-                        application_display_name = app.display_name,
-                        use_case_display_name = self.display_name
-                    )
+            super().createOverview(
+                os.path.join(base_dir,app.id),
+                renderer,
+                data = dict(
+                    parent_catalogs = f"{app.id}-{self.id}",
+                    application_display_name = app.display_name,
+                    use_case_display_name = self.display_name
                 )
+            )
