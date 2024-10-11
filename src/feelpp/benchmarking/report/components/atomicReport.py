@@ -149,7 +149,7 @@ class AtomicReportModel:
             file_path (str): The JSON file to parse
         """
         with open(file_path, 'r') as file:
-            data = json.load(file)["runs"][0] #TODO: support multiple runs
+            data = json.load(file)
         return data
 
 
@@ -160,7 +160,7 @@ class AtomicReportModel:
         """
         processed_data = []
 
-        for i,testcase in enumerate(data["testcases"]):
+        for i,testcase in enumerate(data["runs"][0]["testcases"]): #TODO: support multiple runs
             if not testcase["perfvars"]:
                 tmp_dct = {
                     "testcase_i" :i,
@@ -172,7 +172,9 @@ class AtomicReportModel:
                     "thres_upper": None,
                     "status": None,
                     "absolute_error": None,
-                    "testcase_time_run": testcase["time_run"]
+                    "testcase_time_run": testcase["time_run"],
+                    "time_start":data["session_info"]["time_start"],
+                    "time_end":data["session_info"]["time_end"]
                 }
                 for dim, v in testcase["check_params"].items():
                     tmp_dct[dim] = v
@@ -191,6 +193,8 @@ class AtomicReportModel:
                 tmp_dct["status"] = tmp_dct["thres_lower"] <= tmp_dct["value"] <= tmp_dct["thres_upper"] if not np.isnan(tmp_dct["thres_lower"]) and not np.isnan(tmp_dct["thres_upper"]) else np.nan
                 tmp_dct["absolute_error"] = np.abs(tmp_dct["value"] - tmp_dct["reference"])
                 tmp_dct["testcase_time_run"] = testcase["time_run"]
+                tmp_dct["time_start"] = pd.to_datetime(data["session_info"]["time_start"])
+                tmp_dct["time_end"] = pd.to_datetime(data["session_info"]["time_end"])
 
                 for dim, v in testcase["check_params"].items():
                     tmp_dct[dim] = v
