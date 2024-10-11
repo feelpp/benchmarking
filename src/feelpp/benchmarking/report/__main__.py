@@ -31,13 +31,17 @@ def main_cli():
 
     index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
     machine_report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/machine.adoc.j2")
+    use_case_report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/useCase.adoc.j2")
     report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
 
     applications_base_dir = os.path.join(args.modules_path,"applications")
     applications.initModules(applications_base_dir, index_renderer, parent_id="catalog-index")
 
-    for machine in machines:
-        machine.createOverview(applications_base_dir,machine_report_renderer)
+    for application in applications:
+        for use_case, machines in application.tree.items():
+            use_case.createOverview(applications_base_dir,use_case_report_renderer)
+            for machine, reports in machines.items():
+                machine.createOverview(applications_base_dir,machine_report_renderer)
 
     for atomic_report in atomic_reports:
         atomic_report.createReport(applications_base_dir,report_renderer)
