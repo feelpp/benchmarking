@@ -19,11 +19,6 @@ class Repository:
         if item not in self.data:
             self.data.append(item)
 
-    def printHierarchy(self):
-        """ Print the hierarchy of the repository """
-        for item in self.data:
-            item.printHierarchy()
-
     def get(self, id):
         """ Get an item by its id """
         return next(filter(lambda x: x.id == id, self.data))
@@ -32,6 +27,14 @@ class Repository:
         """ Pure virtual function to link the items of the repository to other components.
          It will update the tree attribute of the items """
         pass
+
+class ModuleRepository(Repository):
+    """Base class representing a collection of components that define a module (machine, application, useCase) """
+
+    def printHierarchy(self):
+        """ Print the hierarchy of the repository """
+        for item in self.data:
+            item.printHierarchy()
 
     def indexData(self, parent_id, self_tag_id ):
         """ Get the data for the index.adoc file for the repository

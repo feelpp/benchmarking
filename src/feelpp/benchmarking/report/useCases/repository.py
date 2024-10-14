@@ -1,7 +1,7 @@
 from feelpp.benchmarking.report.useCases.useCase import UseCase
-from feelpp.benchmarking.report.base.repository import Repository
+from feelpp.benchmarking.report.base.repository import ModuleRepository
 
-class UseCaseRepository(Repository):
+class UseCaseRepository(ModuleRepository):
     """ Repository for test cases """
     def __init__(self, use_cases_json):
         """ Constructor for the UseCaseRepository class.
@@ -32,10 +32,10 @@ class UseCaseRepository(Repository):
         """
         for use_case in self.data:
             for app_id, app_info in execution_mapping.items():
-                application = next(filter(lambda a: a.id == app_id, applications))
+                application = applications.get(app_id)
                 use_case.tree[application] = {}
                 for machine_id, machine_info  in app_info.items():
-                    machine = next(filter(lambda m: m.id == machine_id, machines))
+                    machine = machines.get(machine_id)
                     if not use_case.id in machine_info["use_cases"]:
                         continue
                     use_case.tree[application][machine] = []

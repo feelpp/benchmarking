@@ -46,12 +46,11 @@ class AtomicReportRepository(Repository):
             use_cases (list[UseCase]): The list of test cases
         """
         for atomic_report in self.data:
-            application = next(filter(lambda a: a.id == atomic_report.application_id, applications))
-            machine = next(filter(lambda m: m.id == atomic_report.machine_id, machines))
+            application = applications.get(atomic_report.application_id)
+            machine = machines.get(atomic_report.machine_id)
             use_case = next(filter(lambda t: t.id == atomic_report.use_case_id and application in t.tree and machine in t.tree[application], use_cases))
 
             atomic_report.setIndexes(application, machine, use_case)
-
 
             machine.tree[application][use_case].append(atomic_report)
             application.tree[use_case][machine].append(atomic_report)

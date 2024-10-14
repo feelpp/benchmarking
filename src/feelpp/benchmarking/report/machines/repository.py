@@ -1,7 +1,7 @@
 from feelpp.benchmarking.report.machines.machine import Machine
-from feelpp.benchmarking.report.base.repository import Repository
+from feelpp.benchmarking.report.base.repository import ModuleRepository
 
-class MachineRepository(Repository):
+class MachineRepository(ModuleRepository):
     """ Repository for machines """
     def __init__(self, machines_json):
         """ Constructor for the MachineRepository class.
@@ -31,10 +31,10 @@ class MachineRepository(Repository):
         """
         for machine in self.data:
             for app_id, app_info in execution_mapping.items():
-                application = next(filter(lambda a: a.id == app_id, applications))
+                application = applications.get(app_id)
                 if machine.id not in app_info:
                     continue
                 machine.tree[application] = {}
                 for use_case_id in app_info[machine.id]["use_cases"]:
-                    use_case = next(filter(lambda t: t.id == use_case_id, use_cases))
+                    use_case = use_cases.get(use_case_id)
                     machine.tree[application][use_case] = []

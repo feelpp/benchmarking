@@ -1,7 +1,7 @@
 from feelpp.benchmarking.report.applications.application import Application
-from feelpp.benchmarking.report.base.repository import Repository
+from feelpp.benchmarking.report.base.repository import ModuleRepository
 
-class ApplicationRepository(Repository):
+class ApplicationRepository(ModuleRepository):
     """ Repository for applications """
     def __init__(self, applications_json):
         """ Constructor for the ApplicationRepository class.
@@ -25,17 +25,17 @@ class ApplicationRepository(Repository):
         """ Create the links between the applications and the machines and test cases depending on the execution mapping
         Will update the tree attribute of the applications, creating a dictionary of machines and test cases
         Args:
-            machines (list[Machine]): The list of machines
-            use_cases (list[UseCase]): The list of test cases
+            machines (MachineRepository): The list of machines
+            use_cases (UseCaseRepository): The list of test cases
             execution_mapping (dict): The execution mapping
         """
         for application in self.data:
             if not application.id in execution_mapping:
                 continue
             for machine_id, machine_info in execution_mapping[application.id].items():
-                machine = next(filter(lambda m: m.id == machine_id, machines))
+                machine = machines.get(machine_id)
                 for use_case_id in machine_info["use_cases"]:
-                    use_case = next(filter(lambda t: t.id == use_case_id, use_cases))
+                    use_case = use_cases.get(use_case_id)
                     if use_case not in application.tree:
                         application.tree[use_case] = {}
                     application.tree[use_case][machine] = []
