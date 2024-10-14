@@ -8,12 +8,6 @@ class ScalabilityHandler:
         self.stages =  scalability_config.stages
         self.filepaths = {k.name: os.path.join(self.directory,k.file) for k in self.stages}
 
-    def cleanupScalabilityFiles(self):
-        """ Deletes scalability files based on the provided filepaths. Should be run before the init step of a reframe test """
-        for filepath in self.filepaths.values():
-            if os.path.exists(filepath):
-                os.remove(filepath)
-
     def getPerformanceVariables(self,index):
         """ Opens and parses the performance variable values depending on the config setup.
         Args:
@@ -41,7 +35,7 @@ class ScalabilityHandler:
 
 
                     for i, col in enumerate(columns[1:]): #UNIT TEMPORARY HOTFIX
-                        perf_variables.update( { f"{stage.name}_{col}" : sn.make_performance_function(vars[i],unit="item" if col.endswith("-iter") else "s")  })
+                        perf_variables.update( { f"{stage.name}_{col}" : sn.make_performance_function(vars[i],unit="item" if col.endswith("-niter") else "s")  })
 
                 case _:
                     raise NotImplementedError

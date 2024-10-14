@@ -8,7 +8,6 @@ class AtomicReportModel:
         """ Parses the JSON data, extracts the dimensions of the tests and builds a master df used by other classes"""
         data = self.parseJson(file_path)
 
-        self.extractIsPartialReport(data)
         self.extractDimensions(data)
         self.buildMasterDf(data)
         self.stages = self.master_df["stage_name"].unique().tolist()
@@ -23,21 +22,6 @@ class AtomicReportModel:
             data = data["runs"][0] #TODO: support multiple runs
 
         return data
-
-    def extractIsPartialReport(self,data):
-        """ Sets the is_partial attribute if 'is_partial' is present in tags
-        Checks that all tags have the same value
-        Args:
-            Data (dict): The loaded JSON data
-        """
-        self.is_partial = "is_partial" in data["testcases"][0]["tags"]
-
-        assert all((
-            "is_partial" in tc["tags"] if self.is_partial else
-            "is_partial" not in tc["tags"]
-            )
-            for tc in data["testcases"]
-        ), "Inconsistency in partial tag"
 
 
     def extractDimensions(self,data):
@@ -76,7 +60,6 @@ class AtomicReportModel:
                     "thres_upper": None,
                     "status": None,
                     "absolute_error": None,
-                    "is_partial": False,
                     "stage_name": None,
                     "partial_name": None,
                     "testcase_time_run": testcase["time_run"]
@@ -97,9 +80,8 @@ class AtomicReportModel:
                 tmp_dct["thres_upper"] = float(perfvar["thres_upper"]) if perfvar["thres_upper"] else np.nan
                 tmp_dct["status"] = tmp_dct["thres_lower"] <= tmp_dct["value"] <= tmp_dct["thres_upper"] if not np.isnan(tmp_dct["thres_lower"]) and not np.isnan(tmp_dct["thres_upper"]) else np.nan
                 tmp_dct["absolute_error"] = np.abs(tmp_dct["value"] - tmp_dct["reference"])
-                tmp_dct["is_partial"] = self.is_partial and len(tmp_dct["performance_variable"].split("_"))>1
                 tmp_dct["stage_name"] = tmp_dct["performance_variable"].split("_")[0]
-                tmp_dct["partial_name"] = tmp_dct["performance_variable"].split("_")[1] if tmp_dct["is_partial"] else None
+                tmp_dct["partial_name"] = tmp_dct["performance_variable"].split("_")[1] if len(tmp_dct["performance_variable"].split("_")) else None
                 tmp_dct["testcase_time_run"] = testcase["time_run"]
 
                 for dim, v in testcase["check_params"].items():

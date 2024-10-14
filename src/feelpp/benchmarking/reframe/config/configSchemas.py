@@ -1,13 +1,13 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel
-from typing import Literal, Union, Annotated
+from typing import Literal, Union, Annotated, Optional
 from annotated_types import Len
 import shutil, os
 
-class BaseParameter(BaseModel):
-    active: bool
-    type: Literal["continuous","discrete"]
+class BaseRange(BaseModel):
+    generator: Literal["double","linear","random","ordered"]
+    mode: Literal["cores","step","list"]
 
-class Topology(BaseModel):
+class CoresRange(BaseRange):
     min_cores_per_node: int
     max_cores_per_node: int
     min_nodes: int
@@ -27,33 +27,40 @@ class Topology(BaseModel):
         assert self.max_cores_per_node >= self.min_cores_per_node, "Max cores per node should be >= min"
         return self
 
-class Sequencing(BaseModel):
-    generator:Literal["default"]
-    sequence:list[int]
+    @field_validator("mode",mode="after")
+    @classmethod
+    def checkMode(cls,v):
+        assert v == "cores", "Incorrect mode for Cores range"
+        return v
 
-class NbTasksParameter(BaseParameter):
-    topology:Topology
-    sequencing: Sequencing
+class StepRange(BaseRange):
+    min: float | int
+    max: float | int
 
-class HsizeRange(BaseModel):
-    min: float
-    max: float
+    step: Optional[float|int] = None
+    n_steps: Optional[int] = None
 
-class MeshSizesParameter(BaseParameter):
-    hsize_range: HsizeRange
-    sequencing: Sequencing
+    @field_validator("mode",mode="after")
+    @classmethod
+    def checkMode(cls,v):
+        assert v == "step", "Incorrect mode for Step range"
+        return v
 
-class MeshesParameter(BaseParameter):
-    pass
+class ListRange(BaseRange):
+    sequence : Annotated[list[str | float | int], Len(min_length=1)]
 
-class SolversParameter(BaseParameter):
-    pass
+    @field_validator("mode",mode="after")
+    @classmethod
+    def checkMode(cls,v):
+        assert v == "list", "Incorrect mode for List range"
+        return v
 
-class Parameters(BaseModel):
-    nb_tasks: NbTasksParameter
-    mesh_sizes: MeshSizesParameter
-    meshes: MeshesParameter
-    solvers: SolversParameter
+
+class Parameter(BaseModel):
+    name:str
+    active:bool
+    range: Union[CoresRange,StepRange,ListRange]
+
 
 class Sanity(BaseModel):
     success:list[str]
@@ -87,7 +94,7 @@ class ConfigFile(BaseModel):
     scalability: Scalability
     sanity: Sanity
     upload: Upload
-    parameters: Parameters
+    parameters: list[Parameter]
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):

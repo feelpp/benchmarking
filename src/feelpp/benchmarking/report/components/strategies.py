@@ -21,6 +21,7 @@ class PerformanceStrategy(MetricStrategy):
             stage (str): Name of the stage to filter. If None, the performance by stage is computed. Defaults to None.
         """
         self.unit = unit
+        assert 1 <= len(dimensions) <=2, "More than two dimensions are not supported"
         self.dimensions = dimensions
         self.stage = stage
 
@@ -39,8 +40,6 @@ class PerformanceStrategy(MetricStrategy):
             pivot = pd.pivot_table(df[(df["unit"] == self.unit)&(df["stage_name"] == self.stage)], values="value", index=self.dimensions,columns="partial_name",aggfunc="sum")
             pivot.name = self.stage
 
-        if isinstance(pivot.index, pd.MultiIndex):
-            raise NotImplementedError
         return pivot
 
 class SpeedupStrategy(MetricStrategy):
@@ -70,6 +69,7 @@ class SpeedupStrategy(MetricStrategy):
 
         speedup["Optimal"] = speedup.index / speedup.index.min()
         speedup["HalfOptimal"] = speedup.index / (2*speedup.index.min())
+        speedup.loc[speedup.index.min(),"HalfOptimal"] = 1
 
         speedup.name = self.stage
 
