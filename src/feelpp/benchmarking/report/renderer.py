@@ -24,10 +24,11 @@ class RendererFactory:
         base = "./src/feelpp/benchmarking/report/templates/"
         templates = {
             "index" : "index.adoc.j2",
+            "benchmark" : "benchmark.adoc.j2",
+            "atomic_overview" : "atomicOverview.adoc.j2",
             "application" : "applicationOverview.adoc.j2",
             "machine" : "machineOverview.adoc.j2",
-            "use_case" : "useCaseOverview.adoc.j2",
-            "benchmark" : "benchmark.adoc.j2"
+            "use_case" : "useCaseOverview.adoc.j2"
         }
         try:
             return Renderer(os.path.join(base, templates[renderer_type]))
