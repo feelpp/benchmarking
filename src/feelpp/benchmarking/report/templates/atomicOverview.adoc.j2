@@ -15,16 +15,16 @@
 [%dynamic%close%hide_code,python]
 ----
 from numpy import nan
-from feelpp.benchmarking.report.atomicReports.controller import OverviewController
-from feelpp.benchmarking.report.atomicReports.model import OverviewModel
-from feelpp.benchmarking.report.atomicReports.view import OverviewView
+from feelpp.benchmarking.report.atomicReports.controller import AtomicOverviewController
+from feelpp.benchmarking.report.atomicReports.model import AtomicOverviewModel
+from feelpp.benchmarking.report.atomicReports.view import AtomicOverviewView
 ----
 
 [%dynamic%close%hide_code,python]
 ----
-model=OverviewModel({{ reports_dfs }})
-view=OverviewView({{ application.overview_plots }})
-controller=OverviewController(model,view)
+model=AtomicOverviewModel({{ reports_dfs }})
+view=AtomicOverviewView({{ application.overview_plots }})
+controller=AtomicOverviewController(model,view)
 ----
 
 [%dynamic%open%hide_code,python]

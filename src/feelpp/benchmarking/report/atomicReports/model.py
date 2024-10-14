@@ -56,7 +56,7 @@ class AtomicReportModel(Model):
 
         return pd.DataFrame(processed_data)
 
-class OverviewModel(Model):
+class AtomicOverviewModel(Model):
     """ Model component of the useCase.
         This class holds the aggregated data for all atomic reports in a use case.
     """
