@@ -1,6 +1,6 @@
 import argparse
 
-from feelpp.benchmarking.report.handlers import ConfigHandler, GirderHandler
+from feelpp.benchmarking.report.config.handlers import ConfigHandler, GirderHandler
 from feelpp.benchmarking.report.atomicReports.repository import AtomicReportRepository
 from feelpp.benchmarking.report.machines.repository import MachineRepository
 from feelpp.benchmarking.report.applications.repository import ApplicationRepository
@@ -12,7 +12,7 @@ from feelpp.benchmarking.report.renderer import RendererFactory
 
 def main_cli():
     parser = argparse.ArgumentParser(description="Render all benchmarking reports")
-    parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./src/feelpp/benchmarking/report/config.json")
+    parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./src/feelpp/benchmarking/report/config/config.json")
     parser.add_argument("--json_output_path", type=str, help="Path to the output directory", default="reports")
     parser.add_argument("--modules_path", type=str, help="Path to the modules directory", default="./docs/modules/ROOT/pages")
     args = parser.parse_args()
