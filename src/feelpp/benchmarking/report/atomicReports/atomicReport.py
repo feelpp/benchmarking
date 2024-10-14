@@ -76,14 +76,8 @@ class AtomicReport:
             base_dir (str): The base directory where the report will be created
             renderer (Renderer): The renderer to use
         """
-
-        output_folder_path = f"{base_dir}/reports/"
-
-        if not os.path.exists(output_folder_path):
-            os.mkdir(output_folder_path)
-
         renderer.render(
-            f"{output_folder_path}/{self.filename()}.adoc",
+            f"{base_dir}/{self.filename()}.adoc",
             dict(
                 parent_catalogs = f"{self.application_id}-{self.use_case_id}-{self.machine_id},{self.machine_id}-{self.application_id}-{self.use_case_id},{self.use_case_id}-{self.application_id}-{self.machine_id}",
                 application_display_name = self.application.display_name,

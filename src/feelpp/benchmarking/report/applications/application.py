@@ -5,5 +5,6 @@ class Application(BaseComponent):
     Inherits from BaseComponent.
     Should be used to store information related to benchmarks of an application.
     """
-    def __init__(self, id, display_name, description):
+    def __init__(self, id, display_name, description, overview_plots):
         super().__init__(id, display_name, description)
+        self.overview_plots = overview_plots

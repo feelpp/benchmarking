@@ -1,5 +1,6 @@
 from feelpp.benchmarking.report.atomicReports.atomicReport import AtomicReport
 from feelpp.benchmarking.report.base.repository import Repository
+import os
 
 class AtomicReportRepository(Repository):
     """ Repository for atomic reports """
@@ -55,3 +56,72 @@ class AtomicReportRepository(Repository):
             machine.tree[application][use_case].append(atomic_report)
             application.tree[use_case][machine].append(atomic_report)
             use_case.tree[application][machine].append(atomic_report)
+
+
+    def createOverview(self,base_dir, renderer, application, use_case, machine, reports):
+        """Creates an overview for a single machine-app-use_case combination.
+        The master dataframe of the Atomic report models are passed to the template, serialized.
+        Args:
+            base_dir (str): The base directory where the report will be created
+            renderer (Renderer): The renderer to use
+            application (Application) : The application the overview belongs to,
+            use_case (UseCase) : The use case the overview belongs to,
+            machine (Machine) : The machine the overview belongs to,
+            reports (list[AtomicReport]). The atomic reports that are aggregated
+        """
+
+        renderer.render(
+            os.path.join(base_dir,f"overview-{application.id}_{use_case.id}_{machine.id}.adoc"),
+            dict(
+                parent_catalogs = f"{application.id}-{use_case.id}-{machine.id},{machine.id}-{application.id}-{use_case.id},{use_case.id}-{application.id}-{machine.id}",
+                reports_dfs = { report.date: report.model.master_df.to_dict(orient='dict') for report in reports },
+                application = application,
+                machine = machine,
+                use_case = use_case
+            )
+        )
+
+    def createOverviews(self, base_dir, renderer):
+        """ Create the overviews for an app-machine-usecase combination, from aggregating atomic report data, by grouping reports ignoring the date
+        Args:
+            base_dir (str): The base directory where the report will be created
+            renderer (Renderer): The renderer to use
+        """
+
+        if not os.path.exists(base_dir):
+            os.mkdir(base_dir)
+
+        grouped_atomic_reports = {}
+        for atomic_report in self.data:
+            overview_index = f"{atomic_report.application_id}_{atomic_report.use_case_id}_{atomic_report.machine_id}"
+
+            if overview_index not in grouped_atomic_reports:
+                grouped_atomic_reports[overview_index] = {
+                    "reports":[atomic_report],
+                    "application":atomic_report.application,
+                    "use_case":atomic_report.use_case,
+                    "machine":atomic_report.machine
+                }
+            else:
+                grouped_atomic_reports[overview_index]["reports"].append(atomic_report)
+
+        for ind,v in grouped_atomic_reports.items():
+            self.createOverview(
+                base_dir, renderer,
+                application=v["application"],
+                use_case=v["use_case"],
+                machine=v["machine"],
+                reports=v["reports"]
+            )
+
+    def createReports(self,base_dir, renderer):
+        """ Create all atomic reports under a single directory
+        Args:
+            base_dir (str): The base directory where the report will be created
+            renderer (Renderer): The renderer to use
+        """
+        if not os.path.exists(base_dir):
+            os.mkdir(base_dir)
+
+        for atomic_report in self.data:
+            atomic_report.createReport(base_dir,renderer)

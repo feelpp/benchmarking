@@ -82,7 +82,3 @@ class ModuleRepository(Repository):
         self.initModule(base_dir,renderer,self_tag_id=self.id, parent_id=parent_id)
         for item in self.data:
             item.initModules(os.path.join(base_dir,self.id), renderer, self.id)
-
-    def createOverviews(self, base_dir, renderer):
-        for item in self.data:
-            item.createOverviews(os.path.join(base_dir,self.id),renderer)

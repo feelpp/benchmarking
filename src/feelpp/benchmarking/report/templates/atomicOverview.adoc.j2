@@ -1,4 +1,4 @@
-= Use case report
+= Overview
 :page-plotly: true
 :page-jupyter: true
 :page-tags: toolbox, catalog
@@ -7,18 +7,23 @@
 :page-illustration: 
 :revdate: 
 
+
+- Application : {{ application.display_name }}
+- Use Case : {{ use_case.display_name }}
+- Machine : {{ machine.display_name }}
+
 [%dynamic%close%hide_code,python]
 ----
 from numpy import nan
-from feelpp.benchmarking.report.overview.controller import OverviewController
-from feelpp.benchmarking.report.overview.model import OverviewModel
-from feelpp.benchmarking.report.overview.view import OverviewView
+from feelpp.benchmarking.report.atomicReports.controller import OverviewController
+from feelpp.benchmarking.report.atomicReports.model import OverviewModel
+from feelpp.benchmarking.report.atomicReports.view import OverviewView
 ----
 
 [%dynamic%close%hide_code,python]
 ----
 model=OverviewModel({{ reports_dfs }})
-view=OverviewView()
+view=OverviewView({{ application.overview_plots }})
 controller=OverviewController(model,view)
 ----
 

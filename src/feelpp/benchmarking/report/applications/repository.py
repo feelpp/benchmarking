@@ -14,6 +14,7 @@ class ApplicationRepository(ModuleRepository):
                 id = app_id,
                 display_name = app_info["display_name"],
                 description = app_info["description"],
+                overview_plots = app_info["overview_plots"]
             )
             for app_id, app_info in applications_json.items()
         ]
