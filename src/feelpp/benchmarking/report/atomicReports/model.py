@@ -1,5 +1,6 @@
 from feelpp.benchmarking.report.base.model import Model
 import numpy as np
+import pandas as pd
 
 class AtomicReportModel(Model):
     """Model component for the atomic report """
