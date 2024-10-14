@@ -24,5 +24,5 @@ class AtomicReportController(Controller):
     pass
 
 
-class MachineController(Controller):
+class OverviewController(Controller):
     pass

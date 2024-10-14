@@ -1,4 +1,3 @@
-import os
 from feelpp.benchmarking.report.components.baseComponent import BaseComponent
 
 class UseCase(BaseComponent):
@@ -16,22 +15,3 @@ class UseCase(BaseComponent):
             description (str): The description of the test case
         """
         super().__init__(id, display_name, description)
-
-
-    def createOverview(self, base_dir, renderer):
-        """ Create the overview for an app-usecase combination, from aggregating atomic report data
-        Args:
-            base_dir (str): The base directory where the report will be created
-            renderer (Renderer): The renderer to use
-        """
-
-        for app, machines in self.tree.items():
-            super().createOverview(
-                os.path.join(base_dir,app.id),
-                renderer,
-                data = dict(
-                    parent_catalogs = f"{app.id}-{self.id}",
-                    application_display_name = app.display_name,
-                    use_case_display_name = self.display_name
-                )
-            )

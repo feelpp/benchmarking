@@ -7,24 +7,19 @@
 :page-illustration: 
 :revdate: 
 
-- Application : {{application_display_name}}
-- Machine : {{machine_display_name}}
-- Use case : {{use_case_display_name}}
-
-
 [%dynamic%close%hide_code,python]
 ----
 from numpy import nan
-from feelpp.benchmarking.report.components.controllers import MachineController
-from feelpp.benchmarking.report.components.models import MachineModel
-from feelpp.benchmarking.report.components.views import MachineView
+from feelpp.benchmarking.report.components.controllers import OverviewController
+from feelpp.benchmarking.report.components.models import OverviewModel
+from feelpp.benchmarking.report.components.views import OverviewView
 ----
 
 [%dynamic%close%hide_code,python]
 ----
-model=MachineModel({{ reports_dfs }})
-view=MachineView({{ plots_config }})
-controller=MachineController(model,view)
+model=OverviewModel({{ reports_dfs }})
+view=OverviewView()
+controller=OverviewController(model,view)
 ----
 
 [%dynamic%open%hide_code,python]

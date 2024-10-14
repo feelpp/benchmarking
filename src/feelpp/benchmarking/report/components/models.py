@@ -9,7 +9,7 @@ class Model:
     def buildMasterDf(self):
         pass
 
-class MachineModel(Model):
+class OverviewModel(Model):
     """ Model component of the useCase.
         This class holds the aggregated data for all atomic reports in a use case.
     """

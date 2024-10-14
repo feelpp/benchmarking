@@ -85,6 +85,24 @@ class BaseComponent:
 
         renderer.render(f"{output_folder_path}/overview.adoc", data )
 
+
+    def createOverviews(self, base_dir, renderer):
+        """ Create the overview for an app-machine-usecase combination, from aggregating atomic report data
+        Args:
+            base_dir (str): The base directory where the report will be created
+            renderer (Renderer): The renderer to use
+        """
+        for child, grandchildren in self.tree.items():
+            for grandchild, atomic_reports in grandchildren.items():
+                grandchild.createOverview(
+                    os.path.join(base_dir,self.id,child.id), renderer,
+                    data = dict(
+                        reports_dfs = { report.date: report.model.master_df.to_dict(orient='dict') for report in atomic_reports },
+                        parent_catalogs = f"{self.id}-{child.id}-{grandchild.id}",
+                    )
+                )
+
+
     def printHierarchy(self):
         """ Print the hierarchy of the component """
         print(f"{self.display_name}")
