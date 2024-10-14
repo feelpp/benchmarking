@@ -77,15 +77,15 @@ class AtomicReport:
             renderer (Renderer): The renderer to use
         """
 
-        output_folder_path = f"{base_dir}/{self.application_id}/{self.use_case_id}/{self.machine_id}"
+        output_folder_path = f"{base_dir}/reports/"
 
         if not os.path.exists(output_folder_path):
-            raise FileNotFoundError(f"The folder {output_folder_path} does not exist. Modules should be initialized beforehand ")
+            os.mkdir(output_folder_path)
 
         renderer.render(
             f"{output_folder_path}/{self.filename()}.adoc",
             dict(
-                parent_catalogs = f"{self.application_id}-{self.use_case_id}-{self.machine_id}",
+                parent_catalogs = f"{self.application_id}-{self.use_case_id}-{self.machine_id},{self.machine_id}-{self.application_id}-{self.use_case_id},{self.use_case_id}-{self.application_id}-{self.machine_id}",
                 application_display_name = self.application.display_name,
                 machine_id = self.machine.id, machine_display_name = self.machine.display_name,
                 session_info = self.session_info,

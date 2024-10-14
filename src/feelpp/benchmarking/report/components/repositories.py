@@ -2,7 +2,7 @@ from feelpp.benchmarking.report.components.atomicReport import AtomicReport
 from feelpp.benchmarking.report.components.application import Application
 from feelpp.benchmarking.report.components.machine import Machine
 from feelpp.benchmarking.report.components.testCase import UseCase
-
+import os
 
 class Repository:
     """ Base class for repositories.
@@ -37,16 +37,52 @@ class Repository:
          It will update the tree attribute of the items """
         pass
 
+    def indexData(self, parent_id, self_tag_id ):
+        """ Get the data for the index.adoc file for the repository
+        Args:
+            parent_id (str): The catalog id of the parent component
+            self_tag_id (str): The catalog id of the current component, to be used by their children as parent
+        Returns:
+            dict: The data for the index.adoc file
+        """
+        return dict(
+            title = self.display_name,
+            layout = "toolboxes",
+            tags = f"catalog, toolbox, {self_tag_id}",
+            description = self.description,
+            parent_catalogs = parent_id,
+            illustration = f"ROOT:{self.id}.jpg"
+        )
+
+    def initModule(self, base_dir, renderer, self_tag_id, parent_id = "catalog-index"):
+        """ Initialize the module for repository.
+        Creates the directory for the repository and renders the index.adoc file
+        Args:
+            base_dir (str): The base directory for the modules
+            renderer (Renderer): The renderer to use
+            self_tag_id (str): The catalog id of the current reposirory, to be used by their children as parent
+            parent_id (str): The catalog id of the parent component
+        """
+        module_path = os.path.join(base_dir, self.id)
+
+        if not os.path.exists(module_path):
+            os.mkdir(module_path)
+
+        renderer.render(
+            os.path.join(module_path,"index.adoc"),
+            self.indexData(parent_id,self_tag_id)
+        )
+
     def initModules(self, base_dir, renderer, parent_id = "catalog-index"):
-        """ Calls the initModules method of each item in the repository.
+        """ Inits the repository module and calls the initModules method of each item in the repository.
         Args:
             base_dir (str): The base directory for the modules
             renderer (Renderer): The renderer to use
             parent_id (str,optional): The catalog id of the parent component. Defaults to "supercomputers".
-
         """
+        self.initModule(base_dir,renderer,self_tag_id=self.id, parent_id=parent_id)
         for item in self.data:
-            item.initModules(base_dir, renderer, parent_id)
+            item.initModules(os.path.join(base_dir,self.id), renderer, self.id)
 
 class MachineRepository(Repository):
     """ Repository for machines """
@@ -63,7 +99,10 @@ class MachineRepository(Repository):
                 description = machine_info["description"],
             )
             for machine_id, machine_info in machines_json.items()
-    ]
+        ]
+        self.id = "machines"
+        self.display_name = "Supercomputers"
+        self.description = "EuroHPC ressources"
 
     def link(self, applications, use_cases, execution_mapping):
         """ Create the links between the machines and the applications and test cases depending on the execution mapping
@@ -98,7 +137,10 @@ class ApplicationRepository(Repository):
                 description = app_info["description"],
             )
             for app_id, app_info in applications_json.items()
-    ]
+        ]
+        self.id = "applications"
+        self.display_name = "Applications"
+        self.description = "Applications [description TODO]"
 
     def link(self, machines, use_cases, execution_mapping):
         """ Create the links between the applications and the machines and test cases depending on the execution mapping
@@ -135,6 +177,9 @@ class UseCaseRepository(Repository):
             )
             for use_case_id, use_case_info in use_cases_json.items()
         ]
+        self.id = "use_cases"
+        self.display_name = "Use Cases"
+        self.description = "Use cases for available applications"
 
     def link(self, applications, machines, execution_mapping):
         """ Create the links between the test cases and the applications and machines depending on the execution mapping

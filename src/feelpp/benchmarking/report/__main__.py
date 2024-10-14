@@ -34,14 +34,30 @@ def main_cli():
     use_case_report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/useCase.adoc.j2")
     report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
 
-    applications_base_dir = os.path.join(args.modules_path,"applications")
-    applications.initModules(applications_base_dir, index_renderer, parent_id="catalog-index")
+    print("----- APPLICATIONS VIEW -------")
+    applications.printHierarchy()
+    applications.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    print("-------------------------------")
 
-    for application in applications:
-        for use_case, machines in application.tree.items():
-            use_case.createOverview(applications_base_dir,use_case_report_renderer)
-            for machine, reports in machines.items():
-                machine.createOverview(applications_base_dir,machine_report_renderer)
+    print("----- MACHINES VIEW -------")
+    machines.printHierarchy()
+    machines.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    print("-------------------------------")
+
+    print("----- USE CASES VIEW -------")
+    use_cases.printHierarchy()
+    use_cases.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    print("-------------------------------")
+
+
+
+
+    # for application in applications:
+    #     for use_case, machines in application.tree.items():
+    #         use_case.createOverview(applications_base_dir,use_case_report_renderer)
+    #         for machine, reports in machines.items():
+    #             machine.createOverview(applications_base_dir,machine_report_renderer)
+
 
     for atomic_report in atomic_reports:
-        atomic_report.createReport(applications_base_dir,report_renderer)
+        atomic_report.createReport(args.modules_path,report_renderer)
