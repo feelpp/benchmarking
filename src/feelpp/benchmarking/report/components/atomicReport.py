@@ -5,15 +5,13 @@ class AtomicReport:
         Holds the data of benchmarks for a specific set of parameters.
         For example, in contains multiple executions with different number of cores, or different input files (but same test case), for a single machine and application.
     """
-    def __init__(self, application_id, machine_id, json_file, possible_use_cases):
+    def __init__(self, application_id, machine_id, json_file):
         """ Constructor for the AtomicReport class
         An atomic report is identified by a single application, machine and test case
         Args:
             application_id (str): The id of the application
             machine_id (str): The id of the machine
             json_file (str): The path to the JSON file
-            possible_use_cases (list): The possible test cases that can be found.
-                                        Only the first found will be set
         """
         self.data = self.parseJson(json_file)
 
@@ -21,11 +19,13 @@ class AtomicReport:
 
         self.application_id = application_id
         self.machine_id = machine_id
-        self.use_case_id = self.findUseCase(possible_use_cases)
+        self.use_case_id = self.findUseCase()
 
         self.application = None
         self.machine = None
         self.use_case = None
+
+        self.data["empty"] = all(testcase["perfvars"]==None for run in self.data["runs"] for testcase in run["testcases"])
 
     def setIndexes(self, application, machine, use_case):
         """ Set the indexes for the atomic report.
@@ -53,20 +53,11 @@ class AtomicReport:
 
         return data
 
-    def findUseCase(self, possible_use_cases):
+    def findUseCase(self):
         """ Find the test case of the report
-        Args:
-            possible_use_cases (list): The possible test cases that can be found.
-                                        Only the first found will be set
         """
-        use_case = "default"
-        if len(self.data["runs"]) == 0 or len(self.data["runs"][0]["testcases"]) == 0:
-            return use_case
-
-        for use_case in possible_use_cases:
-            if use_case in self.data["runs"][0]["testcases"][0]["tags"]:
-                return use_case
-
+        use_case = self.data["runs"][0]["testcases"][0]["check_vars"]["use_case"]
+        assert all( testcase["check_vars"]["use_case"] == use_case for run in self.data["runs"] for testcase in run["testcases"]), "useCase differ from one testcase to another"
         return use_case
 
     def filename(self):
@@ -114,3 +105,5 @@ class AtomicReport:
             f"{output_folder_path}/{self.filename()}.adoc",
             self.data
         )
+
+
