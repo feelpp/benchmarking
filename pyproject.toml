@@ -5,9 +5,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-'feelpp.benchmarking.feelpp_toolboxes.config' = ['*.json','benchConfigs/*.json']
-
 [project]
 name = "benchmarking"
 version = "0.0.1"
@@ -35,7 +32,8 @@ dependencies = [
   "Bottleneck==1.4.0",
   "scikit-learn==1.5.2",
   "jsonschema==4.23.0",
-  "girder-client==3.2.5"
+  "girder-client==3.2.5",
+  "pydantic==2.9.2"
 ]
 
 [project.urls]
@@ -47,7 +45,7 @@ test = ["pytest"]
 
 [project.scripts]
 render-benchmarks = "feelpp.benchmarking.report.__main__:main_cli"
-benchmark-toolbox = "feelpp.benchmarking.feelpp_toolboxes.launchProcess:launchReframe"
+execute-benchmark = "feelpp.benchmarking.reframe.__main__:main_cli"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
