@@ -2,7 +2,7 @@ import argparse,os
 from feelpp.benchmarking.report.handlers import ConfigHandler, GirderHandler
 from feelpp.benchmarking.report.components.repositories import AtomicReportRepository, MachineRepository, ApplicationRepository, UseCaseRepository
 
-from feelpp.benchmarking.report.renderer import Renderer
+from feelpp.benchmarking.report.renderer import RendererFactory
 
 
 
@@ -29,10 +29,7 @@ def main_cli():
     use_cases.link(applications, machines, config_handler.execution_mapping)
     atomic_reports.link(applications, machines, use_cases)
 
-    index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
-    machine_report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/machine.adoc.j2")
-    use_case_report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/useCase.adoc.j2")
-    report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
+    index_renderer = RendererFactory.create("index")
 
     print("----- APPLICATIONS VIEW -------")
     applications.printHierarchy()
@@ -59,5 +56,6 @@ def main_cli():
     #             machine.createOverview(applications_base_dir,machine_report_renderer)
 
 
+    report_renderer = RendererFactory.create("benchmark")
     for atomic_report in atomic_reports:
         atomic_report.createReport(args.modules_path,report_renderer)
