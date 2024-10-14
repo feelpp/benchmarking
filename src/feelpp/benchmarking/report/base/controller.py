@@ -18,11 +18,3 @@ class Controller:
         for plot_config in self.view.plots_config:
             for plot in FigureFactory.create(plot_config):
                 yield plot.createFigure(self.model.master_df)
-
-
-class AtomicReportController(Controller):
-    pass
-
-
-class OverviewController(Controller):
-    pass
