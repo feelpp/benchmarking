@@ -1,5 +1,5 @@
 import json, os
-from feelpp.benchmarking.report.components.models import AtomicReportModel
+from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
 
 class AtomicReport:
     """ Class representing an atomic report. i.e. a report indexed by date, test case, application and machine.

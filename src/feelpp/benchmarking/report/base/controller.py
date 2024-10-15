@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.components.figureFactory import FigureFactory
+from feelpp.benchmarking.report.figureFactory import FigureFactory
 
 class Controller:
     """ Controller component , it orchestrates the model with the view"""
