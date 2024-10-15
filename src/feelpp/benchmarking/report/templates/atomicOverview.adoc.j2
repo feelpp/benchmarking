@@ -15,16 +15,16 @@
 [%dynamic%close%hide_code,python]
 ----
 from numpy import nan
-from feelpp.benchmarking.report.atomicReports.controller import AtomicOverviewController
-from feelpp.benchmarking.report.atomicReports.model import AtomicOverviewModel
-from feelpp.benchmarking.report.atomicReports.view import AtomicOverviewView
+from feelpp.benchmarking.report.base.controller import Controller
+from feelpp.benchmarking.report.base.model import AggregationModel
+from feelpp.benchmarking.report.base.view import View
 ----
 
 [%dynamic%close%hide_code,python]
 ----
-model=AtomicOverviewModel({{ reports_dfs }})
-view=AtomicOverviewView({{ application.overview_plots }})
-controller=AtomicOverviewController(model,view)
+model=AggregationModel.fromDataframe({{ reports_df }})
+view=View({{ application.overview_plots }})
+controller=Controller(model,view)
 ----
 
 [%dynamic%open%hide_code,python]

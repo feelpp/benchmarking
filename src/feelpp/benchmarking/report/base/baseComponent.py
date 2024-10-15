@@ -1,4 +1,5 @@
 import os
+from feelpp.benchmarking.report.base.model import AggregationModel
 
 class BaseComponent:
     """ Base class for all components (machine, application, test case) """
@@ -15,6 +16,11 @@ class BaseComponent:
         self.description = description
 
         self.tree = {}
+
+        self.model_tree = {
+            "overview": None,
+            "children":{}
+        }
 
     def indexData(self,parent_id, self_tag_id):
         """ Get the data for the index.adoc file
@@ -77,3 +83,16 @@ class BaseComponent:
             print(f"\t{k.display_name}")
             for v,reports in vs.items():
                 print(f"\t\t{v.display_name} : {len(reports)}")
+
+    def initOverviewModels(self):
+        if self.tree == {}:
+            return
+        for child, grandchildren in self.tree.items():
+            self.model_tree["children"][child] = {
+                "overview":None,
+                "children":{}
+            }
+            for grandchild, reports in grandchildren.items():
+                self.model_tree["children"][child]["children"][grandchild] = AggregationModel({ report.date: report.model.master_df for report in reports }, index_label="date")
+            self.model_tree["children"][child]["overview"] = AggregationModel({ gc.id : model.master_df  for gc, model in self.model_tree["children"][child]["children"].items()}, index_label=grandchild.type)
+        self.model_tree["overview"] = AggregationModel({ch.id : v["overview"].master_df for ch, v in self.model_tree["children"].items() },index_label=child.type)

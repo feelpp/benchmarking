@@ -34,26 +34,28 @@ def main_cli():
     atomic_reports.link(applications, machines, use_cases)
 
     index_renderer = RendererFactory.create("index")
+    overview_renderer = RendererFactory.create("atomic_overview")
 
     print("----- APPLICATIONS VIEW -------")
     applications.printHierarchy()
     applications.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    applications.initOverviewModels()
+    applications.createOverviews(args.modules_path,overview_renderer)
     print("-------------------------------")
 
     print("----- MACHINES VIEW -------")
     machines.printHierarchy()
     machines.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    machines.initOverviewModels()
+    machines.createOverviews(args.modules_path,overview_renderer)
     print("-------------------------------")
 
     print("----- USE CASES VIEW -------")
     use_cases.printHierarchy()
     use_cases.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    use_cases.initOverviewModels()
+    use_cases.createOverviews(args.modules_path,overview_renderer)
     print("-------------------------------")
-
-
-    overview_renderer = RendererFactory.create("atomic_overview")
-    atomic_reports.createOverviews(os.path.join(args.modules_path,"overviews"),overview_renderer)
-
 
     report_renderer = RendererFactory.create("benchmark")
     atomic_reports.createReports(os.path.join(args.modules_path,"reports"),report_renderer)
