@@ -16,10 +16,11 @@ class AggregationModel(Model):
         parsed_dfs = []
         for ind, df in dfs_dict.items():
             parsed_df = pd.DataFrame(df)
-            parsed_df[index_label] = ind
+            parsed_df = parsed_df.T.set_index([[ind]*df.shape[1],parsed_df.columns]).T
+            parsed_df.columns = parsed_df.columns.rename([index_label]+parsed_df.columns.names[1:])
             parsed_dfs.append(parsed_df)
 
-        return pd.concat(parsed_dfs ,axis=0,ignore_index=True)
+        return pd.concat(parsed_dfs,axis=0,ignore_index=False).sort_index()
 
     @classmethod
     def fromDataframe(cls, df):

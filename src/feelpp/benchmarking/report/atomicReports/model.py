@@ -20,7 +20,6 @@ class AtomicReportModel(Model):
         for i,testcase in enumerate(runs[0]["testcases"]): #TODO: support multiple runs
             if not testcase["perfvars"]:
                 tmp_dct = {
-                    "testcase_i" :i,
                     "performance_variable": "",
                     "value": None,
                     "unit": "",
@@ -38,7 +37,6 @@ class AtomicReportModel(Model):
 
             for perfvar in testcase["perfvars"]:
                 tmp_dct = {}
-                tmp_dct["testcase_i"] = i
                 tmp_dct["performance_variable"] = perfvar["name"]
                 tmp_dct["value"] = float(perfvar["value"])
                 tmp_dct["unit"] = perfvar["unit"]
@@ -54,4 +52,4 @@ class AtomicReportModel(Model):
 
                 processed_data.append(tmp_dct)
 
-        return pd.DataFrame(processed_data)
+        return pd.DataFrame(processed_data).pivot(columns="performance_variable",index=list(testcase["check_params"].keys())).swaplevel(0,1,axis=1).sort_index(axis=1)
