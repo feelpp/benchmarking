@@ -1,4 +1,4 @@
-import os, json
+import os, json, io
 import girder_client
 
 class DownloadHandler:
@@ -42,13 +42,15 @@ class GirderHandler(DownloadHandler):
 
         return os.listdir(f"{self.download_base_dir}/{output_dir}")
 
-    def uploadFileToFolder(self, input_filepath, folder_id):
-        """ Upload a local file to an existing folder in Girder
+    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True):
+        """ Upload a local file to an existing folder/item in Girder
         Args:
-            input_filepath: The path of the file to upload
-            folder_id (str): The ID of the Girder folder to upload to
+            file_pattern: The file pattern of the files to upload
+            parent_id (str): The ID of the Girder folder/item to upload to
+            parent_type (str) : "folder" or "item". Defaults to "folder"
+            leaf_folder_as_items (bool): Whether to upload leaf folders as items or files
         """
-        self.client.upload(filePattern=input_filepath, parentId=folder_id, parentType="folder")
+        self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items)
 
 
 class ConfigHandler:

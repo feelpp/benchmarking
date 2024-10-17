@@ -1,78 +1,109 @@
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-
-class MetricStrategy:
-    """ Abstract Strategy class for metrics"""
-    def calculate(self,data):
-        """ Calculates a metric from the data
-        Args:
-            data (pd.DataFrame): data to extract the metric from
-        """
-        raise NotImplementedError
 
 
-class PerformanceStrategy(MetricStrategy):
-    """ Strategy to get the performance of a reframe test by the stage"""
-    def __init__(self, unit, dimensions,stage=None):
-        """ Set the unit and dimensiosn
-        Args:
-            unit (str): Unit to filter by in order to not combine different values (e.g. Don't mix seconds with iterations)
-            dimensions (list[str]): List of dimensions to index by (e.g. Mesh size, number of tasks, solvers, etc.)
-            stage (str): Name of the stage to filter. If None, the performance by stage is computed. Defaults to None.
-        """
-        self.unit = unit
-        assert 1 <= len(dimensions) <=2, "More than two dimensions are not supported"
-        self.dimensions = dimensions
-        self.stage = stage
-
-    def calculate(self, df):
-        """ Groups the dataframe by stage name
-        Args:
-            df (pd.DataFrame) : the master dataframe
-        Return:
-            pd.DataFrame : Pivot dataframe having dimensions as index and stage names as columns
-        """
-        #TODO: THIS IS WRONG, THE TOTAL COLUMN SHOULD BE SPECIFIED IN THE JSON
-        if not self.stage:
-            pivot = pd.pivot_table(df[(df["unit"] == self.unit)], values="value", index=self.dimensions,columns="stage_name",aggfunc="sum")
-            pivot.name = None
-        else:
-            pivot = pd.pivot_table(df[(df["unit"] == self.unit)&(df["stage_name"] == self.stage)], values="value", index=self.dimensions,columns="partial_name",aggfunc="sum")
-            pivot.name = self.stage
-
-        return pivot
-
-class SpeedupStrategy(MetricStrategy):
-    """ Strategy to get the speedup of a reframe test by the stage, depending on the dimension"""
-    def __init__(self,dimension,stage = None):
-        self.dimension = dimension
-        self.stage = stage
+class TransformationStrategy:
+    """ Abstract class for transformation strategies"""
+    def __init__(self):
+        pass
 
     def calculate(self,df):
-        """ Compute the speedup for a given dimension, including optimal and half optimal speedups
-        Args
-            df (pd.DataFrame) : The master dataframe
+        """ abstract method for transforming a dataframe depending on the strategy"""
+        raise NotImplementedError("Not to be called directly.")
+
+
+class PerformanceStrategy(TransformationStrategy):
+    """ Strategy that pivots a dataframe on given dimensions"""
+    def __init__(self,dimensions,variables):
+        super().__init__()
+        self.dimensions = dimensions
+        self.variables = variables
+
+    def calculate(self,df):
+        """ Pivots dataframe, setting "performance_variable" values as columns, "value" as cell values, and dimensions as indexes.
+            Then filters depending on the specified variables
+            If the dataframe contains duplicated values for a given dimension, the values are aggregated (mean).
+        Args:
+            df (pd.DataFrame): The master dataframe containing all the data from the reframe test
         Returns:
-            pd.DataFrame, Dataframe having the dimension (nb_cores, mesh size) in index and stage as columns ( including total, optimal and half-optimal speedup)
+            pd.DataFrame: The pivoted and filtered dataframe (can be multiindex)
         """
-        pivot = PerformanceStrategy(unit="s",dimensions=[self.dimension],stage=self.stage).calculate(df)
+        return pd.pivot_table(df,values="value",columns="performance_variable",index=self.dimensions,aggfunc="mean").loc[:,self.variables]
 
-        speedup = pd.DataFrame(pivot.loc[pivot.index.min(),:]/pivot)
+class RelativePerformanceStrategy(PerformanceStrategy):
+    """ Strategy that pivots a dataframe on given dimensions and computes the relative (%) values to the sum of the columns"""
+    def __init__(self, dimensions, variables):
+        super().__init__(dimensions, variables)
 
-        for col in pivot.columns:
-            model = LinearRegression()
-            tmp = speedup.loc[:,col].dropna(axis=0)
-            x = tmp.index.values.reshape(-1,1)
-            y = tmp.values
-            model.fit(x,y)
-            speedup.loc[tmp.index,col+"_linearReg"] = model.predict(x)
+    def calculate(self,df):
+        """ Pivots dataframe, setting "performance_variable" values as columns, "value" as cell values, and dimensions as indexes.
+            Then filters depending on the specified variables
+            If the dataframe contains duplicated values for a given dimension, the values are aggregated (mean).
+            Finally, the relative values to the total (percentage) are computed, for each one of the columns.
+        Args:
+            df (pd.DataFrame): The master dataframe containing all the data from the reframe test
+        Returns:
+            pd.DataFrame: The pivoted and filtered relative (%) values dataframe (can be multiindex)
+        """
+        pivot = super().calculate(df)
+        return 100*((pivot.T / pivot.sum(axis=1)).T)
 
-        speedup["Optimal"] = speedup.index / speedup.index.min()
-        speedup["HalfOptimal"] = speedup.index / (2*speedup.index.min())
-        speedup.loc[speedup.index.min(),"HalfOptimal"] = 1
+class SpeedupStrategy(TransformationStrategy):
+    """ Strategy that computes the speedup of a dataset on given dimensions """
+    def __init__(self,dimensions,variables):
+        super().__init__()
+        self.dimensions = dimensions
+        self.variables = variables
 
-        speedup.name = self.stage
+    def calculate(self,df):
+        """ Computes the "speedup" of the data for the FIRST dimension specified.
+            Pivots dataframe, setting "performance_variable" values as columns, "value" as cell values, and dimensions as indexes.
+            Then filters depending on the specified variables
+            If the dataframe contains duplicated values for a given dimension, the values are aggregated (mean).
+            Finally, the speedup is computed on the pivot
+        Args:
+            df (pd.DataFrame): The master dataframe containing all the data from the reframe test
+        Returns:
+            pd.DataFrame: The pivoted dataframe representing the speedup (can be multiindex)
+        """
+        pivot = PerformanceStrategy(
+            dimensions=self.dimensions,
+            variables=self.variables
+        ).calculate(df)
 
-        return speedup
+        if isinstance(pivot.index, pd.MultiIndex):
+            return pivot.xs(pivot.index.get_level_values(self.dimensions[0]).min(),level=self.dimensions[0],axis=0) / pivot
+        else:
+            return pivot.loc[pivot.index.min(),:] / pivot
 
+class StrategyFactory:
+    """ Factory class to dispatch concrete transformation strategies"""
+    @staticmethod
+    def create(plot_config):
+        """ Creates a concrete strategy
+        Args:
+            plot_config (Plot). Pydantic object with the plot configuration information
+        """
+        dimensions = [plot_config.xaxis.parameter]
+        if plot_config.secondary_axis and plot_config.secondary_axis.parameter:
+            dimensions.append(plot_config.secondary_axis.parameter)
+        if plot_config.yaxis and plot_config.yaxis.parameter:
+            dimensions.append(plot_config.yaxis.parameter)
+
+        if plot_config.transformation == "performance":
+            return PerformanceStrategy(
+                dimensions=dimensions,
+                variables=plot_config.variables
+            )
+        elif plot_config.transformation == "speedup":
+            return SpeedupStrategy(
+                dimensions=dimensions,
+                variables=plot_config.variables
+            )
+        elif plot_config.transformation == "relative_performance":
+            return RelativePerformanceStrategy(
+                dimensions=dimensions,
+                variables=plot_config.variables
+            )
+        else:
+            raise NotImplementedError
 

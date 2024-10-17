@@ -178,14 +178,16 @@ class AtomicReportRepository(Repository):
         for app_id, app_info in benchmarking_config_json.items():
             for machine_id, machine_info in app_info.items():
                 outdir = f"{app_id}/{machine_id}"
-                json_filenames = download_handler.downloadFolder(machine_info["girder_folder_id"], output_dir=outdir)
-                for json_file in json_filenames:
-                    json_file = f"{download_handler.download_base_dir}/{outdir}/{json_file}"
+                report_base_dirs = download_handler.downloadFolder(machine_info["girder_folder_id"], output_dir=outdir)
+                for report_base_dir in report_base_dirs:
+                    reframe_report_json = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/reframe_report.json"
+                    plots_config_json = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/plots.json"
                     self.add(
                         AtomicReport(
                             application_id = app_id,
                             machine_id = machine_id,
-                            json_file = json_file,
+                            reframe_report_json = reframe_report_json,
+                            plot_config_json=plots_config_json
                         )
                     )
 
