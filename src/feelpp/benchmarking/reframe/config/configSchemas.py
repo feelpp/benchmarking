@@ -94,11 +94,15 @@ class PlotAxis(BaseModel):
     parameter: Optional[str] = None
     label:str
 
+class Aggregation(BaseModel):
+    column: str
+    agg: Literal["sum","mean","min","max"]
 class Plot(BaseModel):
     title:str
     plot_types:List[Literal["scatter","table","stacked_bar"]]
-    transformation:Literal["performance","relative_performance","performance_sum","speedup"]
-    variables:List[str]
+    transformation:Literal["performance","relative_performance","speedup"]
+    aggregations:Optional[List[Aggregation]] = None
+    variables:Optional[List[str]] = None
     names:List[str]
     xaxis:PlotAxis
     secondary_axis:Optional[PlotAxis] = None
