@@ -32,15 +32,13 @@ class ScatterFigure(Figure):
             go.Figure: Scatter animation where the secondary_ axis corresponds to a specified parameter
         """
         frames = []
-
-        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.key).unique().values
-
+        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
         range_epsilon= 0.01
 
         ranges=[]
 
         for j,dim in enumerate(anim_dimension_values):
-            frame_df = df.xs(dim,level=self.config.secondary_axis.key,axis=0)
+            frame_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
             frames.append([
                 go.Scatter(
                     x = frame_df.index,
@@ -188,13 +186,13 @@ class StackedBarFigure(Figure):
         """
         fig = px.bar(
             df.reset_index().astype({
-                self.config.secondary_axis.key:"str",
-                self.config.xaxis.key:"str"
+                self.config.secondary_axis.parameter:"str",
+                self.config.xaxis.parameter:"str"
             }).rename(
                 columns = {
                     k:v
                     for k,v in zip(
-                        self.config.variables + [self.config.xaxis.key, self.config.secondary_axis.key],
+                        self.config.variables + [self.config.xaxis.parameter, self.config.secondary_axis.parameter],
                         self.config.names + [self.config.xaxis.label, self.config.secondary_axis.label],
                     )
                 },

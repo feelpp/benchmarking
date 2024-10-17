@@ -19,7 +19,7 @@ class AggregationModel(Model):
             parsed_df[index_label] = ind
             parsed_dfs.append(parsed_df)
 
-        return pd.concat(parsed_dfs,axis=0,ignore_index=False)
+        return pd.concat(parsed_dfs,axis=0,ignore_index=True)
 
 
     @classmethod

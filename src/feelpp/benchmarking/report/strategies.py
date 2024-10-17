@@ -27,7 +27,12 @@ class PerformanceStrategy(TransformationStrategy):
         Returns:
             pd.DataFrame: The pivoted and filtered dataframe (can be multiindex)
         """
-        return df[df["performance_variable"].isin(self.variables)].pivot(index=[self.dimensions["secondary_axis"],self.dimensions["xaxis"]],values="value",columns=self.dimensions["color_axis"])
+        index = []
+        if self.dimensions["secondary_axis"]:
+            index.append(self.dimensions["secondary_axis"])
+        if self.dimensions["xaxis"]:
+            index.append(self.dimensions["xaxis"])
+        return df[df["performance_variable"].isin(self.variables)].pivot(index=index,values="value",columns=self.dimensions["color_axis"])
 
 class RelativePerformanceStrategy(PerformanceStrategy):
     """ Strategy that pivots a dataframe on given dimensions and computes the relative (%) values to the sum of the columns"""
@@ -53,7 +58,12 @@ class PerformanceSumStrategy(TransformationStrategy):
         super().__init__(dimensions,variables)
 
     def calculate(self,df):
-        return df[df["performance_variable"].isin(self.variables)].pivot_table(index=[self.dimensions["secondary_axis"],self.dimensions["xaxis"]],values="value",columns=self.dimensions["color_axis"],aggfunc="sum")
+        index = []
+        if self.dimensions["secondary_axis"]:
+            index.append(self.dimensions["secondary_axis"])
+        if self.dimensions["xaxis"]:
+            index.append(self.dimensions["xaxis"])
+        return df[df["performance_variable"].isin(self.variables)].pivot_table(index=index,values="value",columns=self.dimensions["color_axis"],aggfunc="sum")
 
 
 
@@ -92,7 +102,7 @@ class StrategyFactory:
         dimensions = {
             "xaxis" : plot_config.xaxis.parameter,
             "secondary_axis" : plot_config.secondary_axis.parameter if plot_config.secondary_axis and plot_config.secondary_axis.parameter else None,
-            "color_axis" : plot_config.color_axis.parameter if plot_config.color_axis and plot_config.color_axis.parameter else None,
+            "color_axis" : plot_config.color_axis.parameter if plot_config.color_axis and plot_config.color_axis.parameter else "performance_variable",
         }
 
         if plot_config.transformation == "performance":
