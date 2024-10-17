@@ -5,7 +5,7 @@ from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
 from feelpp.benchmarking.report.handlers import GirderHandler
-
+import json
 
 
 class CommandBuilder:
@@ -59,17 +59,23 @@ def main_cli():
 
         #============ UPLOAD REPORTS TO GIRDER ================#
         if app_config.upload.active:
-            match app_config.upload.platform:
-                case "girder":
-                    girder_handler = GirderHandler(download_base_dir=None)
-                    girder_handler.uploadFileToFolder(
-                        cmd_builder.buildReportFilePath(app_config.executable),
-                        app_config.upload.folder_id
-                    )
-                case _:
-                    raise NotImplementedError
+            if app_config.upload.platform == "girder":
+                girder_handler = GirderHandler(download_base_dir=None)
+                rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)
+                rfm_report_dir = rfm_report_filepath.replace(".json","")
+
+                os.mkdir(rfm_report_dir)
+                os.rename(rfm_report_filepath,os.path.join(rfm_report_dir,"reframe_report.json"))
+
+                with open(os.path.join(rfm_report_dir,"plots.json"),"w") as f:
+                    f.write(json.dumps([p.model_dump() for p in app_config.plots]))
+
+
+                #Upload reframe report
+                girder_handler.upload(
+                    rfm_report_dir,
+                    app_config.upload.folder_id
+                )
+            else:
+                raise NotImplementedError
         #======================================================#
-
-
-if __name__ == "__main__":
-    main_cli()

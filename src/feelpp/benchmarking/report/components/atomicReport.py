@@ -1,19 +1,26 @@
 import json, os
+from feelpp.benchmarking.report.components.figureFactory import FigureFactory
+from feelpp.benchmarking.reframe.config.configSchemas import Plot
+import numpy as np
+import pandas as pd
 
 class AtomicReport:
     """ Class representing an atomic report. i.e. a report indexed by date, test case, application and machine.
         Holds the data of benchmarks for a specific set of parameters.
         For example, in contains multiple executions with different number of cores, or different input files (but same test case), for a single machine and application.
     """
-    def __init__(self, application_id, machine_id, json_file):
+    def __init__(self, application_id, machine_id, reframe_report_json, plot_config_json):
         """ Constructor for the AtomicReport class
         An atomic report is identified by a single application, machine and test case
         Args:
             application_id (str): The id of the application
             machine_id (str): The id of the machine
-            json_file (str): The path to the JSON file
+            reframe_report_json (str): The path to the reframe report JSON file
+            plot_config_json (str): The path to the plot configuration file (usually comes with the reframe report)
         """
-        self.data = self.parseJson(json_file)
+        self.data = self.parseJson(reframe_report_json)
+
+        self.data["plots_config_filepath"] = plot_config_json
 
         self.date = self.data["session_info"]["time_start"]
 
@@ -107,3 +114,95 @@ class AtomicReport:
         )
 
 
+class AtomicReportController:
+    """ Controller component of the Atomic Report, it orchestrates the model with the view"""
+    def __init__(self, model, view):
+        """
+        Args:
+            model (AtomicReportModel): The atomic report model component
+            view (AtomicReportView): The atomic report view component
+        """
+        self.model = model
+        self.view = view
+
+    def generateAll(self):
+        """ Creates plotly figures for each plot specified on the view config file
+        Returns a list of plotly figures.
+        """
+        #TODO: Can be a generator
+        figs = []
+        for plot_config in self.view.plots_config:
+            for plot in FigureFactory.create(plot_config):
+                figs.append(plot.createFigure(self.model.master_df))
+        return figs
+
+
+class AtomicReportModel:
+    """Model component for the atomic report """
+    def __init__(self, file_path):
+        """ Parses the JSON data, extracts the dimensions of the tests and builds a master df used by other classes"""
+        self.buildMasterDf( self.parseJson(file_path) )
+
+    def parseJson(self, file_path):
+        """ Load a json file
+        Args:
+            file_path (str): The JSON file to parse
+        """
+        with open(file_path, 'r') as file:
+            data = json.load(file)["runs"][0] #TODO: support multiple runs
+        return data
+
+
+    def buildMasterDf(self,data):
+        """Build a dataframe where each row is indexed by a perfvar and its respective values
+        Args:
+            data (dict): The parsed JSON data
+        """
+        processed_data = []
+
+        for i,testcase in enumerate(data["testcases"]):
+            if not testcase["perfvars"]:
+                tmp_dct = {
+                    "testcase_i" :i,
+                    "performance_variable": "",
+                    "value": None,
+                    "unit": "",
+                    "reference": None,
+                    "thres_lower": None,
+                    "thres_upper": None,
+                    "status": None,
+                    "absolute_error": None,
+                    "testcase_time_run": testcase["time_run"]
+                }
+                for dim, v in testcase["check_params"].items():
+                    tmp_dct[dim] = v
+                processed_data.append(tmp_dct)
+                continue
+
+            for perfvar in testcase["perfvars"]:
+                tmp_dct = {}
+                tmp_dct["testcase_i"] = i
+                tmp_dct["performance_variable"] = perfvar["name"]
+                tmp_dct["value"] = float(perfvar["value"])
+                tmp_dct["unit"] = perfvar["unit"]
+                tmp_dct["reference"] = float(perfvar["reference"]) if perfvar["reference"] else np.nan
+                tmp_dct["thres_lower"] = float(perfvar["thres_lower"]) if perfvar["thres_lower"] else np.nan
+                tmp_dct["thres_upper"] = float(perfvar["thres_upper"]) if perfvar["thres_upper"] else np.nan
+                tmp_dct["status"] = tmp_dct["thres_lower"] <= tmp_dct["value"] <= tmp_dct["thres_upper"] if not np.isnan(tmp_dct["thres_lower"]) and not np.isnan(tmp_dct["thres_upper"]) else np.nan
+                tmp_dct["absolute_error"] = np.abs(tmp_dct["value"] - tmp_dct["reference"])
+                tmp_dct["testcase_time_run"] = testcase["time_run"]
+
+                for dim, v in testcase["check_params"].items():
+                    tmp_dct[dim] = v
+
+                processed_data.append(tmp_dct)
+
+        self.master_df = pd.DataFrame(processed_data)
+
+class AtomicReportView:
+    """ View component for the Atomic Report, it contains all figure generation related code """
+    def __init__(self,plots_config_path):
+        """ Opens and parses the plots config file. This file tells what plots to show and how to display them"""
+        with open(plots_config_path, 'r') as file:
+            data = json.load(file)
+        self.plots_config = [Plot(**d) for d in data]

@@ -1,6 +1,5 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel
-from typing import Literal, Union, Annotated, Optional
-from annotated_types import Len
+from typing import Literal, Union, Optional, List
 import shutil, os
 
 class BaseRange(BaseModel):
@@ -34,10 +33,10 @@ class CoresRange(BaseRange):
         return v
 
 class StepRange(BaseRange):
-    min: float | int
-    max: float | int
+    min: Union[float,int]
+    max: Union[float,int]
 
-    step: Optional[float|int] = None
+    step: Optional[Union[float,int]] = None
     n_steps: Optional[int] = None
 
     @field_validator("mode",mode="after")
@@ -47,7 +46,7 @@ class StepRange(BaseRange):
         return v
 
 class ListRange(BaseRange):
-    sequence : Annotated[list[str | float | int], Len(min_length=1)]
+    sequence : List[Union[float,int,str]]
 
     @field_validator("mode",mode="after")
     @classmethod
@@ -55,6 +54,11 @@ class ListRange(BaseRange):
         assert v == "list", "Incorrect mode for List range"
         return v
 
+    @field_validator("sequence",mode="before")
+    @classmethod
+    def checkMode(cls,v):
+        assert len(v)>1, "Sequence must contain at least one element"
+        return v
 
 class Parameter(BaseModel):
     name:str
@@ -63,8 +67,8 @@ class Parameter(BaseModel):
 
 
 class Sanity(BaseModel):
-    success:list[str]
-    error:list[str]
+    success:List[str]
+    error:List[str]
 
 class Stage(BaseModel):
     name:str
@@ -73,7 +77,7 @@ class Stage(BaseModel):
 
 class Scalability(BaseModel):
     directory: str
-    stages: list[Stage]
+    stages: List[Stage]
 
 class AppOutput(BaseModel):
     instance_path: str
@@ -83,18 +87,42 @@ class AppOutput(BaseModel):
 class Upload(BaseModel):
     active:bool
     platform:Literal["girder","ckan"]
-    folder_id:str | int
+    folder_id: Union[str,int]
+
+
+class PlotAxis(BaseModel):
+    parameter: Optional[str] = None
+    label:str
+
+class Plot(BaseModel):
+    title:str
+    plot_types:List[Literal["scatter","table","stacked_bar"]]
+    transformation:Literal["performance","relative_performance","speedup"]
+    variables:List[str]
+    names:List[str]
+    xaxis:PlotAxis
+    secondary_axis:Optional[PlotAxis] = None
+    yaxis:PlotAxis
+
+
+    @field_validator("xaxis","secondary_axis", mode="after")
+    def checExecutableInstalled(cls, v):
+        """ Checks that the parameter field is specified for xaxis and secondary_axis field"""
+        if v:
+            assert v.parameter is not None
+        return v
 
 
 class ConfigFile(BaseModel):
     executable: str
     use_case_name: str
-    options: list[str]
-    outputs: list[AppOutput]
+    options: List[str]
+    outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
     upload: Upload
-    parameters: list[Parameter]
+    parameters: List[Parameter]
+    plots: List[Plot]
 
     @field_validator('executable', mode="before")
     def checExecutableInstalled(cls, v):
@@ -104,17 +132,28 @@ class ConfigFile(BaseModel):
         return v
 
 
+    @model_validator(mode="after")
+    def checkPlotAxisParameters(self):
+        """ Checks that the plot axis parameter field corresponds to existing parameters"""
+        for plot in self.plots:
+            assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
+            if plot.secondary_axis:
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.secondary_axis.parameter}"
+            if plot.yaxis.parameter:
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+        return self
+
 class MachineConfig(BaseModel):
     hostname:str
     active: bool
     execution_policy:Literal["serial","async"]
     exclusive_access:bool
-    valid_systems:list[str] = ["*"],
-    valid_prog_environs:list[str] = ["*"]
-    launch_options: list[str]
+    valid_systems:List[str] = ["*"],
+    valid_prog_environs:List[str] = ["*"]
+    launch_options: List[str]
     omp_num_threads: int
     reframe_base_dir:str
     reports_base_dir:str
 
 class ExecutionConfigFile(RootModel):
-    Annotated[list[MachineConfig], Len(min_length=1)]
+    List[MachineConfig]
