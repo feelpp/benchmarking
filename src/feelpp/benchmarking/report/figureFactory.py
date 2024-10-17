@@ -33,29 +33,29 @@ class ScatterFigure(Figure):
         """
         frames = []
 
-        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
+        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.key).unique().values
 
         range_epsilon= 0.01
 
         ranges=[]
 
         for j,dim in enumerate(anim_dimension_values):
-            partial_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
+            frame_df = df.xs(dim,level=self.config.secondary_axis.key,axis=0)
             frames.append([
                 go.Scatter(
-                    x = partial_df.index,
-                    y = partial_df.loc[:,col],
+                    x = frame_df.index,
+                    y = frame_df.loc[:,col],
                     name=name
                 )
                 for name,col in (
-                    zip(self.config.names,partial_df.columns)
-                    if len(self.config.names) == len(partial_df.columns)
-                    else zip(partial_df.columns,partial_df.columns)
+                    zip(self.config.names,frame_df.columns)
+                    if len(self.config.names) == len(frame_df.columns)
+                    else zip(frame_df.columns,frame_df.columns)
                 )
             ])
             ranges.append([
-                partial_df.min().min() - partial_df.min().min()*range_epsilon,
-                partial_df.max().max() + partial_df.min().min()*range_epsilon
+                frame_df.min().min() - frame_df.min().min()*range_epsilon,
+                frame_df.max().max() + frame_df.min().min()*range_epsilon
             ])
 
         fig = go.Figure(
@@ -188,13 +188,13 @@ class StackedBarFigure(Figure):
         """
         fig = px.bar(
             df.reset_index().astype({
-                self.config.secondary_axis.parameter:"str",
-                self.config.xaxis.parameter:"str"
+                self.config.secondary_axis.key:"str",
+                self.config.xaxis.key:"str"
             }).rename(
                 columns = {
                     k:v
                     for k,v in zip(
-                        self.config.variables + [self.config.xaxis.parameter, self.config.secondary_axis.parameter],
+                        self.config.variables + [self.config.xaxis.key, self.config.secondary_axis.key],
                         self.config.names + [self.config.xaxis.label, self.config.secondary_axis.label],
                     )
                 },

@@ -52,4 +52,4 @@ class AtomicReportModel(Model):
 
                 processed_data.append(tmp_dct)
 
-        return pd.DataFrame(processed_data).pivot(columns="performance_variable",index=list(testcase["check_params"].keys())).swaplevel(0,1,axis=1).sort_index(axis=1)
+        return pd.DataFrame(processed_data)
