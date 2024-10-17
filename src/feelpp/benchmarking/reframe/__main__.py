@@ -27,7 +27,7 @@ class CommandBuilder:
     def buildReportFilePath(self,executable):
         return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.hostname,f"{self.current_date}.json"))
 
-    def build_command(self,executable):
+    def buildCommand(self,executable):
         cmd = [
             'reframe',
             f'-C {self.buildConfigFilePath()}',
@@ -54,7 +54,7 @@ def main_cli():
     for config_filepath in parser.args.config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
         app_config = ConfigReader(config_filepath,ConfigFile).config
-        reframe_cmd = cmd_builder.build_command(app_config.executable)
+        reframe_cmd = cmd_builder.buildCommand(app_config.executable)
         os.system(reframe_cmd)
 
         #============ UPLOAD REPORTS TO GIRDER ================#
