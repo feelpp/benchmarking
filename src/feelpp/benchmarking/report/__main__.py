@@ -1,4 +1,4 @@
-import argparse, os
+import argparse, os, json
 
 from feelpp.benchmarking.report.config.handlers import ConfigHandler, GirderHandler
 from feelpp.benchmarking.report.atomicReports.repository import AtomicReportRepository
@@ -36,24 +36,27 @@ def main_cli():
     index_renderer = RendererFactory.create("index")
     overview_renderer = RendererFactory.create("atomic_overview")
 
+    with open("./src/feelpp/benchmarking/report/config/overviewConfig.json","r") as f:
+        overview_config = json.load(f)
+
     print("----- APPLICATIONS VIEW -------")
     applications.printHierarchy()
     applications.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
-    applications.initOverviewModels()
+    applications.initOverviewModels(overview_config)
     applications.createOverviews(args.modules_path,overview_renderer)
     print("-------------------------------")
 
     print("----- MACHINES VIEW -------")
     machines.printHierarchy()
     machines.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
-    machines.initOverviewModels()
+    machines.initOverviewModels(overview_config)
     machines.createOverviews(args.modules_path,overview_renderer)
     print("-------------------------------")
 
     print("----- USE CASES VIEW -------")
     use_cases.printHierarchy()
     use_cases.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
-    use_cases.initOverviewModels()
+    use_cases.initOverviewModels(overview_config)
     use_cases.createOverviews(args.modules_path,overview_renderer)
     print("-------------------------------")
 

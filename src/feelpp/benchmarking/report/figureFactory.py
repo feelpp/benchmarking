@@ -90,8 +90,8 @@ class ScatterFigure(Figure):
         """
         return go.Figure(
             data = [
-                go.Scatter( x = df.index, y = df.loc[:,col], name = name )
-                for name,col in zip(self.config.names,df.columns)
+                go.Scatter( x = df.index, y = df.loc[:,col], name = col )
+                for col in df.columns
             ],
             layout=go.Layout(
                 title=self.config.title,
@@ -192,8 +192,8 @@ class StackedBarFigure(Figure):
                 columns = {
                     k:v
                     for k,v in zip(
-                        self.config.variables + [self.config.xaxis.parameter, self.config.secondary_axis.parameter],
-                        self.config.names + [self.config.xaxis.label, self.config.secondary_axis.label],
+                        (self.config.variables or df.columns) + [self.config.xaxis.parameter, self.config.secondary_axis.parameter],
+                        (self.config.names or df.columns ) + [self.config.xaxis.label, self.config.secondary_axis.label],
                     )
                 },
             ),
@@ -217,8 +217,8 @@ class StackedBarFigure(Figure):
         """
         return go.Figure(
             data = [
-                go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=name)
-                for col,name in zip(df.columns,self.config.names)
+                go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
+                for col in df.columns
             ],
             layout=go.Layout(
                 barmode="stack",

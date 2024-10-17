@@ -84,9 +84,9 @@ class ModuleRepository(Repository):
             item.initModules(os.path.join(base_dir,self.id), renderer, self.id)
 
 
-    def initOverviewModels(self):
+    def initOverviewModels(self,overview_config):
         for item in self.data:
-            item.initOverviewModels()
+            item.initOverviewModels(overview_config[self.id])
 
     def createOverviews(self, base_dir, renderer):
         for item in self.data:

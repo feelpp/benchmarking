@@ -16,11 +16,7 @@ class BaseComponent:
         self.description = description
 
         self.tree = {}
-
-        self.model_tree = {
-            "overview": None,
-            "children":{}
-        }
+        self.model_tree = {}
 
     def indexData(self,parent_id, self_tag_id):
         """ Get the data for the index.adoc file
@@ -84,15 +80,64 @@ class BaseComponent:
             for v,reports in vs.items():
                 print(f"\t\t{v.display_name} : {len(reports)}")
 
-    def initOverviewModels(self):
+    def initOverviewModels(self,overview_config):
         if self.tree == {}:
             return
+
+        self.model_tree = {
+            "overview": None,
+            "plots_config":None,
+            "children":{}
+        }
+
         for child, grandchildren in self.tree.items():
             self.model_tree["children"][child] = {
                 "overview":None,
+                "plots_config":None,
                 "children":{}
             }
             for grandchild, reports in grandchildren.items():
-                self.model_tree["children"][child]["children"][grandchild] = AggregationModel({ report.date: report.model.master_df for report in reports }, index_label="date")
-            self.model_tree["children"][child]["overview"] = AggregationModel({ gc.id : model.master_df  for gc, model in self.model_tree["children"][child]["children"].items()}, index_label=grandchild.type)
+                self.model_tree["children"][child]["children"][grandchild] = {
+                    "overview" : AggregationModel({ report.date: report.model.master_df for report in reports }, index_label="date"),
+                    "plots_config": overview_config[self.type][child.type][grandchild.type]["overview"]
+                }
+            self.model_tree["children"][child]["overview"] = AggregationModel( { gc.id : model["overview"].master_df for gc, model in self.model_tree["children"][child]["children"].items() }, index_label=grandchild.type )
+            self.model_tree["children"][child]["plots_config"] = overview_config[self.type][child.type]["overview"]
         self.model_tree["overview"] = AggregationModel({ch.id : v["overview"].master_df for ch, v in self.model_tree["children"].items() },index_label=child.type)
+        self.model_tree["plots_config"] = overview_config[self.type]["overview"]
+
+    def createOverviews(self,base_dir,renderer):
+        if self.model_tree == {}:
+            return
+
+        renderer.render(
+            os.path.join(base_dir,self.id,"overview.adoc"),
+            data = dict(
+                parent_catalogs = f"{self.id}",
+                plots_config = self.model_tree["plots_config"],
+                master_df = self.model_tree["overview"].master_df.to_dict(),
+                parents = [self]
+            )
+        )
+
+        for child, child_dict, in self.model_tree["children"].items():
+            renderer.render(
+                os.path.join(base_dir,self.id,child.id,"overview.adoc"),
+                data = dict(
+                    parent_catalogs = f"{self.id}-{child.id}",
+                    plots_config = child_dict["plots_config"],
+                    master_df = child_dict["overview"].master_df.to_dict(),
+                    parents = [self,child]
+                )
+            )
+
+            for grandchild, atomic_dict in child_dict["children"].items():
+                renderer.render(
+                    os.path.join(base_dir,self.id,child.id,grandchild.id,"overview.adoc"),
+                    data = dict(
+                        parent_catalogs = f"{self.id}-{child.id}-{grandchild.id}",
+                        plots_config = atomic_dict["plots_config"],
+                        master_df = atomic_dict["overview"].master_df.to_dict(),
+                        parents = [self,child,grandchild]
+                    )
+                )
