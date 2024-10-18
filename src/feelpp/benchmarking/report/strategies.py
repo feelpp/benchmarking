@@ -29,19 +29,20 @@ class PerformanceStrategy(TransformationStrategy):
             pd.DataFrame: The pivoted and filtered dataframe (can be multiindex)
         """
         index = []
-        if self.dimensions["secondary_axis"]:
+        if self.dimensions["secondary_axis"] and self.dimensions["secondary_axis"] in df.columns:
             index.append(self.dimensions["secondary_axis"])
-        if self.dimensions["xaxis"]:
+        if self.dimensions["xaxis"] and self.dimensions["xaxis"] in df.columns:
             index.append(self.dimensions["xaxis"])
 
         pivot = df[df["performance_variable"].isin(self.variables or df["performance_variable"].unique())]
 
         if self.aggregations:
-            agg_columns = index + [self.dimensions["color_axis"]] + [a.column for a in self.aggregations ]
+            agg_columns = index + [self.dimensions["color_axis"]] + [a.column for a in self.aggregations if a.column in df.columns]
 
             for aggregation in self.aggregations:
-                agg_columns.remove(aggregation.column)
-                pivot = pivot.groupby(agg_columns)["value"].agg(aggregation.agg).reset_index()
+                if aggregation.column in df.columns:
+                    agg_columns.remove(aggregation.column)
+                    pivot = pivot.groupby(agg_columns)["value"].agg(aggregation.agg).reset_index()
 
         return pivot.pivot(index=index,values="value",columns=self.dimensions["color_axis"])
 
