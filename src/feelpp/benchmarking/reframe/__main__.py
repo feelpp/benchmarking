@@ -4,7 +4,7 @@ from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
-from feelpp.benchmarking.report.handlers import GirderHandler
+from feelpp.benchmarking.report.config.handlers import GirderHandler
 import json
 
 
