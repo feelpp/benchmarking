@@ -43,13 +43,9 @@ class ScatterFigure(Figure):
                 go.Scatter(
                     x = frame_df.index,
                     y = frame_df.loc[:,col],
-                    name=name
+                    name=col
                 )
-                for name,col in (
-                    zip(self.config.names,frame_df.columns)
-                    if len(self.config.names) == len(frame_df.columns)
-                    else zip(frame_df.columns,frame_df.columns)
-                )
+                for col in frame_df.columns
             ])
             ranges.append([
                 frame_df.min().min() - frame_df.min().min()*range_epsilon,
@@ -190,15 +186,12 @@ class StackedBarFigure(Figure):
                 self.config.xaxis.parameter:"str"
             }).rename(
                 columns = {
-                    k:v
-                    for k,v in zip(
-                        (self.config.variables or df.columns) + [self.config.xaxis.parameter, self.config.secondary_axis.parameter],
-                        (self.config.names or df.columns ) + [self.config.xaxis.label, self.config.secondary_axis.label],
-                    )
+                    self.config.xaxis.parameter:self.config.xaxis.label,
+                    self.config.secondary_axis.parameter:self.config.secondary_axis.label
                 },
             ),
             x=self.config.secondary_axis.label,
-            y=self.config.names,
+            y=df.columns,
             facet_col=self.config.xaxis.label,
         )
         fig.update_layout(
