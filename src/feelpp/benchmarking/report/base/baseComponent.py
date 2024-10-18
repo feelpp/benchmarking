@@ -106,38 +106,39 @@ class BaseComponent:
         self.model_tree["overview"] = AggregationModel({ch.id : v["overview"].master_df for ch, v in self.model_tree["children"].items() },index_label=child.type)
         self.model_tree["plots_config"] = overview_config[self.type]["overview"]
 
+
+    def createOverview(self,base_dir,renderer,parents,plots_config,master_df):
+        renderer.render(
+            os.path.join(base_dir,*[parent.id for parent in parents],"overview.adoc"),
+            data = dict(
+                parent_catalogs = "-".join([parent.id for parent in parents]),
+                plots_config = plots_config,
+                master_df = master_df,
+                parents = parents
+            )
+        )
+
+
     def createOverviews(self,base_dir,renderer):
         if self.model_tree == {}:
             return
 
-        renderer.render(
-            os.path.join(base_dir,self.id,"overview.adoc"),
-            data = dict(
-                parent_catalogs = f"{self.id}",
-                plots_config = self.model_tree["plots_config"],
-                master_df = self.model_tree["overview"].master_df.to_dict(),
-                parents = [self]
-            )
+        self.createOverview(
+            base_dir,renderer, parents=[self],
+            plots_config=self.model_tree["plots_config"],
+            master_df=self.model_tree["overview"].master_df.to_dict()
         )
 
         for child, child_dict, in self.model_tree["children"].items():
-            renderer.render(
-                os.path.join(base_dir,self.id,child.id,"overview.adoc"),
-                data = dict(
-                    parent_catalogs = f"{self.id}-{child.id}",
-                    plots_config = child_dict["plots_config"],
-                    master_df = child_dict["overview"].master_df.to_dict(),
-                    parents = [self,child]
-                )
+            self.createOverview(
+                base_dir,renderer, parents=[self,child],
+                plots_config=child_dict["plots_config"],
+                master_df=child_dict["overview"].master_df.to_dict()
             )
 
             for grandchild, atomic_dict in child_dict["children"].items():
-                renderer.render(
-                    os.path.join(base_dir,self.id,child.id,grandchild.id,"overview.adoc"),
-                    data = dict(
-                        parent_catalogs = f"{self.id}-{child.id}-{grandchild.id}",
-                        plots_config = atomic_dict["plots_config"],
-                        master_df = atomic_dict["overview"].master_df.to_dict(),
-                        parents = [self,child,grandchild]
-                    )
+                self.createOverview(
+                    base_dir,renderer, parents=[self,child,grandchild],
+                    plots_config=atomic_dict["plots_config"],
+                    master_df=atomic_dict["overview"].master_df.to_dict()
                 )
