@@ -1,4 +1,4 @@
-import os
+import os,copy
 from feelpp.benchmarking.report.base.model import AggregationModel
 
 class BaseComponent:
@@ -17,6 +17,7 @@ class BaseComponent:
 
         self.tree = {}
         self.model_tree = {}
+        self.main_variables = []
 
     def indexData(self,parent_id, self_tag_id):
         """ Get the data for the index.adoc file
@@ -84,29 +85,37 @@ class BaseComponent:
         if not self.tree:
             return
 
+        self_config = overview_config[self.type]["overview"]
+        for i in range(len(self_config)):
+            self_config[i]["variables"] = self.main_variables
+
         self.model_tree = {
             "overview": None,
-            "plots_config":None,
+            "plots_config":copy.deepcopy(self_config),
             "children":{}
         }
 
         for child, grandchildren in self.tree.items():
+            child_config = overview_config[self.type][child.type]["overview"]
+            for i in range(len(child_config)):
+                child_config[i]["variables"] = self.main_variables + child.main_variables
             self.model_tree["children"][child] = {
                 "overview":None,
-                "plots_config":None,
+                "plots_config":copy.deepcopy(child_config),
                 "children":{}
             }
             for grandchild, reports in grandchildren.items():
+                grandchild_config = overview_config[self.type][child.type][grandchild.type]["overview"]
+                for i in range(len(grandchild_config)):
+                    grandchild_config[i]["variables"] = self.main_variables + child.main_variables + grandchild.main_variables
+
                 self.model_tree["children"][child]["children"][grandchild] = {
                     "overview" : AggregationModel({ report.date: report.model.master_df for report in reports }, index_label="date"),
-                    "plots_config": overview_config[self.type][child.type][grandchild.type]["overview"]
+                    "plots_config":copy.deepcopy( grandchild_config)
                 }
             self.model_tree["children"][child]["overview"] = AggregationModel( { gc.id : model["overview"].master_df for gc, model in self.model_tree["children"][child]["children"].items() }, index_label=grandchild.type )
-            self.model_tree["children"][child]["plots_config"] = overview_config[self.type][child.type]["overview"]
 
         self.model_tree["overview"] = AggregationModel({ch.id : v["overview"].master_df for ch, v in self.model_tree["children"].items() },index_label=child.type)
-        self.model_tree["plots_config"] = overview_config[self.type]["overview"]
-
 
     def createOverview(self,base_dir,renderer,parents,plots_config,master_df):
         renderer.render(
