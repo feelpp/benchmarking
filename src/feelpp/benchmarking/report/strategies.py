@@ -20,9 +20,9 @@ class PerformanceStrategy(TransformationStrategy):
         super().__init__(dimensions,aggregations,variables)
 
     def calculate(self,df):
-        """ Pivots dataframe, setting "performance_variable" values as columns, "value" as cell values, and dimensions as indexes.
+        """ Pivots dataframe, setting the color axis parameter values as columns, "value" as cell values, and the xaxis and secondary axis parameters as indexes.
             Then filters depending on the specified variables
-            If the dataframe contains duplicated values for a given dimension, the values are aggregated (mean).
+            If the configuration contains aggregations, they will be performed IN ORDER.
         Args:
             df (pd.DataFrame): The master dataframe containing all the data from the reframe test
         Returns:
@@ -34,7 +34,7 @@ class PerformanceStrategy(TransformationStrategy):
         if self.dimensions["xaxis"]:
             index.append(self.dimensions["xaxis"])
 
-        pivot = df[df["performance_variable"].isin(self.variables or df["performance_variable"].unique())]
+        pivot = df[df[self.dimensions["color_axis"]].isin(self.variables or df[self.dimensions["color_axis"]].unique())]
 
         if self.aggregations:
             agg_columns = index + [self.dimensions["color_axis"]] + [a.column for a in self.aggregations ]
@@ -70,8 +70,8 @@ class SpeedupStrategy(PerformanceStrategy):
         super().__init__(dimensions,aggregations,variables)
 
     def calculate(self,df):
-        """ Computes the "speedup" of the data for the FIRST dimension specified.
-            Pivots dataframe, setting "performance_variable" values as columns, "value" as cell values, and dimensions as indexes.
+        """ Computes the "speedup" of the data for the xaxis parameter.
+            Pivots dataframe, setting coloraxis values as columns, "value" as cell values, and dimensions as indexes.
             Then filters depending on the specified variables
             If the dataframe contains duplicated values for a given dimension, the values are aggregated (mean).
             Finally, the speedup is computed on the pivot
