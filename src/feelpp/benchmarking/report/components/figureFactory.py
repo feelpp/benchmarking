@@ -252,14 +252,13 @@ class FigureFactory:
         strategy = StrategyFactory.create(plot_config)
         figures = []
         for plot_type in plot_config.plot_types:
-            match plot_type:
-                case "scatter":
-                    figures.append(ScatterFigure(plot_config,strategy))
-                case "table":
-                    figures.append(TableFigure(plot_config,strategy))
-                case "stacked_bar":
-                    figures.append(StackedBarFigure(plot_config,strategy))
-                case _:
-                    raise NotImplementedError
+            if plot_type ==  "scatter":
+                figures.append(ScatterFigure(plot_config,strategy))
+            elif plot_type == "table":
+                figures.append(TableFigure(plot_config,strategy))
+            elif plot_type == "stacked_bar":
+                figures.append(StackedBarFigure(plot_config,strategy))
+            else:
+                raise NotImplementedError
 
         return figures

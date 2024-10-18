@@ -89,22 +89,21 @@ class StrategyFactory:
         if plot_config.yaxis and plot_config.yaxis.parameter:
             dimensions.append(plot_config.yaxis.parameter)
 
-        match plot_config.transformation:
-            case "performance":
-                return PerformanceStrategy(
-                    dimensions=dimensions,
-                    variables=plot_config.variables
-                )
-            case "speedup":
-                return SpeedupStrategy(
-                    dimensions=dimensions,
-                    variables=plot_config.variables
-                )
-            case "relative_performance":
-                return RelativePerformanceStrategy(
-                    dimensions=dimensions,
-                    variables=plot_config.variables
-                )
-            case _:
-                raise NotImplementedError
+        if plot_config.transformation == "performance":
+            return PerformanceStrategy(
+                dimensions=dimensions,
+                variables=plot_config.variables
+            )
+        elif plot_config.transformation == "speedup":
+            return SpeedupStrategy(
+                dimensions=dimensions,
+                variables=plot_config.variables
+            )
+        elif plot_config.transformation == "relative_performance":
+            return RelativePerformanceStrategy(
+                dimensions=dimensions,
+                variables=plot_config.variables
+            )
+        else:
+            raise NotImplementedError
 

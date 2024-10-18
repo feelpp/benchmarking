@@ -1,21 +1,25 @@
 [
     {
-        "title": "ElectricConstrucor step absolute performance",
+        "title": "HeatConstrucor step absolute performance",
         "plot_types": [
             "stacked_bar",
             "table"
         ],
         "transformation": "performance",
         "variables": [
-            "ElectricConstructor_createMesh",
-            "ElectricConstructor_createExporters",
-            "ElectricConstructor_graph",
-            "ElectricConstructor_matrixVector",
-            "ElectricConstructor_algebraicOthers"
+            "HeatConstructor_initMaterialProperties",
+            "HeatConstructor_initMesh",
+            "HeatConstructor_initFunctionSpaces",
+            "HeatConstructor_initPostProcess",
+            "HeatConstructor_graph",
+            "HeatConstructor_matrixVector",
+            "HeatConstructor_algebraicOthers"
         ],
         "names": [
-            "createMesh",
-            "createExporters",
+            "initMaterialProperties",
+            "initMesh",
+            "initFunctionSpaces",
+            "initPostProcess",
             "graph",
             "matrixVector",
             "algebraicOthers"
@@ -34,21 +38,25 @@
         }
     },
     {
-        "title": "ElectricConstrucor step relative performance",
+        "title": "HeatConstrucor step relative performance",
         "plot_types": [
             "stacked_bar"
         ],
         "transformation": "relative_performance",
         "variables": [
-            "ElectricConstructor_createMesh",
-            "ElectricConstructor_createExporters",
-            "ElectricConstructor_graph",
-            "ElectricConstructor_matrixVector",
-            "ElectricConstructor_algebraicOthers"
+            "HeatConstructor_initMaterialProperties",
+            "HeatConstructor_initMesh",
+            "HeatConstructor_initFunctionSpaces",
+            "HeatConstructor_initPostProcess",
+            "HeatConstructor_graph",
+            "HeatConstructor_matrixVector",
+            "HeatConstructor_algebraicOthers"
         ],
         "names": [
-            "createMesh",
-            "createExporters",
+            "initMaterialProperties",
+            "initMesh",
+            "initFunctionSpaces",
+            "initPostProcess",
             "graph",
             "matrixVector",
             "algebraicOthers"
@@ -67,13 +75,13 @@
         }
     },
     {
-        "title": "Electric Post Processing step performance",
+        "title": "Heat Post Processing step performance",
         "plot_types": [
             "scatter"
         ],
         "transformation": "performance",
         "variables": [
-            "ElectricPostProcessing_exportResults"
+            "HeatPostProcessing_exportResults"
         ],
         "names": [
             "exportResults"
@@ -92,15 +100,15 @@
         }
     },
     {
-        "title": "Electric Solve step absolute performance",
+        "title": "Heat Solve step absolute performance",
         "plot_types": [
             "stacked_bar",
             "table"
         ],
         "transformation": "performance",
         "variables": [
-            "ElectricSolve_algebraic-assembly",
-            "ElectricSolve_algebraic-solve"
+            "HeatSolve_algebraic-assembly",
+            "HeatSolve_algebraic-solve"
         ],
         "names": [
             "algebraic-assembly",
@@ -120,14 +128,14 @@
         }
     },
     {
-        "title": "Electric Solve step relative performance",
+        "title": "Heat Solve step relative performance",
         "plot_types": [
             "stacked_bar"
         ],
         "transformation": "relative_performance",
         "variables": [
-            "ElectricSolve_algebraic-assembly",
-            "ElectricSolve_algebraic-solve"
+            "HeatSolve_algebraic-assembly",
+            "HeatSolve_algebraic-solve"
         ],
         "names": [
             "algebraic-assembly",
@@ -153,14 +161,14 @@
         ],
         "transformation": "speedup",
         "variables": [
-            "ElectricConstructor_init",
-            "ElectricPostProcessing_exportResults",
-            "ElectricSolve_solve"
+            "HeatConstructor_init",
+            "HeatPostProcessing_exportResults",
+            "HeatSolve_solve"
         ],
         "names": [
-            "ElectricConstructor",
-            "ElectricPostProcessing",
-            "ElectricSolve"
+            "HeatConstructor",
+            "HeatPostProcessing",
+            "HeatSolve"
         ],
         "xaxis": {
             "parameter": "nb_tasks",
