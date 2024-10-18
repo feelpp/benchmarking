@@ -9,10 +9,16 @@ class Model:
 
 
 class AggregationModel(Model):
+    """ Model used for aggregating data other models """
     def __init__(self, dfs_dict,index_label):
         self.master_df = self.buildMasterDf(dfs_dict,index_label)
 
     def buildMasterDf(self,dfs_dict,index_label):
+        """ Concatenates the given dataframes on the row axis, adding the dfs_dict keys as a new column
+        Args:
+            dfs_dict (dict): Dictionary in the form of {index : dataframe} containing all dataframes to aggregate. It also acepts serialized dataframes.
+            index_label (str) label of the new column
+        """
         parsed_dfs = []
         for ind, df in dfs_dict.items():
             parsed_df = pd.DataFrame(df)
@@ -24,5 +30,6 @@ class AggregationModel(Model):
 
     @classmethod
     def fromDataframe(cls, df):
+        """ Initialize the class from an already merged dataframe"""
         cls.master_df = pd.DataFrame(df)
         return cls

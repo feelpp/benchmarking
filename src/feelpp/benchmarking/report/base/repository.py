@@ -85,9 +85,14 @@ class ModuleRepository(Repository):
 
 
     def initOverviewModels(self,overview_config):
+        """ Initialize the model_tree attribute of each component using the a plots configuration file
+        Args:
+            overview_config (dict) : Dict describing the plots that will be present on each overview for all module levels.
+        """
         for item in self.data:
             item.initOverviewModels(overview_config[self.id])
 
     def createOverviews(self, base_dir, renderer):
+        """ Renders overview files for all components and the self component"""
         for item in self.data:
             item.createOverviews(os.path.join(base_dir,self.id),renderer)

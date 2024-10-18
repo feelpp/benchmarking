@@ -82,6 +82,10 @@ class BaseComponent:
                 print(f"\t\t{v.display_name} : {len(reports)}")
 
     def initOverviewModels(self,overview_config):
+        """ Initializes the model_tree attribute of the components based on their children models and a plot configuration
+        Args:
+            overview_config (dict) : Dict describing the plots that will be present on each overview for all module levels.
+        """
         if not self.tree:
             return
 
@@ -118,6 +122,14 @@ class BaseComponent:
         self.model_tree["overview"] = AggregationModel({ch.id : v["overview"].master_df for ch, v in self.model_tree["children"].items() },index_label=child.type)
 
     def createOverview(self,base_dir,renderer,parents,plots_config,master_df):
+        """ Render a single overview for the component
+        Args:
+            base_dir (str): The base directory for the modules
+            renderer (Renderer): The renderer to use
+            parents (list) Ordered list containing the parent components of the current component
+            plots_config (list[dict]). Plot configurations of the current overview to render
+            master_df (pd.DataFrame): master_df attribute of the model to render, it is a concatenation of the children's model dataframes
+        """
         renderer.render(
             os.path.join(base_dir,*[parent.id for parent in parents],"overview.adoc"),
             data = dict(
@@ -130,6 +142,11 @@ class BaseComponent:
 
 
     def createOverviews(self,base_dir,renderer):
+        """ Render the overviews for the current component and their descendants
+        Args:
+            base_dir (str): The base directory for the modules
+            renderer (Renderer): The renderer to use
+        """
         if self.model_tree == {}:
             return
 
