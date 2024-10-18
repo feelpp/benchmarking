@@ -81,7 +81,7 @@ class BaseComponent:
                 print(f"\t\t{v.display_name} : {len(reports)}")
 
     def initOverviewModels(self,overview_config):
-        if self.tree == {}:
+        if not self.tree:
             return
 
         self.model_tree = {
@@ -101,24 +101,11 @@ class BaseComponent:
                     "overview" : AggregationModel({ report.date: report.model.master_df for report in reports }, index_label="date"),
                     "plots_config": overview_config[self.type][child.type][grandchild.type]["overview"]
                 }
-                application = next(filter(lambda x : x.type == "application", [self,child,grandchild]))
-                for plot_config_i in range(len(self.model_tree["children"][child]["children"][grandchild]["plots_config"])):
-                    self.model_tree["children"][child]["children"][grandchild]["plots_config"][plot_config_i]["variables"] = application.main_variables
-
             self.model_tree["children"][child]["overview"] = AggregationModel( { gc.id : model["overview"].master_df for gc, model in self.model_tree["children"][child]["children"].items() }, index_label=grandchild.type )
             self.model_tree["children"][child]["plots_config"] = overview_config[self.type][child.type]["overview"]
 
-            application = next(filter(lambda x : x.type == "application", [self,child]))
-            if application:
-                for plot_config_i in range(len(self.model_tree["children"][child]["plots_config"])):
-                    self.model_tree["children"][child]["plots_config"][plot_config_i]["variables"] = application.main_variables
-
         self.model_tree["overview"] = AggregationModel({ch.id : v["overview"].master_df for ch, v in self.model_tree["children"].items() },index_label=child.type)
         self.model_tree["plots_config"] = overview_config[self.type]["overview"]
-
-        if self.type == "application":
-            for plot_config_i in range(len(self.model_tree["plots_config"])):
-                self.model_tree["plots_config"][plot_config_i]["variables"] = self.main_variables
 
 
     def createOverview(self,base_dir,renderer,parents,plots_config,master_df):
