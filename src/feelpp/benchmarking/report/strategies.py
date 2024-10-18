@@ -34,7 +34,7 @@ class PerformanceStrategy(TransformationStrategy):
         if self.dimensions["xaxis"]:
             index.append(self.dimensions["xaxis"])
 
-        pivot = df[df[self.dimensions["color_axis"]].isin(self.variables or df[self.dimensions["color_axis"]].unique())]
+        pivot = df[df["performance_variable"].isin(self.variables or df["performance_variable"].unique())]
 
         if self.aggregations:
             agg_columns = index + [self.dimensions["color_axis"]] + [a.column for a in self.aggregations ]
