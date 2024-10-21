@@ -23,15 +23,11 @@ site_configuration = {
                             'num_devices': 4
                         }
                     ],
-                    'container_platforms':[
-                        {
-                            'type': 'Apptainer',
-                        }
-                    ],
+                    'container_platforms':[{ 'type': 'Apptainer' }],
                 },
             ],
             'env_vars':[
-                {"OMP_NUM_THREADS":1}
+                ["OMP_NUM_THREADS",1]
             ]
         }
     ],

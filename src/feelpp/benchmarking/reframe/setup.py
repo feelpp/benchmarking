@@ -97,15 +97,32 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        pass
+    def setupAfterInit(self, rfm_test):
+        self.setPlatform(rfm_test)
         self.setExecutable(rfm_test)
+
+    def setPlatform(self, rfm_test):
+        """ Sets the container_platform attributes
+        Args:
+            rfm_test (reframe class) : The test to apply the setup
+        """
+        if self.config.platform and self.config.platform.type != "self_os":
+            rfm_test.container_platform.image = self.config.platform.image
+            rfm_test.container_platform.options = self.config.platform.options
+            rfm_test.container_platform.workdir = None
+
 
     def setExecutable(self, rfm_test):
         """ Sets the executable and executable_opts attrbiutes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.executable = self.config.executable
-        rfm_test.executable_opts = self.config.options
+        if self.config.platform and self.config.platform.type != "self_os":
+            rfm_test.container_platform.command = f"{self.config.executable} {' '.join(self.config.options)}"
+        else:
+            rfm_test.executable = self.config.executable
+            rfm_test.executable_opts = self.config.options
 
     def replaceField(self,field, replace):
         """ Replaces a single string {{stored.like.this}} with their actual replace value

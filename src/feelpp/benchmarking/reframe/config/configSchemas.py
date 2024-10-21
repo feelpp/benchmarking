@@ -117,9 +117,14 @@ class Plot(BaseModel):
             assert v.parameter is not None
         return v
 
+class Platform(BaseModel):
+    type:Literal["self_os","apptainer","docker"]
+    image:str
+    options:List[str]
 
 class ConfigFile(BaseModel):
     executable: str
+    platform:Optional[Platform] = None
     use_case_name: str
     options: List[str]
     outputs: List[AppOutput]
@@ -161,8 +166,7 @@ class MachineConfig(BaseModel):
     launch_options: List[str]
     reframe_base_dir:str
     reports_base_dir:str
-    platform:str #TODO SET DEFAULT
-    partition:str #TODO SET DEFAULT
+    partition:str
 
 class ExecutionConfigFile(RootModel):
     List[MachineConfig]
