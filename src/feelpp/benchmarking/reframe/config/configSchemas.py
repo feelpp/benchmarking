@@ -162,6 +162,8 @@ class MachineConfig(BaseModel):
     omp_num_threads: int
     reframe_base_dir:str
     reports_base_dir:str
+    platforms:str #TODO SET DEFAULT
+    partition:str #TODO SET DEFAULT
 
 class ExecutionConfigFile(RootModel):
     List[MachineConfig]
