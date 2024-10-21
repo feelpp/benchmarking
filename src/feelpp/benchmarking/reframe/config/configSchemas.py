@@ -62,7 +62,7 @@ class ListRange(BaseRange):
 
 class Parameter(BaseModel):
     name:str
-    active:bool
+    active:Optional[bool] = True
     range: Union[CoresRange,StepRange,ListRange]
 
 
@@ -85,7 +85,7 @@ class AppOutput(BaseModel):
     format: str
 
 class Upload(BaseModel):
-    active:bool
+    active:Optional[bool] = True
     platform:Literal["girder","ckan"]
     folder_id: Union[str,int]
 
@@ -153,7 +153,7 @@ class ConfigFile(BaseModel):
 
 class MachineConfig(BaseModel):
     machine:str
-    active: bool
+    active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     exclusive_access:bool
     valid_systems:List[str] = ["*"],
