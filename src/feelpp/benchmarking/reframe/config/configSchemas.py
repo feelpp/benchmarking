@@ -152,7 +152,7 @@ class ConfigFile(BaseModel):
         return self
 
 class MachineConfig(BaseModel):
-    hostname:str
+    machine:str
     active: bool
     execution_policy:Literal["serial","async"]
     exclusive_access:bool

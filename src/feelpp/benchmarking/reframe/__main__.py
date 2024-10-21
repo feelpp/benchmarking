@@ -19,13 +19,13 @@ class CommandBuilder:
         return Path(__file__).resolve().parent
 
     def buildConfigFilePath(self):
-        return f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.hostname}.py'
+        return f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.machine}.py'
 
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'
 
     def buildReportFilePath(self,executable):
-        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.hostname,f"{self.current_date}.json"))
+        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.machine,f"{self.current_date}.json"))
 
     def buildCommand(self,executable):
         cmd = [
@@ -33,7 +33,7 @@ class CommandBuilder:
             f'-C {self.buildConfigFilePath()}',
             f'-c {self.buildRegressionTestFilePath()}',
             f'-S machine_config_path={self.parser.args.exec_config}',
-            f'--system={self.machine_config.hostname}',
+            f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
             f'--report-file={self.buildReportFilePath(executable)}',
