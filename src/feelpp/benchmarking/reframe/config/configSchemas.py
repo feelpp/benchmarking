@@ -159,7 +159,6 @@ class MachineConfig(BaseModel):
     valid_systems:List[str] = ["*"],
     valid_prog_environs:List[str] = ["*"]
     launch_options: List[str]
-    omp_num_threads: int
     reframe_base_dir:str
     reports_base_dir:str
     platform:str #TODO SET DEFAULT

@@ -43,7 +43,6 @@ class MachineSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         self.setValidEnvironments(rfm_test)
-        self.setEnvVars(rfm_test)
         self.setTags(rfm_test)
 
     def setupBeforeRun(self,rfm_test):
@@ -60,13 +59,6 @@ class MachineSetup(Setup):
         """
         rfm_test.valid_systems = self.config.valid_systems
         rfm_test.valid_prog_environs = self.config.valid_prog_environs
-
-    def setEnvVars(self,rfm_test):
-        """ Sets the env_vars attribute
-        Args:
-            rfm_test (reframe class) : The test to apply the setup
-        """
-        rfm_test.env_vars['OMP_NUM_THREADS'] = self.config.omp_num_threads
 
     def setTags(self,rfm_test):
         """ Sets the tags attribute

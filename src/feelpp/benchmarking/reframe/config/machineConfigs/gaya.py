@@ -29,6 +29,9 @@ site_configuration = {
                         }
                     ],
                 },
+            ],
+            'env_vars':[
+                {"OMP_NUM_THREADS":1}
             ]
         }
     ],
