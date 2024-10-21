@@ -192,8 +192,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 self.num_tasks_per_node = min(value, self.current_partition.processor.num_cpus)
                 self.num_cpus_per_task = 1
                 self.num_tasks = value
-            else:
-                self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
+            self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
 
         self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
 
