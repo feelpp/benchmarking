@@ -1,0 +1,39 @@
+{
+    "executable": "kub",
+    "output_directory": "/data/scratch/cladellash/feelppdb/kub/",
+    "use_case_name": "strasbourg",
+    "options": [
+        "--config-file /data/scratch/cladellash/benchmarking/config/Poznan.cfg",
+        "--repository.append.np 0",
+        "--fail-on-unknown-option 1"
+    ],
+    "outputs": [],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "stages": []
+    },
+    "sanity": {
+        "success": [],
+        "error": []
+    },
+    "upload": {
+        "active": true,
+        "platform": "girder",
+        "folder_id": "66e94b10b0e95728eb00fcfe"
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "active": true,
+            "range": {
+                "mode": "cores",
+                "min_cores_per_node": 8,
+                "max_cores_per_node": 64,
+                "min_nodes": 1,
+                "max_nodes": 1,
+                "generator": "double"
+            }
+        }
+    ],
+    "plots": []
+}
