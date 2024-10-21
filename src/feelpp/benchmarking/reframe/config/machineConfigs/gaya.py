@@ -38,7 +38,7 @@ site_configuration = {
             'modules': ['hpcx'],
             'cc': 'clang',
             'cxx': 'clang++',
-            'target_systems': ['gaya:public']
+            'target_systems': ['gaya:production']
         }
     ]
 }
