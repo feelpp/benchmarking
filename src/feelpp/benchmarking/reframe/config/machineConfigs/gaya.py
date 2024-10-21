@@ -7,11 +7,11 @@ site_configuration = {
             'modules_system': 'tmod4',
             'partitions': [
                 {
-                    'name': 'public',
+                    'name': 'production',
                     'scheduler': 'squeue',
                     'launcher': 'mpiexec',
                     'max_jobs': 8,
-                    'access': ['--partition=public'],
+                    'access': ['--partition=production'],
                     'environs': ['env_gaya'],
                     'prepare_cmds': ['source /etc/profile.d/modules.sh'],
                     'processor': {
@@ -20,9 +20,14 @@ site_configuration = {
                     'devices': [
                         {
                             'type': 'cpu',
-                            'num_devices': 6
+                            'num_devices': 4
                         }
-                    ]
+                    ],
+                    'container_platforms':[
+                        {
+                            'type': 'Apptainer',
+                        }
+                    ],
                 },
             ]
         }
