@@ -2,10 +2,10 @@
     "executable": "feelpp_toolbox_electric",
     "platform": {
         "type":"apptainer",
-        "image": "ghcr.io/feelpp/feelpp:v0.111.0-preview.10-noble-sif",
+        "image": "oras://ghcr.io/feelpp/feelpp:v0.111.0-preview.10-noble-sif",
         "options": [
             "--home /data/scratch/cladellash/feelppdb/",
-            "--bind /usr/share/feelpp/data/testcases/toolboxes/electric/cases/quarter-turn/:~/input_data/"
+            "--bind /usr/share/feelpp/data/testcases/toolboxes/electric/cases/quarter-turn/:/input_data/"
         ]
     },
     "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric",
