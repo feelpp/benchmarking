@@ -4,7 +4,7 @@ from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineConfig
 
 import reframe as rfm
-import os, re
+import os, re, shutil
 
 class Setup:
     """ Abstract class for setup """
@@ -97,10 +97,15 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        pass
+        self.cleanupDirectories()
+        self.setExecutable(rfm_test)
+
     def setupAfterInit(self, rfm_test):
         self.setPlatform(rfm_test)
-        self.setExecutable(rfm_test)
+
+    def cleanupDirectories(self):
+        if os.path.exists(self.config.scalability.directory):
+            shutil.rmtree(self.config.scalability.directory)
 
     def setPlatform(self, rfm_test):
         """ Sets the container_platform attributes
@@ -192,6 +197,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def updateSetups(self):
         """Updates the setup with testcase related values"""
         self.app_setup.reset()
+        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
 
     @run_before('run')
     def setupParameters(self):
@@ -202,8 +208,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 self.num_cpus_per_task = 1
                 self.num_tasks = value
             self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
-
-        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
 
 
     @run_before('run')
