@@ -1,9 +1,17 @@
 {
-    "executable": "kub",
+    "executable": "feelpp_kub_cem",
     "output_directory": "/data/scratch/cladellash/feelppdb/kub/",
-    "use_case_name": "strasbourg",
+    "use_case_name": "poznan",
+    "platform": {
+        "type":"apptainer",
+        "image": "oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
+        "options": [
+            "--home /data/scratch/cladellash/feelppdb/",
+            "--bind /data/scratch/cladellash/benchmarking/config/:/input_data/"
+        ]
+    },
     "options": [
-        "--config-file /data/scratch/cladellash/benchmarking/config/Poznan.cfg",
+        "--config-file /input_data/Poznan.cfg",
         "--repository.append.np 0",
         "--fail-on-unknown-option 1"
     ],
@@ -27,7 +35,7 @@
             "active": true,
             "range": {
                 "mode": "cores",
-                "min_cores_per_node": 8,
+                "min_cores_per_node": 64,
                 "max_cores_per_node": 64,
                 "min_nodes": 1,
                 "max_nodes": 1,
