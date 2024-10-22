@@ -1,14 +1,18 @@
-import argparse,os
-from feelpp.benchmarking.report.handlers import ConfigHandler, GirderHandler
-from feelpp.benchmarking.report.components.repositories import AtomicReportRepository, MachineRepository, ApplicationRepository, UseCaseRepository
+import argparse, os, json
 
-from feelpp.benchmarking.report.renderer import Renderer
+from feelpp.benchmarking.report.config.handlers import ConfigHandler, GirderHandler
+from feelpp.benchmarking.report.atomicReports.repository import AtomicReportRepository
+from feelpp.benchmarking.report.machines.repository import MachineRepository
+from feelpp.benchmarking.report.applications.repository import ApplicationRepository
+from feelpp.benchmarking.report.useCases.repository import UseCaseRepository
+
+from feelpp.benchmarking.report.renderer import RendererFactory
 
 
 
 def main_cli():
     parser = argparse.ArgumentParser(description="Render all benchmarking reports")
-    parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./src/feelpp/benchmarking/report/config.json")
+    parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./src/feelpp/benchmarking/report/config/config.json")
     parser.add_argument("--json_output_path", type=str, help="Path to the output directory", default="reports")
     parser.add_argument("--modules_path", type=str, help="Path to the modules directory", default="./docs/modules/ROOT/pages")
     args = parser.parse_args()
@@ -22,43 +26,39 @@ def main_cli():
     applications = ApplicationRepository(config_handler.applications)
     use_cases = UseCaseRepository(config_handler.use_cases)
     machines = MachineRepository(config_handler.machines)
-
-    atomic_reports = AtomicReportRepository(
-        benchmarking_config_json = config_handler.execution_mapping,
-        download_handler = girder_handler,
-    )
+    atomic_reports = AtomicReportRepository(config_handler.execution_mapping,girder_handler)
 
     machines.link(applications, use_cases, config_handler.execution_mapping)
     applications.link(machines, use_cases, config_handler.execution_mapping)
     use_cases.link(applications, machines, config_handler.execution_mapping)
-
     atomic_reports.link(applications, machines, use_cases)
 
+    index_renderer = RendererFactory.create("index")
+    overview_renderer = RendererFactory.create("atomic_overview")
 
-    machines.printHierarchy()
-    print("-----------------")
+    with open("./src/feelpp/benchmarking/report/config/overviewConfig.json","r") as f:
+        overview_config = json.load(f)
+
+    print("----- APPLICATIONS VIEW -------")
     applications.printHierarchy()
-    print("-----------------")
+    applications.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    applications.initOverviewModels(overview_config)
+    applications.createOverviews(args.modules_path,overview_renderer)
+    print("-------------------------------")
+
+    print("----- MACHINES VIEW -------")
+    machines.printHierarchy()
+    machines.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    machines.initOverviewModels(overview_config)
+    machines.createOverviews(args.modules_path,overview_renderer)
+    print("-------------------------------")
+
+    print("----- USE CASES VIEW -------")
     use_cases.printHierarchy()
+    use_cases.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+    use_cases.initOverviewModels(overview_config)
+    use_cases.createOverviews(args.modules_path,overview_renderer)
+    print("-------------------------------")
 
-
-    index_renderer = Renderer("./src/feelpp/benchmarking/report/templates/index.adoc.j2")
-
-    applications_base_dir = os.path.join(args.modules_path,"applications")
-    applications.initModules(applications_base_dir, index_renderer, parent_id="catalog-index")
-
-    report_renderer = Renderer("./src/feelpp/benchmarking/report/templates/benchmark.adoc.j2")
-
-    counter = {
-        f"{app.id}-{mach.id}-{tc.id}" : 0
-        for app in applications
-        for tc in app.tree
-        for mach in app.tree[tc]
-    }
-
-    #TODO: At the moment just generate 5 reports per test case
-    for atomic_report in atomic_reports:
-        if counter[f"{atomic_report.application_id}-{atomic_report.machine_id}-{atomic_report.use_case_id}"] < 5:
-            atomic_report.createReport(applications_base_dir,report_renderer)
-
-        counter[f"{atomic_report.application_id}-{atomic_report.machine_id}-{atomic_report.use_case_id}"] += 1
+    report_renderer = RendererFactory.create("benchmark")
+    atomic_reports.createReports(os.path.join(args.modules_path,"reports"),report_renderer)

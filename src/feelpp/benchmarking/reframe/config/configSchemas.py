@@ -62,7 +62,7 @@ class ListRange(BaseRange):
 
 class Parameter(BaseModel):
     name:str
-    active:bool
+    active:Optional[bool] = True
     range: Union[CoresRange,StepRange,ListRange]
 
 
@@ -85,7 +85,7 @@ class AppOutput(BaseModel):
     format: str
 
 class Upload(BaseModel):
-    active:bool
+    active:Optional[bool] = True
     platform:Literal["girder","ckan"]
     folder_id: Union[str,int]
 
@@ -94,15 +94,20 @@ class PlotAxis(BaseModel):
     parameter: Optional[str] = None
     label:str
 
+class Aggregation(BaseModel):
+    column: str
+    agg: Literal["sum","mean","min","max"]
 class Plot(BaseModel):
     title:str
     plot_types:List[Literal["scatter","table","stacked_bar"]]
     transformation:Literal["performance","relative_performance","speedup"]
-    variables:List[str]
+    aggregations:Optional[List[Aggregation]] = None
+    variables:Optional[List[str]] = None
     names:List[str]
     xaxis:PlotAxis
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
+    color_axis:Optional[PlotAxis] = None
 
 
     @field_validator("xaxis","secondary_axis", mode="after")
@@ -112,9 +117,14 @@ class Plot(BaseModel):
             assert v.parameter is not None
         return v
 
+class Platform(BaseModel):
+    type:Literal["builtin","apptainer","docker"]
+    image:str
+    options:List[str]
 
 class ConfigFile(BaseModel):
     executable: str
+    platform:Optional[Platform] = None
     use_case_name: str
     options: List[str]
     outputs: List[AppOutput]
@@ -124,13 +134,6 @@ class ConfigFile(BaseModel):
     parameters: List[Parameter]
     plots: List[Plot]
 
-    @field_validator('executable', mode="before")
-    def checExecutableInstalled(cls, v):
-        """ Check if executable is found on the system """
-        if shutil.which(v) is None:
-            raise ValueError(f"Executable not found or not installed: {v}")
-        return v
-
 
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
@@ -138,20 +141,22 @@ class ConfigFile(BaseModel):
         for plot in self.plots:
             assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
             if plot.secondary_axis:
-                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.secondary_axis.parameter}"
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Secondary axis parameter not found in parameter list: {plot.secondary_axis.parameter}"
             if plot.yaxis.parameter:
-                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Yaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+            if plot.color_axis and plot.color_axis.parameter:
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"color parameter not found in parameter list: {plot.color_axis.parameter}"
+
         return self
 
 class MachineConfig(BaseModel):
-    hostname:str
-    active: bool
+    machine:str
+    active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     exclusive_access:bool
     valid_systems:List[str] = ["*"],
     valid_prog_environs:List[str] = ["*"]
     launch_options: List[str]
-    omp_num_threads: int
     reframe_base_dir:str
     reports_base_dir:str
 
