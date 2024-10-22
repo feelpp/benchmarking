@@ -112,7 +112,7 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        if self.config.platform and self.config.platform.type != "self_os":
+        if self.config.platform and self.config.platform.type != "builtin":
             rfm_test.container_platform.image = self.config.platform.image
             rfm_test.container_platform.options = self.config.platform.options
             rfm_test.container_platform.workdir = None
@@ -123,7 +123,7 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        if self.config.platform and self.config.platform.type != "self_os":
+        if self.config.platform and self.config.platform.type != "builtin":
             rfm_test.container_platform.command = f"{self.config.executable} {' '.join(self.config.options)}"
         else:
             rfm_test.executable = self.config.executable

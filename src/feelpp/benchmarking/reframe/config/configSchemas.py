@@ -118,7 +118,7 @@ class Plot(BaseModel):
         return v
 
 class Platform(BaseModel):
-    type:Literal["self_os","apptainer","docker"]
+    type:Literal["builtin","apptainer","docker"]
     image:str
     options:List[str]
 
@@ -166,7 +166,6 @@ class MachineConfig(BaseModel):
     launch_options: List[str]
     reframe_base_dir:str
     reports_base_dir:str
-    partition:str
 
 class ExecutionConfigFile(RootModel):
     List[MachineConfig]
