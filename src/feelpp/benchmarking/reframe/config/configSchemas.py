@@ -134,13 +134,6 @@ class ConfigFile(BaseModel):
     parameters: List[Parameter]
     plots: List[Plot]
 
-    @field_validator('executable', mode="before")
-    def checExecutableInstalled(cls, v):
-        """ Check if executable is found on the system """
-        if shutil.which(v) is None:
-            raise ValueError(f"Executable not found or not installed: {v}")
-        return v
-
 
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
