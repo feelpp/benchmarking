@@ -55,10 +55,10 @@ def main_cli():
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
         app_config = ConfigReader(config_filepath,ConfigFile).config
         reframe_cmd = cmd_builder.buildCommand(app_config.executable)
-        os.system(reframe_cmd)
+        exit_code = os.system(reframe_cmd)
 
         #============ UPLOAD REPORTS TO GIRDER ================#
-        if app_config.upload.active:
+        if exit_code == 0 and app_config.upload.active:
             if app_config.upload.platform == "girder":
                 girder_handler = GirderHandler(download_base_dir=None)
                 rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)
