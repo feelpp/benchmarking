@@ -12,7 +12,7 @@ site_configuration = {
                     'launcher': 'mpiexec',
                     'max_jobs': 8,
                     'access': ['--partition=production'],
-                    'environs': ['env_gaya'],
+                    'environs': ['builtin','apptainer'],
                     'prepare_cmds': ['source /etc/profile.d/modules.sh'],
                     'processor': {
                         'num_cpus': 128
@@ -23,7 +23,11 @@ site_configuration = {
                             'num_devices': 4
                         }
                     ],
-                    'container_platforms':[{ 'type': 'Apptainer' }],
+                    'container_platforms':[
+                        {
+                            'type': 'Apptainer'
+                        }
+                    ],
                 },
             ],
             'env_vars':[
@@ -33,8 +37,15 @@ site_configuration = {
     ],
     'environments': [
         {
-            'name': 'env_gaya',
+            'name': 'builtin',
             'modules': ['hpcx'],
+            'cc': 'clang',
+            'cxx': 'clang++',
+            'target_systems': ['gaya:production']
+        },
+        {
+            'name': 'apptainer',
+            'modules': [],
             'cc': 'clang',
             'cxx': 'clang++',
             'target_systems': ['gaya:production']
