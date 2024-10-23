@@ -17,30 +17,6 @@ class Parameter:
         raise NotImplementedError("This is a pure virtual method that should be overriden by inherited classes")
 
 
-# class CoresParameter(Parameter):
-#     """ Parameter representing the number of tasks """
-#     def __init__(self,param_config):
-#         super().__init__(param_config)
-
-#     def parametrize(self):
-#         """Parametrize the number of tasks, depending on the desiring sequencing/configuration"""
-#         if self.range.generator == "double":
-#             for part in rt.runtime().system.partitions:
-#                 nb_task = self.range.min_cores_per_node
-#                 yield nb_task
-#                 while (nb_task < part.processor.num_cpus) and (nb_task < self.range._cores_per_node):
-#                     nb_task <<= 1
-#                     yield nb_task
-
-#                 if not (self.range.min_nodes == 1 and self.range.max_nodes == 1):
-#                     if self.range.max_nodes < part.devices[0].num_devices:
-#                         nb_nodes = self.range.max_nodes
-#                     else:
-#                         nb_nodes = part.devices[0].num_devices
-#                     for i in range(self.range.min_nodes+1, nb_nodes+1):
-#                         nb_task = i * part.processor.num_cpus
-#                         yield nb_task
-
 class LinspaceParameter(Parameter):
     def __init__(self, param_config):
         super().__init__(param_config)
