@@ -5,6 +5,7 @@ from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineC
 
 import reframe as rfm
 import os, re, shutil
+import numpy as np
 
 class Setup:
     """ Abstract class for setup """
@@ -174,11 +175,11 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     use_case = variable(str,value=app_setup.config.use_case_name)
 
-    parameters = []
+    parameters = {}
 
     for param_config in app_setup.config.parameters:
         if param_config.active:
-            parameters.append(param_config.name)
+            parameters[param_config.name] = [subparam.name for subparam in param_config.zip] if param_config.mode=="zip" else []
             param_values = list(ParameterFactory.create(param_config).parametrize())
             exec(f"{param_config.name}=parameter({param_values})")
 
@@ -201,13 +202,17 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def setupParameters(self):
-        for param_name in self.parameters:
+        for param_name,subparameters in self.parameters.items():
             value = getattr(self,param_name)
             if param_name == "nb_tasks":
-                self.num_tasks_per_node = min(value, self.current_partition.processor.num_cpus)
+                self.num_tasks_per_node = min(value["tasks_per_node"], self.current_partition.processor.num_cpus)
                 self.num_cpus_per_task = 1
-                self.num_tasks = value
+                self.num_tasks = value["tasks"]
             self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
+            for subparameter in subparameters:
+                self.app_setup.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
+
+
 
 
     @run_before('run')
