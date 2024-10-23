@@ -4,7 +4,8 @@ from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineConfig
 
 import reframe as rfm
-import os, re
+import os, re, shutil
+import numpy as np
 
 class Setup:
     """ Abstract class for setup """
@@ -43,7 +44,6 @@ class MachineSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         self.setValidEnvironments(rfm_test)
-        self.setEnvVars(rfm_test)
         self.setTags(rfm_test)
 
     def setupBeforeRun(self,rfm_test):
@@ -60,13 +60,6 @@ class MachineSetup(Setup):
         """
         rfm_test.valid_systems = self.config.valid_systems
         rfm_test.valid_prog_environs = self.config.valid_prog_environs
-
-    def setEnvVars(self,rfm_test):
-        """ Sets the env_vars attribute
-        Args:
-            rfm_test (reframe class) : The test to apply the setup
-        """
-        rfm_test.env_vars['OMP_NUM_THREADS'] = self.config.omp_num_threads
 
     def setTags(self,rfm_test):
         """ Sets the tags attribute
@@ -105,15 +98,37 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        self.cleanupDirectories()
         self.setExecutable(rfm_test)
+
+    def setupAfterInit(self, rfm_test):
+        self.setPlatform(rfm_test)
+
+    def cleanupDirectories(self):
+        if os.path.exists(self.config.scalability.directory):
+            shutil.rmtree(self.config.scalability.directory)
+
+    def setPlatform(self, rfm_test):
+        """ Sets the container_platform attributes
+        Args:
+            rfm_test (reframe class) : The test to apply the setup
+        """
+        if self.config.platform and self.config.platform.type != "builtin":
+            rfm_test.container_platform.image = self.config.platform.image
+            rfm_test.container_platform.options = self.config.platform.options
+            rfm_test.container_platform.workdir = None
+
 
     def setExecutable(self, rfm_test):
         """ Sets the executable and executable_opts attrbiutes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.executable = self.config.executable
-        rfm_test.executable_opts = self.config.options
+        if self.config.platform and self.config.platform.type != "builtin":
+            rfm_test.container_platform.command = f"{self.config.executable} {' '.join(self.config.options)}"
+        else:
+            rfm_test.executable = self.config.executable
+            rfm_test.executable_opts = self.config.options
 
     def replaceField(self,field, replace):
         """ Replaces a single string {{stored.like.this}} with their actual replace value
@@ -160,11 +175,11 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     use_case = variable(str,value=app_setup.config.use_case_name)
 
-    parameters = []
+    parameters = {}
 
     for param_config in app_setup.config.parameters:
         if param_config.active:
-            parameters.append(param_config.name)
+            parameters[param_config.name] = [subparam.name for subparam in param_config.zip] if param_config.mode=="zip" else []
             param_values = list(ParameterFactory.create(param_config).parametrize())
             exec(f"{param_config.name}=parameter({param_values})")
 
@@ -183,19 +198,21 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def updateSetups(self):
         """Updates the setup with testcase related values"""
         self.app_setup.reset()
+        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
 
     @run_before('run')
     def setupParameters(self):
-        for param_name in self.parameters:
+        for param_name,subparameters in self.parameters.items():
             value = getattr(self,param_name)
             if param_name == "nb_tasks":
-                self.num_tasks_per_node = min(value, self.current_partition.processor.num_cpus)
+                self.num_tasks_per_node = min(value["tasks_per_node"], self.current_partition.processor.num_cpus)
                 self.num_cpus_per_task = 1
-                self.num_tasks = value
-            else:
-                self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
+                self.num_tasks = value["tasks"]
+            self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
+            for subparameter in subparameters:
+                self.app_setup.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
 
-        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
+
 
 
     @run_before('run')

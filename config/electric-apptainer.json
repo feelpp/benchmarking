@@ -1,0 +1,252 @@
+{
+    "executable": "feelpp_toolbox_electric",
+    "platform": {
+        "type":"apptainer",
+        "image": "oras://ghcr.io/feelpp/feelpp:v0.111.0-preview.10-noble-sif",
+        "options": [
+            "--home /data/scratch/cladellash/feelppdb/",
+            "--bind /usr/share/feelpp/data/testcases/toolboxes/electric/cases/quarter-turn/:/input_data/"
+        ]
+    },
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric",
+    "use_case_name": "quarter_turn_3d",
+    "options": [
+        "--config-files /input_data/3d.cfg",
+        "--directory {{output_directory}}/{{instance}}",
+        "--repository.case {{use_case_name}}",
+        "--fail-on-unknown-option 1",
+        "--electric.scalability-save=1",
+        "--repository.append.np 0",
+        "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": {{parameters.hsize.value}} }'"
+    ],
+    "outputs": [
+        {
+            "instance_path": "{{output_directory}}/{{use_case_name}}/",
+            "relative_filepath": "electric.measures/values.csv",
+            "format": "csv"
+        }
+    ],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "stages": [
+            {
+                "name": "ElectricConstructor",
+                "file": "electric.scalibility.ElectricConstructor.data",
+                "format": "tsv"
+            },
+            {
+                "name": "ElectricPostProcessing",
+                "file": "electric.scalibility.ElectricPostProcessing.data",
+                "format": "tsv"
+            },
+            {
+                "name": "ElectricSolve",
+                "file": "electric.scalibility.ElectricSolve.data",
+                "format": "tsv"
+            }
+        ]
+    },
+    "sanity": {
+        "success": [],
+        "error": []
+    },
+    "upload": {
+        "platform": "girder",
+        "folder_id": "66ffd846b0e95728eb010353"
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "range": {
+                "mode": "cores",
+                "min_cores_per_node": 8,
+                "max_cores_per_node": 64,
+                "min_nodes": 1,
+                "max_nodes": 1,
+                "generator": "double"
+            }
+        },
+        {
+            "name": "hsize",
+            "range": {
+                "mode": "step",
+                "min": 0.03,
+                "max": 0.05,
+                "n_steps": 3,
+                "generator": "linear"
+            }
+        }
+    ],
+    "plots": [
+        {
+            "title": "ElectricConstructor step absolute performance",
+            "plot_types": [
+                "stacked_bar",
+                "table"
+            ],
+            "transformation": "performance",
+            "variables": [
+                "ElectricConstructor_createMesh",
+                "ElectricConstructor_createExporters",
+                "ElectricConstructor_graph",
+                "ElectricConstructor_matrixVector",
+                "ElectricConstructor_algebraicOthers"
+            ],
+            "names": [
+                "createMesh",
+                "createExporters",
+                "graph",
+                "matrixVector",
+                "algebraicOthers"
+            ],
+            "xaxis": {
+                "parameter": "nb_tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "hsize",
+                "label": "h size"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "ElectricConstructor step relative performance",
+            "plot_types": [
+                "stacked_bar"
+            ],
+            "transformation": "relative_performance",
+            "variables": [
+                "ElectricConstructor_createMesh",
+                "ElectricConstructor_createExporters",
+                "ElectricConstructor_graph",
+                "ElectricConstructor_matrixVector",
+                "ElectricConstructor_algebraicOthers"
+            ],
+            "names": [
+                "createMesh",
+                "createExporters",
+                "graph",
+                "matrixVector",
+                "algebraicOthers"
+            ],
+            "xaxis": {
+                "parameter": "nb_tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "hsize",
+                "label": "h size"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "Electric Post Processing step performance",
+            "plot_types": [
+                "scatter"
+            ],
+            "transformation": "performance",
+            "variables": [
+                "ElectricPostProcessing_exportResults"
+            ],
+            "names": [
+                "exportResults"
+            ],
+            "xaxis": {
+                "parameter": "nb_tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "hsize",
+                "label": "h size"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "Electric Solve step absolute performance",
+            "plot_types": [
+                "stacked_bar",
+                "table"
+            ],
+            "transformation": "performance",
+            "variables": [
+                "ElectricSolve_algebraic-assembly",
+                "ElectricSolve_algebraic-solve"
+            ],
+            "names": [
+                "algebraic-assembly",
+                "algebraic-solve"
+            ],
+            "xaxis": {
+                "parameter": "nb_tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "hsize",
+                "label": "h size"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "Electric Solve step relative performance",
+            "plot_types": [
+                "stacked_bar"
+            ],
+            "transformation": "relative_performance",
+            "variables": [
+                "ElectricSolve_algebraic-assembly",
+                "ElectricSolve_algebraic-solve"
+            ],
+            "names": [
+                "algebraic-assembly",
+                "algebraic-solve"
+            ],
+            "xaxis": {
+                "parameter": "nb_tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "hsize",
+                "label": "h size"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "Speedup by step",
+            "plot_types": [
+                "scatter"
+            ],
+            "transformation": "speedup",
+            "variables": [
+                "ElectricConstructor_init",
+                "ElectricPostProcessing_exportResults",
+                "ElectricSolve_solve"
+            ],
+            "names": [
+                "ElectricConstructor",
+                "ElectricPostProcessing",
+                "ElectricSolve"
+            ],
+            "xaxis": {
+                "parameter": "nb_tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "hsize",
+                "label": "h size"
+            },
+            "yaxis": {
+                "label": "Speedup"
+            }
+        }
+    ]
+}

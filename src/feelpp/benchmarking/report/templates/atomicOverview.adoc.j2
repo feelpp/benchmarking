@@ -1,0 +1,48 @@
+= Overview
+:page-plotly: true
+:page-jupyter: true
+:page-tags: toolbox, catalog
+:parent-catalogs: {{parent_catalogs}}
+:description: 
+:page-illustration: ROOT:overview.png
+:revdate: 
+
+{% for parent in parents %}
+    - {{parent.type.title()}} : {{parent.display_name}}
+{% endfor %}
+
+[%dynamic%close%hide_code,python]
+----
+from numpy import nan
+from feelpp.benchmarking.report.base.controller import Controller
+from feelpp.benchmarking.report.base.model import AggregationModel
+from feelpp.benchmarking.report.base.view import View
+----
+
+[%dynamic%close%hide_code,python]
+----
+model=AggregationModel.fromDataframe({{ master_df }})
+view=View({{ plots_config }})
+controller=Controller(model,view)
+----
+
+[%dynamic%open%hide_code,python]
+----
+for fig in controller.generateAll():
+    fig.show()
+----
+
+++++
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+    line-height:0;
+}
+</style>
+++++
