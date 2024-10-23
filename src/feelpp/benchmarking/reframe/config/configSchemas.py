@@ -16,8 +16,7 @@ class Scalability(BaseModel):
     stages: List[Stage]
 
 class AppOutput(BaseModel):
-    instance_path: str
-    relative_filepath: str
+    filepath: str
     format: str
 
 class Upload(BaseModel):

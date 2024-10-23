@@ -150,7 +150,11 @@ class AppSetup(Setup):
             if isinstance(value, dict):
                 new_cfg[field] = self.updateDict(value, replace)
             elif isinstance(value, list):
-                new_cfg[field] = [self.replaceField(v,replace) if isinstance(v, str) else v for v in value ]
+                new_cfg[field] = [
+                    self.replaceField(v,replace) if isinstance(v, str) else
+                    self.updateDict(v,replace) if isinstance(v,dict) else
+                    v for v in value
+                ]
             elif isinstance(value, str):
                 new_cfg[field] = self.replaceField(value,replace)
             else:

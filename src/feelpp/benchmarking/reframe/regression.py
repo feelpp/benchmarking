@@ -2,6 +2,8 @@ import reframe as rfm
 from feelpp.benchmarking.reframe.setup import ReframeSetup
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
+from feelpp.benchmarking.reframe.outputs import OutputsHandler
+
 
 import shutil
 
@@ -14,10 +16,17 @@ class RegressionTest(ReframeSetup):
     def initHandlers(self):
         self.validation_handler = ValidationHandler(self.app_setup.config.sanity)
         self.scalability_handler = ScalabilityHandler(self.app_setup.config.scalability)
+        self.outputs_handler = OutputsHandler(self.app_setup.config.outputs)
 
     @run_before('performance')
     def setPerfVars(self):
-        self.perf_variables = self.scalability_handler.getPerformanceVariables(self.nb_tasks["tasks"])
+        self.perf_variables = {}
+        self.perf_variables.update(
+            self.scalability_handler.getPerformanceVariables(self.nb_tasks["tasks"])
+        )
+        self.perf_variables.update(
+            self.outputs_handler.getOutputs()
+        )
 
     @sanity_function
     def sanityCheck(self):
