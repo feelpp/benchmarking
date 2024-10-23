@@ -18,6 +18,7 @@ class Parameter:
 
 
 class LinspaceParameter(Parameter):
+    """ Parameter that generates evenly spaced samples using a min, max and a number of steps """
     def __init__(self, param_config):
         super().__init__(param_config)
         self.min = param_config.linspace.min
@@ -29,6 +30,7 @@ class LinspaceParameter(Parameter):
 
 
 class LogspaceParameter(Parameter):
+    """ Parameter that generates evenly spaced samples on a log scale using a min, max, a number of steps and the log base"""
     def __init__(self, param_config):
         super().__init__(param_config)
         self.min = param_config.linspace.min
@@ -40,6 +42,7 @@ class LogspaceParameter(Parameter):
         yield from np.logspace(self.min,self.max,self.n_steps,endpoint=True,base=self.base,dtype=object)
 
 class GeometricParameter(Parameter):
+    """ Parameter that generates a geometric sequence a start, a ratio and a number of steps """
     def __init__(self, param_config):
         super().__init__(param_config)
         self.start = param_config.geometric.start
@@ -50,6 +53,7 @@ class GeometricParameter(Parameter):
         yield from self.start * (self.ratio ** np.arange(self.n_steps,dtype=object))
 
 class RangeParameter(Parameter):
+    """ Parameter that generates an evenly spaced sequence from an interval and a step"""
     def __init__(self, param_config):
         super().__init__(param_config)
         self.min = param_config.range.min
@@ -60,6 +64,7 @@ class RangeParameter(Parameter):
         yield from np.arange(start=self.min, stop=self.max+self.step,step=self.step,dtype=object)
 
 class SequenceParameter(Parameter):
+    """ Parameter that creates a generator from a list"""
     def __init__(self, param_config):
         super().__init__(param_config)
         self.sequence = param_config.sequence
@@ -68,6 +73,7 @@ class SequenceParameter(Parameter):
         yield from self.sequence
 
 class RepeatParameter(Parameter):
+    """ Parameter that creates a generator repeating a single value a number of times (the value can be of any type)"""
     def __init__(self, param_config):
         super().__init__(param_config)
         self.value = param_config.repeat.value
@@ -77,6 +83,7 @@ class RepeatParameter(Parameter):
         yield from [self.value]*self.count
 
 class ZipParameter(Parameter):
+    """ Parameter that creates a generator from its subparameters generators, zipped, in the form of [{"subparam1":value_1_1, ..., "subparamN":value_N_1}, ..., {"subparam1":value_1_M ,..., "subparamN":value_N_M}]."""
     def __init__(self, param_config):
         super().__init__(param_config)
         self.parameter_generators = {
