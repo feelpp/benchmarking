@@ -13,8 +13,7 @@
     ],
     "outputs": [
         {
-            "instance_path": "{{output_directory}}/{{use_case_name}}/",
-            "relative_filepath": "heat.measures/values.csv",
+            "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
             "format": "csv"
         }
     ],
@@ -49,23 +48,27 @@
     "parameters": [
         {
             "name": "nb_tasks",
-            "range": {
-                "mode": "cores",
-                "min_cores_per_node": 1,
-                "max_cores_per_node": 16,
-                "min_nodes": 1,
-                "max_nodes": 1,
-                "generator": "double"
-            }
+            "zip": [
+                {
+                    "name":"tasks",
+                    "geometric":{
+                        "start":16,
+                        "ratio":2,
+                        "n_steps":1
+                    }
+                },
+                {
+                    "name":"tasks_per_node",
+                    "sequence":[64]
+                }
+            ]
         },
         {
             "name": "hsize",
-            "range": {
-                "mode": "step",
-                "min": 0.05,
-                "max": 0.95,
-                "n_steps": 3,
-                "generator": "linear"
+            "linspace": {
+                "min": 0.03,
+                "max": 0.05,
+                "n_steps": 3
             }
         }
     ],
