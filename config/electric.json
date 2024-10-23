@@ -49,23 +49,27 @@
     "parameters": [
         {
             "name": "nb_tasks",
-            "range": {
-                "mode": "cores",
-                "min_cores_per_node": 8,
-                "max_cores_per_node": 64,
-                "min_nodes": 1,
-                "max_nodes": 1,
-                "generator": "double"
-            }
+            "zip": [
+                {
+                    "name":"tasks",
+                    "geometric":{
+                        "start":16,
+                        "ratio":2,
+                        "n_steps":5
+                    }
+                },
+                {
+                    "name":"tasks_per_node",
+                    "sequence":[64,64,64,64,128]
+                }
+            ]
         },
         {
             "name": "hsize",
-            "range": {
-                "mode": "step",
+            "linspace": {
                 "min": 0.03,
                 "max": 0.05,
-                "n_steps": 3,
-                "generator": "linear"
+                "n_steps": 3
             }
         }
     ],
