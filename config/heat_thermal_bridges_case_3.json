@@ -1,0 +1,174 @@
+{
+    "executable": "feelpp_toolbox_heat",
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/heat",
+    "use_case_name": "thermal_bridges_case_3",
+    "options": [
+        "--config-files /data/scratch/cladellash/feelppdb/input_data/thermal_bridges_case_3/case3.cfg",
+        "--directory {{output_directory}}/{{instance}}",
+        "--repository.case {{use_case_name}}",
+        "--fail-on-unknown-option 1",
+        "--heat.scalability-save=1",
+        "--repository.append.np 0",
+        "--case.discretization {{parameters.discretization.value}}",
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"$cfgdir/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+    ],
+    "outputs": [
+        {
+            "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
+            "format": "csv"
+        }
+    ],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "stages": [
+            {
+                "name": "HeatConstructor",
+                "file": "heat.scalibility.HeatConstructor.data",
+                "format": "tsv"
+            },
+            {
+                "name": "HeatPostProcessing",
+                "file": "heat.scalibility.HeatPostProcessing.data",
+                "format": "tsv"
+            },
+            {
+                "name": "HeatSolve",
+                "file": "heat.scalibility.HeatSolve.data",
+                "format": "tsv"
+            }
+        ]
+    },
+    "sanity": {
+        "success": [],
+        "error": []
+    },
+    "upload": {
+        "platform": "girder",
+        "folder_id": "6703da68b0e95728eb0105c4"
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "zip": [
+                {
+                    "name":"tasks",
+                    "range":{
+                        "min":32,
+                        "max":64,
+                        "step":32
+                    }
+                },
+                {
+                    "name":"tasks_per_node",
+                    "range":{
+                        "min":32,
+                        "max":64,
+                        "step":32
+                    }
+
+                }
+            ]
+        },
+        {
+            "name": "meshes",
+            "sequence": ["M1","M2"]
+        },
+        {
+            "name": "discretization",
+            "sequence": ["P1","P2"]
+        }
+    ],
+    "plots": [
+        {
+            "title": "Validation measures",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "variables": [
+                "Normal_Heat_Flux_bottom",
+                "Points_pointA_field_temperature", "Points_pointB_field_temperature", "Points_pointC_field_temperature",
+                "Points_pointD_field_temperature", "Points_pointE_field_temperature", "Points_pointF_field_temperature",
+                "Points_pointG_field_temperature", "Points_pointH_field_temperature", "Points_pointI_field_temperature",
+                "Statistics_CheckGeneric_Heat-Flux_bottom_integrate", "Statistics_CheckGeneric_Heat-Flux_top_integrate",
+                "Statistics_Check_Heat-Flux_bottom_integrate", "Statistics_Check_Heat-Flux_top_integrate",
+                "Statistics_Inward-Heat-Flux_V2_bottom_integrate", "Statistics_Inward-Heat-Flux_bottom_integrate"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "meshes",
+                "label": "mesh levels"
+            },
+            "yaxis": {
+                "label": "Heat flow [W]"
+            },
+            "color_axis":{
+                "parameter": "discretization",
+                "label":"Discretization"
+            },
+            "secondary_axis":{
+                "parameter": "performance_variable",
+                "label": "Measures"
+            },
+            "aggregations":[
+                {"column":"nb_tasks.tasks","agg":"filter:128"}
+            ]
+        },
+        {
+            "title": "Performance",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [
+                "HeatConstructor_init",
+                "HeatSolve_solve",
+                "HeatPostProcessing_exportResults"
+            ],
+            "names": [ "init","assembly", "postprocess" ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P1"}
+            ]
+        },
+        {
+            "title": "Performance",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [
+                "HeatConstructor_init",
+                "HeatSolve_solve",
+                "HeatPostProcessing_exportResults"
+            ],
+            "names": [ "init","assembly", "postprocess" ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P2"}
+            ]
+        }
+    ]
+}
