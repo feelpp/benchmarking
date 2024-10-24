@@ -48,14 +48,14 @@ class ConfigFile(BaseModel):
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
         """ Checks that the plot axis parameter field corresponds to existing parameters"""
+        parameter_names = [
+            f"{outer.name}.{inner.name}" for outer in self.parameters if outer.zip
+            for inner in outer.zip
+        ] + [outer.name for outer in self.parameters if outer.sequence] + ["performance_variable"]
         for plot in self.plots:
-            assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
-            if plot.secondary_axis:
-                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Secondary axis parameter not found in parameter list: {plot.secondary_axis.parameter}"
-            if plot.yaxis.parameter:
-                assert plot.yaxis.parameter in [ p.name for p in self.parameters], f"Yaxis parameter not found in parameter list: {plot.yaxis.parameter}"
-            if plot.color_axis and plot.color_axis.parameter:
-                assert plot.color_axis.parameter in [ p.name for p in self.parameters], f"color parameter not found in parameter list: {plot.color_axis.parameter}"
+            for ax in [plot.xaxis,plot.secondary_axis,plot.yaxis,plot.color_axis]:
+                if ax and ax.parameter:
+                    assert ax.parameter in parameter_names, f"Parameter not found {ax.parameter} in {parameter_names}"
 
         return self
 
