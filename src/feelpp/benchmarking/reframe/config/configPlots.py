@@ -18,7 +18,7 @@ class Aggregation(BaseModel):
 
 class Plot(BaseModel):
     title:str
-    plot_types:List[Literal["scatter","table","stacked_bar"]]
+    plot_types:List[Literal["scatter","table","stacked_bar","grouped_bar"]]
     transformation:Literal["performance","relative_performance","speedup"]
     aggregations:Optional[List[Aggregation]] = None
     variables:Optional[List[str]] = None
