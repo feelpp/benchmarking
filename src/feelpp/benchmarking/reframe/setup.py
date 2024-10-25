@@ -73,7 +73,6 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.exclusive_access = self.config.exclusive_access
         rfm_test.job.launcher.options = self.config.launch_options
 
 
@@ -208,6 +207,9 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 self.num_tasks_per_node = min(int(value["tasks"]) // int(value["nodes"]), self.current_partition.processor.num_cpus)
                 self.num_cpus_per_task = 1
                 self.num_tasks = value["tasks"]
+
+                self.exclusive_access = value["exclusive_access"] if "exclusive_access" in value else True
+
             self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
             for subparameter in subparameters:
                 self.app_setup.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })

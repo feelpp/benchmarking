@@ -89,7 +89,6 @@ class MachineConfig(BaseModel):
     machine:str
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
-    exclusive_access:bool
     valid_systems:List[str] = ["*"],
     valid_prog_environs:List[str] = ["*"]
     launch_options: List[str]
