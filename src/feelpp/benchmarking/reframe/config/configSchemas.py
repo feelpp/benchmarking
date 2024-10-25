@@ -120,7 +120,17 @@ class Plot(BaseModel):
 class Platform(BaseModel):
     type:Literal["builtin","apptainer","docker"]
     image:str
+    image_download_location:str
     options:List[str]
+
+    @field_validator("image_download_location", mode="before")
+    @classmethod
+    def checkImageDownloadFolder(cls,v):
+        """ Checks that the folder where images are downloaded exists"""
+        if not os.path.exists(os.path.dirname(v)):
+            raise FileNotFoundError(f"Folder {v} does not exist")
+        return v
+
 
 class ConfigFile(BaseModel):
     executable: str
