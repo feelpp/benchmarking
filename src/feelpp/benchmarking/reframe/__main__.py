@@ -48,6 +48,16 @@ def main_cli():
 
     machine_config = ConfigReader(parser.args.exec_config,MachineConfig).config
 
+    #Sets the cachedir and tmpdir directories for containers
+    for container in machine_config.containers:
+        if container.platform=="apptainer":
+            if container.cachedir:
+                os.environ["APPTAINER_CACHEDIR"] = container.cachedir
+            if container.tmpdir:
+                os.environ["APPTAINER_TMPDIR"] = container.cachedir
+        elif container.platform=="docker":
+            raise NotImplementedError("Docker container directories configuration is not implemented")
+
     cmd_builder = CommandBuilder(machine_config,parser)
 
     for config_filepath in parser.args.config:
@@ -56,10 +66,13 @@ def main_cli():
         reframe_cmd = cmd_builder.buildCommand(app_config.executable)
 
         if app_config.platform and app_config.platform.type == "apptainer":
-            process = subprocess.Popen(f"apptainer pull -F {app_config.platform.image_download_location} {app_config.platform.image}", shell=True, stdout=subprocess.PIPE)
-            process.wait()
-            if not os.path.exists(app_config.platform.image_download_location):
-                raise FileExistsError("Image was not downloaded.")
+            if app_config.platform.image.protocol != "local" :
+                # process = subprocess.Popen(f"apptainer pull -F {app_config.platform} {app_config.platform}", shell=True, stdout=subprocess.PIPE) #TODO: handle image location
+                # process.wait()
+                # if not os.path.exists(app_config.platform.image_download_location):
+                #     raise FileExistsError("Image was not downloaded.")
+                #TODO: Change config.platform.image.name to download location
+                raise NotImplementedError("Image downloading is not implemented yet. Please pull manually and provide the path")
 
         exit_code = os.system(reframe_cmd)
 

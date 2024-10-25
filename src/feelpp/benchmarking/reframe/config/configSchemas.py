@@ -117,19 +117,30 @@ class Plot(BaseModel):
             assert v.parameter is not None
         return v
 
+class Image(BaseModel):
+    protocol:Optional[Literal["oras","docker","library","local"]] = None
+    name:str
+
+    @model_validator(mode="after")
+    def extractProtocol(self):
+        """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
+        If local, checks if the image exists """
+
+        if "://" in self.name:
+            self.protocol = self.name.split("://")[0]
+        else:
+            self.protocol = "local"
+
+        if self.protocol == "local":
+            if not os.path.exists(self.name):
+                raise FileNotFoundError(f"Image {self.name} not found")
+        return self
+
+
 class Platform(BaseModel):
     type:Literal["builtin","apptainer","docker"]
-    image:str
-    image_download_location:str
+    image:Image
     options:List[str]
-
-    @field_validator("image_download_location", mode="before")
-    @classmethod
-    def checkImageDownloadFolder(cls,v):
-        """ Checks that the folder where images are downloaded exists"""
-        if not os.path.exists(os.path.dirname(v)):
-            raise FileNotFoundError(f"Folder {v} does not exist")
-        return v
 
 
 class ConfigFile(BaseModel):
@@ -159,16 +170,33 @@ class ConfigFile(BaseModel):
 
         return self
 
+
+class Container(BaseModel):
+    platform: Literal["docker","apptainer"]
+    cachedir:Optional[str] = None
+    tmpdir:Optional[str] = None
+
+    @field_validator("cachedir","tmpdir",mode="before")
+    @classmethod
+    def checkDirectories(cls,v):
+        """Checks that the directories exists"""
+        if v and not os.path.exists(v):
+            raise FileNotFoundError(f"Cannot find {v}")
+
+        return v
+
 class MachineConfig(BaseModel):
     machine:str
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     exclusive_access:bool
-    valid_systems:List[str] = ["*"],
+    partitions:List[str]
     valid_prog_environs:List[str] = ["*"]
     launch_options: List[str]
     reframe_base_dir:str
     reports_base_dir:str
+    containers:Optional[List[Container]] = []
+
 
 class ExecutionConfigFile(RootModel):
     List[MachineConfig]
