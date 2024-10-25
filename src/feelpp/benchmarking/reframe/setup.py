@@ -113,7 +113,9 @@ class AppSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         if self.config.platform and self.config.platform.type != "builtin":
-            rfm_test.container_platform.image = self.config.platform.image
+            if not os.path.exists(self.config.platform.image_download_location):
+                raise FileExistsError(f"Cannot find image {self.config.platform.image_download_location}")
+            rfm_test.container_platform.image = self.config.platform.image_download_location
             rfm_test.container_platform.options = self.config.platform.options
             rfm_test.container_platform.workdir = None
 

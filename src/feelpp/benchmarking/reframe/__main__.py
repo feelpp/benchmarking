@@ -1,11 +1,10 @@
-import os
+import os, json,subprocess
 from datetime import datetime
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
 from feelpp.benchmarking.report.config.handlers import GirderHandler
-import json
 
 
 class CommandBuilder:
@@ -55,6 +54,13 @@ def main_cli():
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
         app_config = ConfigReader(config_filepath,ConfigFile).config
         reframe_cmd = cmd_builder.buildCommand(app_config.executable)
+
+        if app_config.platform and app_config.platform.type == "apptainer":
+            process = subprocess.Popen(f"apptainer pull -F {app_config.platform.image_download_location} {app_config.platform.image}", shell=True, stdout=subprocess.PIPE)
+            process.wait()
+            if not os.path.exists(app_config.platform.image_download_location):
+                raise FileExistsError("Image was not downloaded.")
+
         exit_code = os.system(reframe_cmd)
 
         #============ UPLOAD REPORTS TO GIRDER ================#
