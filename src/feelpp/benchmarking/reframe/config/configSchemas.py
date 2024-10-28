@@ -27,10 +27,58 @@ class Upload(BaseModel):
     folder_id: Union[str,int]
 
 
+class PlotAxis(BaseModel):
+    parameter: Optional[str] = None
+    label:str
+
+class Aggregation(BaseModel):
+    column: str
+    agg: Literal["sum","mean","min","max"]
+class Plot(BaseModel):
+    title:str
+    plot_types:List[Literal["scatter","table","stacked_bar"]]
+    transformation:Literal["performance","relative_performance","speedup"]
+    aggregations:Optional[List[Aggregation]] = None
+    variables:Optional[List[str]] = None
+    names:List[str]
+    xaxis:PlotAxis
+    secondary_axis:Optional[PlotAxis] = None
+    yaxis:PlotAxis
+    color_axis:Optional[PlotAxis] = None
+
+
+    @field_validator("xaxis","secondary_axis", mode="after")
+    def checExecutableInstalled(cls, v):
+        """ Checks that the parameter field is specified for xaxis and secondary_axis field"""
+        if v:
+            assert v.parameter is not None
+        return v
+
+class Image(BaseModel):
+    protocol:Optional[Literal["oras","docker","library","local"]] = None
+    name:str
+
+    @model_validator(mode="after")
+    def extractProtocol(self):
+        """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
+        If local, checks if the image exists """
+
+        if "://" in self.name:
+            self.protocol = self.name.split("://")[0]
+        else:
+            self.protocol = "local"
+
+        if self.protocol == "local":
+            if not os.path.exists(self.name):
+                raise FileNotFoundError(f"Image {self.name} not found")
+        return self
+
+
 class Platform(BaseModel):
     type:Literal["builtin","apptainer","docker"]
-    image:str
+    image:Image
     options:List[str]
+
 
 class ConfigFile(BaseModel):
     executable: str
@@ -59,16 +107,33 @@ class ConfigFile(BaseModel):
 
         return self
 
+
+class Container(BaseModel):
+    platform: Literal["docker","apptainer"]
+    cachedir:Optional[str] = None
+    tmpdir:Optional[str] = None
+
+    @field_validator("cachedir","tmpdir",mode="before")
+    @classmethod
+    def checkDirectories(cls,v):
+        """Checks that the directories exists"""
+        if v and not os.path.exists(v):
+            raise FileNotFoundError(f"Cannot find {v}")
+
+        return v
+
 class MachineConfig(BaseModel):
     machine:str
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     exclusive_access:bool
-    valid_systems:List[str] = ["*"],
+    partitions:List[str]
     valid_prog_environs:List[str] = ["*"]
     launch_options: List[str]
     reframe_base_dir:str
     reports_base_dir:str
+    containers:Optional[List[Container]] = []
+
 
 class ExecutionConfigFile(RootModel):
     List[MachineConfig]

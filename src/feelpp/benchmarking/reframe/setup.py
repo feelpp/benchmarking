@@ -58,7 +58,7 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.valid_systems = self.config.valid_systems
+        rfm_test.valid_systems = [f"{self.config.machine}:{part}" for part in self.config.partitions]
         rfm_test.valid_prog_environs = self.config.valid_prog_environs
 
     def setTags(self,rfm_test):
@@ -114,7 +114,9 @@ class AppSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         if self.config.platform and self.config.platform.type != "builtin":
-            rfm_test.container_platform.image = self.config.platform.image
+            if not os.path.exists(self.config.platform.image.name):
+                raise FileExistsError(f"Cannot find image {self.config.platform.image.name}")
+            rfm_test.container_platform.image = self.config.platform.image.name
             rfm_test.container_platform.options = self.config.platform.options
             rfm_test.container_platform.workdir = None
 
