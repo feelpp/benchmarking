@@ -80,10 +80,16 @@ class ConfigFile(BaseModel):
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
         """ Checks that the plot axis parameter field corresponds to existing parameters"""
-        parameter_names = [
-            f"{outer.name}.{inner.name}" for outer in self.parameters if outer.zip
-            for inner in outer.zip
-        ] + [outer.name for outer in self.parameters if outer.sequence] + ["performance_variable"]
+        parameter_names = []
+        for outer in self.parameters:
+            if outer.zip:
+                for inner in outer.zip:
+                    parameter_names.append(f"{outer.name}.{inner.name}")
+            elif outer.sequence and all(type(s)==dict and s.keys() for s in outer.sequence):
+                for inner in outer.sequence[0].keys():
+                    parameter_names.append(f"{outer.name}.{inner}")
+
+        parameter_names += [outer.name for outer in self.parameters if outer.sequence] + ["performance_variable"]
         for plot in self.plots:
             for ax in [plot.xaxis,plot.secondary_axis,plot.yaxis,plot.color_axis]:
                 if ax and ax.parameter:
