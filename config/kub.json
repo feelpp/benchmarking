@@ -1,6 +1,6 @@
 {
     "executable": "feelpp_kub_cem",
-    "output_directory": "/data/scratch/cladellash/feelppdb/kub/",
+    "output_directory": "/data/scratch/cladellash/feelppdb/kub",
     "use_case_name": "poznan",
     "platform": {
         "type":"apptainer",
@@ -8,18 +8,31 @@
             "name":"/data/scratch/cladellash/images/kub.sif"
         },
         "options": [
-            "--home /data/scratch/cladellash/feelppdb/",
+            "--home /data/scratch/cladellash/",
             "--bind /data/home/cladellash/benchmarking/config/:/input_data/"
         ]
     },
     "options": [
         "--config-file /input_data/Poznan.cfg",
-        "--repository.append.np 0"
+        "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
     ],
     "outputs": [],
     "scalability": {
-        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
-        "stages": []
+        "directory": "{{output_directory}}/{{use_case_name}}/{{instance}}/cem/",
+        "stages": [
+            {
+                "name":"",
+                "file": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/timers.json",
+                "format": "json",
+                "variables_path":"*"
+            },
+            {
+                "name":"",
+                "file": "logs/timers.json",
+                "format": "json",
+                "variables_path":"*"
+            }
+        ]
     },
     "sanity": {
         "success": [],
@@ -34,10 +47,7 @@
         {
             "name": "nb_tasks",
             "sequence": [
-                {"tasks" : 16, "nodes":1, "exclusive_access":true},
-                {"tasks" : 32, "nodes":1, "exclusive_access":true},
-                {"tasks" : 64, "nodes":1, "exclusive_access":true},
-                {"tasks" : 128, "nodes":2, "exclusive_access":true}
+                {"tasks" : 64, "nodes":1, "exclusive_access":true}
             ]
         }
     ],

@@ -184,7 +184,12 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     for param_config in app_setup.config.parameters:
         if param_config.active:
-            parameters[param_config.name] = [subparam.name for subparam in param_config.zip] if param_config.mode=="zip" else []
+            if param_config.mode=="zip":
+                parameters[param_config.name] = [subparam.name for subparam in param_config.zip]
+            elif param_config.mode=="sequence" and all(type(s)==dict and s.keys() for s in param_config.sequence):
+                parameters[param_config.name] = list(param_config.sequence[0].keys())
+            else:
+                parameters[param_config.name] = []
             param_values = list(ParameterFactory.create(param_config).parametrize())
             exec(f"{param_config.name}=parameter({param_values})")
 

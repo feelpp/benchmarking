@@ -12,6 +12,18 @@ class Stage(BaseModel):
     name:str
     file:str
     format:Literal["csv","tsv","json"]
+    variables_path:Optional[str] = None
+
+    @model_validator(mode="after")
+    def checkFormatOptions(self):
+        if self.format == "json":
+            if self.variables_path == None:
+                raise ValueError("variables_path must be specified if format == json")
+
+            if "*" not in self.variables_path:
+                raise ValueError("variables_path must contain a wildcard '*'")
+
+        return self
 
 class Scalability(BaseModel):
     directory: str
