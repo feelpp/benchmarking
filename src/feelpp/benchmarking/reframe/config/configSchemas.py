@@ -2,7 +2,7 @@ from pydantic import BaseModel, field_validator, model_validator, RootModel
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
-
+import os
 
 class Sanity(BaseModel):
     success:List[str]
