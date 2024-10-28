@@ -12,37 +12,20 @@
 
 * Total Tests: {{ session_info.num_cases }}
 * Failures: {{ session_info.num_failures }}
-* Testcases
-{% set env_vars=[] %}
-{% for run in runs %}
-    {% for test in run.testcases %}
-        ** {{ test.display_name }}
-        {% if env_vars == [] and test.check_vars.env_vars %}
-            {% set _ignore=env_vars.append(test.check_vars.env_vars) %}
-        {% endif %}
-    {% endfor %}
-{% endfor %}
-{% if env_vars %}
-* Environment variables:
-[source,json]
-----
-{{ env_vars[0] }}
-----
-{% endif %}
 
 {% if not empty %}
 
 [%dynamic%close%hide_code,python]
 ----
-from feelpp.benchmarking.report.components.atomicReport import AtomicReportController
-from feelpp.benchmarking.report.components.atomicReport import AtomicReportModel
-from feelpp.benchmarking.report.components.atomicReport import AtomicReportView
+from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
+from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
+from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
 ----
 
 [%dynamic%close%hide_code,python]
 ----
-model=AtomicReportModel("{{ filepath }}")
-view=AtomicReportView("{{ plots_config_filepath }}")
+model=AtomicReportModel({{ runs }} )
+view=AtomicReportView({{ plots_config }})
 controller=AtomicReportController(model,view)
 ----
 

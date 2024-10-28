@@ -94,15 +94,20 @@ class PlotAxis(BaseModel):
     parameter: Optional[str] = None
     label:str
 
+class Aggregation(BaseModel):
+    column: str
+    agg: Literal["sum","mean","min","max"]
 class Plot(BaseModel):
     title:str
     plot_types:List[Literal["scatter","table","stacked_bar"]]
     transformation:Literal["performance","relative_performance","speedup"]
-    variables:List[str]
+    aggregations:Optional[List[Aggregation]] = None
+    variables:Optional[List[str]] = None
     names:List[str]
     xaxis:PlotAxis
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
+    color_axis:Optional[PlotAxis] = None
 
 
     @field_validator("xaxis","secondary_axis", mode="after")
@@ -138,9 +143,12 @@ class ConfigFile(BaseModel):
         for plot in self.plots:
             assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
             if plot.secondary_axis:
-                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.secondary_axis.parameter}"
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Secondary axis parameter not found in parameter list: {plot.secondary_axis.parameter}"
             if plot.yaxis.parameter:
-                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Yaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+            if plot.color_axis.parameter:
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"color parameter not found in parameter list: {plot.color_axis.parameter}"
+
         return self
 
 class MachineConfig(BaseModel):
