@@ -1,6 +1,10 @@
 name: Benchmark
 
 on:
+    push:
+      branches: #TODO: DEBUG - REMOVE
+      - '**'
+
     repository_dispatch:
         types: [execute-benchmark]
 
@@ -75,6 +79,8 @@ jobs:
                     machine_cfg_id=${{ github.event.inputs.machines_config }};
                 elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
                     machine_cfg_id=${{ github.event.client_payload.machines_config }};
+                else #TODO: REMOVE - DEBUG
+                    machine_cfg_id="6720f5a8b0e95728eb010af5"
                 fi
                 girder-download -gid $machine_cfg_id -o ./tmp/ -fn "machines_config.json"
             env:
@@ -92,6 +98,8 @@ jobs:
                     bench_cfg_id=${{ github.event.inputs.benchmark_config }};
                 elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
                     bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
+                else #TODO: REMOVE - DEBUG
+                    bench_cfg_id="6720f601b0e95728eb010af8"
                 fi
                 girder-download -gid $bench_cfg_id -o ./tmp/ -fn "benchmark_config.json"
             env:
@@ -99,7 +107,6 @@ jobs:
         -   name: pull_images
             run: |
                 source .venv/bin/activate
-
                 #ONLY IF NEEDED
 
     benchmark:
