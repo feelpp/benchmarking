@@ -1,0 +1,133 @@
+{
+    "executable": "feelpp_kub_cem",
+    "executable_dir":"/data/home/cladellash/ktirio-urban-building/build/src/cpp/",
+    "output_directory": "/data/scratch/cladellash/feelppdb/kub",
+    "use_case_name": "kernante",
+    "options": [
+        "--config-file /data/home/cladellash/benchmarking/config/Kernante.cfg",
+        "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
+    ],
+    "outputs": [],
+    "scalability": {
+        "directory": "{{output_directory}}/{{use_case_name}}/{{instance}}/cem/",
+        "stages": [
+            {
+                "name":"",
+                "file": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/timers.json",
+                "format": "json",
+                "variables_path":"*"
+            },
+            {
+                "name":"",
+                "file": "logs/timers.json",
+                "format": "json",
+                "variables_path":"*"
+            }
+        ]
+    },
+    "sanity": {
+        "success": ["[ Stopping Feel++ ]","execute at time=86400"],
+        "error": ["Error"]
+    },
+    "upload": {
+        "active": true,
+        "platform": "girder",
+        "folder_id": "66e94b10b0e95728eb00fcfe"
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "zip": [
+                {
+                    "name":"tasks",
+                    "range":{
+                        "min":4,
+                        "max":32,
+                        "step":4
+                    }
+                },
+                {
+                    "name":"nodes",
+                    "repeat":{
+                        "value":1,
+                        "count":8
+                    }
+                },
+                {
+                    "name":"exclusive_access",
+                    "repeat":{
+                        "value":true,
+                        "count":8
+                    }
+                }
+            ]
+        }
+    ],
+    "plots": [
+        {
+            "title": "Absolute performance",
+            "plot_types": [
+                "grouped_bar",
+                "table"
+            ],
+            "transformation": "performance",
+            "variables": [
+                "execute",
+                "postprocess",
+                "constructor",
+                "updateForUse"
+            ],
+            "names": [],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "Relative performance",
+            "plot_types": [
+                "stacked_bar",
+                "grouped_bar"
+            ],
+            "transformation": "relative_performance",
+            "variables": [
+                "execute",
+                "postprocess",
+                "constructor",
+                "updateForUse"
+            ],
+            "names": [],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "Speedup",
+            "plot_types": [
+                "scatter"
+            ],
+            "transformation": "speedup",
+            "variables": [
+                "execute",
+                "postprocess",
+                "constructor",
+                "updateForUse"
+            ],
+            "names": [],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        }
+    ]
+}
