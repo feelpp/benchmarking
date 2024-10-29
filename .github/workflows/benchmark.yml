@@ -1,0 +1,118 @@
+name: Benchmark
+
+on:
+    repository_dispatch:
+        types: [execute-benchmark]
+
+    workflow_dispatch:
+        inputs:
+            machines_config:
+                description: 'Machine related configurations'
+                required: True
+            benchmark_config:
+                description: 'Applcation related configuration'
+                required: True
+
+jobs:
+
+    activate:
+        runs-on: self-ubuntu-22.04
+        if: |
+            github.repository == 'feelpp/benchmarking' &&
+            !startsWith(github.event.head_commit.message, 'Release ') &&
+            !contains(github.event.head_commit.message, 'ci skip')
+        steps:
+        -   run: echo ok go
+
+    build_wheel:
+        needs: activate
+        runs-on: self-ubuntu-22.04
+        name: Build wheel package
+        if: "!contains(github.event.head_commit.message, 'code skip')"
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            lfs: true
+            submodules: 'recursive'
+        -
+          name: Build Ktirio Cases wheel
+          run: |
+            npm install
+            npx downdoc README.adoc
+            pip3 wheel --no-deps --wheel-dir dist .
+          env:
+            CXX: clang++
+        -
+          name: Upload Artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: wheel-artifacts
+            path: dist/*.whl
+
+    factory:
+        name: HPC Systems Factory
+        runs-on: self-ubuntu-22.04
+        outputs:
+            matrix: ${{ steps.hpc-systems.outputs.matrix }}
+        steps:
+        -   uses: actions/checkout@v4
+        -   name: Download wheel
+            uses: actions/download-artifact@v4
+            with:
+                name: wheel-artifacts
+                path: dist
+        -   name: Create Virtual Environment
+            run: |
+                python3 -m venv .venv
+                source .venv/bin/activate
+                pip3 install -r requirements.txt
+        -   name: machine_configs_download
+            run: |
+                source .venv/bin/activate
+
+                if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                    machine_cfg_id=${{ github.event.inputs.machines_config }};
+                elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
+                    machine_cfg_id=${{ github.event.client_payload.machines_config }};
+                fi
+                girder-download -gid $machine_cfg_id -o ./tmp/ -fn "machines_config.json"
+            env:
+                GIRDER_API_KEY: ${{secrets.GIRDER}}
+        -   id: hpc-systems
+            run: |
+                source .venv/bin/activate
+
+                echo matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/) >> $GITHUB_OUTPUT
+        -   name: benchmark_config_download
+            run: |
+                source .venv/bin/activate
+
+                if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                    bench_cfg_id=${{ github.event.inputs.benchmark_config }};
+                elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
+                    bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
+                fi
+                girder-download -gid $bench_cfg_id -o ./tmp/ -fn "benchmark_config.json"
+            env:
+                GIRDER_API_KEY: ${{secrets.GIRDER}}
+        -   name: pull_images
+            run: |
+                source .venv/bin/activate
+
+                #ONLY IF NEEDED
+
+    benchmark:
+        needs: factory
+        strategy:
+            fail-fast: false
+            matrix: ${{fromJson(needs.factory.outputs.matrix)}}
+        runs-on: ${{matrix.runner}}
+        timeout-minutes: 7200
+        name: ${{matrix.machine}}
+        steps:
+        -   name: Execute benchmarks
+            run: |
+                source .venv/bin/activate
+
+                execute-benchmark -ec ${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json
