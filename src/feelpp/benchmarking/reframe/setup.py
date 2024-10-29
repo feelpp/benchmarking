@@ -128,7 +128,7 @@ class AppSetup(Setup):
         if self.config.platform and self.config.platform.type != "builtin":
             rfm_test.container_platform.command = f"{self.config.executable} {' '.join(self.config.options)}"
         else:
-            rfm_test.executable = self.config.executable
+            rfm_test.executable = os.path.join(self.config.executable_dir,self.config.executable) if self.config.executable_dir else self.config.executable
             rfm_test.executable_opts = self.config.options
 
     def replaceField(self,field, replace):
