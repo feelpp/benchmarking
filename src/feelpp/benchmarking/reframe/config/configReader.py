@@ -53,7 +53,10 @@ class ConfigReader:
             return [self.recursiveReplace(v) for v in data]
         elif isinstance(data, str):
             # Find placeholders in the form {nested.field.path}
-            return re.sub(r"\{\{([\w\.]+)\}\}", lambda match: str(self.getNestedValue(self.config, match.group(1))), data)
+            rep = re.sub(r"\{\{([\w\.]+)\}\}", lambda match: str(self.getNestedValue(self.config, match.group(1))), data)
+            if "$" in rep:
+                rep = os.path.expandvars(rep)
+            return rep
         return data
 
     def __repr__(self):
