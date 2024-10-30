@@ -78,6 +78,12 @@ class ConfigFile(BaseModel):
     parameters: List[Parameter]
     plots: List[Plot]
 
+    @field_validator("output_directory",mode="before")
+    @classmethod
+    def expandEnvVars(cls,v):
+        """Expand environment variables on the values for path fields"""
+        return os.path.expandvars(v)
+
 
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
