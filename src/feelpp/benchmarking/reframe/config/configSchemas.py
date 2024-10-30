@@ -1,70 +1,6 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel
-from typing import Literal, Union, Optional, List
-import shutil, os
-
-class BaseRange(BaseModel):
-    generator: Literal["double","linear","random","ordered"]
-    mode: Literal["cores","step","list"]
-
-class CoresRange(BaseRange):
-    min_cores_per_node: int
-    max_cores_per_node: int
-    min_nodes: int
-    max_nodes: int
-
-    @field_validator("min_nodes","min_cores_per_node")
-    @classmethod
-    def checkMinValues(cls, v):
-        """ Checks that min values are greater or eq than 1"""
-        assert v >= 1, "Minimal values should be >= 1"
-        return v
-
-    @model_validator(mode="after")
-    def checkMaxValues(self):
-        """ Checks that max values are greater or eq than min values"""
-        assert self.max_nodes >= self.min_nodes, "Max node number should be >= min"
-        assert self.max_cores_per_node >= self.min_cores_per_node, "Max cores per node should be >= min"
-        return self
-
-    @field_validator("mode",mode="after")
-    @classmethod
-    def checkMode(cls,v):
-        assert v == "cores", "Incorrect mode for Cores range"
-        return v
-
-class StepRange(BaseRange):
-    min: Union[float,int]
-    max: Union[float,int]
-
-    step: Optional[Union[float,int]] = None
-    n_steps: Optional[int] = None
-
-    @field_validator("mode",mode="after")
-    @classmethod
-    def checkMode(cls,v):
-        assert v == "step", "Incorrect mode for Step range"
-        return v
-
-class ListRange(BaseRange):
-    sequence : List[Union[float,int,str]]
-
-    @field_validator("mode",mode="after")
-    @classmethod
-    def checkMode(cls,v):
-        assert v == "list", "Incorrect mode for List range"
-        return v
-
-    @field_validator("sequence",mode="before")
-    @classmethod
-    def checkMode(cls,v):
-        assert len(v)>1, "Sequence must contain at least one element"
-        return v
-
-class Parameter(BaseModel):
-    name:str
-    active:Optional[bool] = True
-    range: Union[CoresRange,StepRange,ListRange]
-
+from typing import Literal, Union, Optional, List, Dict
+from feelpp.benchmarking.reframe.config.configParameters import Parameter
 
 class Sanity(BaseModel):
     success:List[str]
@@ -189,8 +125,7 @@ class MachineConfig(BaseModel):
     machine:str
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
-    exclusive_access:bool
-    partitions:List[str]
+    valid_systems:List[str] = ["*"],
     valid_prog_environs:List[str] = ["*"]
     launch_options: List[str]
     reframe_base_dir:str

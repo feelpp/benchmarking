@@ -17,7 +17,7 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def setPerfVars(self):
-        self.perf_variables = self.scalability_handler.getPerformanceVariables(self.nb_tasks)
+        self.perf_variables = self.scalability_handler.getPerformanceVariables(self.nb_tasks["tasks"])
 
     @sanity_function
     def sanityCheck(self):

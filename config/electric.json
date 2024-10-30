@@ -49,23 +49,19 @@
     "parameters": [
         {
             "name": "nb_tasks",
-            "range": {
-                "mode": "cores",
-                "min_cores_per_node": 8,
-                "max_cores_per_node": 64,
-                "min_nodes": 1,
-                "max_nodes": 1,
-                "generator": "double"
-            }
+            "sequence": [
+                {"tasks" : 16, "nodes":1, "exclusive_access":true},
+                {"tasks" : 32, "nodes":1, "exclusive_access":true},
+                {"tasks" : 64, "nodes":2, "exclusive_access":true},
+                {"tasks" : 128, "nodes":2, "exclusive_access":true}
+            ]
         },
         {
             "name": "hsize",
-            "range": {
-                "mode": "step",
+            "linspace": {
                 "min": 0.03,
                 "max": 0.05,
-                "n_steps": 3,
-                "generator": "linear"
+                "n_steps": 3
             }
         }
     ],
