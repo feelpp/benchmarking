@@ -102,6 +102,13 @@ jobs:
             run: |
                 source .venv/bin/activate
                 #ONLY IF NEEDED
+        -   name: Upload configs
+            uses: actions/upload-artifact@v4
+            with:
+                name: config-artifacts
+                path: |
+                    ./tmp/benchmark_config.json
+                    ./tmp/machines/
 
     benchmark:
         needs: factory
@@ -117,6 +124,11 @@ jobs:
             with:
                 name: wheel-artifacts
                 path: dist
+        -   name: Download configs
+            uses: actions/download-artifact@v4
+            with:
+                name: config-artifacts
+                path: ./tmp/
         -   name: Create Virtual Environment
             run: |
                 python3 -m venv .venv
