@@ -138,5 +138,6 @@ jobs:
             run: |
                 source .venv/bin/activate
                 execute-benchmark -ec ${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json -vv
+                echo $?
             env:
                 GIRDER_API_KEY: ${{secrets.GIRDER}}
