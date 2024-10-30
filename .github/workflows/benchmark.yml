@@ -70,7 +70,7 @@ jobs:
                 python3 -m venv .venv
                 source .venv/bin/activate
                 pip3 install -r requirements.txt
-        -   name: machine_configs_download
+        -   name: Download machines configuration
             run: |
                 source .venv/bin/activate
 
@@ -90,7 +90,7 @@ jobs:
                 source .venv/bin/activate
                 matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/)
                 echo "matrix=$matrix" >> $GITHUB_OUTPUT
-        -   name: benchmark_config_download
+        -   name: Donwload benchmark configuration
             run: |
                 source .venv/bin/activate
 
