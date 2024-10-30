@@ -63,6 +63,12 @@ def main_cli():
     for config_filepath in parser.args.config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
         app_config = ConfigReader(config_filepath,ConfigFile).config
+
+        if not os.path.exists(app_config.output_directory):
+            print("Creating the directory", app_config.output_directory)
+            os.makedirs(app_config.output_directory)
+
+
         reframe_cmd = cmd_builder.buildCommand(app_config.executable)
 
         if app_config.platform and app_config.platform.type == "apptainer":
