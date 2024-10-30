@@ -32,25 +32,19 @@ jobs:
         name: Build wheel package
         if: "!contains(github.event.head_commit.message, 'code skip')"
         steps:
-        - name: Checkout
-          uses: actions/checkout@v4
-          with:
-            lfs: true
-            submodules: 'recursive'
-        -
-          name: Build Ktirio Cases wheel
-          run: |
-            npm install
-            npx downdoc README.adoc
-            pip3 wheel --no-deps --wheel-dir dist .
-          env:
-            CXX: clang++
-        -
-          name: Upload Artifact
-          uses: actions/upload-artifact@v4
-          with:
-            name: wheel-artifacts
-            path: dist/*.whl
+        -   uses: actions/checkout@v4
+        -   name: Build Ktirio Cases wheel
+            run: |
+                npm install
+                npx downdoc README.adoc
+                pip3 wheel --no-deps --wheel-dir dist .
+            env:
+                CXX: clang++
+        -   name: Upload Artifact
+            uses: actions/upload-artifact@v4
+            with:
+                name: wheel-artifacts
+                path: dist/*.whl
 
     factory:
         name: HPC Systems Factory
