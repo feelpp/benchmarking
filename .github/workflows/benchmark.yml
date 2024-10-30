@@ -59,7 +59,6 @@ jobs:
         outputs:
             matrix: ${{ steps.hpc-systems.outputs.matrix }}
         steps:
-        -   uses: actions/checkout@v4
         -   name: Download wheel
             uses: actions/download-artifact@v4
             with:
@@ -90,7 +89,7 @@ jobs:
                 source .venv/bin/activate
                 matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/)
                 echo $matrix
-                echo "matrix=$matrix" >> $GITHUB_OUTPUT
+                echo "matrix={ include : $matrix }" >> $GITHUB_OUTPUT
         -   name: Donwload benchmark configuration
             run: |
                 source .venv/bin/activate
@@ -114,11 +113,21 @@ jobs:
         needs: factory
         strategy:
             fail-fast: false
-            matrix: ${{fromJson(needs.factory.outputs.matrix)}}
+            matrix: ${{ fromJson(needs.factory.outputs.matrix) }}
         runs-on: ${{matrix.runner}}
         timeout-minutes: 7200
         name: ${{matrix.machine}}
         steps:
+        -   name: Download wheel
+            uses: actions/download-artifact@v4
+            with:
+                name: wheel-artifacts
+                path: dist
+        -   name: Create Virtual Environment
+            run: |
+                python3 -m venv .venv
+                source .venv/bin/activate
+                pip3 install -r requirements.txt
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
