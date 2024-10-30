@@ -15,17 +15,9 @@ on:
 
 jobs:
 
-  activate:
-    runs-on: self-ubuntu-22.04
-    if: |
-        github.repository == 'feelpp/benchmarking' && !startsWith(github.event.head_commit.message, 'Release ') && !contains(github.event.head_commit.message, 'ci skip')
-    steps:
-    -   run: echo ok go
-
   build_wheel:
     runs-on: self-ubuntu-22.04
     name: Build wheel
-    needs: activate
     if:  "!contains(github.event.head_commit.message, 'wheel skip')"
     steps:
     - name: Checkout
