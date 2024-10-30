@@ -17,7 +17,7 @@ class ConfigReader:
         Returns:
             Schema : parsed and validated configuration
         """
-        assert os.path.exists(config_path), f"Cannot find config file {config_path}"
+        assert os.path.exists(os.path.abspath(config_path)), f"Cannot find config file {config_path}"
         with open(config_path, "r") as cfg:
             self.config = json.load(cfg)
             self.config = self.recursiveReplace(self.config)
