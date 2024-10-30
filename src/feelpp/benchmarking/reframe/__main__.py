@@ -98,3 +98,5 @@ def main_cli():
             else:
                 raise NotImplementedError
         #======================================================#
+
+    return exit_code
