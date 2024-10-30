@@ -78,11 +78,12 @@ def parseHpcSystems_cli():
         if machine_data["machine"] not in runners:
             raise ValueError(f"{machine_data['machine']} not found in runner mapping")
 
-        with open(os.path.join(args.output_dir,f"{machine_data['machine']}.json"),"w") as f:
+        machine_config_path = os.path.join(args.output_dir,f"{machine_data['machine']}.json")
+        with open(machine_config_path,"w") as f:
             json.dump(machine_data,f)
 
         runner_info = runners[machine_data["machine"]]
-        runner_info["machine_cfg"] = os.path.abspath(os.path.join(args.output_dir,machine_data["machine"]))
+        runner_info["machine_cfg"] = os.path.abspath(machine_config_path)
         matrix.append(runner_info)
 
 
