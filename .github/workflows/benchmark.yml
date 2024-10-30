@@ -87,10 +87,11 @@ jobs:
             env:
                 GIRDER_API_KEY: ${{secrets.GIRDER}}
         -   id: hpc-systems
+            name: Set HPC systems matrix
             run: |
                 source .venv/bin/activate
-
-                echo matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/) >> $GITHUB_OUTPUT
+                matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/)
+                echo "matrix=$matrix" >> $GITHUB_OUTPUT
         -   name: benchmark_config_download
             run: |
                 source .venv/bin/activate
