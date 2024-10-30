@@ -89,6 +89,7 @@ jobs:
             run: |
                 source .venv/bin/activate
                 matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/)
+                echo $matrix
                 echo "matrix=$matrix" >> $GITHUB_OUTPUT
         -   name: Donwload benchmark configuration
             run: |
