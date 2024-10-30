@@ -68,6 +68,7 @@ class ConfigFile(BaseModel):
     executable: str
     executable_dir: Optional[str] = None
     platform:Optional[Platform] = None
+    output_directory:str
     use_case_name: str
     options: List[str]
     outputs: List[AppOutput]
