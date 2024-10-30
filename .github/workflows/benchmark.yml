@@ -22,9 +22,7 @@ jobs:
     activate:
         runs-on: self-ubuntu-22.04
         if: |
-            github.repository == 'feelpp/benchmarking' &&
-            !startsWith(github.event.head_commit.message, 'Release ') &&
-            !contains(github.event.head_commit.message, 'ci skip')
+            github.repository == 'feelpp/benchmarking' && !startsWith(github.event.head_commit.message, 'Release ')
         steps:
         -   run: echo ok go
 
