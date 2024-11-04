@@ -35,6 +35,7 @@ class CommandBuilder:
             f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
+            f'--logdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
             f'--report-file={self.buildReportFilePath(executable)}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             '-r',
