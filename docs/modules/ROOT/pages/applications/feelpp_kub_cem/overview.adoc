@@ -1,0 +1,46 @@
+= Overview
+:page-plotly: true
+:page-jupyter: true
+:page-tags: toolbox, catalog
+:parent-catalogs: feelpp_kub_cem
+:description: 
+:page-illustration: ROOT:overview.png
+:revdate: 
+
+    - Application : KUB
+
+[%dynamic%close%hide_code,python]
+----
+from numpy import nan
+from feelpp.benchmarking.report.base.controller import Controller
+from feelpp.benchmarking.report.base.model import AggregationModel
+from feelpp.benchmarking.report.base.view import View
+----
+
+[%dynamic%close%hide_code,python]
+----
+model=AggregationModel.fromDataframe({'performance_variable': {0: 'execute', 1: 'postprocess', 2: 'simulation', 3: 'constructor', 4: 'updateForUse', 5: 'execute', 6: 'postprocess', 7: 'simulation', 8: 'constructor', 9: 'updateForUse', 10: 'execute', 11: 'postprocess', 12: 'simulation', 13: 'constructor', 14: 'updateForUse', 15: 'execute', 16: 'postprocess', 17: 'simulation', 18: 'constructor', 19: 'updateForUse', 20: 'execute', 21: 'postprocess', 22: 'simulation', 23: 'constructor', 24: 'updateForUse', 25: 'execute', 26: 'postprocess', 27: 'simulation', 28: 'constructor', 29: 'updateForUse'}, 'value': {0: 20.450242706, 1: 7.548238917999999, 2: 12.90124451, 3: 0.188538089, 4: 20.032139114, 5: 13.768160256, 6: 7.112519191, 7: 6.654890814, 8: 0.001238282, 9: 18.913328566, 10: 13.973113834, 11: 4.679824406999999, 12: 9.292453074, 13: 0.003275345, 14: 16.132098035, 15: 20.955655149, 16: 3.4113495749999996, 17: 17.543472836, 18: 0.013311341, 19: 15.757464405, 20: 32.607164036, 21: 2.239268425, 22: 30.367009253000003, 23: 0.013085536, 24: 14.372658468, 25: 58.23061721, 26: 0.6271545880000001, 27: 57.602599787, 28: 0.001837347, 29: 78.735602544}, 'unit': {0: 's', 1: 's', 2: 's', 3: 's', 4: 's', 5: 's', 6: 's', 7: 's', 8: 's', 9: 's', 10: 's', 11: 's', 12: 's', 13: 's', 14: 's', 15: 's', 16: 's', 17: 's', 18: 's', 19: 's', 20: 's', 21: 's', 22: 's', 23: 's', 24: 's', 25: 's', 26: 's', 27: 's', 28: 's', 29: 's'}, 'reference': {0: nan, 1: nan, 2: nan, 3: nan, 4: nan, 5: nan, 6: nan, 7: nan, 8: nan, 9: nan, 10: nan, 11: nan, 12: nan, 13: nan, 14: nan, 15: nan, 16: nan, 17: nan, 18: nan, 19: nan, 20: nan, 21: nan, 22: nan, 23: nan, 24: nan, 25: nan, 26: nan, 27: nan, 28: nan, 29: nan}, 'thres_lower': {0: nan, 1: nan, 2: nan, 3: nan, 4: nan, 5: nan, 6: nan, 7: nan, 8: nan, 9: nan, 10: nan, 11: nan, 12: nan, 13: nan, 14: nan, 15: nan, 16: nan, 17: nan, 18: nan, 19: nan, 20: nan, 21: nan, 22: nan, 23: nan, 24: nan, 25: nan, 26: nan, 27: nan, 28: nan, 29: nan}, 'thres_upper': {0: nan, 1: nan, 2: nan, 3: nan, 4: nan, 5: nan, 6: nan, 7: nan, 8: nan, 9: nan, 10: nan, 11: nan, 12: nan, 13: nan, 14: nan, 15: nan, 16: nan, 17: nan, 18: nan, 19: nan, 20: nan, 21: nan, 22: nan, 23: nan, 24: nan, 25: nan, 26: nan, 27: nan, 28: nan, 29: nan}, 'status': {0: nan, 1: nan, 2: nan, 3: nan, 4: nan, 5: nan, 6: nan, 7: nan, 8: nan, 9: nan, 10: nan, 11: nan, 12: nan, 13: nan, 14: nan, 15: nan, 16: nan, 17: nan, 18: nan, 19: nan, 20: nan, 21: nan, 22: nan, 23: nan, 24: nan, 25: nan, 26: nan, 27: nan, 28: nan, 29: nan}, 'absolute_error': {0: nan, 1: nan, 2: nan, 3: nan, 4: nan, 5: nan, 6: nan, 7: nan, 8: nan, 9: nan, 10: nan, 11: nan, 12: nan, 13: nan, 14: nan, 15: nan, 16: nan, 17: nan, 18: nan, 19: nan, 20: nan, 21: nan, 22: nan, 23: nan, 24: nan, 25: nan, 26: nan, 27: nan, 28: nan, 29: nan}, 'testcase_time_run': {0: 69.67405295372009, 1: 69.67405295372009, 2: 69.67405295372009, 3: 69.67405295372009, 4: 69.67405295372009, 5: 115.33933401107788, 6: 115.33933401107788, 7: 115.33933401107788, 8: 115.33933401107788, 9: 115.33933401107788, 10: 103.58596634864807, 11: 103.58596634864807, 12: 103.58596634864807, 13: 103.58596634864807, 14: 103.58596634864807, 15: 145.83095526695251, 16: 145.83095526695251, 17: 145.83095526695251, 18: 145.83095526695251, 19: 145.83095526695251, 20: 166.4396107196808, 21: 166.4396107196808, 22: 166.4396107196808, 23: 166.4396107196808, 24: 166.4396107196808, 25: 292.92885994911194, 26: 292.92885994911194, 27: 292.92885994911194, 28: 292.92885994911194, 29: 292.92885994911194}, 'nb_tasks.tasks': {0: 256, 1: 256, 2: 256, 3: 256, 4: 256, 5: 128, 6: 128, 7: 128, 8: 128, 9: 128, 10: 64, 11: 64, 12: 64, 13: 64, 14: 64, 15: 32, 16: 32, 17: 32, 18: 32, 19: 32, 20: 16, 21: 16, 22: 16, 23: 16, 24: 16, 25: 8, 26: 8, 27: 8, 28: 8, 29: 8}, 'nb_tasks.nodes': {0: 2, 1: 2, 2: 2, 3: 2, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1, 15: 1, 16: 1, 17: 1, 18: 1, 19: 1, 20: 1, 21: 1, 22: 1, 23: 1, 24: 1, 25: 1, 26: 1, 27: 1, 28: 1, 29: 1}, 'nb_tasks.exclusive_access': {0: True, 1: True, 2: True, 3: True, 4: True, 5: True, 6: True, 7: True, 8: True, 9: True, 10: True, 11: True, 12: True, 13: True, 14: True, 15: True, 16: True, 17: True, 18: True, 19: True, 20: True, 21: True, 22: True, 23: True, 24: True, 25: True, 26: True, 27: True, 28: True, 29: True}, 'environment': {0: 'builtin', 1: 'builtin', 2: 'builtin', 3: 'builtin', 4: 'builtin', 5: 'builtin', 6: 'builtin', 7: 'builtin', 8: 'builtin', 9: 'builtin', 10: 'builtin', 11: 'builtin', 12: 'builtin', 13: 'builtin', 14: 'builtin', 15: 'builtin', 16: 'builtin', 17: 'builtin', 18: 'builtin', 19: 'builtin', 20: 'builtin', 21: 'builtin', 22: 'builtin', 23: 'builtin', 24: 'builtin', 25: 'builtin', 26: 'builtin', 27: 'builtin', 28: 'builtin', 29: 'builtin'}, 'date': {0: '2024-11-05T14:27:09+0100', 1: '2024-11-05T14:27:09+0100', 2: '2024-11-05T14:27:09+0100', 3: '2024-11-05T14:27:09+0100', 4: '2024-11-05T14:27:09+0100', 5: '2024-11-05T14:27:09+0100', 6: '2024-11-05T14:27:09+0100', 7: '2024-11-05T14:27:09+0100', 8: '2024-11-05T14:27:09+0100', 9: '2024-11-05T14:27:09+0100', 10: '2024-11-05T14:27:09+0100', 11: '2024-11-05T14:27:09+0100', 12: '2024-11-05T14:27:09+0100', 13: '2024-11-05T14:27:09+0100', 14: '2024-11-05T14:27:09+0100', 15: '2024-11-05T14:27:09+0100', 16: '2024-11-05T14:27:09+0100', 17: '2024-11-05T14:27:09+0100', 18: '2024-11-05T14:27:09+0100', 19: '2024-11-05T14:27:09+0100', 20: '2024-11-05T14:27:09+0100', 21: '2024-11-05T14:27:09+0100', 22: '2024-11-05T14:27:09+0100', 23: '2024-11-05T14:27:09+0100', 24: '2024-11-05T14:27:09+0100', 25: '2024-11-05T14:27:09+0100', 26: '2024-11-05T14:27:09+0100', 27: '2024-11-05T14:27:09+0100', 28: '2024-11-05T14:27:09+0100', 29: '2024-11-05T14:27:09+0100'}, 'machine': {0: 'gaya', 1: 'gaya', 2: 'gaya', 3: 'gaya', 4: 'gaya', 5: 'gaya', 6: 'gaya', 7: 'gaya', 8: 'gaya', 9: 'gaya', 10: 'gaya', 11: 'gaya', 12: 'gaya', 13: 'gaya', 14: 'gaya', 15: 'gaya', 16: 'gaya', 17: 'gaya', 18: 'gaya', 19: 'gaya', 20: 'gaya', 21: 'gaya', 22: 'gaya', 23: 'gaya', 24: 'gaya', 25: 'gaya', 26: 'gaya', 27: 'gaya', 28: 'gaya', 29: 'gaya'}, 'use_case': {0: 'poznan', 1: 'poznan', 2: 'poznan', 3: 'poznan', 4: 'poznan', 5: 'poznan', 6: 'poznan', 7: 'poznan', 8: 'poznan', 9: 'poznan', 10: 'poznan', 11: 'poznan', 12: 'poznan', 13: 'poznan', 14: 'poznan', 15: 'poznan', 16: 'poznan', 17: 'poznan', 18: 'poznan', 19: 'poznan', 20: 'poznan', 21: 'poznan', 22: 'poznan', 23: 'poznan', 24: 'poznan', 25: 'poznan', 26: 'poznan', 27: 'poznan', 28: 'poznan', 29: 'poznan'}})
+view=View([{'title': 'Execution by use case', 'plot_types': ['stacked_bar'], 'transformation': 'performance', 'names': [], 'xaxis': {'parameter': 'use_case', 'label': 'Use Case'}, 'yaxis': {'label': 'Execution time (s)'}, 'color_axis': {'parameter': 'machine', 'label': 'Machine'}, 'aggregations': [{'column': 'nb_tasks.tasks', 'agg': 'max'}, {'column': 'hsize', 'agg': 'max'}, {'column': 'performance_variable', 'agg': 'sum'}, {'column': 'date', 'agg': 'mean'}], 'variables': ['constructor', 'updateForUse', 'execute', 'simulate', 'postprocess']}])
+controller=Controller(model,view)
+----
+
+[%dynamic%open%hide_code,python]
+----
+for fig in controller.generateAll():
+    fig.show()
+----
+
+++++
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+    line-height:0;
+}
+</style>
+++++
