@@ -2,9 +2,9 @@
     "executable": "feelpp_kub_cem",
     "executable_dir":"/data/home/cladellash/ktirio-urban-building/build/src/cpp/",
     "output_directory": "/data/scratch/cladellash/feelppdb/kub",
-    "use_case_name": "kernante",
+    "use_case_name": "menil_saint_michel",
     "options": [
-        "--config-file /data/home/cladellash/benchmarking/config/Kernante.cfg",
+        "--config-file /data/home/cladellash/benchmarking/config/MenilSaintMichel.cfg",
         "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
     ],
     "outputs": [],
@@ -26,7 +26,7 @@
         ]
     },
     "sanity": {
-        "success": ["[ Stopping Feel++ ]","execute at time=86400"],
+        "success": ["[ Stopping Feel++ ]"],
         "error": ["Error"]
     },
     "upload": {
@@ -41,9 +41,9 @@
                 {
                     "name":"tasks",
                     "range":{
-                        "min":4,
-                        "max":32,
-                        "step":4
+                        "min":1,
+                        "max":8,
+                        "step":1
                     }
                 },
                 {
