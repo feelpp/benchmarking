@@ -1,0 +1,230 @@
+{
+    "executable": "feelpp_toolbox_heat",
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/heat/thermal_bridges_case_3",
+    "use_case_name": "thermal_bridges_case_3",
+    "platform": {
+        "type":"apptainer",
+        "image": {
+            "name":"/data/scratch/cladellash/images/feelpp.sif"
+        },
+        "options": [
+            "--home /data/scratch/cladellash/feelppdb/",
+            "--bind /data/scratch/cladellash/feelppdb/input_data/thermal_bridges_case_3/:/input_data/"
+        ]
+    },
+    "options": [
+        "--config-files /input_data/case3.cfg",
+        "--directory {{output_directory}}/{{instance}}",
+        "--repository.case {{use_case_name}}",
+        "--fail-on-unknown-option 1",
+        "--heat.scalability-save=1",
+        "--repository.append.np 0",
+        "--case.discretization {{parameters.discretization.value}}",
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"$cfgdir/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+    ],
+    "outputs": [
+        {
+            "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
+            "format": "csv"
+        }
+    ],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "stages": [
+            {
+                "name": "Constructor",
+                "file": "heat.scalibility.HeatConstructor.data",
+                "format": "tsv"
+            },
+            {
+                "name": "PostProcessing",
+                "file": "heat.scalibility.HeatPostProcessing.data",
+                "format": "tsv"
+            },
+            {
+                "name": "Solve",
+                "file": "heat.scalibility.HeatSolve.data",
+                "format": "tsv"
+            }
+        ]
+    },
+    "sanity": {
+        "success": [],
+        "error": []
+    },
+    "upload": {
+        "platform": "girder",
+        "folder_id": "672a1269b0e95728eb010b36"
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "sequence": [
+                {"tasks":32,"nodes":1,"exclusive_access":true},
+                {"tasks":64,"nodes":1,"exclusive_access":true},
+                {"tasks":128,"nodes":1,"exclusive_access":true}
+            ]
+        },
+        {
+            "name": "meshes",
+            "sequence": ["M1","M2"]
+        },
+        {
+            "name": "discretization",
+            "sequence": ["P1","P2"]
+        },
+        {
+            "name": "environment",
+            "sequence":["apptainer"]
+        }
+    ],
+    "plots": [
+        {
+            "title": "Validation measures",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "variables": [
+                "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma",
+                "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature",
+                "Points_beta_max_field_temperature", "Points_beta_min_field_temperature",
+                "Statistics_temperature_alpha_max", "Statistics_temperature_alpha_min",
+                "Statistics_temperature_beta_max", "Statistics_temperature_beta_min"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "meshes",
+                "label": "mesh levels"
+            },
+            "yaxis": {
+                "label": "Heat flow [W]"
+            },
+            "color_axis":{
+                "parameter": "discretization",
+                "label":"Discretization"
+            },
+            "secondary_axis":{
+                "parameter": "performance_variable",
+                "label": "Measures"
+            },
+            "aggregations":[
+                {"column":"nb_tasks.tasks","agg":"filter:128"}
+            ]
+        },
+        {
+            "title": "Performance (P1)",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P1"}
+            ]
+        },
+        {
+            "title": "Speedup (P1)",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "Speedup"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P1"}
+            ]
+        },
+        {
+            "title": "Performance (P2)",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P2"}
+            ]
+        },
+        {
+            "title": "Speedup (P2)",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "Speedup"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P2"}
+            ]
+        }
+    ]
+}
