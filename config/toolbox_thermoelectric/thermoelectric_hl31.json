@@ -1,9 +1,9 @@
 {
     "executable": "feelpp_toolbox_thermoelectric",
-    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/thermoelectric",
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/thermoelectric/HL_31",
     "use_case_name": "HL_31",
     "options": [
-        "--config-files /data/scratch/cladellash/feelppdb/toolboxes/input/thermoelectric/HL-31.cfg",
+        "--config-files /data/scratch/cladellash/feelppdb/input_data/HL_31/HL-31.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -11,35 +11,25 @@
         "--thermo-electric.heat.scalability-save=1",
         "--thermo-electric.electric.scalability-save=1",
         "--repository.append.np 0",
-        "--thermo-electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/thermoelectric/Import/filename\",\"value\": \"$cfgdir/HL-31_p{{parameters.nb_tasks.value}}.json\" }'"
+        "--case.discretization {{parameters.discretization.value}}",
+        "--thermo-electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/thermoelectric/Import/filename\",\"value\": \"$cfgdir/HL-31_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
-    "outputs": [
-        {
-            "instance_path": "{{output_directory}}/{{use_case_name}}/",
-            "relative_filepath": "electric.measures/values.csv",
-            "format": "csv"
-        },
-        {
-            "instance_path": "{{output_directory}}/{{use_case_name}}/",
-            "relative_filepath": "heat.measures/values.csv",
-            "format": "csv"
-        }
-    ],
+    "outputs": [],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
             {
-                "name": "ThermoElectricConstructor",
+                "name": "Constructor",
                 "file": "thermo-electric.scalibility.ThermoElectricConstructor.data",
                 "format": "tsv"
             },
             {
-                "name": "ThermoElectricPostProcessing",
+                "name": "PostProcessing",
                 "file": "thermo-electric.scalibility.ThermoElectricPostProcessing.data",
                 "format": "tsv"
             },
             {
-                "name": "ThermoElectricSolve",
+                "name": "Solve",
                 "file": "thermo-electric.scalibility.ThermoElectricSolve.data",
                 "format": "tsv"
             }
@@ -50,181 +40,82 @@
         "error": []
     },
     "upload": {
-        "active": true,
         "platform": "girder",
-        "folder_id": "67126dc1b0e95728eb010988"
+        "folder_id": "672b684fb0e95728eb010b5f"
     },
     "parameters": [
         {
             "name": "nb_tasks",
-            "active": true,
-            "range": {
-                "mode": "cores",
-                "min_cores_per_node": 4,
-                "max_cores_per_node": 256,
-                "min_nodes": 1,
-                "max_nodes": 2,
-                "generator": "double"
-            }
+            "sequence": [
+                {"tasks":4,"nodes":1,"exclusive_access":true},
+                {"tasks":8,"nodes":1,"exclusive_access":true},
+                {"tasks":16,"nodes":1,"exclusive_access":true},
+                {"tasks":32,"nodes":1,"exclusive_access":true},
+                {"tasks":64,"nodes":1,"exclusive_access":true},
+                {"tasks":128,"nodes":1,"exclusive_access":true},
+                {"tasks":256,"nodes":2,"exclusive_access":true}
+            ]
+        },
+        {
+            "name": "discretization",
+            "sequence": ["P1","P2"]
+        },
+        {
+            "name": "environment",
+            "sequence":["builtin"]
         }
     ],
     "plots": [
         {
-            "title": "Performance by step",
-            "plot_types": [
-                "stacked_bar"
-            ],
+            "title": "Performance",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
             "transformation": "performance",
             "variables": [
-                "ThermoElectricConstructor_init",
-                "ThermoElectricPostProcessing_exportResults",
-                "ThermoElectricSolve_solve"
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
             ],
-            "names": [
-                "ThermoElectricConstructor",
-                "ThermoElectricPostProcessing",
-                "ThermoElectricSolve"
-            ],
+            "names": [ ],
             "xaxis": {
-                "parameter": "nb_tasks",
+                "parameter": "nb_tasks.tasks",
                 "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "discretization",
+                "label": "Discretization"
             },
             "yaxis": {
                 "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Relative Performance by step",
-            "plot_types": [
-                "stacked_bar"
-            ],
-            "transformation": "relative_performance",
-            "variables": [
-                "ThermoElectricConstructor_init",
-                "ThermoElectricPostProcessing_exportResults",
-                "ThermoElectricSolve_solve"
-            ],
-            "names": [
-                "ThermoElectricConstructor",
-                "ThermoElectricPostProcessing",
-                "ThermoElectricSolve"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
             },
-            "yaxis": {
-                "label": "execution time (%)"
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
             }
         },
         {
-            "title": "Speedup by step",
-            "plot_types": [
-                "scatter"
-            ],
+            "title": "Speedup",
+            "plot_types": [ "scatter" ],
             "transformation": "speedup",
             "variables": [
-                "ThermoElectricConstructor_init",
-                "ThermoElectricPostProcessing_exportResults",
-                "ThermoElectricSolve_solve"
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
             ],
-            "names": [
-                "ThermoElectricConstructor",
-                "ThermoElectricPostProcessing",
-                "ThermoElectricSolve"
-            ],
+            "names": [ ],
             "xaxis": {
-                "parameter": "nb_tasks",
+                "parameter": "nb_tasks.tasks",
                 "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "discretization",
+                "label": "Discretization"
             },
             "yaxis": {
                 "label": "Speedup"
-            }
-        },
-        {
-            "title": "ThermoElectricConstructor step absolute performance",
-            "plot_types": [
-                "stacked_bar",
-                "table"
-            ],
-            "transformation": "performance",
-            "variables": [
-                "ThermoElectricConstructor_createMesh",
-                "ThermoElectricConstructor_createExporters"
-            ],
-            "names": [
-                "createMesh",
-                "createExporters"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
             },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "ThermoElectricConstructor step relative performance",
-            "plot_types": [
-                "stacked_bar"
-            ],
-            "transformation": "relative_performance",
-            "variables": [
-                "ThermoElectricConstructor_createMesh",
-                "ThermoElectricConstructor_createExporters"
-            ],
-            "names": [
-                "createMesh",
-                "createExporters"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (%)"
-            }
-        },
-        {
-            "title": "Thermo-Electric Post Processing step performance",
-            "plot_types": [
-                "scatter"
-            ],
-            "transformation": "performance",
-            "variables": [
-                "ThermoElectricPostProcessing_exportResults"
-            ],
-            "names": [
-                "exportResults"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Thermo-Electric Solve step absolute performance",
-            "plot_types": [
-                "stacked_bar",
-                "table"
-            ],
-            "transformation": "performance",
-            "variables": [
-                "ThermoElectricSolve_solve"
-            ],
-            "names": [
-                "Solve"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
             }
         }
     ]
