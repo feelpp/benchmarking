@@ -46,25 +46,24 @@
         {
             "name": "nb_tasks",
             "sequence": [
-                {"tasks" : 64, "nodes":1, "exclusive_access":true}
+                {"tasks" : 8, "nodes":1, "exclusive_access":true},
+                {"tasks" : 16, "nodes":1, "exclusive_access":true},
+                {"tasks" : 32, "nodes":1, "exclusive_access":true},
+                {"tasks" : 64, "nodes":1, "exclusive_access":true},
+                {"tasks" : 128, "nodes":1, "exclusive_access":true}
             ]
+        },
+        {
+            "name":"environment",
+            "sequence":["apptainer"]
         }
     ],
     "plots": [
         {
             "title": "Absolute performance",
-            "plot_types": [
-                "grouped_bar",
-                "table"
-            ],
+            "plot_types": [ "grouped_bar", "table" ],
             "transformation": "performance",
-            "variables": [
-                "execute",
-                "postprocess",
-                "constructor",
-                "updateForUse",
-                "simulation"
-            ],
+            "variables": [ "execute", "postprocess", "constructor", "updateForUse", "simulation" ],
             "names": [],
             "xaxis": {
                 "parameter": "nb_tasks.tasks",
@@ -76,18 +75,9 @@
         },
         {
             "title": "Relative performance",
-            "plot_types": [
-                "stacked_bar",
-                "grouped_bar"
-            ],
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
             "transformation": "relative_performance",
-            "variables": [
-                "execute",
-                "postprocess",
-                "constructor",
-                "updateForUse",
-                "simulation"
-            ],
+            "variables": [ "execute", "postprocess", "constructor", "updateForUse", "simulation" ],
             "names": [],
             "xaxis": {
                 "parameter": "nb_tasks.tasks",
@@ -99,17 +89,9 @@
         },
         {
             "title": "Speedup",
-            "plot_types": [
-                "scatter"
-            ],
+            "plot_types": [ "scatter" ],
             "transformation": "speedup",
-            "variables": [
-                "execute",
-                "postprocess",
-                "constructor",
-                "updateForUse",
-                "simulation"
-            ],
+            "variables": [ "execute", "postprocess", "constructor", "updateForUse", "simulation" ],
             "names": [],
             "xaxis": {
                 "parameter": "nb_tasks.tasks",
