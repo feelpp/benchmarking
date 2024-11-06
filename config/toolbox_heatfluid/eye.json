@@ -1,0 +1,146 @@
+{
+    "executable": "feelpp_toolbox_heatfluid",
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/thermoelectric/eye",
+    "use_case_name": "eye",
+    "options": [ //TODO find cfg files and meshes
+        "--config-files eye-{{parameters.position.value}}.cfg pc_{{parameters.solver.value}}.cfg",
+        "--directory {{output_directory}}/{{instance}}",
+        "--repository.case {{use_case_name}}",
+        "--fail-on-unknown-option 1",
+        "--heat-fluid.scalability-save=1",
+        "--heat-fluid.heat.scalability-save=1",
+        "--heat-fluid.fluid.scalability-save=1",
+        "--repository.append.np 0",
+        "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"$cfgdir/mesh/Mr/{{parameters.meshes.value}}/Eye_Mesh3D_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+    ],
+    "outputs": [],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "stages": [
+            {
+                "name": "Constructor",
+                "file": "heat-fluid.scalibility.HeatFluidConstructor.data",
+                "format": "tsv"
+            },
+            {
+                "name": "PostProcessing",
+                "file": "heat-fluid.scalibility.HeatFluidPostProcessing.data",
+                "format": "tsv"
+            },
+            {
+                "name": "Solve",
+                "file": "heat-fluid.scalibility.HeatFluidSolve.data",
+                "format": "tsv"
+            }
+        ]
+    },
+    "sanity": {
+        "success": [],
+        "error": []
+    },
+    "upload": {
+        "platform": "girder",
+        "folder_id": "672b684fb0e95728eb010b5f"
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "sequence": [
+                {"tasks":128,"nodes":1,"exclusive_access":true},
+                {"tasks":256,"nodes":2,"exclusive_access":true},
+                {"tasks":384,"nodes":3,"exclusive_access":true},
+                {"tasks":512,"nodes":4,"exclusive_access":true}
+            ]
+        },
+        {
+            "name": "meshes",
+            "sequence": ["M3","M4","M5"]
+        },
+        {
+            "name": "position",
+            "sequence": ["prone"]
+        },
+        {
+            "name": "solver",
+            "sequence": ["simple"]
+        },
+        {
+            "name": "environment",
+            "sequence":["builtin"]
+        }
+    ],
+    "plots": [
+        {
+            "title": "Performance",
+            "plot_types": [ "stacked_bar" ],
+            "transformation": "performance",
+            "variables": [
+                //
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            }
+        },
+        {
+            "title": "Relative Performance",
+            "plot_types": [ "stacked_bar" ],
+            "transformation": "relative_performance",
+            "variables": [
+                //
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            }
+        },
+        {
+            "title": "Speedup",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [
+                //
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "meshes",
+                "label": "Mesh"
+            },
+            "yaxis": {
+                "label": "Speedup"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            }
+        }
+    ]
+}
