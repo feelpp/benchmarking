@@ -175,9 +175,9 @@ jobs:
                 source .venv/bin/activate
                 pip3 install -r requirements.txt
         -   name: Upload to girder
-            run: |
+            run: | #TODO: Maybe wait until complete (with a callback)
                 source .venv/bin/activate
-                girder-upload --directory "./tmp/results/*" --girder_id ${{needs.factory.outputs.results_upload_id}}
+                girder-upload --directory ./tmp/results/ --girder_id ${{needs.factory.outputs.results_upload_id}}
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name:  Reset reports
