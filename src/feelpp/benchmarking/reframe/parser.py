@@ -80,6 +80,7 @@ class Parser():
         options.add_argument('--list-files', '-lf', action='store_true', help='List all benchmarking configuration file found')
         options.add_argument('--verbose', '-v', action='count', default=0, help='Select Reframe\'s verbose level by specifying multiple v\'s')
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
+        options.add_argument('--move_results', action='store_true', help='Directory to move the resulting files to', required=False, default=None)
 
     def validateOptions(self):
         """ Checks that required args are present, and that they latch the expected format"""

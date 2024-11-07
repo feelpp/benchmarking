@@ -77,27 +77,21 @@ def main_cli():
 
         exit_code = os.system(reframe_cmd)
 
-        #============ UPLOAD REPORTS TO GIRDER ================#
-        if exit_code == 0 and app_config.upload.active:
-            if app_config.upload.platform == "girder":
-                girder_handler = GirderHandler(download_base_dir=None)
-                rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)
-                rfm_report_dir = rfm_report_filepath.replace(".json","")
+        #============ CREATING RESULT ITEM ================#
+        rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)
+        rfm_report_dir = rfm_report_filepath.replace(".json","")
+        os.mkdir(rfm_report_dir)
+        os.rename(rfm_report_filepath,os.path.join(rfm_report_dir,"reframe_report.json"))
 
-                os.mkdir(rfm_report_dir)
-                os.rename(rfm_report_filepath,os.path.join(rfm_report_dir,"reframe_report.json"))
-
-                with open(os.path.join(rfm_report_dir,"plots.json"),"w") as f:
-                    f.write(json.dumps([p.model_dump() for p in app_config.plots]))
+        with open(os.path.join(rfm_report_dir,"plots.json"),"w") as f:
+            f.write(json.dumps([p.model_dump() for p in app_config.plots]))
 
 
-                #Upload reframe report
-                girder_handler.upload(
-                    rfm_report_dir,
-                    app_config.upload.folder_id
-                )
-            else:
-                raise NotImplementedError
+        if parser.args.move_results:
+            if not os.path.exists(parser.args.move_results):
+                os.makedirs(parser.args.move_results)
+            os.rename(os.path.join(rfm_report_dir,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
+            os.rename(os.path.join(rfm_report_dir,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
         #======================================================#
 
     return exit_code
