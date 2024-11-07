@@ -1,9 +1,9 @@
 {
     "executable": "feelpp_toolbox_heatfluid",
-    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/thermoelectric/eye",
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/heatlfuid/eye",
     "use_case_name": "eye",
-    "options": [ //TODO find cfg files and meshes
-        "--config-files eye-{{parameters.position.value}}.cfg pc_{{parameters.solver.value}}.cfg",
+    "options": [
+        "--config-files /data/scratch/cladellash/feelppdb/input_data/eye/eye-{{parameters.position.value}}.cfg /data/scratch/cladellash/feelppdb/input_data/eye/pc_{{parameters.solver.value}}.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -11,7 +11,7 @@
         "--heat-fluid.heat.scalability-save=1",
         "--heat-fluid.fluid.scalability-save=1",
         "--repository.append.np 0",
-        "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"$cfgdir/mesh/Mr/{{parameters.meshes.value}}/Eye_Mesh3D_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+        "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"/data/home/saigre/pulications/mesh.eye/mesh/Mr/{{parameters.meshes.value}}/Eye_Mesh3D_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
     "outputs": [],
     "scalability": {
@@ -40,7 +40,7 @@
     },
     "upload": {
         "platform": "girder",
-        "folder_id": "672b684fb0e95728eb010b5f"
+        "folder_id": "672c95e5b0e95728eb010b85"
     },
     "parameters": [
         {
@@ -48,8 +48,7 @@
             "sequence": [
                 {"tasks":128,"nodes":1,"exclusive_access":true},
                 {"tasks":256,"nodes":2,"exclusive_access":true},
-                {"tasks":384,"nodes":3,"exclusive_access":true},
-                {"tasks":512,"nodes":4,"exclusive_access":true}
+                {"tasks":384,"nodes":3,"exclusive_access":true}
             ]
         },
         {
@@ -75,7 +74,9 @@
             "plot_types": [ "stacked_bar" ],
             "transformation": "performance",
             "variables": [
-                //
+                "Constructor_init",
+                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "PostProcessing_exportResults"
             ],
             "names": [ ],
             "xaxis": {
@@ -99,7 +100,9 @@
             "plot_types": [ "stacked_bar" ],
             "transformation": "relative_performance",
             "variables": [
-                //
+                "Constructor_init",
+                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "PostProcessing_exportResults"
             ],
             "names": [ ],
             "xaxis": {
@@ -123,7 +126,9 @@
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
             "variables": [
-                //
+                "Constructor_init",
+                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "PostProcessing_exportResults"
             ],
             "names": [ ],
             "xaxis": {
