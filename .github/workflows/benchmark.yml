@@ -178,6 +178,8 @@ jobs:
             run: |
                 source .venv/bin/activate
                 girder-upload --directory "./tmp/results" --girder_id ${{needs.factory.outputs.results_upload_id}}
+            env:
+                GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name:  Reset reports
             run: |
                 rm -r ./docs/modules/ROOT/pages/applications/
