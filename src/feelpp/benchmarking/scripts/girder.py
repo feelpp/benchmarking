@@ -12,3 +12,16 @@ def download_cli():
 
     girder_hanlder = GirderHandler(args.output_dir)
     girder_hanlder.downloadFile(args.girder_id,name=args.filename)
+
+    return 0
+
+def upload_cli():
+    parser = ArgumentParser()
+    parser.add_argument("--directory", required=True, help="Path of the directory to upload as an item")
+    parser.add_argument("--girder_id", required=True, help="The Girder folder ID to which to upload the item")
+    args = parser.parse_args()
+
+    girder_handler = GirderHandler(download_base_dir=None)
+    girder_handler.upload( args.directorys, args.girder_id )
+
+    return 0
