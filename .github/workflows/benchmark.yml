@@ -137,7 +137,7 @@ jobs:
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
-                execute-benchmark -ec ${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json -vv
+                execute-benchmark -ec ${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json -v
                 echo $?
             env:
                 GIRDER_API_KEY: ${{secrets.GIRDER}}
