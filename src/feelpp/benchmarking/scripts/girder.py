@@ -22,6 +22,6 @@ def upload_cli():
     args = parser.parse_args()
 
     girder_handler = GirderHandler(download_base_dir=None)
-    girder_handler.upload( args.directorys, args.girder_id )
+    girder_handler.upload( args.directory, args.girder_id )
 
     return 0
