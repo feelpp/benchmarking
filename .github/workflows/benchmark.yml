@@ -93,7 +93,7 @@ jobs:
                 elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
                     bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
                 else #TODO: REMOVE - DEBUG
-                    bench_cfg_id="6720f601b0e95728eb010af8"
+                    bench_cfg_id="672cbe4db0e95728eb010b8f"
                 fi
                 girder-download -gid $bench_cfg_id -o ./tmp/ -fn "benchmark_config.json"
             env:
