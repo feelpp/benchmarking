@@ -1,0 +1,122 @@
+{
+    "executable": "feelpp_toolbox_thermoelectric",
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/thermoelectric/HL_31",
+    "use_case_name": "HL_31",
+    "options": [
+        "--config-files /data/scratch/cladellash/feelppdb/input_data/HL_31/HL-31.cfg",
+        "--directory {{output_directory}}/{{instance}}",
+        "--repository.case {{use_case_name}}",
+        "--fail-on-unknown-option 1",
+        "--thermo-electric.scalability-save=1",
+        "--thermo-electric.heat.scalability-save=1",
+        "--thermo-electric.electric.scalability-save=1",
+        "--repository.append.np 0",
+        "--case.discretization {{parameters.discretization.value}}",
+        "--thermo-electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/thermoelectric/Import/filename\",\"value\": \"$cfgdir/HL-31_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+    ],
+    "outputs": [],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "stages": [
+            {
+                "name": "Constructor",
+                "file": "thermo-electric.scalibility.ThermoElectricConstructor.data",
+                "format": "tsv"
+            },
+            {
+                "name": "PostProcessing",
+                "file": "thermo-electric.scalibility.ThermoElectricPostProcessing.data",
+                "format": "tsv"
+            },
+            {
+                "name": "Solve",
+                "file": "thermo-electric.scalibility.ThermoElectricSolve.data",
+                "format": "tsv"
+            }
+        ]
+    },
+    "sanity": {
+        "success": [],
+        "error": []
+    },
+    "upload": {
+        "platform": "girder",
+        "folder_id": "672b684fb0e95728eb010b5f"
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "sequence": [
+                {"tasks":4,"nodes":1,"exclusive_access":true},
+                {"tasks":8,"nodes":1,"exclusive_access":true},
+                {"tasks":16,"nodes":1,"exclusive_access":true},
+                {"tasks":32,"nodes":1,"exclusive_access":true},
+                {"tasks":64,"nodes":1,"exclusive_access":true},
+                {"tasks":128,"nodes":1,"exclusive_access":true},
+                {"tasks":256,"nodes":2,"exclusive_access":true}
+            ]
+        },
+        {
+            "name": "discretization",
+            "sequence": ["P1","P2"]
+        },
+        {
+            "name": "environment",
+            "sequence":["builtin"]
+        }
+    ],
+    "plots": [
+        {
+            "title": "Performance",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "discretization",
+                "label": "Discretization"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            }
+        },
+        {
+            "title": "Speedup",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "nb_tasks.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "discretization",
+                "label": "Discretization"
+            },
+            "yaxis": {
+                "label": "Speedup"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            }
+        }
+    ]
+}
