@@ -1,4 +1,5 @@
 import json, os, re
+from feelpp.benchmarking.report.config.handlers import GirderHandler
 
 class ConfigReader:
     """ Class to load config files"""
@@ -7,9 +8,35 @@ class ConfigReader:
         Args:
             config_path (str) : Path to the config JSON file
         """
-        self.config = self.load(config_path, schema)
+        if config_path.startswith("girder:"):
+            girder_meta = json.loads(config_path.replace("girder:",""))
+            self.config = self.loadGirder(girder_meta, schema)
+        elif config_path.startswith("github:"):
+            raise NotImplementedError("Github input not implemented")
+        else:
+            self.config = self.loadLocal(config_path, schema)
 
-    def load(self,config_path, schema):
+    def loadGirder(self,metadata,schema):
+        """ Loads a configuration file from Girder, creating a temporary file on disk
+        Args:
+            metadata (dict): Dictionary describing needed arguments to download a girder object
+                Must be in the form of {'file': file_id, 'api_key': your_key}
+        """
+        assert "file" in metadata, "girder file argument not found"
+        assert "api_key" in metadata, "girder api key argument not found"
+
+        tmp_name = "tmp_config.json"
+        os.environ["GIRDER_API_KEY"] = os.path.expandvars(metadata["api_key"])
+        gc = GirderHandler("./config")
+        gc.downloadFile(metadata["file"],name=tmp_name)
+
+        config = self.loadLocal(os.path.join("./config/",tmp_name), schema)
+
+        os.remove(os.path.join("./config/",tmp_name))
+
+        return config
+
+    def loadLocal(self,config_path, schema):
         """ Loads the JSON file and checks if the file exists.
         Args:
             config_path (str) : Path to the config JSON file
