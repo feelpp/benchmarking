@@ -52,22 +52,29 @@ class Image(BaseModel):
         else:
             self.protocol = "local"
 
-        if self.protocol == "local":
-            if not os.path.exists(self.name):
-                raise FileNotFoundError(f"Image {self.name} not found")
         return self
 
 
 class Platform(BaseModel):
     type:Literal["builtin","apptainer","docker"]
-    image:Image
+    image:Optional[Image] = None
+    input_dir:str
     options:List[str]
+    append_app_options:List[str]
 
+    @model_validator(mode="after")
+    def validateType(self):
+        if self.type == "builtin":
+            assert self.image is None, "Builtin type cannot have an associated image"
+        else:
+            assert self.image is not None, f"{self.type} platform does not have a specified image"
+
+        return self
 
 class ConfigFile(BaseModel):
     executable: str
     executable_dir: Optional[str] = None
-    platform:Optional[Platform] = None
+    platforms:List[Platform]
     output_directory:str
     use_case_name: str
     options: List[str]
