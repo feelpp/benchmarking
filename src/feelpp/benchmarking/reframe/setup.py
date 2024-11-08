@@ -142,11 +142,11 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        if machine_config.prog_environment != "builtin":
-            rfm_test.container_platform.command = f"{self.reader.config.executable} {' '.join(self.reader.config.options)}"
-        else:
+        if machine_config.prog_environment == "builtin":
             rfm_test.executable = os.path.join(self.reader.config.executable_dir,self.reader.config.executable) if self.reader.config.executable_dir else self.reader.config.executable
             rfm_test.executable_opts = self.reader.config.options
+        else:
+            rfm_test.container_platform.command = f"{self.reader.config.executable} {' '.join(self.reader.config.options)}"
 
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):
