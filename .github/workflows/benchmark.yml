@@ -161,8 +161,10 @@ jobs:
         -   name: Upload to girder
             run: |
                 source .venv/bin/activate
-                girder-upload --directory ./tmp/results/ --girder_id ${{needs.factory.outputs.results_upload_id}}
-                rm -r ./tmp/results/
+                new_foldername=./tmp/$(date +"%Y_%m_%dT%H_%M_%S")
+                mv ./tmp/results/ new_foldername
+                girder-upload --directory --girder_id ${{needs.factory.outputs.results_upload_id}}
+                rm -r new_foldername
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name:  Reset reports
