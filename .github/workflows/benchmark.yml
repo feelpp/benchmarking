@@ -1,10 +1,6 @@
 name: Benchmark
 
 on:
-    push:
-      branches: #TODO: DEBUG - REMOVE
-      - '**'
-
     repository_dispatch:
         types: [execute-benchmark]
 
@@ -19,15 +15,7 @@ on:
 
 jobs:
 
-    activate:
-        runs-on: self-ubuntu-22.04
-        if: |
-            github.repository == 'feelpp/benchmarking' && !startsWith(github.event.head_commit.message, 'Release ')
-        steps:
-        -   run: echo ok go
-
     build_wheel:
-        needs: activate
         runs-on: self-ubuntu-22.04
         name: Build wheel package
         if: "!contains(github.event.head_commit.message, 'code skip')"
@@ -74,8 +62,6 @@ jobs:
                     machine_cfg_id=${{ github.event.inputs.machines_config }};
                 elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
                     machine_cfg_id=${{ github.event.client_payload.machines_config }};
-                else #TODO: REMOVE - DEBUG
-                    machine_cfg_id="6720f5a8b0e95728eb010af5"
                 fi
                 girder-download -gid $machine_cfg_id -o ./tmp/ -fn "machines_config.json"
             env:
@@ -95,8 +81,6 @@ jobs:
                     bench_cfg_id=${{ github.event.inputs.benchmark_config }};
                 elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
                     bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
-                else #TODO: REMOVE - DEBUG
-                    bench_cfg_id="672cbe4db0e95728eb010b8f"
                 fi
                 girder-download -gid $bench_cfg_id -o ./tmp/ -fn "benchmark_config.json"
             env:
@@ -175,7 +159,7 @@ jobs:
                 source .venv/bin/activate
                 pip3 install -r requirements.txt
         -   name: Upload to girder
-            run: | #TODO: Maybe wait until complete (with a callback)
+            run: |
                 source .venv/bin/activate
                 girder-upload --directory ./tmp/results/ --girder_id ${{needs.factory.outputs.results_upload_id}}
                 rm -r ./tmp/results/
