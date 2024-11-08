@@ -1,0 +1,624 @@
+{
+  "session_info": {
+    "cmdline": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/bin/reframe -C /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/config/machineConfigs/gaya.py -c /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py -S machine_config_path=/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/tmp/machines/gaya.json --system=gaya --exec-policy=async --prefix=./build/reframe --perflogdir=./build/reframe/logs --report-file=./reports/feelpp_toolbox_heat/gaya/2024_11_08T09_18_23.json -v -r",
+    "config_files": [
+      "<builtin>",
+      "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/config/machineConfigs/gaya.py"
+    ],
+    "data_version": "3.1",
+    "hostname": "gaya",
+    "log_files": [
+      "/tmp/rfm-m6cz1du_.log"
+    ],
+    "prefix_output": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/build/reframe/output",
+    "prefix_stage": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/build/reframe/stage",
+    "user": "chabannes",
+    "version": "4.6.3",
+    "workdir": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking",
+    "time_start": "2024-11-08T09:18:24+0100",
+    "time_end": "2024-11-08T09:19:01+0100",
+    "time_elapsed": 36.96686840057373,
+    "num_cases": 2,
+    "num_failures": 0
+  },
+  "runs": [
+    {
+      "num_cases": 2,
+      "num_failures": 0,
+      "num_aborted": 0,
+      "num_skipped": 0,
+      "runid": 0,
+      "testcases": [
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 128, 'nodes': 1, 'exclusive_access': True} %meshes=M2 %discretization=P1 %environment=builtin",
+          "environment": "builtin",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "fdb3c76e",
+          "jobid": "67296",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 128, 'nodes': 1, 'exclusive_access': True} %meshes=M2 %discretization=P1 %environment=builtin",
+          "nodelist": [
+            "gaya2"
+          ],
+          "outputdir": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/build/reframe/output/gaya/production/builtin/RegressionTest_fdb3c76e",
+          "perfvars": [
+            {
+              "name": "HeatConstructor_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000608433
+            },
+            {
+              "name": "HeatConstructor_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.47317853
+            },
+            {
+              "name": "HeatConstructor_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.468285395
+            },
+            {
+              "name": "HeatConstructor_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.109204216
+            },
+            {
+              "name": "HeatConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.309096653
+            },
+            {
+              "name": "HeatConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.049655768
+            },
+            {
+              "name": "HeatConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.9128e-05
+            },
+            {
+              "name": "HeatConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 10.237909
+            },
+            {
+              "name": "HeatPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.5110998
+            },
+            {
+              "name": "HeatSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 16.0
+            },
+            {
+              "name": "HeatSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.373859378
+            },
+            {
+              "name": "HeatSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.429974204
+            },
+            {
+              "name": "HeatSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.805904244
+            },
+            {
+              "name": "Normal_Heat_Flux_alpha",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 44.79971292712053
+            },
+            {
+              "name": "Normal_Heat_Flux_beta",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 13.536691643692642
+            },
+            {
+              "name": "Normal_Heat_Flux_gamma",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": -58.6237181853984
+            },
+            {
+              "name": "Points_alpha_max_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 17.90196092845387
+            },
+            {
+              "name": "Points_alpha_min_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.316057029965231
+            },
+            {
+              "name": "Points_beta_max_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 16.842559248962292
+            },
+            {
+              "name": "Points_beta_min_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.10205319201543
+            },
+            {
+              "name": "Statistics_temperature_alpha_max",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 17.901947768148688
+            },
+            {
+              "name": "Statistics_temperature_alpha_min",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.352070341888838
+            },
+            {
+              "name": "Statistics_temperature_beta_max",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 16.842547795230903
+            },
+            {
+              "name": "Statistics_temperature_beta_min",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.12096495183755
+            }
+          ],
+          "prefix": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/builtin/RegressionTest_fdb3c76e",
+          "scheduler": "squeue",
+          "system": "gaya:production",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.010986804962158203,
+          "time_performance": 0.01465153694152832,
+          "time_run": 36.91546583175659,
+          "time_sanity": 0.012279033660888672,
+          "time_setup": 0.009792089462280273,
+          "time_total": 36.96198511123657,
+          "unique_name": "RegressionTest_1",
+          "check_vars": {
+            "valid_prog_environs": [
+              "builtin"
+            ],
+            "valid_systems": [
+              "gaya:production"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /data/scratch/cladellash/feelppdb/input_data/thermal_bridges_case_3/case3.cfg",
+              "--directory /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/feelppdb/toolboxes/heat/fdb3c76e",
+              "--repository.case thermal_bridges_case_3",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1",
+              "--repository.append.np 0",
+              "--case.discretization P1",
+              "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"$cfgdir/M2/case3_p128.json\" }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 128,
+            "num_tasks_per_node": 128,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/tmp/machines/gaya.json",
+            "use_case": "thermal_bridges_case_3"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 128,
+              "nodes": 1,
+              "exclusive_access": true
+            },
+            "meshes": "M2",
+            "discretization": "P1",
+            "environment": "builtin"
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 128, 'nodes': 1, 'exclusive_access': True} %meshes=M1 %discretization=P1 %environment=builtin",
+          "environment": "builtin",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "5fcad908",
+          "jobid": "67297",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 128, 'nodes': 1, 'exclusive_access': True} %meshes=M1 %discretization=P1 %environment=builtin",
+          "nodelist": [
+            "gaya3"
+          ],
+          "outputdir": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/build/reframe/output/gaya/production/builtin/RegressionTest_5fcad908",
+          "perfvars": [
+            {
+              "name": "HeatConstructor_initMaterialProperties",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000550246
+            },
+            {
+              "name": "HeatConstructor_initMesh",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.466201503
+            },
+            {
+              "name": "HeatConstructor_initFunctionSpaces",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.040763447
+            },
+            {
+              "name": "HeatConstructor_initPostProcess",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.027095384
+            },
+            {
+              "name": "HeatConstructor_graph",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.02731647
+            },
+            {
+              "name": "HeatConstructor_matrixVector",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.018823621
+            },
+            {
+              "name": "HeatConstructor_algebraicOthers",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 8.8937e-05
+            },
+            {
+              "name": "HeatConstructor_init",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 7.19494369
+            },
+            {
+              "name": "HeatPostProcessing_exportResults",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.65349439
+            },
+            {
+              "name": "HeatSolve_ksp-niter",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "iter",
+              "value": 17.0
+            },
+            {
+              "name": "HeatSolve_algebraic-assembly",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.192130585
+            },
+            {
+              "name": "HeatSolve_algebraic-solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.133797799
+            },
+            {
+              "name": "HeatSolve_solve",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.326832605
+            },
+            {
+              "name": "Normal_Heat_Flux_alpha",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 43.664489077514105
+            },
+            {
+              "name": "Normal_Heat_Flux_beta",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 13.23493285404912
+            },
+            {
+              "name": "Normal_Heat_Flux_gamma",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": -57.48518317645051
+            },
+            {
+              "name": "Points_alpha_max_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 17.902222168227524
+            },
+            {
+              "name": "Points_alpha_min_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.30486683929063
+            },
+            {
+              "name": "Points_beta_max_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 16.84278840424481
+            },
+            {
+              "name": "Points_beta_min_field_temperature",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.082223428650465
+            },
+            {
+              "name": "Statistics_temperature_alpha_max",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 17.90216950575357
+            },
+            {
+              "name": "Statistics_temperature_alpha_min",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.371956026784176
+            },
+            {
+              "name": "Statistics_temperature_beta_max",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 16.84274131799794
+            },
+            {
+              "name": "Statistics_temperature_beta_min",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 11.112161892590722
+            }
+          ],
+          "prefix": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/builtin/RegressionTest_5fcad908",
+          "scheduler": "squeue",
+          "system": "gaya:production",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.010657787322998047,
+          "time_performance": 0.01559901237487793,
+          "time_run": 30.041322708129883,
+          "time_sanity": 0.013660907745361328,
+          "time_setup": 0.008814573287963867,
+          "time_total": 30.166150093078613,
+          "unique_name": "RegressionTest_0",
+          "check_vars": {
+            "valid_prog_environs": [
+              "builtin"
+            ],
+            "valid_systems": [
+              "gaya:production"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "feelpp_toolbox_heat",
+            "executable_opts": [
+              "--config-files /data/scratch/cladellash/feelppdb/input_data/thermal_bridges_case_3/case3.cfg",
+              "--directory /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/feelppdb/toolboxes/heat/5fcad908",
+              "--repository.case thermal_bridges_case_3",
+              "--fail-on-unknown-option 1",
+              "--heat.scalability-save=1",
+              "--repository.append.np 0",
+              "--case.discretization P1",
+              "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"$cfgdir/M1/case3_p128.json\" }'"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 128,
+            "num_tasks_per_node": 128,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "machine_config_path": "/data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/tmp/machines/gaya.json",
+            "use_case": "thermal_bridges_case_3"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 128,
+              "nodes": 1,
+              "exclusive_access": true
+            },
+            "meshes": "M1",
+            "discretization": "P1",
+            "environment": "builtin"
+          }
+        }
+      ]
+    }
+  ],
+  "restored_cases": []
+}
