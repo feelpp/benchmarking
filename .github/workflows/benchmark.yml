@@ -163,12 +163,12 @@ jobs:
         name: Handle results and trigger rendering
 
         steps:
+        -   uses: actions/checkout@v4
         -   name: Download results
             uses: actions/download-artifact@v4
             with:
                 name: benchmark-results
                 path: ./tmp/results/
-        -   uses: actions/checkout@v4
         -   name: Create Virtual Environment
             run: |
                 python3 -m venv .venv
