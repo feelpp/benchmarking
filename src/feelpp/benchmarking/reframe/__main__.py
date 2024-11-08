@@ -2,7 +2,8 @@ import os, json,subprocess
 from datetime import datetime
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
-from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
+from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
+from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from pathlib import Path
 from feelpp.benchmarking.report.config.handlers import GirderHandler
 

@@ -1,7 +1,8 @@
 
 from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
-from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineConfig
+from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
+from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 
 import reframe as rfm
 import os, re, shutil
