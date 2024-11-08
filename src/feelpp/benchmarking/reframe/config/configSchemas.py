@@ -56,25 +56,15 @@ class Image(BaseModel):
 
 
 class Platform(BaseModel):
-    type:Literal["builtin","apptainer","docker"]
     image:Optional[Image] = None
     input_dir:str
-    options:List[str]
-    append_app_options:List[str]
-
-    @model_validator(mode="after")
-    def validateType(self):
-        if self.type == "builtin":
-            assert self.image is None, "Builtin type cannot have an associated image"
-        else:
-            assert self.image is not None, f"{self.type} platform does not have a specified image"
-
-        return self
+    options:Optional[List[str]]= []
+    append_app_options:Optional[List[str]]= []
 
 class ConfigFile(BaseModel):
     executable: str
     executable_dir: Optional[str] = None
-    platforms:List[Platform]
+    platforms:Optional[Dict[str,Platform]] = None
     output_directory:str
     use_case_name: str
     options: List[str]
@@ -105,4 +95,11 @@ class ConfigFile(BaseModel):
 
         return self
 
+    @field_validator("platforms",mode="before")
+    @classmethod
+    def checkPlatforms(cls,v):
+        accepted_platforms = ["builtin","apptainer","docker"]
+        for k in v.keys():
+            assert k in accepted_platforms, f"{k} not implemented"
+        return v
 

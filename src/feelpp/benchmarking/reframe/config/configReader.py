@@ -1,4 +1,63 @@
 import json, os, re
+from pydantic import BaseModel
+
+class TemplateProcessor:
+    """Helper class for processing template values in a JSON file"""
+    def __init__(self):
+        self.template_pattern = re.compile(r'{{([^{}]+)}}')
+
+    @staticmethod
+    def flattenDict(nested_json, parent_key='', separator='.'):
+        """Flattens a nested JSON-like dictionary.
+        Args:
+            nested_json (dict): The JSON-like dictionary to flatten. It can be a pydantic model
+            parent_key (str): A string representing the prefix for keys in nested levels (used internally in recursion).
+            separator (str): The separator string to use between keys from different levels. Default is '.'.
+
+        Returns:
+            dict: A flattened dictionary where nested keys are joined by the separator.
+        """
+        items = []
+        if isinstance(nested_json,BaseModel):
+            nested_dict = nested_json.model_dump()
+        else:
+            nested_dict = nested_json
+        for key, value in nested_dict.items():
+            new_key = f"{parent_key}{separator}{key}" if parent_key else key
+            if isinstance(value, dict):
+                items.extend(TemplateProcessor.flattenDict(value, new_key, separator=separator).items())
+            elif isinstance(value, list):
+                for index, item in enumerate(value):
+                    if isinstance(item,dict) or isinstance(item, list):
+                        items.extend(TemplateProcessor.flattenDict(item, f"{new_key}{separator}{index}", separator=separator).items())
+                    else:
+                        items.append((f"{new_key}{separator}{index}", item))
+            else:
+                items.append((new_key, value))
+        return dict(items)
+
+    def replacePlaceholders(self,target,flattened_source):
+        def replaceMatch(match):
+            resolved = flattened_source.get(match.group(1).strip(),match.group(0))
+            if match.group(1) in flattened_source:
+                if isinstance(resolved,str) and "{{" in resolved and "}}" in resolved:
+                    resolved = self.replacePlaceholders(resolved,flattened_source)
+            return resolved
+
+        replaced = self.template_pattern.sub(replaceMatch,target)
+
+        return os.path.expandvars(replaced) if "$" in replaced else replaced
+
+
+    def recursiveReplace(self,target,flattened_source):
+        if isinstance(target, dict):
+            return {k: self.recursiveReplace(v,flattened_source) for k, v in target.items()}
+        elif isinstance(target,list):
+            return [self.recursiveReplace(v,flattened_source) for v in target]
+        elif isinstance(target, str):
+            return self.replacePlaceholders(target,flattened_source)
+        return target
+
 
 class ConfigReader:
     """ Class to load config files"""
@@ -7,7 +66,9 @@ class ConfigReader:
         Args:
             config_path (str) : Path to the config JSON file
         """
+        self.schema = schema
         self.config = self.load(config_path, schema)
+        self.processor = TemplateProcessor()
 
     def load(self,config_path, schema):
         """ Loads the JSON file and checks if the file exists.
@@ -20,44 +81,18 @@ class ConfigReader:
         assert os.path.exists(os.path.abspath(config_path)), f"Cannot find config file {config_path}"
         with open(config_path, "r") as cfg:
             self.config = json.load(cfg)
-            self.config = self.recursiveReplace(self.config)
             self.config = schema(**self.config)
         return self.config
 
-    def getNestedValue(self,data,path):
-        """Helper function to get a value from a nested dictionary using a dot-separated path.
+    def updateConfig(self, flattened_replace = None):
+        """ Recursively replace all placeholders {{}} on the config.
         Args:
-            data (dict): The dictionary to search
-            path (str): The dot-separated path (e.g., "field1.field1_2.field1_2_1")
-        Returns:
-            The value from the nested dictionary, or the placeholder itself if not found
+            flattened_replace: (dict) Containing all key, pair values that indicate the paths to replace. e.g { "replace.this.path": "with_this_value" }
+                If not provided, placeholders will be changed with own confing
         """
-        keys = path.split(".")
-        for key in keys:
-            if isinstance(data, dict) and key in data:
-                data = data[key]
-            else:
-                # If the key is not found, return the placeholder itself
-                return "{{" + path + "}}"
-        return data
-
-    def recursiveReplace(self,data):
-        """ Replaces template with the actual value if found inside the json. Else, the placeholder is left as it was.
-            data (dict): The initial json data with templates
-        Returns:
-            dict: Replaced data
-        """
-        if isinstance(data, dict):
-            return {k: self.recursiveReplace(v) for k, v in data.items()}
-        elif isinstance(data, list):
-            return [self.recursiveReplace(v) for v in data]
-        elif isinstance(data, str):
-            # Find placeholders in the form {nested.field.path}
-            rep = re.sub(r"\{\{([\w\.]+)\}\}", lambda match: str(self.getNestedValue(self.config, match.group(1))), data)
-            if "$" in rep:
-                rep = os.path.expandvars(rep)
-            return rep
-        return data
+        if not flattened_replace:
+            flattened_replace = self.processor.flattenDict(self.config.model_dump())
+        self.config = self.schema(**self.processor.recursiveReplace(self.config.model_dump(),flattened_replace))
 
     def __repr__(self):
         return json.dumps(self.config.dict(), indent=4)
