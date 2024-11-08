@@ -178,6 +178,7 @@ jobs:
             run: | #TODO: Maybe wait until complete (with a callback)
                 source .venv/bin/activate
                 girder-upload --directory ./tmp/results/ --girder_id ${{needs.factory.outputs.results_upload_id}}
+                rm -r ./tmp/results/
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name:  Reset reports
