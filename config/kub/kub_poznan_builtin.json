@@ -1,10 +1,27 @@
 {
     "executable": "feelpp_kub_cem",
     "executable_dir":"/data/home/cladellash/ktirio-urban-building/build/src/cpp/",
-    "output_directory": "/data/scratch/cladellash/feelppdb/kub",
+    "output_directory": "{{machine.output_app_dir}}/feelppdb/kub",
     "use_case_name": "poznan",
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
+            },
+            "input_dir":"/input_data/",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/kub/cfg/:{{platforms.apptainer.input_dir}}"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}/kub/cfg/",
+            "append_app_option":[]
+        }
+    },
     "options": [
-        "--config-file /data/home/cladellash/benchmarking/config/kub/cfg/Poznan.cfg",
+        "--config-file {{platforms.{{machine.prog_environment}}.input_dir}}/Poznan.cfg",
         "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
     ],
     "outputs": [],
