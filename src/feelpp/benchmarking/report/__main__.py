@@ -15,6 +15,7 @@ def main_cli():
     parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./src/feelpp/benchmarking/report/config/config.json")
     parser.add_argument("--json_output_path", type=str, help="Path to the output directory", default="reports")
     parser.add_argument("--modules_path", type=str, help="Path to the modules directory", default="./docs/modules/ROOT/pages")
+    parser.add_argument("--partials_path", type=str, help="Path to the partials directory", default="./docs/modules/ROOT/partials")
     args = parser.parse_args()
 
     # Arguments treatment
@@ -61,4 +62,6 @@ def main_cli():
     print("-------------------------------")
 
     report_renderer = RendererFactory.create("benchmark")
+
+    atomic_reports.movePartials(os.path.join(args.partials_path,"reports"))
     atomic_reports.createReports(os.path.join(args.modules_path,"reports"),report_renderer)

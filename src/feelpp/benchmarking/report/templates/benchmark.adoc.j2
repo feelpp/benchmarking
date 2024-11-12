@@ -15,6 +15,16 @@
 
 {% if not empty %}
 
+|===
+{% for header in hash_params_headers %} | {{ header }} {% endfor %}
+
+{% for entry in flat_hash_param_map.values() %}
+{% for header in hash_params_headers %}
+  {% if header == 'partial_filepath' %} | button:[{{ entry.get(header, '') }}] {% else %} | {{ entry.get(header, '') }} {% endif %}
+{% endfor %}
+{% endfor %}
+|===
+
 [%dynamic%close%hide_code,python]
 ----
 from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
@@ -24,7 +34,7 @@ from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
 
 [%dynamic%close%hide_code,python]
 ----
-model=AtomicReportModel({{ runs }} )
+model=AtomicReportModel({{ runs }})
 view=AtomicReportView({{ plots_config }})
 controller=AtomicReportController(model,view)
 ----

@@ -28,12 +28,17 @@ class AtomicReportRepository(Repository):
                 for report_base_dir in report_base_dirs:
                     reframe_report_json = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/reframe_report.json"
                     plots_config_json = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/plots.json"
+                    parametrized_partials_dir = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/parametrized_partials/"
+                    if not os.path.exists(parametrized_partials_dir) or len(os.listdir(parametrized_partials_dir)) == 0:
+                        parametrized_partials_dir = None
+
                     self.add(
                         AtomicReport(
                             application_id = app_id,
                             machine_id = machine_id,
                             reframe_report_json = reframe_report_json,
-                            plot_config_json=plots_config_json
+                            plot_config_json = plots_config_json,
+                            parametrized_partials_dir = parametrized_partials_dir
                         )
                     )
 
@@ -125,3 +130,10 @@ class AtomicReportRepository(Repository):
 
         for atomic_report in self.data:
             atomic_report.createReport(base_dir,renderer)
+
+    def movePartials(self,base_dir):
+        if not os.path.exists(base_dir):
+            os.mkdir(base_dir)
+
+        for atomic_report in self.data:
+            atomic_report.movePartials(base_dir)
