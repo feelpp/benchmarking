@@ -44,19 +44,11 @@
     "parameters": [
         {
             "name": "nb_tasks",
-            "zip": [
-                {
-                    "name":"tasks",
-                    "geometric":{
-                        "start":16,
-                        "ratio":2,
-                        "n_steps":5
-                    }
-                },
-                {
-                    "name":"tasks_per_node",
-                    "sequence":[64,64,64,64,128]
-                }
+            "sequence": [
+                {"tasks" : 16, "nodes":1, "exclusive_access":true},
+                {"tasks" : 32, "nodes":1, "exclusive_access":true},
+                {"tasks" : 64, "nodes":2, "exclusive_access":true},
+                {"tasks" : 128, "nodes":2, "exclusive_access":true}
             ]
         },
         {

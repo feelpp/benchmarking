@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pydantic import BaseModel, model_validator
-from typing import  Union, Optional, List, Any
+from typing import  Union, Optional, List, Any, Dict
 
 
 class Linspace(BaseModel):
@@ -33,7 +33,7 @@ class Parameter(BaseModel):
     linspace:Optional[Linspace] = None
     logspace:Optional[Logspace] = None
     range:Optional[Range] = None
-    sequence:Optional[List[Union[int,float,str]]] = None
+    sequence:Optional[List[Union[int,float,str,Dict]]] = None
     repeat:Optional[Repeat] = None
     zip:Optional[List[Parameter]] = None
     geometric: Optional[Geometric] = None
