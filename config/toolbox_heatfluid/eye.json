@@ -32,6 +32,14 @@
                 "file": "heat-fluid.scalibility.HeatFluidSolve.data",
                 "format": "tsv"
             }
+        ],
+        "custom_variables": [
+            {
+                "name":"Solve_assembly",
+                "columns":[ "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian",  "Solve_algebraic-residual" ],
+                "op":"sum",
+                "unit":"s"
+            }
         ]
     },
     "sanity": {
