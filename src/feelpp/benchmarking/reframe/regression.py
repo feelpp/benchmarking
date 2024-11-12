@@ -16,7 +16,7 @@ class RegressionTest(ReframeSetup):
     def initHandlers(self):
         self.validation_handler = ValidationHandler(self.app_setup.config.sanity)
         self.scalability_handler = ScalabilityHandler(self.app_setup.config.scalability)
-        self.outputs_handler = OutputsHandler(self.app_setup.config.outputs)
+        self.outputs_handler = OutputsHandler(self.app_setup.config.outputs, self.app_setup.config.additional_files)
 
     @run_before('performance')
     def setPerfVars(self):
@@ -27,6 +27,11 @@ class RegressionTest(ReframeSetup):
         self.perf_variables.update(
             self.outputs_handler.getOutputs()
         )
+
+
+    @run_before('performance')
+    def copyParametrizedFiles(self):
+        self.outputs_handler.copyParametrizedDescriptions(self.report_dir_path,self.hashcode)
 
     @sanity_function
     def sanityCheck(self):
