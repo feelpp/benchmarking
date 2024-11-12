@@ -1,20 +1,28 @@
 {
-    "executable": "feelpp_toolbox_heat",
-    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/heat",
-    "use_case_name": "thermal_bridges_case_2",
+    "executable": "feelpp_toolbox_electric",
+    "platform": {
+        "type":"apptainer",
+        "image": "oras://ghcr.io/feelpp/feelpp:v0.111.0-preview.10-noble-sif",
+        "options": [
+            "--home /data/scratch/cladellash/feelppdb/",
+            "--bind /usr/share/feelpp/data/testcases/toolboxes/electric/cases/quarter-turn/:/input_data/"
+        ]
+    },
+    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric",
+    "use_case_name": "quarter_turn_3d",
     "options": [
-        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case2.cfg",
+        "--config-files /input_data/3d.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
-        "--heat.scalability-save=1",
+        "--electric.scalability-save=1",
         "--repository.append.np 0",
-        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/hsize\",\"value\": {{parameters.hsize.value}} }'"
+        "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": {{parameters.hsize.value}} }'"
     ],
     "outputs": [
         {
             "instance_path": "{{output_directory}}/{{use_case_name}}/",
-            "relative_filepath": "heat.measures/values.csv",
+            "relative_filepath": "electric.measures/values.csv",
             "format": "csv"
         }
     ],
@@ -22,18 +30,18 @@
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
             {
-                "name": "HeatConstructor",
-                "file": "heat.scalibility.HeatConstructor.data",
+                "name": "ElectricConstructor",
+                "file": "electric.scalibility.ElectricConstructor.data",
                 "format": "tsv"
             },
             {
-                "name": "HeatPostProcessing",
-                "file": "heat.scalibility.HeatPostProcessing.data",
+                "name": "ElectricPostProcessing",
+                "file": "electric.scalibility.ElectricPostProcessing.data",
                 "format": "tsv"
             },
             {
-                "name": "HeatSolve",
-                "file": "heat.scalibility.HeatSolve.data",
+                "name": "ElectricSolve",
+                "file": "electric.scalibility.ElectricSolve.data",
                 "format": "tsv"
             }
         ]
@@ -44,15 +52,15 @@
     },
     "upload": {
         "platform": "girder",
-        "folder_id": "6703da68b0e95728eb0105c4"
+        "folder_id": "66ffd846b0e95728eb010353"
     },
     "parameters": [
         {
             "name": "nb_tasks",
             "range": {
                 "mode": "cores",
-                "min_cores_per_node": 1,
-                "max_cores_per_node": 16,
+                "min_cores_per_node": 8,
+                "max_cores_per_node": 64,
                 "min_nodes": 1,
                 "max_nodes": 1,
                 "generator": "double"
@@ -62,8 +70,8 @@
             "name": "hsize",
             "range": {
                 "mode": "step",
-                "min": 0.05,
-                "max": 0.95,
+                "min": 0.03,
+                "max": 0.05,
                 "n_steps": 3,
                 "generator": "linear"
             }
@@ -71,26 +79,22 @@
     ],
     "plots": [
         {
-            "title": "HeatConstrucor step absolute performance",
+            "title": "ElectricConstructor step absolute performance",
             "plot_types": [
                 "stacked_bar",
                 "table"
             ],
             "transformation": "performance",
             "variables": [
-                "HeatConstructor_initMaterialProperties",
-                "HeatConstructor_initMesh",
-                "HeatConstructor_initFunctionSpaces",
-                "HeatConstructor_initPostProcess",
-                "HeatConstructor_graph",
-                "HeatConstructor_matrixVector",
-                "HeatConstructor_algebraicOthers"
+                "ElectricConstructor_createMesh",
+                "ElectricConstructor_createExporters",
+                "ElectricConstructor_graph",
+                "ElectricConstructor_matrixVector",
+                "ElectricConstructor_algebraicOthers"
             ],
             "names": [
-                "initMaterialProperties",
-                "initMesh",
-                "initFunctionSpaces",
-                "initPostProcess",
+                "createMesh",
+                "createExporters",
                 "graph",
                 "matrixVector",
                 "algebraicOthers"
@@ -108,25 +112,21 @@
             }
         },
         {
-            "title": "HeatConstrucor step relative performance",
+            "title": "ElectricConstructor step relative performance",
             "plot_types": [
                 "stacked_bar"
             ],
             "transformation": "relative_performance",
             "variables": [
-                "HeatConstructor_initMaterialProperties",
-                "HeatConstructor_initMesh",
-                "HeatConstructor_initFunctionSpaces",
-                "HeatConstructor_initPostProcess",
-                "HeatConstructor_graph",
-                "HeatConstructor_matrixVector",
-                "HeatConstructor_algebraicOthers"
+                "ElectricConstructor_createMesh",
+                "ElectricConstructor_createExporters",
+                "ElectricConstructor_graph",
+                "ElectricConstructor_matrixVector",
+                "ElectricConstructor_algebraicOthers"
             ],
             "names": [
-                "initMaterialProperties",
-                "initMesh",
-                "initFunctionSpaces",
-                "initPostProcess",
+                "createMesh",
+                "createExporters",
                 "graph",
                 "matrixVector",
                 "algebraicOthers"
@@ -144,13 +144,13 @@
             }
         },
         {
-            "title": "Heat Post Processing step performance",
+            "title": "Electric Post Processing step performance",
             "plot_types": [
                 "scatter"
             ],
             "transformation": "performance",
             "variables": [
-                "HeatPostProcessing_exportResults"
+                "ElectricPostProcessing_exportResults"
             ],
             "names": [
                 "exportResults"
@@ -168,15 +168,15 @@
             }
         },
         {
-            "title": "Heat Solve step absolute performance",
+            "title": "Electric Solve step absolute performance",
             "plot_types": [
                 "stacked_bar",
                 "table"
             ],
             "transformation": "performance",
             "variables": [
-                "HeatSolve_algebraic-assembly",
-                "HeatSolve_algebraic-solve"
+                "ElectricSolve_algebraic-assembly",
+                "ElectricSolve_algebraic-solve"
             ],
             "names": [
                 "algebraic-assembly",
@@ -195,14 +195,14 @@
             }
         },
         {
-            "title": "Heat Solve step relative performance",
+            "title": "Electric Solve step relative performance",
             "plot_types": [
                 "stacked_bar"
             ],
             "transformation": "relative_performance",
             "variables": [
-                "HeatSolve_algebraic-assembly",
-                "HeatSolve_algebraic-solve"
+                "ElectricSolve_algebraic-assembly",
+                "ElectricSolve_algebraic-solve"
             ],
             "names": [
                 "algebraic-assembly",
@@ -227,14 +227,14 @@
             ],
             "transformation": "speedup",
             "variables": [
-                "HeatConstructor_init",
-                "HeatPostProcessing_exportResults",
-                "HeatSolve_solve"
+                "ElectricConstructor_init",
+                "ElectricPostProcessing_exportResults",
+                "ElectricSolve_solve"
             ],
             "names": [
-                "HeatConstructor",
-                "HeatPostProcessing",
-                "HeatSolve"
+                "ElectricConstructor",
+                "ElectricPostProcessing",
+                "ElectricSolve"
             ],
             "xaxis": {
                 "parameter": "nb_tasks",

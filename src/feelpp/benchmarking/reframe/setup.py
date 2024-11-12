@@ -4,7 +4,7 @@ from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineConfig
 
 import reframe as rfm
-import os, re
+import os, re, shutil
 
 class Setup:
     """ Abstract class for setup """
@@ -43,7 +43,6 @@ class MachineSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         self.setValidEnvironments(rfm_test)
-        self.setEnvVars(rfm_test)
         self.setTags(rfm_test)
 
     def setupBeforeRun(self,rfm_test):
@@ -58,15 +57,8 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.valid_systems = self.config.valid_systems
+        rfm_test.valid_systems = [f"{self.config.machine}:{part}" for part in self.config.partitions]
         rfm_test.valid_prog_environs = self.config.valid_prog_environs
-
-    def setEnvVars(self,rfm_test):
-        """ Sets the env_vars attribute
-        Args:
-            rfm_test (reframe class) : The test to apply the setup
-        """
-        rfm_test.env_vars['OMP_NUM_THREADS'] = self.config.omp_num_threads
 
     def setTags(self,rfm_test):
         """ Sets the tags attribute
@@ -105,15 +97,39 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        self.cleanupDirectories()
         self.setExecutable(rfm_test)
+
+    def setupAfterInit(self, rfm_test):
+        self.setPlatform(rfm_test)
+
+    def cleanupDirectories(self):
+        if os.path.exists(self.config.scalability.directory):
+            shutil.rmtree(self.config.scalability.directory)
+
+    def setPlatform(self, rfm_test):
+        """ Sets the container_platform attributes
+        Args:
+            rfm_test (reframe class) : The test to apply the setup
+        """
+        if self.config.platform and self.config.platform.type != "builtin":
+            if not os.path.exists(self.config.platform.image.name):
+                raise FileExistsError(f"Cannot find image {self.config.platform.image.name}")
+            rfm_test.container_platform.image = self.config.platform.image.name
+            rfm_test.container_platform.options = self.config.platform.options
+            rfm_test.container_platform.workdir = None
+
 
     def setExecutable(self, rfm_test):
         """ Sets the executable and executable_opts attrbiutes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.executable = self.config.executable
-        rfm_test.executable_opts = self.config.options
+        if self.config.platform and self.config.platform.type != "builtin":
+            rfm_test.container_platform.command = f"{self.config.executable} {' '.join(self.config.options)}"
+        else:
+            rfm_test.executable = self.config.executable
+            rfm_test.executable_opts = self.config.options
 
     def replaceField(self,field, replace):
         """ Replaces a single string {{stored.like.this}} with their actual replace value
@@ -183,6 +199,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def updateSetups(self):
         """Updates the setup with testcase related values"""
         self.app_setup.reset()
+        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
 
     @run_before('run')
     def setupParameters(self):
@@ -192,10 +209,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 self.num_tasks_per_node = min(value, self.current_partition.processor.num_cpus)
                 self.num_cpus_per_task = 1
                 self.num_tasks = value
-            else:
-                self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
-
-        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
+            self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
 
 
     @run_before('run')

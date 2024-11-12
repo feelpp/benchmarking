@@ -7,12 +7,12 @@ site_configuration = {
             'modules_system': 'tmod4',
             'partitions': [
                 {
-                    'name': 'public',
+                    'name': 'production',
                     'scheduler': 'squeue',
                     'launcher': 'mpiexec',
                     'max_jobs': 8,
-                    'access': ['--partition=public'],
-                    'environs': ['env_gaya'],
+                    'access': ['--partition=production'],
+                    'environs': ['builtin','apptainer'],
                     'prepare_cmds': ['source /etc/profile.d/modules.sh'],
                     'processor': {
                         'num_cpus': 128
@@ -20,20 +20,35 @@ site_configuration = {
                     'devices': [
                         {
                             'type': 'cpu',
-                            'num_devices': 6
+                            'num_devices': 4
                         }
-                    ]
+                    ],
+                    'container_platforms':[
+                        {
+                            'type': 'Apptainer'
+                        }
+                    ],
                 },
+            ],
+            'env_vars':[
+                ["OMP_NUM_THREADS",1]
             ]
         }
     ],
     'environments': [
         {
-            'name': 'env_gaya',
+            'name': 'builtin',
             'modules': ['hpcx'],
             'cc': 'clang',
             'cxx': 'clang++',
-            'target_systems': ['gaya:public']
+            'target_systems': ['gaya:production']
+        },
+        {
+            'name': 'apptainer',
+            'modules': [],
+            'cc': 'clang',
+            'cxx': 'clang++',
+            'target_systems': ['gaya:production']
         }
     ]
 }
