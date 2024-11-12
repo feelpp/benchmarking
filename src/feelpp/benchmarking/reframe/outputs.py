@@ -49,7 +49,7 @@ class OutputsHandler:
         if self.additional_files_config and self.additional_files_config.parameterized_descriptions_filepath:
             file_extension = self.parameterized_descriptions_filepath.split(".")[-1]
 
-            outdir = os.path.join(dir_path,"partials")
+            outdir = os.path.join(dir_path,"parametrized_partials")
             filename = f"{name}.{file_extension}"
 
             if not os.path.exists(outdir):
