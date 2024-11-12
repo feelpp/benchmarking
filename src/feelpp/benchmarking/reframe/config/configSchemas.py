@@ -62,7 +62,7 @@ class ListRange(BaseRange):
 
 class Parameter(BaseModel):
     name:str
-    active:bool
+    active:Optional[bool] = True
     range: Union[CoresRange,StepRange,ListRange]
 
 
@@ -84,7 +84,7 @@ class AppOutput(BaseModel):
     format: Literal["csv","adoc"]
 
 class Upload(BaseModel):
-    active:bool
+    active:Optional[bool] = True
     platform:Literal["girder","ckan"]
     folder_id: Union[str,int]
 
@@ -93,15 +93,20 @@ class PlotAxis(BaseModel):
     parameter: Optional[str] = None
     label:str
 
+class Aggregation(BaseModel):
+    column: str
+    agg: Literal["sum","mean","min","max"]
 class Plot(BaseModel):
     title:str
     plot_types:List[Literal["scatter","table","stacked_bar"]]
     transformation:Literal["performance","relative_performance","speedup"]
-    variables:List[str]
+    aggregations:Optional[List[Aggregation]] = None
+    variables:Optional[List[str]] = None
     names:List[str]
     xaxis:PlotAxis
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
+    color_axis:Optional[PlotAxis] = None
 
 
     @field_validator("xaxis","secondary_axis", mode="after")
@@ -111,12 +116,38 @@ class Plot(BaseModel):
             assert v.parameter is not None
         return v
 
+class Image(BaseModel):
+    protocol:Optional[Literal["oras","docker","library","local"]] = None
+    name:str
+
+    @model_validator(mode="after")
+    def extractProtocol(self):
+        """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
+        If local, checks if the image exists """
+
+        if "://" in self.name:
+            self.protocol = self.name.split("://")[0]
+        else:
+            self.protocol = "local"
+
+        if self.protocol == "local":
+            if not os.path.exists(self.name):
+                raise FileNotFoundError(f"Image {self.name} not found")
+        return self
+
+
+class Platform(BaseModel):
+    type:Literal["builtin","apptainer","docker"]
+    image:Image
+    options:List[str]
+
 
 class Partial(BaseModel):
     filepath:str
 
 class ConfigFile(BaseModel):
     executable: str
+    platform:Optional[Platform] = None
     use_case_name: str
     options: List[str]
     outputs: List[AppOutput]
@@ -127,13 +158,6 @@ class ConfigFile(BaseModel):
     plots: list[Plot]
     partials: list[Partial]
 
-    @field_validator('executable', mode="before")
-    def checExecutableInstalled(cls, v):
-        """ Check if executable is found on the system """
-        if shutil.which(v) is None:
-            raise ValueError(f"Executable not found or not installed: {v}")
-        return v
-
 
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
@@ -141,22 +165,41 @@ class ConfigFile(BaseModel):
         for plot in self.plots:
             assert plot.xaxis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.xaxis.parameter}"
             if plot.secondary_axis:
-                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.secondary_axis.parameter}"
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Secondary axis parameter not found in parameter list: {plot.secondary_axis.parameter}"
             if plot.yaxis.parameter:
-                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Xaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"Yaxis parameter not found in parameter list: {plot.yaxis.parameter}"
+            if plot.color_axis and plot.color_axis.parameter:
+                assert plot.secondary_axis.parameter in [ p.name for p in self.parameters], f"color parameter not found in parameter list: {plot.color_axis.parameter}"
+
         return self
 
+
+class Container(BaseModel):
+    platform: Literal["docker","apptainer"]
+    cachedir:Optional[str] = None
+    tmpdir:Optional[str] = None
+
+    @field_validator("cachedir","tmpdir",mode="before")
+    @classmethod
+    def checkDirectories(cls,v):
+        """Checks that the directories exists"""
+        if v and not os.path.exists(v):
+            raise FileNotFoundError(f"Cannot find {v}")
+
+        return v
+
 class MachineConfig(BaseModel):
-    hostname:str
-    active: bool
+    machine:str
+    active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     exclusive_access:bool
-    valid_systems:List[str] = ["*"],
+    partitions:List[str]
     valid_prog_environs:List[str] = ["*"]
     launch_options: List[str]
-    omp_num_threads: int
     reframe_base_dir:str
     reports_base_dir:str
+    containers:Optional[List[Container]] = []
+
 
 class ExecutionConfigFile(RootModel):
     List[MachineConfig]

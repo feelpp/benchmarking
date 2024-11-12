@@ -1,11 +1,10 @@
-import os
+import os, json,subprocess
 from datetime import datetime
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import MachineConfig, ConfigFile
 from pathlib import Path
-from feelpp.benchmarking.report.handlers import GirderHandler
-import json, shutil
+from feelpp.benchmarking.report.config.handlers import GirderHandler
 
 
 class CommandBuilder:
@@ -19,13 +18,13 @@ class CommandBuilder:
         return Path(__file__).resolve().parent
 
     def buildConfigFilePath(self):
-        return f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.hostname}.py'
+        return f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.machine}.py'
 
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'
 
     def buildReportFilePath(self,executable):
-        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.hostname,f"{self.current_date}.json"))
+        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.machine,f"{self.current_date}.json"))
 
     def buildCommand(self,executable):
         cmd = [
@@ -33,7 +32,7 @@ class CommandBuilder:
             f'-C {self.buildConfigFilePath()}',
             f'-c {self.buildRegressionTestFilePath()}',
             f'-S machine_config_path={self.parser.args.exec_config}',
-            f'--system={self.machine_config.hostname}',
+            f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
             f'--report-file={self.buildReportFilePath(executable)}',
@@ -49,16 +48,36 @@ def main_cli():
 
     machine_config = ConfigReader(parser.args.exec_config,MachineConfig).config
 
+    #Sets the cachedir and tmpdir directories for containers
+    for container in machine_config.containers:
+        if container.platform=="apptainer":
+            if container.cachedir:
+                os.environ["APPTAINER_CACHEDIR"] = container.cachedir
+            if container.tmpdir:
+                os.environ["APPTAINER_TMPDIR"] = container.cachedir
+        elif container.platform=="docker":
+            raise NotImplementedError("Docker container directories configuration is not implemented")
+
     cmd_builder = CommandBuilder(machine_config,parser)
 
     for config_filepath in parser.args.config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
         app_config = ConfigReader(config_filepath,ConfigFile).config
         reframe_cmd = cmd_builder.buildCommand(app_config.executable)
-        os.system(reframe_cmd)
+
+        if app_config.platform and app_config.platform.type == "apptainer":
+            if app_config.platform.image.protocol != "local" :
+                # process = subprocess.Popen(f"apptainer pull -F {app_config.platform} {app_config.platform}", shell=True, stdout=subprocess.PIPE) #TODO: handle image location
+                # process.wait()
+                # if not os.path.exists(app_config.platform.image_download_location):
+                #     raise FileExistsError("Image was not downloaded.")
+                #TODO: Change config.platform.image.name to download location
+                raise NotImplementedError("Image downloading is not implemented yet. Please pull manually and provide the path")
+
+        exit_code = os.system(reframe_cmd)
 
         #============ UPLOAD REPORTS TO GIRDER ================#
-        if app_config.upload.active:
+        if exit_code == 0 and app_config.upload.active:
             if app_config.upload.platform == "girder":
                 girder_handler = GirderHandler(download_base_dir=None)
                 rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)

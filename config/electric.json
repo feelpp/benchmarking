@@ -1,9 +1,9 @@
 {
     "executable": "feelpp_toolbox_electric",
     "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric",
-    "use_case_name": "busbar2d",
+    "use_case_name": "quarter_turn_3d",
     "options": [
-        "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/busbar/2d.cfg",
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/quarter-turn/3d.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -43,18 +43,16 @@
         "error": []
     },
     "upload": {
-        "active": true,
         "platform": "girder",
         "folder_id": "66ffd846b0e95728eb010353"
     },
     "parameters": [
         {
             "name": "nb_tasks",
-            "active": true,
             "range": {
                 "mode": "cores",
-                "min_cores_per_node": 1,
-                "max_cores_per_node": 16,
+                "min_cores_per_node": 8,
+                "max_cores_per_node": 64,
                 "min_nodes": 1,
                 "max_nodes": 1,
                 "generator": "double"
@@ -62,11 +60,10 @@
         },
         {
             "name": "hsize",
-            "active": true,
             "range": {
                 "mode": "step",
-                "min": 0.05,
-                "max": 0.95,
+                "min": 0.03,
+                "max": 0.05,
                 "n_steps": 3,
                 "generator": "linear"
             }
