@@ -25,6 +25,9 @@ class RegressionTest(ReframeSetup):
             self.scalability_handler.getPerformanceVariables(self.nb_tasks["tasks"])
         )
         self.perf_variables.update(
+            self.scalability_handler.getCustomPerformanceVariables(self.perf_variables)
+        )
+        self.perf_variables.update(
             self.outputs_handler.getOutputs()
         )
 

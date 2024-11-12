@@ -6,6 +6,7 @@ class ScalabilityHandler:
     def __init__(self,scalability_config):
         self.directory = scalability_config.directory
         self.stages =  scalability_config.stages
+        self.custom_variables = scalability_config.custom_variables
         self.filepaths = {k.name if k.name else k.file : os.path.join(self.directory,k.file) for k in self.stages}
 
     def getPerformanceVariables(self,index):
@@ -69,3 +70,27 @@ class ScalabilityHandler:
                 raise NotImplementedError
 
         return perf_variables
+
+    def getCustomPerformanceVariables(self,perfvars):
+        custom_perfvars = {}
+        for custom_var in self.custom_variables:
+
+            custom_var_value = [
+                perfvars[col].evaluate()
+                for col in custom_var.columns
+            ]
+
+            if custom_var.op == "sum":
+                custom_var_value = sum(custom_var_value)
+            elif custom_var.op == "min":
+                custom_var_value = min(custom_var_value)
+            elif custom_var.op =="max":
+                custom_var_value = max(custom_var_value)
+            elif custom_var.op == "mean":
+                custom_var_value = sum(custom_var_value)/len(custom_var_value)
+            else:
+                raise NotImplementedError(f"Operation {custom_var.op} is not implemented")
+
+            custom_perfvars[custom_var.name] = sn.make_performance_function(sn.defer(custom_var_value),unit=custom_var.unit)
+
+        return custom_perfvars
