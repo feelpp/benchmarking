@@ -72,6 +72,13 @@ class ScalabilityHandler:
         return perf_variables
 
     def getCustomPerformanceVariables(self,perfvars):
+        """ Creates custom aggregated performance variables from existing ones
+        Args:
+            perfvars dict(str,sn.deferrable function): Existing performance variables to use for extraction
+
+        Returns:
+            dict(str,sn.deferrable function) Dictionnary containing only the custom performance variables
+        """
         custom_perfvars = {}
         for custom_var in self.custom_variables:
 
