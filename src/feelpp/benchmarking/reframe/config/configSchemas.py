@@ -63,6 +63,9 @@ class Platform(BaseModel):
     image:Image
     options:List[str]
 
+class AdditionalFiles(BaseModel):
+    description_filepath: Optional[str] = None
+    parameterized_descriptions_filepath: Optional[str] = None
 
 class ConfigFile(BaseModel):
     executable: str
@@ -76,6 +79,7 @@ class ConfigFile(BaseModel):
     sanity: Sanity
     upload: Upload
     parameters: List[Parameter]
+    additional_files: Optional[AdditionalFiles] = None
     plots: List[Plot]
 
     @model_validator(mode="after")
