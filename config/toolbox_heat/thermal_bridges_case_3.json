@@ -10,12 +10,12 @@
             "input_dir":"/input_data/",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/thermal_bridges_case_3/:{{platforms.apptainer.input_dir}}"
+                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
             ],
             "append_app_option":[]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/thermal_bridges_case_3/",
+            "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
             "append_app_option":[]
         }
     },
