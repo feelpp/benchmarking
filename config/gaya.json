@@ -1,9 +1,17 @@
 {
     "machine": "gaya",
     "execution_policy": "async",
-    "valid_systems":["gaya:production"],
+    "exclusive_access":true,
+    "partitions":["production"],
     "valid_prog_environs":["apptainer"],
     "launch_options":["-bind-to core"],
     "reframe_base_dir":"/data/home/cladellash/benchmarking/build/reframe",
-    "reports_base_dir":"/data/home/cladellash/benchmarking/reports/"
+    "reports_base_dir":"/data/home/cladellash/benchmarking/reports/",
+    "containers":[
+        {
+            "platform":"apptainer",
+            "cachedir": "/home/u2/cladellash/.apptainer/cache",
+            "tmpdir": "/data/scratch/cladellash/images/tmp/"
+        }
+    ]
 }
