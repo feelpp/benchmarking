@@ -1,7 +1,7 @@
 {
     "executable": "feelpp_kub_cem",
     "executable_dir":"/data/home/cladellash/ktirio-urban-building/build/src/cpp/",
-    "output_directory": "{{machine.output_app_dir}}/feelppdb/kub",
+    "output_directory": "{{machine.output_app_dir}}/kub",
     "use_case_name": "poznan",
     "platforms": {
         "apptainer":{
@@ -64,7 +64,7 @@
         },
         {
             "name":"environment",
-            "sequence":["builtin"]
+            "sequence":["{{machine.prog_environment}}"]
         }
     ],
     "plots": [
