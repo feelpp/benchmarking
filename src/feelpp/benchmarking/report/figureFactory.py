@@ -240,6 +240,92 @@ class StackedBarFigure(Figure):
         else:
             return self.createSimple(df)
 
+class GroupedBarFigure(Figure): #TODO: FACTOR animation and bar...
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createGrouped(self,df):
+        frames = []
+        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
+        range_epsilon= 0.01
+
+
+        ranges=[]
+
+        for j,dim in enumerate(anim_dimension_values):
+            frame_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
+            frames.append([
+                go.Bar(
+                    x = frame_df.index.astype(str),
+                    y = frame_df.loc[:,col],
+                    name=col
+                )
+                for col in frame_df.columns
+            ])
+            ranges.append([
+                frame_df.min().min() - frame_df.min().min()*range_epsilon,
+                frame_df.max().max() + frame_df.min().min()*range_epsilon
+            ])
+
+        fig = go.Figure(
+            data = frames[0],
+            frames = [
+                go.Frame(
+                    data = f,
+                    name=f"frame_{i}",
+                    layout=dict(
+                        yaxis=dict(range = ranges[i])
+                    )
+                )
+                for i,f in enumerate(frames)],
+            layout=go.Layout(
+                yaxis=dict(range = ranges[0],title=self.config.yaxis.label),
+                xaxis=dict(title=self.config.xaxis.label),
+                title=self.config.title,
+                sliders=[dict(
+                    active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
+                    steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
+                )],
+                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+            )
+        )
+
+        return fig
+
+    def createSimple(self,df):
+        return go.Figure(
+            data = [
+                go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
+                for col in df.columns
+            ],
+            layout=go.Layout(
+                xaxis=dict(
+                    title = self.config.xaxis.label
+                ),
+                yaxis=dict(
+                    title = self.config.yaxis.label
+                ),
+                title = self.config.title,
+                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+            )
+        )
+
+
+    def createFigure(self,df):
+        """ Creates a grouped bar figure from the master dataframe
+        Args:
+            df (pd.DataFrame). The master dataframe containing all reframe test data
+        Returns:
+            go.Figure: Plotly figure corresponding to the grouped Bar type
+        """
+        df = self.transformation_strategy.calculate(df)
+
+        if isinstance(df.index,MultiIndex):
+            return self.createGrouped(df)
+        else:
+            return self.createSimple(df)
+
+
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
     @staticmethod
@@ -257,6 +343,8 @@ class FigureFactory:
                 figures.append(TableFigure(plot_config,strategy))
             elif plot_type == "stacked_bar":
                 figures.append(StackedBarFigure(plot_config,strategy))
+            elif plot_type == "grouped_bar":
+                figures.append(GroupedBarFigure(plot_config,strategy))
             else:
                 raise NotImplementedError
 

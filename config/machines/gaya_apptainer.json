@@ -1,0 +1,16 @@
+{
+    "machine": "gaya",
+    "execution_policy": "async",
+    "partitions":["production"],
+    "valid_prog_environs":["apptainer"],
+    "launch_options":["-bind-to core"],
+    "reframe_base_dir":"/data/home/cladellash/benchmarking/build/reframe",
+    "reports_base_dir":"/data/home/cladellash/benchmarking/reports/",
+    "containers":[
+        {
+            "platform":"apptainer",
+            "cachedir": "/home/u2/cladellash/.apptainer/cache",
+            "tmpdir": "/data/scratch/cladellash/images/tmp/"
+        }
+    ]
+}

@@ -1,0 +1,190 @@
+name: Benchmark
+
+on:
+    repository_dispatch:
+        types: [execute-benchmark]
+
+    workflow_dispatch:
+        inputs:
+            machines_config:
+                description: 'Machine related configurations'
+                required: True
+            benchmark_config:
+                description: 'Applcation related configuration'
+                required: True
+
+jobs:
+
+    build_wheel:
+        runs-on: self-ubuntu-22.04
+        name: Build wheel package
+        if: "!contains(github.event.head_commit.message, 'code skip')"
+        steps:
+        -   uses: actions/checkout@v4
+        -   name: Build Ktirio Cases wheel
+            run: |
+                npm install
+                npx downdoc README.adoc
+                pip3 wheel --no-deps --wheel-dir dist .
+            env:
+                CXX: clang++
+        -   name: Upload Artifact
+            uses: actions/upload-artifact@v4
+            with:
+                name: wheel-artifacts
+                path: dist/*.whl
+
+    factory:
+        name: HPC Systems Factory
+        needs: build_wheel
+        runs-on: self-ubuntu-22.04
+        outputs:
+            matrix: ${{ steps.hpc-systems.outputs.matrix }}
+            results_upload_id: ${{ steps.gather_arguments.outputs.results_upload_id }}
+            executable_name: ${{ steps.gather_arguments.outputs.executable_name }}
+            use_case: ${{ steps.gather_arguments.outputs.use_case }}
+        steps:
+        -   name: Download wheel
+            uses: actions/download-artifact@v4
+            with:
+                name: wheel-artifacts
+                path: dist
+        -   name: Create Virtual Environment
+            run: |
+                python3 -m venv .venv
+                source .venv/bin/activate
+                pip3 install -r requirements.txt
+        -   name: Download machines configuration
+            run: |
+                source .venv/bin/activate
+
+                if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                    machine_cfg_id=${{ github.event.inputs.machines_config }};
+                elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
+                    machine_cfg_id=${{ github.event.client_payload.machines_config }};
+                fi
+                girder-download -gid $machine_cfg_id -o ./tmp/ -fn "machines_config.json"
+            env:
+                GIRDER_API_KEY: ${{secrets.GIRDER}}
+        -   id: hpc-systems
+            name: Set HPC systems matrix
+            run: |
+                source .venv/bin/activate
+                matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/)
+                echo $matrix
+                echo "matrix={ include : $matrix }" >> $GITHUB_OUTPUT
+        -   name: Donwload benchmark configuration
+            run: |
+                source .venv/bin/activate
+
+                if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                    bench_cfg_id=${{ github.event.inputs.benchmark_config }};
+                elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
+                    bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
+                fi
+                girder-download -gid $bench_cfg_id -o ./tmp/ -fn "benchmark_config.json"
+            env:
+                GIRDER_API_KEY: ${{secrets.GIRDER}}
+        -   name: pull_images
+            run: |
+                source .venv/bin/activate
+                #ONLY IF NEEDED
+        -   name: Gather arguments
+            id: gather_arguments
+            run: |
+                if [ "$(jq -r '.upload.platform' ./tmp/benchmark_config.json)" == "girder" ]; then
+                    echo "results_upload_id=$(jq -r '.upload.folder_id' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
+                else
+                    echo "Platform not supported"
+                fi
+                echo "executable_name=$(jq -r '.executable' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
+                echo "use_case=$(jq -r '.use_case_name' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
+        -   name: Upload configs
+            uses: actions/upload-artifact@v4
+            with:
+                name: config-artifacts
+                path: |
+                    ./tmp/benchmark_config.json
+                    ./tmp/machines/
+
+    benchmark:
+        needs: factory
+        strategy:
+            fail-fast: false
+            matrix: ${{ fromJson(needs.factory.outputs.matrix) }}
+        runs-on: ${{matrix.runner}}
+        timeout-minutes: 7200
+        name: ${{matrix.machine}}
+        steps:
+        -   name: Download wheel
+            uses: actions/download-artifact@v4
+            with:
+                name: wheel-artifacts
+                path: dist
+        -   name: Download configs
+            uses: actions/download-artifact@v4
+            with:
+                name: config-artifacts
+                path: ./tmp/
+        -   name: Create Virtual Environment
+            run: |
+                python3 -m venv .venv
+                source .venv/bin/activate
+                pip3 install -r requirements.txt
+        -   name: Execute benchmarks
+            run: |
+                source .venv/bin/activate
+                execute-benchmark -ec ${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json --move_results ./tmp/results/ -v
+        -   name: Upload reframe report
+            uses: actions/upload-artifact@v4
+            with:
+                name: benchmark-results
+                path: ./tmp/results/
+
+    results:
+        runs-on: self-ubuntu-22.04
+        needs: [benchmark,factory]
+        name: Handle results and trigger rendering
+
+        steps:
+        -   uses: actions/checkout@v4
+        -   name: Download results
+            uses: actions/download-artifact@v4
+            with:
+                name: benchmark-results
+                path: ./tmp/results/
+        -   name: Create Virtual Environment
+            run: |
+                python3 -m venv .venv
+                source .venv/bin/activate
+                pip3 install -r requirements.txt
+        -   name: Upload to girder
+            run: |
+                source .venv/bin/activate
+                new_foldername=./tmp/$(date +"%Y_%m_%dT%H_%M_%S")
+                mv ./tmp/results/ new_foldername
+                girder-upload --directory --girder_id ${{needs.factory.outputs.results_upload_id}}
+                rm -r new_foldername
+            env:
+                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+        -   name:  Reset reports
+            run: |
+                rm -r ./docs/modules/ROOT/pages/applications/
+                rm -r ./reports/
+        -   name: Render reports
+            run: |
+                source .venv/bin/activate
+                render-benchmarks
+            env:
+                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
+        -   name: Create Pull Request
+            uses: peter-evans/create-pull-request@v6
+            with:
+                title: "Add benchmark for ${{ needs.factory.outputs.executable_name }} - ${{ needs.factory.outputs.use_case }}"
+                body: |
+                    Auto-generated by [create-pull-request][1]
+                    [1]: https://github.com/peter-evans/create-pull-request
+                reviewers: JavierCladellas
+            env:
+                GITHUB_TOKEN: ${{ secrets.CR_PAT }}

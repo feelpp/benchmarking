@@ -1,29 +1,27 @@
 {
     "execution_mapping": {
-        "feelpp_toolbox_electric": {
-            "gaya": {
-                "girder_folder_id": "66ffd846b0e95728eb010353",
-                "use_cases": [
-                    "busbar2d",
-                    "quarter_turn_3d"
-                ]
-            }
-        },
         "feelpp_toolbox_heat": {
             "gaya": {
-                "girder_folder_id": "6703da68b0e95728eb0105c4",
-                "use_cases": [
-                    "thermal_bridges_case_2",
-                    "thermal_bridges_case_3"
-                ]
+                "girder_folder_id": "672a1269b0e95728eb010b36",
+                "use_cases": [ "thermal_bridges_case_3" ]
             }
         },
         "feelpp_toolbox_thermoelectric": {
             "gaya": {
-                "girder_folder_id": "67126dc1b0e95728eb010988",
-                "use_cases": [
-                    "HL_31"
-                ]
+                "girder_folder_id": "672b684fb0e95728eb010b5f",
+                "use_cases": [ "HL_31" ]
+            }
+        },
+        "feelpp_toolbox_heatfluid": {
+            "gaya": {
+                "girder_folder_id": "672c95e5b0e95728eb010b85",
+                "use_cases": ["eye"]
+            }
+        },
+        "feelpp_kub_cem": {
+            "gaya": {
+                "girder_folder_id":"672a1452b0e95728eb010b38",
+                "use_cases": [ "poznan" ]
             }
         }
     },
@@ -86,9 +84,17 @@
             "display_name": "Quarter Turn 3D",
             "description": "Quarter Turn 3D simulation"
         },
-        "HL_31" : {
-            "display_name":"HL-31",
-            "description":"HL-31"
+        "HL_31": {
+            "display_name": "HL-31",
+            "description": "HL-31"
+        },
+        "poznan": {
+            "display_name":"Poznan",
+            "description": "Poznan, Poland"
+        },
+        "eye": {
+            "display_name":"Eye",
+            "description":"steady aqueous humor (AH) flow in the posterior and anterior chambers of the human eyeball, coupled with the overall heat transfer"
         },
         "default": {
             "display_name": "Default",
@@ -99,22 +105,27 @@
         "feelpp_toolbox_electric": {
             "display_name": "Feel++ electric toolbox",
             "description": "Feel++ electric toolbox",
-            "main_variables":["ElectricConstructor_init", "ElectricPostProcessing_exportResults", "ElectricSolve_solve"]
+            "main_variables": [ "Constructor_init", "PostProcessing_exportResults", "Solve_solve" ]
         },
         "feelpp_toolbox_heat": {
             "display_name": "Feel++ heat toolbox",
             "description": "Feel++ heat toolbox",
-            "main_variables":["HeatConstructor_init", "HeatPostProcessing_exportResults", "HeatSolve_solve"]
+            "main_variables": [ "Constructor_init", "PostProcessing_exportResults", "Solve_solve" ]
         },
         "feelpp_toolbox_heatfluid": {
             "display_name": "Feel++ Heat Fluid toolbox",
             "description": "Feel++ Heat Fluid toolbox",
-            "main_variables":["HeatFluidConstructor_init", "HeatFluidPostProcessing_exportResults", "HeatFluidSolve_solve"]
+            "main_variables": [ "Constructor_init", "PostProcessing_exportResults", "Solve_solve" ]
         },
         "feelpp_toolbox_thermoelectric": {
             "display_name": "Feel++ Thermo-electric toolbox",
             "description": "Feel++ Thermo-electric toolbox",
-            "main_variables":["ThermoElectricConstructor_init", "ThermoElectricPostProcessing_exportResults", "ThermoElectricSolve_solve"]
+            "main_variables": [ "Constructor_init", "PostProcessing_exportResults", "Solve_solve" ]
+        },
+        "feelpp_kub_cem":{
+            "display_name": "KUB",
+            "description": "Ktirio Urban Buildings",
+            "main_variables": [ "constructor", "updateForUse", "execute", "simulate", "postprocess" ]
         }
     }
 }
