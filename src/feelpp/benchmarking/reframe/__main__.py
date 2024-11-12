@@ -12,6 +12,7 @@ class CommandBuilder:
         self.machine_config = machine_config
         self.parser = parser
         self.current_date = datetime.now().strftime("%Y_%m_%dT%H_%M_%S")
+        self.report_folder_path = None
 
     @staticmethod
     def getScriptRootDir():
@@ -23,20 +24,26 @@ class CommandBuilder:
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'
 
-    def buildReportFilePath(self,executable):
-        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.machine,f"{self.current_date}.json"))
+    def createReportFolder(self,executable):
+        folder_path = os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.machine,str(self.current_date))
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        self.report_folder_path = folder_path
 
-    def buildCommand(self,executable):
+        return str(self.report_folder_path)
+
+    def buildCommand(self):
+        assert self.report_folder_path is not None, "Report folder path not set"
         cmd = [
             'reframe',
             f'-C {self.buildConfigFilePath()}',
             f'-c {self.buildRegressionTestFilePath()}',
             f'-S machine_config_path={self.parser.args.exec_config}',
+            f'-S report_dir_path={str(self.report_folder_path)}',
             f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
-            f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
-            f'--report-file={self.buildReportFilePath(executable)}',
+            f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             '-r',
         ]
@@ -64,7 +71,10 @@ def main_cli():
     for config_filepath in parser.args.config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
         app_config = ConfigReader(config_filepath,ConfigFile).config
-        reframe_cmd = cmd_builder.buildCommand(app_config.executable)
+
+        report_folder_path = cmd_builder.createReportFolder(app_config.executable)
+
+        reframe_cmd = cmd_builder.buildCommand()
 
         if app_config.platform and app_config.platform.type == "apptainer":
             if app_config.platform.image.protocol != "local" :
@@ -78,20 +88,15 @@ def main_cli():
         exit_code = os.system(reframe_cmd)
 
         #============ CREATING RESULT ITEM ================#
-        rfm_report_filepath = cmd_builder.buildReportFilePath(app_config.executable)
-        rfm_report_dir = rfm_report_filepath.replace(".json","")
-        os.mkdir(rfm_report_dir)
-        os.rename(rfm_report_filepath,os.path.join(rfm_report_dir,"reframe_report.json"))
-
-        with open(os.path.join(rfm_report_dir,"plots.json"),"w") as f:
+        with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
             f.write(json.dumps([p.model_dump() for p in app_config.plots]))
 
 
         if parser.args.move_results:
             if not os.path.exists(parser.args.move_results):
                 os.makedirs(parser.args.move_results)
-            os.rename(os.path.join(rfm_report_dir,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
-            os.rename(os.path.join(rfm_report_dir,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
+            os.rename(os.path.join(report_folder_path,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
+            os.rename(os.path.join(report_folder_path,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
         #======================================================#
 
     return exit_code
