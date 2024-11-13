@@ -1,19 +1,27 @@
 {
     "executable": "feelpp_kub_cem",
-    "output_directory": "/data/scratch/cladellash/feelppdb/kub",
-    "use_case_name": "poznan",
-    "platform": {
-        "type":"apptainer",
-        "image":{
-            "name":"/data/scratch/cladellash/images/kub.sif"
+    "executable_dir":"/data/home/cladellash/ktirio-urban-building/build/src/cpp/",
+    "output_directory": "{{machine.output_app_dir}}/kub",
+    "use_case_name": "kernante",
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
+            },
+            "input_dir":"/input_data/",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/kub/cfg/:{{platforms.apptainer.input_dir}}"
+            ],
+            "append_app_option":[]
         },
-        "options": [
-            "--home /data/scratch/cladellash/feelppdb/",
-            "--bind /data/home/cladellash/benchmarking/config/kub/cfg/:/input_data/"
-        ]
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}/kub/cfg/",
+            "append_app_option":[]
+        }
     },
     "options": [
-        "--config-file /input_data/Poznan.cfg",
+        "--config-file {{platforms.{{machine.prog_environment}}.input_dir}}/Kernante.cfg",
         "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
     ],
     "outputs": [],
@@ -35,7 +43,7 @@
         ]
     },
     "sanity": {
-        "success": ["[ Stopping Feel++ ]"],
+        "success": [],
         "error": ["Error"]
     },
     "upload": {
@@ -45,17 +53,30 @@
     "parameters": [
         {
             "name": "nb_tasks",
-            "sequence": [
-                {"tasks" : 8, "nodes":1, "exclusive_access":true},
-                {"tasks" : 16, "nodes":1, "exclusive_access":true},
-                {"tasks" : 32, "nodes":1, "exclusive_access":true},
-                {"tasks" : 64, "nodes":1, "exclusive_access":true},
-                {"tasks" : 128, "nodes":1, "exclusive_access":true}
+            "zip": [
+                {
+                    "name":"tasks",
+                    "geometric":{
+                        "start":1,
+                        "max":32,
+                        "n_steps":6
+                    }
+                },
+                {
+                    "name":"nodes",
+                    "repeat":{
+                        "value":1,
+                        "count":6
+                    }
+                },
+                {
+                    "name":"exclusive_access",
+                    "repeat":{
+                        "value":true,
+                        "count":6
+                    }
+                }
             ]
-        },
-        {
-            "name":"environment",
-            "sequence":["apptainer"]
         }
     ],
     "plots": [

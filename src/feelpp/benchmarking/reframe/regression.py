@@ -14,9 +14,9 @@ class RegressionTest(ReframeSetup):
 
     @run_before('run')
     def initHandlers(self):
-        self.validation_handler = ValidationHandler(self.app_setup.config.sanity)
-        self.scalability_handler = ScalabilityHandler(self.app_setup.config.scalability)
-        self.outputs_handler = OutputsHandler(self.app_setup.config.outputs)
+        self.validation_handler = ValidationHandler(self.app_setup.reader.config.sanity)
+        self.scalability_handler = ScalabilityHandler(self.app_setup.reader.config.scalability)
+        self.outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs)
 
     @run_before('performance')
     def setPerfVars(self):
