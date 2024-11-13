@@ -80,8 +80,11 @@ jobs:
     runs-on: self-ubuntu-22.04
     name: Build Antora Site
     needs: generate_reports
-    if: "!contains(github.event.head_commit.message, 'docs skip')"
+    if: always()
     steps:
+    - name: Check if skip
+      if: contains(github.event.head_commit.message, 'docs skip')
+      run: exit 1
     - uses: actions/checkout@v4
     - name: Install credentials
       run: echo https://$GITHUB_OAUTH:@github.com > $HOME/.git-credentials
