@@ -13,7 +13,10 @@ site_configuration = {
                     'max_jobs': 8,
                     'access': ['--partition=production'],
                     'environs': ['builtin','apptainer'],
-                    'prepare_cmds': ['source /etc/profile.d/modules.sh'],
+                    'prepare_cmds': [
+                        'source /etc/profile.d/modules.sh',
+                        "export PATH=/opt/apptainer/v1.3.3/apptainer/bin/:$PATH"
+                    ],
                     'processor': {
                         'num_cpus': 128
                     },

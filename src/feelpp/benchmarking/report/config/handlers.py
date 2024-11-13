@@ -42,6 +42,21 @@ class GirderHandler(DownloadHandler):
 
         return os.listdir(f"{self.download_base_dir}/{output_dir}")
 
+    def downloadFile(self, file_id, output_dir="",name=None):
+        """ Download a file from Girder. Creates the output dir if not exists
+        Args:
+            folder_id (str): The ID of the file to download
+            output_path (str): The path to the output directory
+        """
+        output_path = os.path.join(self.download_base_dir,output_dir)
+
+        if not os.path.exists(output_path):
+            os.mkdir(output_path)
+
+        filepath = os.path.join(output_path,name) if name else output_path
+
+        self.client.downloadFile(fileId=file_id,path=filepath)
+
     def upload(self, file_pattern, parent_id,leaf_folder_as_items=True):
         """ Upload a local file to an existing folder/item in Girder
         Args:
