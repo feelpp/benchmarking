@@ -13,6 +13,10 @@
         "--repository.append.np 0",
         "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"/data/home/saigre/pulications/mesh.eye/mesh/Mr/{{parameters.meshes.value}}/Eye_Mesh3D_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
+    "additional_files":{
+        "description_filepath":"",
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heatfluid.information.adoc"
+    },
     "outputs": [],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
