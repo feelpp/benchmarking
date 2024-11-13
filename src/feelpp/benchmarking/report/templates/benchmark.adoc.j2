@@ -16,7 +16,7 @@
 {% if not empty %}
 
 |===
-{% for header in hash_params_headers %} | {{ header }} {% endfor %}
+{% for header in hash_params_headers %} | {% if header == 'partial_filepath' %} {% else %} {{ header }} {% endif %} {% endfor %}
 
 {% for entry in flat_hash_param_map.values() %}
 {% for header in hash_params_headers %}
