@@ -83,7 +83,7 @@ class AtomicReport:
         if not os.path.exists(self.parametrized_partials_dir):
             raise FileNotFoundError("Parametrized descriptions directory does not exist")
 
-        move_dir = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename())
+        move_dir = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename()).replace("-","_").replace(":","_").replace("+","Z")
         if not os.path.exists(move_dir):
             os.makedirs(move_dir)
 
@@ -93,7 +93,7 @@ class AtomicReport:
 
             if description_file_basename_splitted in self.hash_param_map:
                 os.rename(os.path.join(self.parametrized_partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
-                self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(move_dir,description_file_basename)
+                self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),description_file_basename)
 
 
     def findUseCase(self,data):
