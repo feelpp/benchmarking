@@ -25,9 +25,16 @@ class Stage(BaseModel):
 
         return self
 
+class CustomVariable(BaseModel):
+    name:str
+    columns:List[str]
+    op: Literal["sum","min","max","mean"]
+    unit: str
+
 class Scalability(BaseModel):
     directory: str
     stages: List[Stage]
+    custom_variables:List[CustomVariable]
 
 class AppOutput(BaseModel):
     filepath: str

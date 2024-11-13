@@ -49,6 +49,14 @@
                 "file": "heat-fluid.scalibility.HeatFluidSolve.data",
                 "format": "tsv"
             }
+        ],
+        "custom_variables": [
+            {
+                "name":"Solve_assembly",
+                "columns":[ "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian",  "Solve_algebraic-residual" ],
+                "op":"sum",
+                "unit":"s"
+            }
         ]
     },
     "sanity": {
@@ -92,7 +100,8 @@
             "transformation": "performance",
             "variables": [
                 "Constructor_init",
-                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "Solve_assembly",
+                "Solve_solve",
                 "PostProcessing_exportResults"
             ],
             "names": [ ],
@@ -118,7 +127,8 @@
             "transformation": "relative_performance",
             "variables": [
                 "Constructor_init",
-                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "Solve_assembly",
+                "Solve_solve",
                 "PostProcessing_exportResults"
             ],
             "names": [ ],
@@ -144,7 +154,8 @@
             "transformation": "speedup",
             "variables": [
                 "Constructor_init",
-                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "Solve_assembly",
+                "Solve_solve",
                 "PostProcessing_exportResults"
             ],
             "names": [ ],
