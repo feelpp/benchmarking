@@ -42,7 +42,10 @@ class PerformanceStrategy(TransformationStrategy):
             for aggregation in self.aggregations:
                 if aggregation.column in df.columns:
                     agg_columns.remove(aggregation.column)
-                    pivot = pivot.groupby(agg_columns)["value"].agg(aggregation.agg).reset_index()
+                    if aggregation.agg.startswith("filter:"):
+                        pivot = pivot[pivot[aggregation.column].astype(str) == aggregation.agg.split(":")[-1]]
+                    else:
+                        pivot = pivot.groupby(agg_columns)["value"].agg(aggregation.agg).reset_index()
 
         return pivot.pivot(index=index,values="value",columns=self.dimensions["color_axis"])
 

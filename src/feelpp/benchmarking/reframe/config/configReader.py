@@ -17,7 +17,7 @@ class ConfigReader:
         Returns:
             Schema : parsed and validated configuration
         """
-        assert os.path.exists(config_path), f"Cannot find config file {config_path}"
+        assert os.path.exists(os.path.abspath(config_path)), f"Cannot find config file {config_path}"
         with open(config_path, "r") as cfg:
             self.config = json.load(cfg)
             self.config = self.recursiveReplace(self.config)
@@ -53,7 +53,10 @@ class ConfigReader:
             return [self.recursiveReplace(v) for v in data]
         elif isinstance(data, str):
             # Find placeholders in the form {nested.field.path}
-            return re.sub(r"\{\{([\w\.]+)\}\}", lambda match: str(self.getNestedValue(self.config, match.group(1))), data)
+            rep = re.sub(r"\{\{([\w\.]+)\}\}", lambda match: str(self.getNestedValue(self.config, match.group(1))), data)
+            if "$" in rep:
+                rep = os.path.expandvars(rep)
+            return rep
         return data
 
     def __repr__(self):

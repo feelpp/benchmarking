@@ -128,7 +128,7 @@ class AppSetup(Setup):
         if self.config.platform and self.config.platform.type != "builtin":
             rfm_test.container_platform.command = f"{self.config.executable} {' '.join(self.config.options)}"
         else:
-            rfm_test.executable = self.config.executable
+            rfm_test.executable = os.path.join(self.config.executable_dir,self.config.executable) if self.config.executable_dir else self.config.executable
             rfm_test.executable_opts = self.config.options
 
     def replaceField(self,field, replace):
@@ -151,7 +151,11 @@ class AppSetup(Setup):
             if isinstance(value, dict):
                 new_cfg[field] = self.updateDict(value, replace)
             elif isinstance(value, list):
-                new_cfg[field] = [self.replaceField(v,replace) if isinstance(v, str) else v for v in value ]
+                new_cfg[field] = [
+                    self.replaceField(v,replace) if isinstance(v, str) else
+                    self.updateDict(v,replace) if isinstance(v,dict) else
+                    v for v in value
+                ]
             elif isinstance(value, str):
                 new_cfg[field] = self.replaceField(value,replace)
             else:
@@ -180,7 +184,12 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     for param_config in app_setup.config.parameters:
         if param_config.active:
-            parameters[param_config.name] = [subparam.name for subparam in param_config.zip] if param_config.mode=="zip" else []
+            if param_config.mode=="zip":
+                parameters[param_config.name] = [subparam.name for subparam in param_config.zip]
+            elif param_config.mode=="sequence" and all(type(s)==dict and s.keys() for s in param_config.sequence):
+                parameters[param_config.name] = list(param_config.sequence[0].keys())
+            else:
+                parameters[param_config.name] = []
             param_values = list(ParameterFactory.create(param_config).parametrize())
             exec(f"{param_config.name}=parameter({param_values})")
 
