@@ -1,16 +1,19 @@
 
 from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
-from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile,MachineConfig
+from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
+from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 
 import reframe as rfm
 import os, re, shutil
 import numpy as np
 
+##### TODO: This is very messy :( Rethink the design
+
 class Setup:
     """ Abstract class for setup """
     def __init__(self):
-        self.config = None
+        self.reader = None
 
     def setupAfterInit(self, rfm_test):
         """ Pure virtual function
@@ -28,6 +31,14 @@ class Setup:
         """
         pass
 
+    def updateConfig(self, replace = None):
+        """ Replace the template values on the config attribute with variable values
+        Args:
+            replace (dict[str,str]): key,value pairs representing the placeholder name and the actual value to replace with
+        """
+        self.reader.updateConfig(replace)
+
+
 class MachineSetup(Setup):
     """ Machine related setup"""
     def __init__(self,config_filepath):
@@ -36,15 +47,17 @@ class MachineSetup(Setup):
             config_filepath (str): Path of the machine configuration json file
         """
         super().__init__()
-        self.config = ConfigReader(config_filepath,MachineConfig).config
+        self.reader = ConfigReader(config_filepath,MachineConfig)
+        self.updateConfig()
 
-    def setupAfterInit(self,rfm_test):
+    def setupAfterInit(self,rfm_test,app_config):
         """ Methods to be executed after initialization step of a reframe test
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
         self.setValidEnvironments(rfm_test)
         self.setTags(rfm_test)
+        self.setPlatform(rfm_test,app_config)
 
     def setupBeforeRun(self,rfm_test):
         """ Methods to be executed before run step of a reframe test
@@ -58,131 +71,96 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.valid_systems = [f"{self.config.machine}:{part}" for part in self.config.partitions]
-        rfm_test.valid_prog_environs = self.config.valid_prog_environs
+        rfm_test.valid_systems = [f"{self.reader.config.machine}:{part}" for part in self.reader.config.partitions]
+        rfm_test.valid_prog_environs = [self.reader.config.prog_environment]
+
+    def setPlatform(self, rfm_test,app_config):
+        """ Sets the container_platform attributes
+        Args:
+            rfm_test (reframe class) : The test to apply the setup
+        """
+        platform = app_config.platforms[self.reader.config.prog_environment]
+        if self.reader.config.prog_environment != "builtin":
+            if not os.path.exists(platform.image.name):
+                raise FileExistsError(f"Cannot find image {platform.image.name}")
+            rfm_test.container_platform.image = platform.image.name
+            rfm_test.container_platform.options = platform.options
+            rfm_test.container_platform.workdir = None
 
     def setTags(self,rfm_test):
         """ Sets the tags attribute
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.tags = { self.config.execution_policy }
+        rfm_test.tags = { self.reader.config.execution_policy }
 
     def setLaunchOptions(self, rfm_test):
         """ Sets the excusive_access and job.launcher.options attributes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        rfm_test.job.launcher.options = self.config.launch_options
+        rfm_test.job.launcher.options = self.reader.config.launch_options
+
 
 
 class AppSetup(Setup):
     """ Application related setup"""
-    def __init__(self,config_filepath):
+    def __init__(self,config_filepath,machine_config):
         """
         Args:
             config_filepath (str): Path of the application configuration json file
         """
         super().__init__()
         self.config_filepath = config_filepath
-        self.config = ConfigReader(config_filepath,ConfigFile).config
+        self.reader = ConfigReader(config_filepath,ConfigFile)
 
-        self.template_pattern = re.compile(r"\{\{(.*?)\}\}")
+        self.updateConfig(self.reader.processor.flattenDict(machine_config,"machine"))
+        self.updateConfig()
 
-    def reset(self):
-        self.__init__(self.config_filepath)
 
-    def setupBeforeRun(self,rfm_test):
+    def reset(self,machine_config):
+        self.__init__(self.config_filepath,machine_config)
+
+    def setupBeforeRun(self,rfm_test,machine_config):
         """ Methods to be executed before run step of a reframe test
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
         self.cleanupDirectories()
-        self.setExecutable(rfm_test)
+        self.setExecutable(rfm_test,machine_config)
 
     def setupAfterInit(self, rfm_test):
-        self.setPlatform(rfm_test)
+        pass
 
     def cleanupDirectories(self):
-        if os.path.exists(self.config.scalability.directory):
-            shutil.rmtree(self.config.scalability.directory)
-
-    def setPlatform(self, rfm_test):
-        """ Sets the container_platform attributes
-        Args:
-            rfm_test (reframe class) : The test to apply the setup
-        """
-        if self.config.platform and self.config.platform.type != "builtin":
-            if not os.path.exists(self.config.platform.image.name):
-                raise FileExistsError(f"Cannot find image {self.config.platform.image.name}")
-            rfm_test.container_platform.image = self.config.platform.image.name
-            rfm_test.container_platform.options = self.config.platform.options
-            rfm_test.container_platform.workdir = None
+        if os.path.exists(self.reader.config.scalability.directory):
+            shutil.rmtree(self.reader.config.scalability.directory)
 
 
-    def setExecutable(self, rfm_test):
+    def setExecutable(self, rfm_test, machine_config):
         """ Sets the executable and executable_opts attrbiutes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        if self.config.platform and self.config.platform.type != "builtin":
-            rfm_test.container_platform.command = f"{self.config.executable} {' '.join(self.config.options)}"
+        if machine_config.prog_environment == "builtin":
+            rfm_test.executable = os.path.join(self.reader.config.executable_dir,self.reader.config.executable) if self.reader.config.executable_dir else self.reader.config.executable
+            rfm_test.executable_opts = self.reader.config.options
         else:
-            rfm_test.executable = os.path.join(self.config.executable_dir,self.config.executable) if self.config.executable_dir else self.config.executable
-            rfm_test.executable_opts = self.config.options
-
-    def replaceField(self,field, replace):
-        """ Replaces a single string {{stored.like.this}} with their actual replace value
-        Args:
-            field (str): The string to find the template
-            replace (str): The value to replace with
-        """
-        return self.template_pattern.sub(lambda match: replace.get(match.group(1).strip(), match.group(0)), field)
-
-    def updateDict(self, obj, replace):
-        """ Replaces template values {{stored.like.this}} with their actual values
-        Args:
-            obj (dict): The dictionary containing the templates
-            replace (dict): key,value pairs representing the placeholder name and the actual value to replace with
-        """
-        new_cfg = {}
-
-        for field, value in obj.items():
-            if isinstance(value, dict):
-                new_cfg[field] = self.updateDict(value, replace)
-            elif isinstance(value, list):
-                new_cfg[field] = [
-                    self.replaceField(v,replace) if isinstance(v, str) else
-                    self.updateDict(v,replace) if isinstance(v,dict) else
-                    v for v in value
-                ]
-            elif isinstance(value, str):
-                new_cfg[field] = self.replaceField(value,replace)
-            else:
-                new_cfg[field] = value
-
-        return new_cfg
-
-    def updateConfig(self, replace):
-        """ Replace the template values on the config attribute with variable values
-        Args:
-            replace (dict[str,str]): key,value pairs representing the placeholder name and the actual value to replace with
-        """
-        self.config = ConfigFile(** self.updateDict(self.config.model_dump(),replace))
+            rfm_test.container_platform.command = f"{self.reader.config.executable} {' '.join(self.reader.config.options)}"
 
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):
     """ Reframe test used to setup the regression test"""
-    machine_config_path = variable(str)
 
     #TODO: Find a way to avoid env variables
-    app_setup = AppSetup(str(os.environ.get("APP_CONFIG_FILEPATH")))
+    machine_setup = MachineSetup(str(os.environ.get("MACHINE_CONFIG_FILEPATH")))
+    app_setup = AppSetup(str(os.environ.get("APP_CONFIG_FILEPATH")),machine_setup.reader.config)
 
-    use_case = variable(str,value=app_setup.config.use_case_name)
+    use_case = variable(str,value=app_setup.reader.config.use_case_name)
 
     parameters = {}
 
-    for param_config in app_setup.config.parameters:
+    for param_config in app_setup.reader.config.parameters:
         if param_config.active:
             if param_config.mode=="zip":
                 parameters[param_config.name] = [subparam.name for subparam in param_config.zip]
@@ -194,20 +172,15 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             exec(f"{param_config.name}=parameter({param_values})")
 
     @run_after('init')
-    def initSetups(self):
-        """ Initialize setups"""
-        self.machine_setup = MachineSetup(self.machine_config_path)
-
-    @run_after('init')
     def setupAfterInit(self):
         """ Sets the necessary post-init configurations"""
-        self.machine_setup.setupAfterInit(self)
         self.app_setup.setupAfterInit(self)
+        self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
 
     @run_before('run')
     def updateSetups(self):
         """Updates the setup with testcase related values"""
-        self.app_setup.reset()
+        self.app_setup.reset(self.machine_setup.reader.config)
         self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
 
     @run_before('run')
@@ -232,4 +205,4 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def setupBeforeRun(self):
         """ Sets the necessary pre-run configurations"""
         self.machine_setup.setupBeforeRun(self)
-        self.app_setup.setupBeforeRun(self)
+        self.app_setup.setupBeforeRun(self,self.machine_setup.reader.config)

@@ -1,10 +1,27 @@
 {
     "executable": "feelpp_kub_cem",
     "executable_dir":"/data/home/cladellash/ktirio-urban-building/build/src/cpp/",
-    "output_directory": "/data/scratch/cladellash/feelppdb/kub",
-    "use_case_name": "kernante",
+    "output_directory": "{{machine.output_app_dir}}/kub",
+    "use_case_name": "poznan",
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
+            },
+            "input_dir":"/input_data/",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/kub/cfg/:{{platforms.apptainer.input_dir}}"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}/kub/cfg/",
+            "append_app_option":[]
+        }
+    },
     "options": [
-        "--config-file /data/home/cladellash/benchmarking/config/Kernante.cfg",
+        "--config-file {{platforms.{{machine.prog_environment}}.input_dir}}/Poznan.cfg",
         "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
     ],
     "outputs": [],
@@ -26,57 +43,36 @@
         ]
     },
     "sanity": {
-        "success": [],
+        "success": ["[ Stopping Feel++ ]"],
         "error": ["Error"]
     },
     "upload": {
-        "active": true,
         "platform": "girder",
-        "folder_id": "66e94b10b0e95728eb00fcfe"
+        "folder_id": "672a1452b0e95728eb010b38"
     },
     "parameters": [
         {
             "name": "nb_tasks",
-            "zip": [
-                {
-                    "name":"tasks",
-                    "range":{
-                        "min":4,
-                        "max":32,
-                        "step":4
-                    }
-                },
-                {
-                    "name":"nodes",
-                    "repeat":{
-                        "value":1,
-                        "count":8
-                    }
-                },
-                {
-                    "name":"exclusive_access",
-                    "repeat":{
-                        "value":true,
-                        "count":8
-                    }
-                }
+            "sequence": [
+                {"tasks" : 8, "nodes":1, "exclusive_access":true},
+                {"tasks" : 16, "nodes":1, "exclusive_access":true},
+                {"tasks" : 32, "nodes":1, "exclusive_access":true},
+                {"tasks" : 64, "nodes":1, "exclusive_access":true},
+                {"tasks" : 128, "nodes":1, "exclusive_access":true},
+                {"tasks" : 256, "nodes":2, "exclusive_access":true}
             ]
+        },
+        {
+            "name":"environment",
+            "sequence":["{{machine.prog_environment}}"]
         }
     ],
     "plots": [
         {
             "title": "Absolute performance",
-            "plot_types": [
-                "grouped_bar",
-                "table"
-            ],
+            "plot_types": [ "grouped_bar", "table" ],
             "transformation": "performance",
-            "variables": [
-                "execute",
-                "postprocess",
-                "constructor",
-                "updateForUse"
-            ],
+            "variables": [ "execute", "postprocess", "constructor", "updateForUse", "simulation" ],
             "names": [],
             "xaxis": {
                 "parameter": "nb_tasks.tasks",
@@ -88,17 +84,9 @@
         },
         {
             "title": "Relative performance",
-            "plot_types": [
-                "stacked_bar",
-                "grouped_bar"
-            ],
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
             "transformation": "relative_performance",
-            "variables": [
-                "execute",
-                "postprocess",
-                "constructor",
-                "updateForUse"
-            ],
+            "variables": [ "execute", "postprocess", "constructor", "updateForUse", "simulation" ],
             "names": [],
             "xaxis": {
                 "parameter": "nb_tasks.tasks",
@@ -110,16 +98,9 @@
         },
         {
             "title": "Speedup",
-            "plot_types": [
-                "scatter"
-            ],
+            "plot_types": [ "scatter" ],
             "transformation": "speedup",
-            "variables": [
-                "execute",
-                "postprocess",
-                "constructor",
-                "updateForUse"
-            ],
+            "variables": [ "execute", "postprocess", "constructor", "updateForUse", "simulation" ],
             "names": [],
             "xaxis": {
                 "parameter": "nb_tasks.tasks",

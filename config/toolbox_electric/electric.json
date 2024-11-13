@@ -1,9 +1,26 @@
 {
     "executable": "feelpp_toolbox_electric",
-    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/electric",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/electric/quarter_turn_3d",
     "use_case_name": "quarter_turn_3d",
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+            },
+            "input_dir":"/input_data/",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"/usr/share/feelpp/data/testcases/toolboxes/electric/cases/quarter-turn/",
+            "append_app_option":[]
+        }
+    },
     "options": [
-        "--config-files /usr/share/feelpp/data/testcases/toolboxes/electric/cases/quarter-turn/3d.cfg",
+        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/3d.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -11,23 +28,22 @@
         "--repository.append.np 0",
         "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": {{parameters.hsize.value}} }'"
     ],
-    "outputs": [
-    ],
+    "outputs": [],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
             {
-                "name": "ElectricConstructor",
+                "name": "Constructor",
                 "file": "electric.scalibility.ElectricConstructor.data",
                 "format": "tsv"
             },
             {
-                "name": "ElectricPostProcessing",
+                "name": "PostProcessing",
                 "file": "electric.scalibility.ElectricPostProcessing.data",
                 "format": "tsv"
             },
             {
-                "name": "ElectricSolve",
+                "name": "Solve",
                 "file": "electric.scalibility.ElectricSolve.data",
                 "format": "tsv"
             }
@@ -39,7 +55,7 @@
     },
     "upload": {
         "platform": "girder",
-        "folder_id": "66ffd846b0e95728eb010353"
+        "folder_id": "6733114eb0e95728eb010ba5"
     },
     "parameters": [
         {
@@ -62,18 +78,18 @@
     ],
     "plots": [
         {
-            "title": "ElectricConstructor step absolute performance",
+            "title": "Constructor step absolute performance",
             "plot_types": [
                 "stacked_bar",
                 "table"
             ],
             "transformation": "performance",
             "variables": [
-                "ElectricConstructor_createMesh",
-                "ElectricConstructor_createExporters",
-                "ElectricConstructor_graph",
-                "ElectricConstructor_matrixVector",
-                "ElectricConstructor_algebraicOthers"
+                "Constructor_createMesh",
+                "Constructor_createExporters",
+                "Constructor_graph",
+                "Constructor_matrixVector",
+                "Constructor_algebraicOthers"
             ],
             "names": [
                 "createMesh",
@@ -95,17 +111,17 @@
             }
         },
         {
-            "title": "ElectricConstructor step relative performance",
+            "title": "Constructor step relative performance",
             "plot_types": [
                 "stacked_bar"
             ],
             "transformation": "relative_performance",
             "variables": [
-                "ElectricConstructor_createMesh",
-                "ElectricConstructor_createExporters",
-                "ElectricConstructor_graph",
-                "ElectricConstructor_matrixVector",
-                "ElectricConstructor_algebraicOthers"
+                "Constructor_createMesh",
+                "Constructor_createExporters",
+                "Constructor_graph",
+                "Constructor_matrixVector",
+                "Constructor_algebraicOthers"
             ],
             "names": [
                 "createMesh",
@@ -127,13 +143,13 @@
             }
         },
         {
-            "title": "Electric Post Processing step performance",
+            "title": "Post Processing step performance",
             "plot_types": [
                 "scatter"
             ],
             "transformation": "performance",
             "variables": [
-                "ElectricPostProcessing_exportResults"
+                "PostProcessing_exportResults"
             ],
             "names": [
                 "exportResults"
@@ -151,15 +167,15 @@
             }
         },
         {
-            "title": "Electric Solve step absolute performance",
+            "title": " Solve step absolute performance",
             "plot_types": [
                 "stacked_bar",
                 "table"
             ],
             "transformation": "performance",
             "variables": [
-                "ElectricSolve_algebraic-assembly",
-                "ElectricSolve_algebraic-solve"
+                "Solve_algebraic-assembly",
+                "Solve_algebraic-solve"
             ],
             "names": [
                 "algebraic-assembly",
@@ -178,14 +194,14 @@
             }
         },
         {
-            "title": "Electric Solve step relative performance",
+            "title": " Solve step relative performance",
             "plot_types": [
                 "stacked_bar"
             ],
             "transformation": "relative_performance",
             "variables": [
-                "ElectricSolve_algebraic-assembly",
-                "ElectricSolve_algebraic-solve"
+                "Solve_algebraic-assembly",
+                "Solve_algebraic-solve"
             ],
             "names": [
                 "algebraic-assembly",
@@ -210,14 +226,14 @@
             ],
             "transformation": "speedup",
             "variables": [
-                "ElectricConstructor_init",
-                "ElectricPostProcessing_exportResults",
-                "ElectricSolve_solve"
+                "Constructor_init",
+                "PostProcessing_exportResults",
+                "Solve_solve"
             ],
             "names": [
-                "ElectricConstructor",
-                "ElectricPostProcessing",
-                "ElectricSolve"
+                "Constructor",
+                "PostProcessing",
+                "Solve"
             ],
             "xaxis": {
                 "parameter": "nb_tasks",

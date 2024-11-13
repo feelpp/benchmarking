@@ -52,22 +52,19 @@ class Image(BaseModel):
         else:
             self.protocol = "local"
 
-        if self.protocol == "local":
-            if not os.path.exists(self.name):
-                raise FileNotFoundError(f"Image {self.name} not found")
         return self
 
 
 class Platform(BaseModel):
-    type:Literal["builtin","apptainer","docker"]
-    image:Image
-    options:List[str]
-
+    image:Optional[Image] = None
+    input_dir:str
+    options:Optional[List[str]]= []
+    append_app_options:Optional[List[str]]= []
 
 class ConfigFile(BaseModel):
     executable: str
     executable_dir: Optional[str] = None
-    platform:Optional[Platform] = None
+    platforms:Optional[Dict[str,Platform]] = None
     output_directory:str
     use_case_name: str
     options: List[str]
@@ -98,32 +95,11 @@ class ConfigFile(BaseModel):
 
         return self
 
-
-class Container(BaseModel):
-    platform: Literal["docker","apptainer"]
-    cachedir:Optional[str] = None
-    tmpdir:Optional[str] = None
-
-    @field_validator("cachedir","tmpdir",mode="before")
+    @field_validator("platforms",mode="before")
     @classmethod
-    def checkDirectories(cls,v):
-        """Checks that the directories exists"""
-        if v and not os.path.exists(v):
-            raise FileNotFoundError(f"Cannot find {v}")
-
+    def checkPlatforms(cls,v):
+        accepted_platforms = ["builtin","apptainer","docker"]
+        for k in v.keys():
+            assert k in accepted_platforms, f"{k} not implemented"
         return v
 
-class MachineConfig(BaseModel):
-    machine:str
-    active: Optional[bool] = True
-    execution_policy:Literal["serial","async"]
-    partitions:List[str]
-    valid_prog_environs:List[str] = ["*"]
-    launch_options: List[str]
-    reframe_base_dir:str
-    reports_base_dir:str
-    containers:Optional[List[Container]] = []
-
-
-class ExecutionConfigFile(RootModel):
-    List[MachineConfig]
