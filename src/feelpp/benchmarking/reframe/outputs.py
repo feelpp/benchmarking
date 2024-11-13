@@ -47,7 +47,7 @@ class OutputsHandler:
         """
 
         if self.additional_files_config and self.additional_files_config.parameterized_descriptions_filepath:
-            file_extension = self.parameterized_descriptions_filepath.split(".")[-1]
+            file_extension = self.additional_files_config.parameterized_descriptions_filepath.split(".")[-1]
 
             outdir = os.path.join(dir_path,"parametrized_partials")
             filename = f"{name}.{file_extension}"
@@ -55,5 +55,5 @@ class OutputsHandler:
             if not os.path.exists(outdir):
                 os.mkdir(outdir)
 
-            shutil.copy2( self.parameterized_descriptions_filepath, os.path.join(outdir,filename) )
+            shutil.copy2( self.additional_files_config.parameterized_descriptions_filepath, os.path.join(outdir,filename) )
 
