@@ -60,12 +60,16 @@ jobs:
           pip3 install -I -r requirements.txt
           pip3 install dist/*.whl
           tree .venv
+    - name: Render reports
+      run: |
+        source .venv/bin/activate
+        render-benchmarks
+      env:
+        GIRDER_API_KEY: ${{ secrets.GIRDER }}
     - name: Build Antora Site
       run: |
           source .venv/bin/activate
           npm run antora
-      env:
-        GIRDER_API_KEY: ${{ secrets.GIRDER }}
     - name: Deploy
       if: ${{ github.ref_name == 'master' }}
       uses: JamesIves/github-pages-deploy-action@v4
