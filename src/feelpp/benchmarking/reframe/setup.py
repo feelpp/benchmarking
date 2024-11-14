@@ -3,6 +3,7 @@ from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
+from feelpp.benchmarking.reframe.outputs import OutputsHandler
 
 import reframe as rfm
 import os, re, shutil
@@ -177,6 +178,11 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         """ Sets the necessary post-init configurations"""
         self.app_setup.setupAfterInit(self)
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
+
+        #Used only to copy description
+        temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
+        temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
+
 
     @run_before('run')
     def updateSetups(self):
