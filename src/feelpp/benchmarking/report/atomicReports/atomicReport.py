@@ -34,6 +34,7 @@ class AtomicReport:
         self.use_case = None
 
         self.hash_param_map = self.createHashParamMap(data)
+        self.description_path = None
 
         self.empty = all(testcase["perfvars"]==None for run in data["runs"] for testcase in run["testcases"])
 
@@ -86,6 +87,11 @@ class AtomicReport:
         move_dir = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename()).replace("-","_").replace(":","_").replace("+","Z")
         if not os.path.exists(move_dir):
             os.makedirs(move_dir)
+
+        case_description_filename="description.adoc"
+        if os.path.exists(os.path.join(self.partials_dir,case_description_filename)):
+            os.rename(os.path.join(self.partials_dir,case_description_filename), os.path.join(move_dir,case_description_filename))
+            self.description_path =  os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),case_description_filename)
 
         for description_filename in os.listdir(self.partials_dir):
             description_file_basename = os.path.basename(description_filename)
@@ -155,7 +161,8 @@ class AtomicReport:
                 empty = self.empty,
                 plots_config = self.plots_config,
                 flat_hash_param_map = flat_hash_params,
-                hash_params_headers = hash_params_headers
+                hash_params_headers = hash_params_headers,
+                description_path = self.description_path
             )
         )
 

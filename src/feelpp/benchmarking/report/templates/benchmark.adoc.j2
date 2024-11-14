@@ -8,6 +8,13 @@
 :author: Your Name
 :revdate: {{ session_info.time_end }}
 
+{% if description_path %}
+== Case Description
+
+include::ROOT:{{description_path}}[leveloffset=+1]
+{% endif %}
+
+
 == Test Summary
 
 * Total Tests: {{ session_info.num_cases }}
