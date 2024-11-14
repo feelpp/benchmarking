@@ -14,15 +14,18 @@ class RegressionTest(ReframeSetup):
 
     @run_before('run')
     def initHandlers(self):
-        self.validation_handler = ValidationHandler(self.app_setup.config.sanity)
-        self.scalability_handler = ScalabilityHandler(self.app_setup.config.scalability)
-        self.outputs_handler = OutputsHandler(self.app_setup.config.outputs, self.app_setup.config.additional_files)
+        self.validation_handler = ValidationHandler(self.app_setup.reader.config.sanity)
+        self.scalability_handler = ScalabilityHandler(self.app_setup.reader.config.scalability)
+        self.outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
 
     @run_before('performance')
     def setPerfVars(self):
         self.perf_variables = {}
         self.perf_variables.update(
             self.scalability_handler.getPerformanceVariables(self.nb_tasks["tasks"])
+        )
+        self.perf_variables.update(
+            self.scalability_handler.getCustomPerformanceVariables(self.perf_variables)
         )
         self.perf_variables.update(
             self.outputs_handler.getOutputs()

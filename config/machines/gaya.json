@@ -2,15 +2,17 @@
     "machine": "gaya",
     "execution_policy": "async",
     "partitions":["production"],
-    "valid_prog_environs":["apptainer"],
+    "prog_environment":"builtin",
     "launch_options":["-bind-to core"],
     "reframe_base_dir":"/data/home/cladellash/benchmarking/build/reframe",
     "reports_base_dir":"/data/home/cladellash/benchmarking/reports/",
-    "containers":[
-        {
-            "platform":"apptainer",
+    "input_dataset_base_dir":"/data/scratch/cladellash/feelppdb/input_data",
+    "output_app_dir":"/data/scratch/cladellash/feelppdb",
+    "containers":{
+        "apptainer":{
             "cachedir": "/home/u2/cladellash/.apptainer/cache",
-            "tmpdir": "/data/scratch/cladellash/images/tmp/"
+            "tmpdir": "/data/scratch/cladellash/images/tmp",
+            "image_base_dir":"/data/scratch/cladellash/images"
         }
-    ]
+    }
 }

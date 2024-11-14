@@ -1,9 +1,26 @@
 {
     "executable": "feelpp_toolbox_thermoelectric",
-    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/thermoelectric/HL_31",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/thermoelectric/HL_31",
     "use_case_name": "HL_31",
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+            },
+            "input_dir":"/input_data/",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
+            "append_app_option":[]
+        }
+    },
     "options": [
-        "--config-files /data/scratch/cladellash/feelppdb/input_data/HL_31/HL-31.cfg",
+        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/HL-31.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -66,7 +83,7 @@
         },
         {
             "name": "environment",
-            "sequence":["builtin"]
+            "sequence":["{{machine.prog_environment}}"]
         }
     ],
     "plots": [

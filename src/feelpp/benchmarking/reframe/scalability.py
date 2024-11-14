@@ -6,6 +6,7 @@ class ScalabilityHandler:
     def __init__(self,scalability_config):
         self.directory = scalability_config.directory
         self.stages =  scalability_config.stages
+        self.custom_variables = scalability_config.custom_variables
         self.filepaths = {k.name if k.name else k.file : os.path.join(self.directory,k.file) for k in self.stages}
 
     def getPerformanceVariables(self,index):
@@ -69,3 +70,56 @@ class ScalabilityHandler:
                 raise NotImplementedError
 
         return perf_variables
+
+    def aggregateCustomVar(self,op,column_values):
+        if op == "sum":
+            return sum(column_values)
+        elif op == "min":
+            return min(column_values)
+        elif op =="max":
+            return max(column_values)
+        elif op == "mean":
+            return sum(column_values)/len(column_values)
+        else:
+            raise NotImplementedError(f"Operation {op} is not implemented")
+
+
+    def getCustomPerformanceVariables(self,perfvars):
+        """ Creates custom aggregated performance variables from existing ones
+        Args:
+            perfvars dict(str,sn.deferrable function): Existing performance variables to use for extraction
+
+        Returns:
+            dict(str,sn.deferrable function) Dictionnary containing only the custom performance variables
+        """
+        custom_perfvars = {}
+
+        computed_vars = {}
+
+
+        def evaluateCustomVariable(custom_var):
+
+            if custom_var.name in computed_vars:
+                return computed_vars[custom_var.name]
+
+            column_values = []
+            for col in custom_var.columns:
+                if col in perfvars:
+                    column_values.append(perfvars[col].evaluate())
+                elif col in custom_perfvars:
+                    column_values.append(evaluateCustomVariable(custom_perfvars[col]))
+                else:
+                    raise ValueError(f"Custom variable not found : {custom_var.name}")
+
+            custom_var_value = self.aggregateCustomVar(custom_var.op,column_values)
+            computed_vars[custom_var.name] = custom_var_value
+            return custom_var_value
+
+
+
+        for custom_var in self.custom_variables:
+            custom_perfvars[custom_var.name] = sn.make_performance_function(
+                sn.defer(evaluateCustomVariable(custom_var)),unit=custom_var.unit
+            )
+
+        return custom_perfvars

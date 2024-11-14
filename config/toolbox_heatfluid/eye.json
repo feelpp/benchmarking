@@ -1,9 +1,26 @@
 {
     "executable": "feelpp_toolbox_heatfluid",
-    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/heatlfuid/eye",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/heatlfuid/eye",
     "use_case_name": "eye",
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+            },
+            "input_dir":"/input_data/",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
+            "append_app_option":[]
+        }
+    },
     "options": [
-        "--config-files /data/scratch/cladellash/feelppdb/input_data/eye/eye-{{parameters.position.value}}.cfg /data/scratch/cladellash/feelppdb/input_data/eye/pc_{{parameters.solver.value}}.cfg",
+        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/eye-{{parameters.position.value}}.cfg {{platforms.{{machine.prog_environment}}.input_dir}}/pc_{{parameters.solver.value}}.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -35,6 +52,14 @@
                 "name": "Solve",
                 "file": "heat-fluid.scalibility.HeatFluidSolve.data",
                 "format": "tsv"
+            }
+        ],
+        "custom_variables": [
+            {
+                "name":"Solve_assembly",
+                "columns":[ "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian",  "Solve_algebraic-residual" ],
+                "op":"sum",
+                "unit":"s"
             }
         ]
     },
@@ -69,7 +94,7 @@
         },
         {
             "name": "environment",
-            "sequence":["builtin"]
+            "sequence":["{{machine.prog_environment}}"]
         }
     ],
     "plots": [
@@ -79,7 +104,8 @@
             "transformation": "performance",
             "variables": [
                 "Constructor_init",
-                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "Solve_assembly",
+                "Solve_solve",
                 "PostProcessing_exportResults"
             ],
             "names": [ ],
@@ -105,7 +131,8 @@
             "transformation": "relative_performance",
             "variables": [
                 "Constructor_init",
-                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "Solve_assembly",
+                "Solve_solve",
                 "PostProcessing_exportResults"
             ],
             "names": [ ],
@@ -131,7 +158,8 @@
             "transformation": "speedup",
             "variables": [
                 "Constructor_init",
-                "Solve_algebraic-newton-initial-guess", "Solve_algebraic-jacobian", "Solve_algebraic-residual", "Solve_algebraic-nsolve",
+                "Solve_assembly",
+                "Solve_solve",
                 "PostProcessing_exportResults"
             ],
             "names": [ ],

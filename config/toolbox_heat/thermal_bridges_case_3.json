@@ -1,9 +1,26 @@
 {
     "executable": "feelpp_toolbox_heat",
-    "output_directory": "/data/scratch/cladellash/feelppdb/toolboxes/heat/thermal_bridges_case_3",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/thermal_bridges_case_3",
     "use_case_name": "thermal_bridges_case_3",
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+            },
+            "input_dir":"/input_data/",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
+            "append_app_option":[]
+        }
+    },
     "options": [
-        "--config-files /data/scratch/cladellash/feelppdb/input_data/thermal_bridges_case_3/case3.cfg",
+        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/case3.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -70,7 +87,7 @@
         },
         {
             "name": "environment",
-            "sequence":["builtin"]
+            "sequence":["{{machine.prog_environment}}"]
         }
     ],
     "plots": [
