@@ -39,6 +39,7 @@ class CommandBuilder:
             'reframe',
             f'-C {self.buildConfigFilePath()}',
             f'-c {self.buildRegressionTestFilePath()}',
+            f'-S report_dir_path={str(self.report_folder_path)}',
             f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',

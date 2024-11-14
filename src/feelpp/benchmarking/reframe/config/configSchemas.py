@@ -34,7 +34,7 @@ class CustomVariable(BaseModel):
 class Scalability(BaseModel):
     directory: str
     stages: List[Stage]
-    custom_variables:List[CustomVariable]
+    custom_variables:Optional[List[CustomVariable]]=[]
 
 class AppOutput(BaseModel):
     filepath: str
