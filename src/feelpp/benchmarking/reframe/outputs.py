@@ -36,8 +36,6 @@ class OutputsHandler:
 
         return rfm_outputs
 
-    def copyDescription(self,dir_path):
-        pass
 
     def copyParametrizedDescriptions(self,dir_path,name):
         """ Searches the files on the additional_files.parameterized_descriptions_filepath configuration and copy them inside dir_path/partials
@@ -49,7 +47,7 @@ class OutputsHandler:
         if self.additional_files_config and self.additional_files_config.parameterized_descriptions_filepath:
             file_extension = self.additional_files_config.parameterized_descriptions_filepath.split(".")[-1]
 
-            outdir = os.path.join(dir_path,"parametrized_partials")
+            outdir = os.path.join(dir_path,"partials")
             filename = f"{name}.{file_extension}"
 
             if not os.path.exists(outdir):
