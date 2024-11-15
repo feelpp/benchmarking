@@ -34,7 +34,7 @@ class CustomVariable(BaseModel):
 class Scalability(BaseModel):
     directory: str
     stages: List[Stage]
-    custom_variables:List[CustomVariable]
+    custom_variables:Optional[List[CustomVariable]] = []
 
 class AppOutput(BaseModel):
     filepath: str
@@ -80,7 +80,7 @@ class ConfigFile(BaseModel):
     sanity: Sanity
     upload: Upload
     parameters: List[Parameter]
-    plots: List[Plot]
+    plots: Optional[List[Plot]] = []
 
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
