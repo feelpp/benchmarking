@@ -1,5 +1,7 @@
 from argparse import ArgumentParser
 import os,json
+from feelpp.benchmarking.reframe.config.configReader import ConfigReader
+from feelpp.benchmarking.reframe.config.configMachines import ExecutionConfigFile
 
 def parseHpcSystems_cli():
 
@@ -69,20 +71,21 @@ def parseHpcSystems_cli():
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
 
-    with open(args.machine_config_path,"r") as f:
-        machines = json.load(f)
+    machines = ConfigReader(args.machine_config_path,ExecutionConfigFile)
+    machines.updateConfig()
 
     matrix = []
 
     for machine_data in machines:
-        if machine_data["machine"] not in runners:
-            raise ValueError(f"{machine_data['machine']} not found in runner mapping")
+        machine_name = machine_data.machine
+        if machine_name not in runners:
+            raise ValueError(f"{machine_name} not found in runner mapping")
 
-        machine_config_path = os.path.join(args.output_dir,f"{machine_data['machine']}.json")
+        machine_config_path = os.path.join(args.output_dir,f"{machine_name}.json")
         with open(machine_config_path,"w") as f:
             json.dump(machine_data,f)
 
-        runner_info = runners[machine_data["machine"]]
+        runner_info = runners[machine_name]
         runner_info["machine_cfg"] = os.path.abspath(machine_config_path)
         matrix.append(runner_info)
 
