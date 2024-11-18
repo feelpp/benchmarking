@@ -71,7 +71,7 @@ class Platform(BaseModel):
 class ConfigFile(BaseModel):
     executable: str
     executable_dir: Optional[str] = None
-    timeout: str | int | float
+    timeout: str
     platforms:Optional[Dict[str,Platform]] = None
     output_directory:str
     use_case_name: str
@@ -86,10 +86,9 @@ class ConfigFile(BaseModel):
     @field_validator("timeout",mode="before")
     @classmethod
     def validateTimeout(cls,v):
-        if type(v) is str:
-            pattern = r'^\d+d\d{1,2}h\d{1,2}m\d{1,2}s$'
-            if not re.match(pattern, v):
-                raise ValueError(f"Time is not properly formatted (<days>d<hours>h<minutes>m<seconds>s) : {v}")
+        pattern = r'^\d+-\d{1,2}:\d{1,2}:\d{1,2}$'
+        if not re.match(pattern, v):
+            raise ValueError(f"Time is not properly formatted (<days>-<hours>:<minutes>:<seconds>) : {v}")
         return v
 
     @model_validator(mode="after")
