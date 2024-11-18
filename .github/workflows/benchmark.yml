@@ -179,7 +179,7 @@ jobs:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
 
         -   name: Create Pull Request
-            uses: peter-evans/create-pull-request@v6
+            uses: peter-evans/create-pull-request@v7
             with:
                 title: "Add benchmark for ${{ needs.factory.outputs.executable_name }} - ${{ needs.factory.outputs.use_case }}"
                 body: |
