@@ -83,7 +83,7 @@ def parseHpcSystems_cli():
             json.dump(machine_data,f)
 
         runner_info = runners[machine_data["machine"]]
-        runner_info["machine_cfg"] = os.path.abspath(machine_config_path)
+        runner_info["machine_cfg"] = machine_config_path
         matrix.append(runner_info)
 
 
