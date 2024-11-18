@@ -73,9 +73,13 @@ def main_cli():
 
     for config_filepath in parser.args.config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
-        app_reader = ConfigReader(config_filepath,ConfigFile)
-        report_folder_path = cmd_builder.createReportFolder(app_reader.config.executable)
 
+
+        configs = [config_filepath]
+        if parser.args.plots_config:
+            configs += [parser.args.plots_config]
+        app_reader = ConfigReader(configs,ConfigFile)
+        report_folder_path = cmd_builder.createReportFolder(app_reader.config.executable)
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
