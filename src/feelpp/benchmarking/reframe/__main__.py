@@ -27,7 +27,7 @@ class CommandBuilder:
     def buildReportFilePath(self,executable):
         return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.machine,f"{self.current_date}.json"))
 
-    def buildCommand(self,executable):
+    def buildCommand(self,executable, timeout):
         cmd = [
             'reframe',
             f'-C {self.buildConfigFilePath()}',
@@ -35,6 +35,7 @@ class CommandBuilder:
             f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
+            f'--duration={timeout}',
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
             f'--report-file={self.buildReportFilePath(executable)}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
@@ -74,7 +75,7 @@ def main_cli():
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
-        reframe_cmd = cmd_builder.buildCommand(app_reader.config.executable)
+        reframe_cmd = cmd_builder.buildCommand(app_reader.config.executable, app_reader.config.timeout)
 
         exit_code = os.system(reframe_cmd)
 

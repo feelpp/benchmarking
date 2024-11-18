@@ -2,7 +2,7 @@ from pydantic import BaseModel, field_validator, model_validator, RootModel
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
-import os
+import os, re
 
 class Sanity(BaseModel):
     success:List[str]
@@ -71,6 +71,7 @@ class Platform(BaseModel):
 class ConfigFile(BaseModel):
     executable: str
     executable_dir: Optional[str] = None
+    timeout: str | int | float
     platforms:Optional[Dict[str,Platform]] = None
     output_directory:str
     use_case_name: str
@@ -81,6 +82,15 @@ class ConfigFile(BaseModel):
     upload: Upload
     parameters: List[Parameter]
     plots: Optional[List[Plot]] = []
+
+    @field_validator("timeout",mode="before")
+    @classmethod
+    def validateTimeout(cls,v):
+        if type(v) is str:
+            pattern = r'^\d+d\d{1,2}h\d{1,2}m\d{1,2}s$'
+            if not re.match(pattern, v):
+                raise ValueError(f"Time is not properly formatted (<days>d<hours>h<minutes>m<seconds>s) : {v}")
+        return v
 
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):
