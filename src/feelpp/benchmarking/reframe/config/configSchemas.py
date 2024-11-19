@@ -40,10 +40,6 @@ class AppOutput(BaseModel):
     filepath: str
     format: str
 
-class Upload(BaseModel):
-    active:Optional[bool] = True
-    platform:Literal["girder","ckan"]
-    folder_id: Union[str,int]
 
 class Image(BaseModel):
     protocol:Optional[Literal["oras","docker","library","local"]] = None
@@ -78,7 +74,6 @@ class ConfigFile(BaseModel):
     outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
-    upload: Upload
     parameters: List[Parameter]
     plots: Optional[List[Plot]] = []
 
