@@ -2,7 +2,7 @@ from pydantic import BaseModel, field_validator, model_validator, RootModel
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
-import os
+import os, re
 
 class Sanity(BaseModel):
     success:List[str]
@@ -40,10 +40,6 @@ class AppOutput(BaseModel):
     filepath: str
     format: str
 
-class Upload(BaseModel):
-    active:Optional[bool] = True
-    platform:Literal["girder","ckan"]
-    folder_id: Union[str,int]
 
 class Image(BaseModel):
     protocol:Optional[Literal["oras","docker","library","local"]] = None
@@ -74,7 +70,7 @@ class AdditionalFiles(BaseModel):
 
 class ConfigFile(BaseModel):
     executable: str
-    executable_dir: Optional[str] = None
+    timeout: str
     platforms:Optional[Dict[str,Platform]] = None
     output_directory:str
     use_case_name: str
@@ -82,10 +78,17 @@ class ConfigFile(BaseModel):
     outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
-    upload: Upload
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = None
     plots: Optional[List[Plot]] = []
+
+    @field_validator("timeout",mode="before")
+    @classmethod
+    def validateTimeout(cls,v):
+        pattern = r'^\d+-\d{1,2}:\d{1,2}:\d{1,2}$'
+        if not re.match(pattern, v):
+            raise ValueError(f"Time is not properly formatted (<days>-<hours>:<minutes>:<seconds>) : {v}")
+        return v
 
     @model_validator(mode="after")
     def checkPlotAxisParameters(self):

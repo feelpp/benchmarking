@@ -25,15 +25,15 @@ class CommandBuilder:
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'
 
-    def createReportFolder(self,executable):
-        folder_path = os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.machine,str(self.current_date))
+    def createReportFolder(self,executable,use_case):
+        folder_path = os.path.join(self.machine_config.reports_base_dir,executable,use_case,self.machine_config.machine,str(self.current_date))
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         self.report_folder_path = folder_path
 
         return str(self.report_folder_path)
 
-    def buildCommand(self):
+    def buildCommand(self,timeout):
         assert self.report_folder_path is not None, "Report folder path not set"
         cmd = [
             'reframe',
@@ -44,6 +44,8 @@ class CommandBuilder:
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
             f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
+            f"-J '#SBATCH --time={timeout}'",
+            f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             '-r',
         ]
@@ -79,11 +81,11 @@ def main_cli():
         if parser.args.plots_config:
             configs += [parser.args.plots_config]
         app_reader = ConfigReader(configs,ConfigFile)
-        report_folder_path = cmd_builder.createReportFolder(app_reader.config.executable)
+        report_folder_path = cmd_builder.createReportFolder(app_reader.config.executable,app_reader.config.use_case_name)
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
-        reframe_cmd = cmd_builder.buildCommand()
+        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout )
 
         exit_code = os.system(reframe_cmd)
 

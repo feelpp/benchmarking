@@ -67,6 +67,7 @@ class Parser():
         self.validateOptions()
         if self.args.dir:
             self.checkDirectoriesExist()
+        self.convertPathsToAbsolute()
         self.buildConfigList()
 
     def addArgs(self):
@@ -82,6 +83,13 @@ class Parser():
         options.add_argument('--list-files', '-lf', action='store_true', help='List all benchmarking configuration file found')
         options.add_argument('--verbose', '-v', action='count', default=0, help='Select Reframe\'s verbose level by specifying multiple v\'s')
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
+
+    def convertPathsToAbsolute(self):
+        """ Converts arguments that contain paths to absolute. No change is made if absolute paths are provided"""
+        self.args.config = [os.path.abspath(c) for c in self.args.config]
+        self.args.exec_config = os.path.abspath(self.args.exec_config)
+        if self.args.plots_config:
+            self.args.plots_config = os.path.abspath(self.args.plots_config)
 
     def validateOptions(self):
         """ Checks that required args are present, and that they latch the expected format"""
