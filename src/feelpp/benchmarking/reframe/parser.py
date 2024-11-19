@@ -73,7 +73,7 @@ class Parser():
     def addArgs(self):
         """ Add the necessary arguments to the parser"""
         options = self.parser.add_argument_group("Options")
-        options.add_argument('--exec-config', '-ec', required=True, type=str, metavar='EXEC_CONFIG', help='Path to JSON reframe execution configuration file, specific to a machine.')
+        options.add_argument('--machine-config', '-mc', required=True, type=str, metavar='MACHINE_CONFIG', help='Path to JSON reframe execution configuration file, specific to a machine.')
         options.add_argument('--plots-config', '-pc', required=False, default=None, type=str, help='Path to JSON plots configuration file, used to generate figures.')
         options.add_argument('--benchmark-config', '-bc', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON configuration files \nIn combination with --dir, specify only basenames for selecting JSON files')
         options.add_argument('--dir', '-d', type=str, nargs='+', action='extend', default=[], metavar='DIR', help='Name of the directory containing JSON configuration files')
@@ -86,7 +86,7 @@ class Parser():
     def convertPathsToAbsolute(self):
         """ Converts arguments that contain paths to absolute. No change is made if absolute paths are provided"""
         self.args.benchmark_config = [os.path.abspath(c) for c in self.args.benchmark_config]
-        self.args.exec_config = os.path.abspath(self.args.exec_config)
+        self.args.machine_config = os.path.abspath(self.args.machine_config)
         if self.args.plots_config:
             self.args.plots_config = os.path.abspath(self.args.plots_config)
 
@@ -100,8 +100,8 @@ class Parser():
             print(f'[Error] --dir and --benchmark_config combination can only handle one DIR')
             sys.exit(1)
 
-        if not self.args.exec_config:
-            print(f'[Error] --exec-config should be specified')
+        if not self.args.machine_config:
+            print(f'[Error] --machine-config should be specified')
             sys.exit(1)
 
 
