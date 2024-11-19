@@ -10,7 +10,7 @@ class Sanity(BaseModel):
 
 class Stage(BaseModel):
     name:str
-    file:str
+    filepath:str
     format:Literal["csv","tsv","json"]
     variables_path:Optional[str] = None
 
