@@ -101,10 +101,7 @@ def main_cli():
 
         #============== UPDATE WEBSITE CONFIG FILE ==============#
         common_itempath = (parser.args.move_results or rfm_report_dir).split("/")
-        if common_itempath[-1] == "":
-            common_itempath = "/".join(common_itempath[:-2])
-        else:
-            common_itempath = "/".join(common_itempath[:-1])
+        common_itempath = "/".join(common_itempath[:-1 - (common_itempath[-1] == "")])
 
         website_config.updateExecutionMapping(
             executable_name, machine_reader.config.machine, app_reader.config.use_case_name,
