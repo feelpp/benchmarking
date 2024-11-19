@@ -93,11 +93,11 @@ class Parser():
     def validateOptions(self):
         """ Checks that required args are present, and that they latch the expected format"""
         if not self.args.benchmark_config and not self.args.dir:
-            print(f'[Error] At least one of --benchmark_config or --dir option must be specified')
+            print(f'[Error] At least one of --benchmark-config or --dir option must be specified')
             sys.exit(1)
 
         if self.args.benchmark_config and len(self.args.dir) > 1:
-            print(f'[Error] --dir and --benchmark_config combination can only handle one DIR')
+            print(f'[Error] --dir and --benchmark-config combination can only handle one DIR')
             sys.exit(1)
 
         if not self.args.machine_config:
