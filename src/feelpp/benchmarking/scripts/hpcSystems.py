@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import os,json
+from feelpp.benchmarking.reframe.config.configReader import JSONWithCommentsDecoder
 
 def parseHpcSystems_cli():
 
@@ -70,7 +71,7 @@ def parseHpcSystems_cli():
         os.makedirs(args.output_dir)
 
     with open(args.machine_config_path,"r") as f:
-        machines = json.load(f)
+        machines = json.load(f,cls=JSONWithCommentsDecoder)
 
     matrix = []
 
