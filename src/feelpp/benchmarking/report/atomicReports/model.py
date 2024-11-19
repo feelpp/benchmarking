@@ -29,6 +29,7 @@ class AtomicReportModel(Model):
                     "status": None,
                     "absolute_error": None,
                     "testcase_time_run": testcase["time_run"],
+                    "environment":testcase["environment"]
                 }
                 for dim, v in testcase["check_params"].items():
                     tmp_dct[dim] = v
