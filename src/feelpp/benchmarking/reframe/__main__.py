@@ -24,10 +24,10 @@ class CommandBuilder:
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'
 
-    def buildReportFilePath(self,executable):
-        return str(os.path.join(self.machine_config.reports_base_dir,executable,self.machine_config.machine,f"{self.current_date}.json"))
+    def buildReportFilePath(self,executable,use_case):
+        return str(os.path.join(self.machine_config.reports_base_dir,executable,use_case,self.machine_config.machine,f"{self.current_date}.json"))
 
-    def buildCommand(self,executable):
+    def buildCommand(self,executable,use_case,timeout):
         cmd = [
             'reframe',
             f'-C {self.buildConfigFilePath()}',
@@ -35,8 +35,9 @@ class CommandBuilder:
             f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
+            f"-J '#SBATCH --time={timeout}'",
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
-            f'--report-file={self.buildReportFilePath(executable)}',
+            f'--report-file={self.buildReportFilePath(executable,use_case)}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             '-r',
         ]
@@ -74,12 +75,13 @@ def main_cli():
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
-        reframe_cmd = cmd_builder.buildCommand(app_reader.config.executable)
+        executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
+        reframe_cmd = cmd_builder.buildCommand(executable_name,app_reader.config.use_case_name, app_reader.config.timeout)
 
         exit_code = os.system(reframe_cmd)
 
         #============ CREATING RESULT ITEM ================#
-        rfm_report_filepath = cmd_builder.buildReportFilePath(app_reader.config.executable)
+        rfm_report_filepath = cmd_builder.buildReportFilePath(executable_name,app_reader.config.use_case_name)
         rfm_report_dir = rfm_report_filepath.replace(".json","")
         os.mkdir(rfm_report_dir)
         os.rename(rfm_report_filepath,os.path.join(rfm_report_dir,"reframe_report.json"))
