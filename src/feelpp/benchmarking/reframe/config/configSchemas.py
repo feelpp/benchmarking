@@ -70,7 +70,6 @@ class Platform(BaseModel):
 
 class ConfigFile(BaseModel):
     executable: str
-    executable_dir: Optional[str] = None
     platforms:Optional[Dict[str,Platform]] = None
     output_directory:str
     use_case_name: str
