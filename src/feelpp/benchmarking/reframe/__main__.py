@@ -1,11 +1,11 @@
-import os, json,subprocess
+import os, json
 from datetime import datetime
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from pathlib import Path
-from feelpp.benchmarking.report.config.handlers import GirderHandler
+from feelpp.benchmarking.reframe.reporting import WebsiteConfig
 
 
 class CommandBuilder:
@@ -65,6 +65,8 @@ def main_cli():
 
     os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.exec_config
 
+    website_config = WebsiteConfig(machine_reader.config.reports_base_dir)
+
     for config_filepath in parser.args.config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
 
@@ -95,6 +97,25 @@ def main_cli():
                 os.makedirs(parser.args.move_results)
             os.rename(os.path.join(rfm_report_dir,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
             os.rename(os.path.join(rfm_report_dir,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
+        #======================================================#
+
+        #============== UPDATE WEBSITE CONFIG FILE ==============#
+        common_itempath = (parser.args.move_results or rfm_report_dir).split("/")
+        if common_itempath[-1] == "":
+            common_itempath = "/".join(common_itempath[:-2])
+        else:
+            common_itempath = "/".join(common_itempath[:-1])
+
+        website_config.updateExecutionMapping(
+            executable_name, machine_reader.config.machine, app_reader.config.use_case_name,
+            report_itempath = common_itempath
+        )
+
+        website_config.updateMachine(machine_reader.config.machine)
+        website_config.updateUseCase(app_reader.config.use_case_name)
+        website_config.updateApplication(executable_name)
+
+        website_config.save()
         #======================================================#
 
     return exit_code
