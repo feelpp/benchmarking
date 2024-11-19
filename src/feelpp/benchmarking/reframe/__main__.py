@@ -65,7 +65,7 @@ def main_cli():
 
     os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.exec_config
 
-    for config_filepath in parser.args.config:
+    for config_filepath in parser.args.benchmark_config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
 
         configs = [config_filepath]

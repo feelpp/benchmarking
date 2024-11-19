@@ -75,7 +75,7 @@ class Parser():
         options = self.parser.add_argument_group("Options")
         options.add_argument('--exec-config', '-ec', required=True, type=str, metavar='EXEC_CONFIG', help='Path to JSON reframe execution configuration file, specific to a machine.')
         options.add_argument('--plots-config', '-pc', required=False, default=None, type=str, help='Path to JSON plots configuration file, used to generate figures.')
-        options.add_argument('--config', '-c', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON configuration files \nIn combination with --dir, specify only basenames for selecting JSON files')
+        options.add_argument('--benchmark-config', '-bc', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON configuration files \nIn combination with --dir, specify only basenames for selecting JSON files')
         options.add_argument('--dir', '-d', type=str, nargs='+', action='extend', default=[], metavar='DIR', help='Name of the directory containing JSON configuration files')
         options.add_argument('--exclude', '-e', type=str, nargs='+', action='extend', default=[], metavar='EXCLUDE', help='To use in combination with --dir, mentioned files will not be launched')
         options.add_argument('--move_results', "-mv", type=str, help='Directory to move the resulting files to', required=False, default=None)
@@ -85,19 +85,19 @@ class Parser():
 
     def convertPathsToAbsolute(self):
         """ Converts arguments that contain paths to absolute. No change is made if absolute paths are provided"""
-        self.args.config = [os.path.abspath(c) for c in self.args.config]
+        self.args.benchmark_config = [os.path.abspath(c) for c in self.args.benchmark_config]
         self.args.exec_config = os.path.abspath(self.args.exec_config)
         if self.args.plots_config:
             self.args.plots_config = os.path.abspath(self.args.plots_config)
 
     def validateOptions(self):
         """ Checks that required args are present, and that they latch the expected format"""
-        if not self.args.config and not self.args.dir:
-            print(f'[Error] At least one of --config or --dir option must be specified')
+        if not self.args.benchmark_config and not self.args.dir:
+            print(f'[Error] At least one of --benchmark_config or --dir option must be specified')
             sys.exit(1)
 
-        if self.args.config and len(self.args.dir) > 1:
-            print(f'[Error] --dir and --config combination can only handle one DIR')
+        if self.args.benchmark_config and len(self.args.dir) > 1:
+            print(f'[Error] --dir and --benchmark_config combination can only handle one DIR')
             sys.exit(1)
 
         if not self.args.exec_config:
@@ -121,30 +121,30 @@ class Parser():
 
     def buildConfigList(self):
         """ Find configuration filepaths specified by the --dir argument and build a list acordingly.
-        If --config is passed, then a list with a single config filepath is set"""
+        If --benchmark_config is passed, then a list with a single config filepath is set"""
         configs = []
         if self.args.dir:
             for dir in self.args.dir:
                 path = os.path.join(dir, '**/*.json')
                 json_files = glob.glob(path, recursive=True)
                 configs.extend(json_files)
-            if self.args.config:
-                configs = [config for config in configs if os.path.basename(config) in self.args.config]
+            if self.args.benchmark_config:
+                configs = [config for config in configs if os.path.basename(config) in self.args.benchmark_config]
 
-        if self.args.config and not self.args.dir:
-            configs = self.args.config
+        if self.args.benchmark_config and not self.args.dir:
+            configs = self.args.benchmark_config
 
         if self.args.exclude:
             configs = [config for config in configs if os.path.basename(config) not in self.args.exclude]
 
-        self.args.config = [os.path.abspath(config) for config in configs]
+        self.args.benchmark_config = [os.path.abspath(config) for config in configs]
 
     def listFilesAndExit(self):
         """ Print configuration filepaths and exits"""
         print("\nFollowing configuration files have been found and validated:")
-        for config_path in self.args.config:
+        for config_path in self.args.benchmark_config:
             print(f"\t> {config_path}")
-        print(f"\nTotal: {len(self.args.config)} file(s)")
+        print(f"\nTotal: {len(self.args.benchmark_config)} file(s)")
         sys.exit(0)
 
     def printArgs(self):
