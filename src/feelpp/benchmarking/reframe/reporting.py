@@ -22,7 +22,10 @@ class WebsiteConfig:
         if machine not in self.config["execution_mapping"][application]:
             self.config["execution_mapping"][application][machine] = {}
 
-        self.config["execution_mapping"][application][machine][use_case] = report_itempath
+        self.config["execution_mapping"][application][machine][use_case] = {
+            "platform":"local",
+            "path":report_itempath
+        }
 
     def updateMachine(self,machine):
         if machine not in self.config["machines"]:
