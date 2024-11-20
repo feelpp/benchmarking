@@ -188,7 +188,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         for param_name,subparameters in self.parameters.items():
             value = getattr(self,param_name)
             if param_name == "nb_tasks":
-                self.num_tasks_per_node = min(int(value["tasks"]) // int(value["nodes"]), self.current_partition.processor.num_cpus)
+                self.num_tasks_per_node = min(int(value["tasks"]) // int(value["nodes"]) + (int(value["tasks"]) % int(value["nodes"]) > 0), self.current_partition.processor.num_cpus)
                 self.num_cpus_per_task = 1
                 self.num_tasks = value["tasks"]
 
