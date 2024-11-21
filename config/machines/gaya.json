@@ -12,7 +12,11 @@
         "apptainer":{
             "cachedir": "/home/u2/cladellash/.apptainer/cache",
             "tmpdir": "/data/scratch/cladellash/images/tmp",
-            "image_base_dir":"/data/scratch/cladellash/images"
+            "image_base_dir":"/data/scratch/cladellash/images",
+            "options":[
+                "--sharens",
+                "--bind /opt/:/opt/"
+            ]
         }
     }
 }
