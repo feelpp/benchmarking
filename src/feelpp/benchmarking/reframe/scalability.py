@@ -1,5 +1,6 @@
 import reframe.utility.sanity as sn
 import os, re,json
+from feelpp.benchmarking.reframe.config.configReader import TemplateProcessor
 
 class ScalabilityHandler:
     """ Class to handle scalability related attributes"""
@@ -59,6 +60,8 @@ class ScalabilityHandler:
                     for right_key in right_keys:
                         if right_key:
                             fields[wildcard] = fields[wildcard][right_key]
+
+                fields = TemplateProcessor.flattenDict(fields)
 
                 for k,v in fields.items():
                     perf_variables.update( {
