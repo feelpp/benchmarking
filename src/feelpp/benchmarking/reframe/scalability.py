@@ -40,11 +40,11 @@ class ScalabilityHandler:
             elif stage.format == "json":
                 splitted_keys = stage.variables_path.split("*")
 
-                if len(splitted_keys) != 2:
+                if len(splitted_keys) > 2:
                     raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
 
                 left_keys = splitted_keys[0].strip(".").split(".")
-                right_keys = splitted_keys[1].strip(".").split(".")
+
 
                 with open(self.filepaths[stage.name if stage.name else stage.file],"r") as f:
                     j = json.load(f)
@@ -53,13 +53,18 @@ class ScalabilityHandler:
                     if left_key:
                         j = j[left_key]
 
-                wildcards = j.keys()
                 fields = {}
-                for wildcard in wildcards:
-                    fields[wildcard] = j[wildcard]
-                    for right_key in right_keys:
-                        if right_key:
-                            fields[wildcard] = fields[wildcard][right_key]
+                if len(splitted_keys) == 1:
+                    fields[left_keys[-1]] = j
+                else:
+                    right_keys = splitted_keys[1].strip(".").split(".")
+
+                    wildcards = j.keys()
+                    for wildcard in wildcards:
+                        fields[wildcard] = j[wildcard]
+                        for right_key in right_keys:
+                            if right_key:
+                                fields[wildcard] = fields[wildcard][right_key]
 
                 fields = TemplateProcessor.flattenDict(fields)
 
