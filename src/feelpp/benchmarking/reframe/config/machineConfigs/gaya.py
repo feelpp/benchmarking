@@ -12,7 +12,7 @@ site_configuration = {
                     'launcher': 'mpiexec',
                     'max_jobs': 8,
                     'access': ['--partition=production'],
-                    'environs': ['builtin','apptainer'],
+                    'environs': ['builtin','apptainer','builtin_hpcx','apptainer_hpcx'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
                         "export PATH=/opt/apptainer/v1.3.3/apptainer/bin/:$PATH"
@@ -41,6 +41,13 @@ site_configuration = {
     'environments': [
         {
             'name': 'builtin',
+            'modules': [],
+            'cc': 'clang',
+            'cxx': 'clang++',
+            'target_systems': ['gaya:production']
+        },
+        {
+            'name': 'builtin_hpcx',
             'modules': ['hpcx'],
             'cc': 'clang',
             'cxx': 'clang++',
@@ -49,6 +56,13 @@ site_configuration = {
         {
             'name': 'apptainer',
             'modules': [],
+            'cc': 'clang',
+            'cxx': 'clang++',
+            'target_systems': ['gaya:production']
+        },
+        {
+            'name': 'apptainer_hpcx',
+            'modules': ['hpcx'],
             'cc': 'clang',
             'cxx': 'clang++',
             'target_systems': ['gaya:production']
