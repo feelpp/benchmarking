@@ -79,12 +79,12 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        platform = app_config.platforms[self.reader.config.prog_environment]
-        if self.reader.config.prog_environment != "builtin":
+        platform = app_config.platforms[self.reader.config.platform]
+        if self.reader.config.platform != "builtin":
             if not os.path.exists(platform.image.name):
                 raise FileExistsError(f"Cannot find image {platform.image.name}")
             rfm_test.container_platform.image = platform.image.name
-            rfm_test.container_platform.options = platform.options + self.reader.config.containers[self.reader.config.prog_environment].options
+            rfm_test.container_platform.options = platform.options + self.reader.config.containers[self.reader.config.platform].options
             rfm_test.container_platform.workdir = None
 
     def setTags(self,rfm_test):
@@ -142,7 +142,7 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        if machine_config.prog_environment == "builtin":
+        if machine_config.platform == "builtin":
             rfm_test.executable = self.reader.config.executable
             rfm_test.executable_opts = self.reader.config.options
         else:
