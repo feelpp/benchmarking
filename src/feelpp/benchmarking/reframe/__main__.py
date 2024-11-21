@@ -1,4 +1,4 @@
-import os, json
+import os, json, subprocess
 from datetime import datetime
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
@@ -114,5 +114,10 @@ def main_cli():
 
         website_config.save()
         #======================================================#
+
+    if parser.args.website:
+        subprocess.run(["render-benchmarks","--config_file", website_config.config_filepath])
+        subprocess.run(["npm","run","antora"])
+        subprocess.run(["npm","run","start"])
 
     return exit_code

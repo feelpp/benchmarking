@@ -82,6 +82,7 @@ class Parser():
         options.add_argument('--list', '-l', action='store_true', help='List all parametrized tests that will be run by Reframe')
         options.add_argument('--list-files', '-lf', action='store_true', help='List all benchmarking configuration file found')
         options.add_argument('--verbose', '-v', action='count', default=0, help='Select Reframe\'s verbose level by specifying multiple v\'s')
+        options.add_argument('--website', '-w', action='store_true', help='Render reports, compile them and create the website.')
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
 
     def convertPathsToAbsolute(self):
