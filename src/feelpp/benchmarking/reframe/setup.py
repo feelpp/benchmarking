@@ -157,6 +157,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     app_setup = AppSetup(str(os.environ.get("APP_CONFIG_FILEPATH")),machine_setup.reader.config)
 
     use_case = variable(str,value=app_setup.reader.config.use_case_name)
+    platform = variable(str, value=machine_setup.reader.config.platform)
 
     parameters = {}
 
