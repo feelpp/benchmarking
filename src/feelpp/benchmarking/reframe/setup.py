@@ -72,7 +72,7 @@ class MachineSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         rfm_test.valid_systems = [f"{self.reader.config.machine}:{part}" for part in self.reader.config.partitions]
-        rfm_test.valid_prog_environs = [self.reader.config.prog_environment]
+        rfm_test.valid_prog_environs = self.reader.config.prog_environments
 
     def setPlatform(self, rfm_test,app_config):
         """ Sets the container_platform attributes

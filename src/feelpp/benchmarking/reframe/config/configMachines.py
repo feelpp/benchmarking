@@ -23,7 +23,7 @@ class MachineConfig(BaseModel):
     execution_policy:Literal["serial","async"]
     partitions:List[str]
     platform:Optional[Literal["apptainer","docker","builtin"]] = "builtin"
-    prog_environment:Optional[List] = ["*"]
+    prog_environments:Optional[List] = ["*"]
     launch_options: List[str]
     reframe_base_dir:str
     reports_base_dir:str
