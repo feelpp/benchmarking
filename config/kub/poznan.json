@@ -32,13 +32,13 @@
                 "name":"",
                 "file": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/timers.json",
                 "format": "json",
-                "variables_path":"*"
+                "variables_path":["execute","postprocess.*","simulation.*"]
             },
             {
                 "name":"",
                 "file": "logs/timers.json",
                 "format": "json",
-                "variables_path":"*"
+                "variables_path":["constructor","updateForUse.*"]
             }
         ]
     },
