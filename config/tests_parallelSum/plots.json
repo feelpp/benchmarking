@@ -2,7 +2,7 @@
     "plots":[
         {
             "title": "Absolute performance",
-            "plot_types": [ "stacked_bar", "table" ],
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
             "transformation": "performance",
             "variables": [ "execution_time" ],
             "names": ["Time"],
@@ -14,6 +14,22 @@
             "secondary_axis":{
                 "parameter":"elements",
                 "label":"N"
+            }
+        },
+        {
+            "title": "Absolute performance",
+            "plot_types": [ "stacked_bar", "table" ],
+            "transformation": "performance",
+            "variables": [ "execution_time" ],
+            "names": ["Time"],
+            "xaxis":{
+                "parameter":"elements",
+                "label":"N"
+            },
+            "yaxis":{"label":"Execution time (s)"},
+            "secondary_axis":{
+                "parameter":"nb_tasks.tasks",
+                "label":"Number of tasks"
             }
         },
         {
