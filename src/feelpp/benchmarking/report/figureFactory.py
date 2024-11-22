@@ -21,8 +21,9 @@ class Figure:
 
 class ScatterFigure(Figure):
     """ Concrete Figure class for scatter figures """
-    def __init__(self, plot_config,transformation_strategy):
+    def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
         super().__init__(plot_config,transformation_strategy)
+        self.fill_lines = fill_lines
 
     def createAnimation(self,df):
         """ Creates a plotly figure from a multiIndex dataframe
@@ -39,14 +40,19 @@ class ScatterFigure(Figure):
 
         for j,dim in enumerate(anim_dimension_values):
             frame_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
-            frames.append([
-                go.Scatter(
-                    x = frame_df.index,
-                    y = frame_df.loc[:,col],
-                    name=col
+
+            frame_traces = []
+            for i,col in enumerate(self.fill_lines):
+                frame_traces.append(
+                    go.Scatter( x = frame_df.index, y = frame_df.loc[:,col], name = col, fill='tonexty' if i > 0 else None)
                 )
-                for col in frame_df.columns
-            ])
+
+            for col in [c for c in frame_df.columns if c not in self.fill_lines]:
+                frame_traces.append(
+                    go.Scatter( x = frame_df.index, y = frame_df.loc[:,col], name = col )
+                )
+
+            frames.append(frame_traces)
             ranges.append([
                 frame_df.min().min() - frame_df.min().min()*range_epsilon,
                 frame_df.max().max() + frame_df.min().min()*range_epsilon
@@ -84,11 +90,7 @@ class ScatterFigure(Figure):
         Returns:
             go.Figure: Scatter plot
         """
-        return go.Figure(
-            data = [
-                go.Scatter( x = df.index, y = df.loc[:,col], name = col )
-                for col in df.columns
-            ],
+        figure = go.Figure(
             layout=go.Layout(
                 title=self.config.title,
                 xaxis=dict( title = self.config.xaxis.label ),
@@ -96,6 +98,16 @@ class ScatterFigure(Figure):
                 legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
             )
         )
+        for i,col in enumerate(self.fill_lines):
+            figure.add_trace(
+                go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i < len(self.fill_lines) else None)
+            )
+
+        for col in [c for c in df.columns if c not in self.fill_lines]:
+            figure.add_trace(
+                go.Scatter( x = df.index, y = df.loc[:,col], name = col )
+            )
+        return figure
 
     def createFigure(self,df):
         """ Creates a scatter plot from the master dataframe
@@ -338,7 +350,11 @@ class FigureFactory:
         figures = []
         for plot_type in plot_config.plot_types:
             if plot_type ==  "scatter":
-                figures.append(ScatterFigure(plot_config,strategy))
+                if plot_config.transformation=="speedup":
+                    fill_lines = ["optimal","half-optimal"]
+                else:
+                    fill_lines = []
+                figures.append(ScatterFigure(plot_config,strategy, fill_lines))
             elif plot_type == "table":
                 figures.append(TableFigure(plot_config,strategy))
             elif plot_type == "stacked_bar":
