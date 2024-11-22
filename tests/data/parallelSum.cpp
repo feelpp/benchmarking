@@ -50,7 +50,8 @@ int main(int argc, char** argv) {
             outfile << "  \"execution_time\": " << execution_time << ",\n";
             outfile << "  \"num_processes\": " << size << ",\n";
             outfile << "  \"N\": " << N << ",\n";
-            outfile << "  \"chunk_size\": " << chunk_size << "\n";
+            outfile << "  \"chunk_size\": " << chunk_size << ",\n";
+            outfile << "  \"sum\": " << global_sum << "\n";
             outfile << "}\n";
             outfile.close();
         } else {
