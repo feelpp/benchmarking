@@ -119,9 +119,11 @@ class ScatterFigure(Figure):
         df = self.transformation_strategy.calculate(df)
 
         if isinstance(df.index,MultiIndex):
-            return self.createAnimation(df)
+            figure = self.createAnimation(df)
         else:
-            return self.createSimple(df)
+            figure = self.createSimple(df)
+        figure.update_layout(self.plot_config.layout_modifiers)
+        return figure
 
 
 class TableFigure(Figure):
@@ -175,10 +177,11 @@ class TableFigure(Figure):
         df = self.transformation_strategy.calculate(df)
 
         if isinstance(df.index,MultiIndex):
-            return self.createMultiindex(df)
+            figure = self.createMultiindex(df)
         else:
-            return self.createSimple(df)
-
+            figure = self.createSimple(df)
+        figure.update_layout(self.plot_config.layout_modifiers)
+        return figure
 
 class StackedBarFigure(Figure):
     """ Concrete Figure class for stacked bar charts"""
@@ -248,9 +251,12 @@ class StackedBarFigure(Figure):
         df = self.transformation_strategy.calculate(df)
 
         if isinstance(df.index,MultiIndex):
-            return self.createGrouped(df)
+            figure = self.createGrouped(df)
         else:
-            return self.createSimple(df)
+            figure = self.createSimple(df)
+
+        figure.update_layout(self.plot_config.layout_modifiers)
+        return figure
 
 class GroupedBarFigure(Figure): #TODO: FACTOR animation and bar...
     def __init__(self, plot_config, transformation_strategy):
@@ -333,10 +339,12 @@ class GroupedBarFigure(Figure): #TODO: FACTOR animation and bar...
         df = self.transformation_strategy.calculate(df)
 
         if isinstance(df.index,MultiIndex):
-            return self.createGrouped(df)
+            figure = self.createGrouped(df)
         else:
-            return self.createSimple(df)
+            figure = self.createSimple(df)
 
+        figure.update_layout(self.plot_config.layout_modifiers)
+        return figure
 
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
@@ -350,10 +358,9 @@ class FigureFactory:
         figures = []
         for plot_type in plot_config.plot_types:
             if plot_type ==  "scatter":
+                fill_lines = []
                 if plot_config.transformation=="speedup":
                     fill_lines = ["optimal","half-optimal"]
-                else:
-                    fill_lines = []
                 figures.append(ScatterFigure(plot_config,strategy, fill_lines))
             elif plot_type == "table":
                 figures.append(TableFigure(plot_config,strategy))
