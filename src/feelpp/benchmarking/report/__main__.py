@@ -61,4 +61,6 @@ def main_cli():
     print("-------------------------------")
 
     report_renderer = RendererFactory.create("benchmark")
+
+    atomic_reports.movePartials(os.path.join(args.modules_path,"descriptions"))
     atomic_reports.createReports(os.path.join(args.modules_path,"reports"),report_renderer)
