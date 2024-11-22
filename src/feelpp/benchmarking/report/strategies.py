@@ -87,10 +87,15 @@ class SpeedupStrategy(PerformanceStrategy):
         pivot = super().calculate(df)
 
         if isinstance(pivot.index, pd.MultiIndex):
-            return pivot.xs(pivot.index.get_level_values(self.dimensions["xaxis"]).min(),level=self.dimensions["xaxis"],axis=0) / pivot
+            pivot = pivot.xs(pivot.index.get_level_values(self.dimensions["xaxis"]).min(),level=self.dimensions["xaxis"],axis=0) / pivot
+            pivot["optimal"] = pivot.index.get_level_values(self.dimensions["xaxis"]) / pivot.index.get_level_values(self.dimensions["xaxis"]).min()
+            pivot["half-optimal"] = pivot.index.get_level_values(self.dimensions["xaxis"]) / pivot.index.get_level_values(self.dimensions["xaxis"]).min() / 2
+            return pivot
         else:
-            return pivot.loc[pivot.index.min(),:] / pivot
-
+            pivot = pivot.loc[pivot.index.min(),:] / pivot
+            pivot["optimal"] = pivot.index / pivot.index.min()
+            pivot["half-optimal"] = pivot.index / pivot.index.min() /2
+            return pivot
 
 class StrategyFactory:
     """ Factory class to dispatch concrete transformation strategies"""
