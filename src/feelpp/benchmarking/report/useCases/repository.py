@@ -36,7 +36,7 @@ class UseCaseRepository(ModuleRepository):
                 use_case.tree[application] = {}
                 for machine_id, machine_info  in app_info.items():
                     machine = machines.get(machine_id)
-                    if not use_case.id in machine_info["use_cases"]:
+                    if not use_case.id in machine_info:
                         continue
                     use_case.tree[application][machine] = []
                 if use_case.tree[application] == {}:
