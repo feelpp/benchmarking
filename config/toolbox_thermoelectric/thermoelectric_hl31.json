@@ -33,6 +33,9 @@
         "--thermo-electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/thermoelectric/Import/filename\",\"value\": \"$cfgdir/HL-31_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
     "outputs": [],
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/thermoelectric.information.adoc"
+    },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
