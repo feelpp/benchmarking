@@ -63,6 +63,10 @@ class Platform(BaseModel):
     options:Optional[List[str]]= []
     append_app_options:Optional[List[str]]= []
 
+class AdditionalFiles(BaseModel):
+    description_filepath: Optional[str] = None
+    parameterized_descriptions_filepath: Optional[str] = None
+
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
@@ -74,6 +78,7 @@ class ConfigFile(BaseModel):
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
+    additional_files: Optional[AdditionalFiles] = None
     plots: Optional[List[Plot]] = []
 
     @field_validator("timeout",mode="before")
