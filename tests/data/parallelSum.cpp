@@ -8,17 +8,18 @@
 
 namespace fs = std::filesystem;
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     MPI_Init(&argc, &argv);
 
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    if (argc < 3) {
-        if (rank == 0) {
+    if ( argc < 3 )
+    {
+        if (rank == 0)
             std::cerr << "Usage: " << argv[0] << " <N> <output_directory>\n";
-        }
         MPI_Finalize();
         return 1;
     }
@@ -40,7 +41,8 @@ int main(int argc, char** argv) {
     double global_sum = 0.0;
     MPI_Reduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     double end_comm_time = MPI_Wtime();
-    if (rank == 0) {
+    if ( rank == 0 )
+    {
         double computation_time = end_time - start_time;
         double communication_time = end_comm_time - start_comm_time;
         std::cout << "Global sum = " << global_sum << "\n";
@@ -52,21 +54,36 @@ int main(int argc, char** argv) {
 
         fs::path filename = "scalability.json";
 
-        std::ofstream outfile(output_dir/filename);
-        if (outfile.is_open()) {
-            outfile << "{\n";
-            outfile << "  \"computation_time\": " << computation_time << ",\n";
-            outfile << "  \"communication_time\": " << communication_time << ",\n";
-            outfile << "  \"num_processes\": " << size << ",\n";
-            outfile << "  \"N\": " << N << ",\n";
-            outfile << "  \"sum\": " << global_sum << "\n";
-            outfile << "}\n";
-            outfile.close();
-        } else {
-            std::cerr << "Error opening file for writing.\n";
+        std::ofstream scal_outfile(output_dir/filename);
+        if ( scal_outfile.is_open() )
+        {
+            scal_outfile << "{\n";
+            scal_outfile << "  \"computation_time\": " << computation_time << ",\n";
+            scal_outfile << "  \"communication_time\": " << communication_time << ",\n";
+            scal_outfile << "  \"num_processes\": " << size << ",\n";
+            scal_outfile << "  \"N\": " << N << ",\n";
+            scal_outfile << "  \"sum\": " << global_sum << "\n";
+            scal_outfile << "}\n";
+            scal_outfile.close();
         }
+        else
+            std::cerr << "[OOPSIE] Error opening file for writing." << std::endl;
+
+        fs::path out_filename = "outputs.csv";
+        std::ofstream out_outfile(output_dir/out_filename);
+        if (out_outfile.is_open())
+        {
+            out_outfile << "N,sum\n";
+            out_outfile << N << "," <<global_sum;
+            out_outfile.close();
+        }
+        else
+            std::cerr << "[OOPSIE] Error opening file for writing [outputs]." << std::endl;
     }
 
     MPI_Finalize();
+
+    std::cout << "[SUCCESS]" << std::endl;
+
     return 0;
 }
