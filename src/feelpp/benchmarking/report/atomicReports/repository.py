@@ -36,13 +36,17 @@ class AtomicReportRepository(Repository):
                     for report_dir in report_dirs:
                         reframe_report_json = os.path.join(report_dir,"reframe_report.json")
                         plots_config_json = os.path.join(report_dir,"plots.json")
+                        partials_dir = os.path.join(report_dir,"partials")
+                        if not os.path.exists(partials_dir) or len(os.listdir(partials_dir)) == 0:
+                            partials_dir = None
                         self.add(
                             AtomicReport(
                                 application_id = app_id,
                                 machine_id = machine_id,
                                 use_case_id = use_case_id,
                                 reframe_report_json = reframe_report_json,
-                                plot_config_json=plots_config_json
+                                plot_config_json=plots_config_json,
+                                partials_dir = partials_dir
                             )
                         )
 
@@ -134,3 +138,10 @@ class AtomicReportRepository(Repository):
 
         for atomic_report in self.data:
             atomic_report.createReport(base_dir,renderer)
+
+    def movePartials(self,base_dir):
+        if not os.path.exists(base_dir):
+            os.mkdir(base_dir)
+
+        for atomic_report in self.data:
+            atomic_report.movePartials(base_dir)
