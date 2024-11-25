@@ -34,15 +34,18 @@ int main(int argc, char** argv) {
 
     double start_time = MPI_Wtime();
     double local_sum = std::accumulate(local_array.begin(), local_array.end(), 0.0);
+    double end_time = MPI_Wtime();
 
-
+    double start_comm_time = MPI_Wtime();
     double global_sum = 0.0;
     MPI_Reduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    double end_time = MPI_Wtime();
+    double end_comm_time = MPI_Wtime();
     if (rank == 0) {
-        double execution_time = end_time - start_time;
+        double computation_time = end_time - start_time;
+        double communication_time = end_comm_time - start_comm_time;
         std::cout << "Global sum = " << global_sum << "\n";
-        std::cout << "Execution time: " << execution_time << " seconds\n";
+        std::cout << "Computation time: " << computation_time << " seconds\n";
+        std::cout << "Communication time: " << communication_time << " seconds\n";
 
         if (!fs::exists(output_dir))
             fs::create_directory(output_dir);
@@ -52,7 +55,8 @@ int main(int argc, char** argv) {
         std::ofstream outfile(output_dir/filename);
         if (outfile.is_open()) {
             outfile << "{\n";
-            outfile << "  \"execution_time\": " << execution_time << ",\n";
+            outfile << "  \"computation_time\": " << computation_time << ",\n";
+            outfile << "  \"communication_time\": " << communication_time << ",\n";
             outfile << "  \"num_processes\": " << size << ",\n";
             outfile << "  \"N\": " << N << ",\n";
             outfile << "  \"sum\": " << global_sum << "\n";
