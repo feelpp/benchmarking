@@ -13,7 +13,12 @@
         "{{parameters.elements.value}}",
         "{{output_directory}}/outputs/{{instance}}"
     ],
-    "outputs": [],
+    "outputs": [
+        {
+            "filepath":"{{output_directory}}/outputs/{{instance}}/outputs.csv",
+            "format":"csv"
+        }
+    ],
     "scalability": {
         "directory": "{{output_directory}}/outputs/{{instance}}/",
         "stages": [
@@ -26,8 +31,8 @@
         ]
     },
     "sanity": {
-        "success": [],
-        "error": []
+        "success": ["[SUCCESS]"],
+        "error": ["[OOPSIE]","Error"]
     },
     "parameters": [
         {
@@ -45,7 +50,7 @@
             "linspace":{
                 "min":100000000,
                 "max":1000000000,
-                "n_steps":5
+                "n_steps":4
             }
         }
     ]
