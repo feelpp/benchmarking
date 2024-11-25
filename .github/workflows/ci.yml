@@ -35,6 +35,44 @@ jobs:
         name: wheel-artifacts
         path: dist/*.whl
 
+  tests:
+    runs-on: self-ubuntu-22.04
+    name: Integration Tests
+    needs: build_wheel
+    if: "!contains(github.event.head_commit.message, 'tests skip')"
+    steps:
+    - name: Download packages
+      uses: actions/download-artifact@v3
+      with:
+        name: wheel-artifacts
+        path: dist/
+    - name: Install Python dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip3 install -I -r requirements.txt
+        pip3 install dist/*.whl
+    - name: Compile test applications
+      run: |
+        mpic++ -std=c++17 -O3 tests/data/parallelSum.cpp -o tests/data/parallelSum
+    - name: Test benchmarks
+      run: |
+        source .venv/bin/activate
+        execute-benchmark -ec config/machines/gaya.json --config config/tests_parallelSum/parallelSum.json -pc config/tests_parallelSum/plots.json
+        echo $?
+    - name: Dry-run reports
+      run: |
+        source .venv/bin/activate
+        render-benchmarks --config_file reports/website_config.json
+    - name: Check files
+      run: | #TODO: check if not empty (maybe)
+        nb_rfm_report_files=$(ls -1q reports/parallelSum/parallel_sum/gaya|wc -l)
+        nb_doc_reports=$(ls -1q docs/modules/ROOT/pages/reports/|wc -l)
+        if [ "$nb_rfm_report_files" -ne 1 ] || [ "$nb_doc_reports" -ne 1 ]; then
+          echo "Reports where not rendered."
+          exit 1
+        fi
+
   docs:
     runs-on: self-ubuntu-22.04
     name: Build Antora Site
