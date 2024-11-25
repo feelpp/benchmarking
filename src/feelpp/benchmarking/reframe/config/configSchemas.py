@@ -60,7 +60,7 @@ class Image(BaseModel):
 
 class Platform(BaseModel):
     image:Optional[Image] = None
-    input_dir:str
+    input_dir:Optional[str] = None
     options:Optional[List[str]]= []
     append_app_options:Optional[List[str]]= []
 
@@ -71,7 +71,7 @@ class AdditionalFiles(BaseModel):
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
-    platforms:Optional[Dict[str,Platform]] = None
+    platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     output_directory:str
     use_case_name: str
     options: List[str]
