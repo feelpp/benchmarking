@@ -13,34 +13,42 @@ class AtomicReportRepository(Repository):
             download_handler (GirderHandler): The GirderHandler object to download the reports
         """
         self.data:list[AtomicReport] = []
-        self.downloadAndInitAtomicReports(benchmarking_config_json, download_handler)
+        self.retrieveAndInitAtomicReports(benchmarking_config_json, download_handler)
 
-    def downloadAndInitAtomicReports(self,benchmarking_config_json, download_handler):
-        """ Download the reports and initialize the atomic reports
+    def retrieveAndInitAtomicReports(self,benchmarking_config_json, download_handler):
+        """ Fetches the reports, downloading them depending on the specified platform and initialize the atomic reports
         Args:
             benchmarking_config_json (dict): The benchmarking config JSON data
             download_handler (GirderHandler): The GirderHandler object to download the reports
         """
         for app_id, app_info in benchmarking_config_json.items():
             for machine_id, machine_info in app_info.items():
-                outdir = f"{app_id}/{machine_id}"
-                report_base_dirs = download_handler.downloadFolder(machine_info["girder_folder_id"], output_dir=outdir)
-                for report_base_dir in report_base_dirs:
-                    reframe_report_json = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/reframe_report.json"
-                    plots_config_json = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/plots.json"
-                    partials_dir = f"{download_handler.download_base_dir}/{outdir}/{report_base_dir}/partials/"
-                    if not os.path.exists(partials_dir) or len(os.listdir(partials_dir)) == 0:
-                        partials_dir = None
+                for use_case_id, use_case_info in machine_info.items():
 
-                    self.add(
-                        AtomicReport(
-                            application_id = app_id,
-                            machine_id = machine_id,
-                            reframe_report_json = reframe_report_json,
-                            plot_config_json = plots_config_json,
-                            partials_dir = partials_dir
+                    if use_case_info["platform"] == "girder":
+                        outdir = f"{app_id}/{machine_id}/{use_case_id}"
+                        report_dirs = download_handler.downloadFolder(use_case_info["path"], output_dir=outdir)
+                        report_dirs = [os.path.join(download_handler.download_base_dir,outdir,report_dir) for report_dir in report_dirs]
+                    elif use_case_info["platform"] == "local":
+                        report_dirs = os.listdir(use_case_info["path"])
+                        report_dirs = [os.path.join(use_case_info["path"],report_dir) for report_dir in report_dirs]
+
+                    for report_dir in report_dirs:
+                        reframe_report_json = os.path.join(report_dir,"reframe_report.json")
+                        plots_config_json = os.path.join(report_dir,"plots.json")
+                        partials_dir = os.path.join(report_dir,"partials")
+                        if not os.path.exists(partials_dir) or len(os.listdir(partials_dir)) == 0:
+                            partials_dir = None
+                        self.add(
+                            AtomicReport(
+                                application_id = app_id,
+                                machine_id = machine_id,
+                                use_case_id = use_case_id,
+                                reframe_report_json = reframe_report_json,
+                                plot_config_json=plots_config_json,
+                                partials_dir = partials_dir
+                            )
                         )
-                    )
 
     def link(self, applications, machines, use_cases):
         """ Create the links between the atomic reports and the applications, machines and test cases
@@ -54,7 +62,7 @@ class AtomicReportRepository(Repository):
         for atomic_report in self.data:
             application = applications.get(atomic_report.application_id)
             machine = machines.get(atomic_report.machine_id)
-            use_case = next(filter(lambda t: t.id == atomic_report.use_case_id and application in t.tree and machine in t.tree[application], use_cases))
+            use_case = use_cases.get(atomic_report.use_case_id)
 
             atomic_report.setIndexes(application, machine, use_case)
 

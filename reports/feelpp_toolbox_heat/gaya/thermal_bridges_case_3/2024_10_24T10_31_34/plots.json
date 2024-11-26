@@ -27,19 +27,19 @@
             "label": "Measures"
         },
         "aggregations":[
-            {"column":"nb_tasks.tasks","agg":"filter:128"}
+            {"column":"nb_tasks.tasks","agg":"filter:64"}
         ]
     },
     {
-        "title": "Performance (P1)",
+        "title": "Performance",
         "plot_types": [ "stacked_bar", "grouped_bar" ],
         "transformation": "performance",
         "variables": [
-            "Constructor_init",
-            "Solve_algebraic-assembly",
-            "PostProcessing_exportResults"
+            "HeatConstructor_init",
+            "HeatSolve_solve",
+            "HeatPostProcessing_exportResults"
         ],
-        "names": [ ],
+        "names": [ "init","assembly", "postprocess" ],
         "xaxis": {
             "parameter": "nb_tasks.tasks",
             "label": "Number of tasks"
@@ -60,44 +60,15 @@
         ]
     },
     {
-        "title": "Speedup (P1)",
-        "plot_types": [ "scatter" ],
-        "transformation": "speedup",
-        "variables": [
-            "Constructor_init",
-            "Solve_algebraic-assembly",
-            "PostProcessing_exportResults"
-        ],
-        "names": [ ],
-        "xaxis": {
-            "parameter": "nb_tasks.tasks",
-            "label": "Number of tasks"
-        },
-        "secondary_axis": {
-            "parameter": "meshes",
-            "label": "Mesh level"
-        },
-        "yaxis": {
-            "label": "Speedup"
-        },
-        "color_axis":{
-            "parameter":"performance_variable",
-            "label":"Performance variable"
-        },
-        "aggregations":[
-            {"column":"discretization","agg":"filter:P1"}
-        ]
-    },
-    {
-        "title": "Performance (P2)",
+        "title": "Performance",
         "plot_types": [ "stacked_bar", "grouped_bar" ],
         "transformation": "performance",
         "variables": [
-            "Constructor_init",
-            "Solve_algebraic-assembly",
-            "PostProcessing_exportResults"
+            "HeatConstructor_init",
+            "HeatSolve_solve",
+            "HeatPostProcessing_exportResults"
         ],
-        "names": [ ],
+        "names": [ "init","assembly", "postprocess" ],
         "xaxis": {
             "parameter": "nb_tasks.tasks",
             "label": "Number of tasks"
@@ -108,35 +79,6 @@
         },
         "yaxis": {
             "label": "execution time (s)"
-        },
-        "color_axis":{
-            "parameter":"performance_variable",
-            "label":"Performance variable"
-        },
-        "aggregations":[
-            {"column":"discretization","agg":"filter:P2"}
-        ]
-    },
-    {
-        "title": "Speedup (P2)",
-        "plot_types": [ "scatter" ],
-        "transformation": "speedup",
-        "variables": [
-            "Constructor_init",
-            "Solve_algebraic-assembly",
-            "PostProcessing_exportResults"
-        ],
-        "names": [ ],
-        "xaxis": {
-            "parameter": "nb_tasks.tasks",
-            "label": "Number of tasks"
-        },
-        "secondary_axis": {
-            "parameter": "meshes",
-            "label": "Mesh level"
-        },
-        "yaxis": {
-            "label": "Speedup"
         },
         "color_axis":{
             "parameter":"performance_variable",
