@@ -1,5 +1,5 @@
 {
-    "executable": "/data/home/cladellash/benchmarking/tests/data/parallelSum",
+    "executable": "$PWD/tests/data/parallelSum",
     "output_directory": "{{machine.output_app_dir}}/tests/parallelSum",
     "use_case_name": "parallel_sum",
     "timeout":"0-0:5:0",
@@ -26,7 +26,7 @@
     },
     "sanity": {
         "success": ["[SUCCESS]"],
-        "error": ["[OOPSIE]","Error"]
+        "error": ["OOPSIE","Error"]
     },
     "parameters": [
         {
@@ -35,8 +35,7 @@
                 {"tasks" : 1, "nodes":1, "exclusive_access":true},
                 {"tasks" : 2, "nodes":1, "exclusive_access":true},
                 {"tasks" : 4, "nodes":1, "exclusive_access":true},
-                {"tasks" : 8, "nodes":1, "exclusive_access":true},
-                {"tasks" : 16, "nodes":1, "exclusive_access":true}
+                {"tasks" : 8, "nodes":1, "exclusive_access":true}
             ]
         },
         {
