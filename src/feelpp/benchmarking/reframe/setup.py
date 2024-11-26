@@ -195,10 +195,20 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         for param_name,subparameters in self.parameters.items():
             value = getattr(self,param_name)
             if param_name == "nb_tasks":
-                self.num_tasks_per_node = min(int(value["tasks"]) // int(value["nodes"]), self.current_partition.processor.num_cpus)
-                self.num_cpus_per_task = 1
-                self.num_tasks = value["tasks"]
+                if "nodes" in value:
+                    self.num_nodes = value["nodes"] #This does not do anything...
+                    self.job.options += [f'--nodes={self.num_nodes}']
 
+                if "tasks_per_node" in value:
+                    self.num_tasks_per_node = value["tasks_per_node"]
+                    self.num_tasks = self.num_tasks_per_node * (self.num_nodes if "node" in value else 1)
+                elif "tasks" in value:
+                    self.num_tasks = value["tasks"]
+                else:
+                    raise ValueError("The Tasks parameter should contain either (tasks_per_node,nodes), (tasks,nodes) or (tasks).")
+
+                self.job.options += ['--threads-per-core=1']
+                self.num_cpus_per_task = 1
                 self.exclusive_access = value["exclusive_access"] if "exclusive_access" in value else True
 
             self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
