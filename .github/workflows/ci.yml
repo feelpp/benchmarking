@@ -41,6 +41,7 @@ jobs:
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'tests skip')"
     steps:
+    - uses: actions/checkout@v4
     - name: Download packages
       uses: actions/download-artifact@v3
       with:
