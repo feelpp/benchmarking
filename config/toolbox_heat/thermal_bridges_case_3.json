@@ -2,7 +2,7 @@
     "executable": "feelpp_toolbox_heat",
     "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/thermal_bridges_case_3",
     "use_case_name": "thermal_bridges_case_3",
-    "timeout":"0-01:00:00s",
+    "timeout":"0-01:00:00",
     "platforms": {
         "apptainer":{
             "image": {
@@ -36,22 +36,25 @@
             "format": "csv"
         }
     ],
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc"
+    },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
             {
                 "name": "Constructor",
-                "file": "heat.scalibility.HeatConstructor.data",
+                "filepath": "heat.scalibility.HeatConstructor.data",
                 "format": "tsv"
             },
             {
                 "name": "PostProcessing",
-                "file": "heat.scalibility.HeatPostProcessing.data",
+                "filepath": "heat.scalibility.HeatPostProcessing.data",
                 "format": "tsv"
             },
             {
                 "name": "Solve",
-                "file": "heat.scalibility.HeatSolve.data",
+                "filepath": "heat.scalibility.HeatSolve.data",
                 "format": "tsv"
             }
         ]
@@ -59,10 +62,6 @@
     "sanity": {
         "success": [],
         "error": []
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "672a1269b0e95728eb010b36"
     },
     "parameters": [
         {

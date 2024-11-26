@@ -31,13 +31,13 @@
         "stages": [
             {
                 "name":"",
-                "file": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/timers.json",
+                "filepath": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/timers.json",
                 "format": "json",
                 "variables_path":"*"
             },
             {
                 "name":"",
-                "file": "logs/timers.json",
+                "filepath": "logs/timers.json",
                 "format": "json",
                 "variables_path":"*"
             }
@@ -46,10 +46,6 @@
     "sanity": {
         "success": [],
         "error": ["Error"]
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "672a1452b0e95728eb010b38"
     },
     "parameters": [
         {

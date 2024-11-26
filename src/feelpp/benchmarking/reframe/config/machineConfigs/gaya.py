@@ -15,7 +15,7 @@ site_configuration = {
                     'environs': ['builtin','apptainer','builtin_hpcx','apptainer_hpcx'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
-                        "export PATH=/opt/apptainer/v1.3.3/apptainer/bin/:$PATH"
+                        "export PATH=/opt/apptainer/v1.3.5/apptainer/bin/:$PATH"
                     ],
                     'processor': {
                         'num_cpus': 128

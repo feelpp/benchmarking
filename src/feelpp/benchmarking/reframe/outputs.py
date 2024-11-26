@@ -1,11 +1,12 @@
 import reframe.utility.sanity as sn
-import os, re
+import os, re, shutil
 
 
 class OutputsHandler:
     """Class to handle application outputs and convert them to reframe readable objects"""
-    def __init__(self,outputs_config):
+    def __init__(self,outputs_config,additional_files_config = None):
         self.config = outputs_config
+        self.additional_files_config = additional_files_config
 
     def getOutputs(self):
         """ Opens and parses the all the outputs files provided on the configuration
@@ -34,3 +35,41 @@ class OutputsHandler:
                 raise NotImplementedError(f"Output extraction not implemented for format {output_info.format}")
 
         return rfm_outputs
+
+    def copyDescription(self,dir_path, name): #TODO: This can be redesigned... or factor it at least
+        """ Searches the file on the additional_files.description_filepath configuration and copies it inside dir_path/partials
+        Args:
+            dir_path (str) : Directory where the reframe report is exported to
+            name(str): name of the new file (without extension)
+        """
+        if self.additional_files_config and self.additional_files_config.description_filepath:
+            file_extension = self.additional_files_config.description_filepath.split(".")[-1]
+
+            outdir = os.path.join(dir_path,"partials")
+            if not os.path.exists(outdir):
+                os.mkdir(outdir)
+
+            filename = f"{name}.{file_extension}"
+
+            shutil.copy2( self.additional_files_config.description_filepath, os.path.join(outdir,filename) )
+
+
+
+    def copyParametrizedDescriptions(self,dir_path,name):
+        """ Searches the files on the additional_files.parameterized_descriptions_filepath configuration and copy them inside dir_path/partials
+        Args:
+            dir_path (str) : Directory where the reframe report is exported to
+            name(str): name of the new file (without extension)
+        """
+
+        if self.additional_files_config and self.additional_files_config.parameterized_descriptions_filepath:
+            file_extension = self.additional_files_config.parameterized_descriptions_filepath.split(".")[-1]
+
+            outdir = os.path.join(dir_path,"partials")
+            if not os.path.exists(outdir):
+                os.mkdir(outdir)
+
+            filename = f"{name}.{file_extension}"
+
+            shutil.copy2( self.additional_files_config.parameterized_descriptions_filepath, os.path.join(outdir,filename) )
+

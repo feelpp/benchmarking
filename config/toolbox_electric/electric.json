@@ -2,7 +2,7 @@
     "executable": "feelpp_toolbox_electric",
     "output_directory": "{{machine.output_app_dir}}/toolboxes/electric/quarter_turn_3d",
     "use_case_name": "quarter_turn_3d",
-    "timeout":"0-01:00:00s",
+    "timeout":"0-01:00:00",
     "platforms": {
         "apptainer":{
             "image": {
@@ -30,22 +30,25 @@
         "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": {{parameters.hsize.value}} }'"
     ],
     "outputs": [],
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/electric.information.adoc"
+    },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
             {
                 "name": "Constructor",
-                "file": "electric.scalibility.ElectricConstructor.data",
+                "filepath": "electric.scalibility.ElectricConstructor.data",
                 "format": "tsv"
             },
             {
                 "name": "PostProcessing",
-                "file": "electric.scalibility.ElectricPostProcessing.data",
+                "filepath": "electric.scalibility.ElectricPostProcessing.data",
                 "format": "tsv"
             },
             {
                 "name": "Solve",
-                "file": "electric.scalibility.ElectricSolve.data",
+                "filepath": "electric.scalibility.ElectricSolve.data",
                 "format": "tsv"
             }
         ]
@@ -53,10 +56,6 @@
     "sanity": {
         "success": [],
         "error": []
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "6733114eb0e95728eb010ba5"
     },
     "parameters": [
         {
