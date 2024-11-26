@@ -22,7 +22,6 @@ class MachineConfig(BaseModel):
     execution_policy:Literal["serial","async"]
     partitions:List[str]
     prog_environment:str = ["*"]
-    launch_options: List[str]
     reframe_base_dir:str
     reports_base_dir:str
     input_dataset_base_dir:str
