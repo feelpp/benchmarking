@@ -9,10 +9,6 @@ on:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10 including semver
 
-  pull_request:
-    branches:
-      - '**' # Pull request events on all branches
-
 jobs:
 
   build_wheel:
@@ -39,55 +35,51 @@ jobs:
         name: wheel-artifacts
         path: dist/*.whl
 
-  generate_reports:
+  tests:
     runs-on: self-ubuntu-22.04
+    name: Integration Tests
     needs: build_wheel
-    if: github.event_name == 'pull_request'
+    if: "!contains(github.event.head_commit.message, 'tests skip')"
     steps:
-      - uses: actions/checkout@v4
-      - name: Create Virtual Environment
-        run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip3 install -r requirements.txt
-      - name: Download Wheel Packages
-        uses: actions/download-artifact@v3
-        with:
-          name: wheel-artifacts
-          path: dist/
-      - name: Install wheel
-        run: |
-          source .venv/bin/activate
-          python3 -m pip install --force-reinstall dist/*.whl
-      - name: Reset reports
-        run: |
-          rm -r ./docs/modules/ROOT/pages/applications/
-          rm -r ./docs/modules/ROOT/pages/machines/
-          rm -r ./docs/modules/ROOT/pages/reports/
-          rm -r ./docs/modules/ROOT/pages/use_cases/
-          rm -r ./reports/
-      - name: Render reports
-        run: |
-          source .venv/bin/activate
-          render-benchmarks
-        env:
-          GIRDER_API_KEY: ${{ secrets.GIRDER }}
-      - name: Push reports
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update reports"
-          branch: ${{ github.head_ref }}
-          file_pattern: "docs/modules/* reports/**/*.json"
+    - uses: actions/checkout@v4
+    - name: Download packages
+      uses: actions/download-artifact@v3
+      with:
+        name: wheel-artifacts
+        path: dist/
+    - name: Install Python dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip3 install -I -r requirements.txt
+        pip3 install dist/*.whl
+    - name: Compile test applications
+      run: |
+        mpic++ -std=c++17 -O3 tests/data/parallelSum.cpp -o tests/data/parallelSum
+    - name: Test benchmarks
+      run: |
+        source .venv/bin/activate
+        execute-benchmark -ec config/machines/gaya.json --config config/tests_parallelSum/parallelSum.json -pc config/tests_parallelSum/plots.json
+        echo $?
+    - name: Dry-run reports
+      run: |
+        source .venv/bin/activate
+        render-benchmarks --config_file reports/website_config.json
+    - name: Check files
+      run: | #TODO: check if not empty (maybe)
+        nb_rfm_report_files=$(ls -1q reports/parallelSum/parallel_sum/gaya|wc -l)
+        nb_doc_reports=$(ls -1q docs/modules/ROOT/pages/reports/|wc -l)
+        if [ "$nb_rfm_report_files" -ne 1 ] || [ "$nb_doc_reports" -ne 1 ]; then
+          echo "Reports where not rendered."
+          exit 1
+        fi
 
   docs:
     runs-on: self-ubuntu-22.04
     name: Build Antora Site
-    needs: generate_reports
-    if: always()
+    needs: build_wheel
+    if: "!contains(github.event.head_commit.message, 'docs skip')"
     steps:
-    - name: Check if skip
-      if: contains(github.event.head_commit.message, 'docs skip')
-      run: exit 1
     - uses: actions/checkout@v4
     - name: Install credentials
       run: echo https://$GITHUB_OAUTH:@github.com > $HOME/.git-credentials
@@ -107,6 +99,12 @@ jobs:
           pip3 install -I -r requirements.txt
           pip3 install dist/*.whl
           tree .venv
+    - name: Render reports
+      run: |
+        source .venv/bin/activate
+        render-benchmarks
+      env:
+        GIRDER_API_KEY: ${{ secrets.GIRDER }}
     - name: Build Antora Site
       run: |
           source .venv/bin/activate

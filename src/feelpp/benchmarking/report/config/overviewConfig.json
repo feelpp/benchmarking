@@ -64,6 +64,19 @@
                             "aggregations":[
                                 {"column":"performance_variable","agg":"sum"}
                             ]
+                        },
+                        {
+                            "title": "Execution by environment",
+                            "plot_types": ["stacked_bar"],
+                            "transformation": "performance",
+                            "names": ["performance"],
+                            "xaxis": { "parameter": "nb_tasks.tasks", "label": "Tasks" },
+                            "secondary_axis": { "parameter": "environment", "label": "Environment" },
+                            "color_axis": { "parameter": "performance_variable", "label": "Step" },
+                            "yaxis": { "label": "Execution time (s)" },
+                            "aggregations":[
+                                {"column":"date","agg":"max"}
+                            ]
                         }
                     ]
                 }
@@ -135,6 +148,19 @@
                             "aggregations":[
                                 {"column":"performance_variable","agg":"sum"}
                             ]
+                        },
+                        {
+                            "title": "Execution by environment",
+                            "plot_types": ["stacked_bar"],
+                            "transformation": "performance",
+                            "names": ["performance"],
+                            "xaxis": { "parameter": "nb_tasks.tasks", "label": "Tasks" },
+                            "secondary_axis": { "parameter": "environment", "label": "Environment" },
+                            "color_axis": { "parameter": "performance_variable", "label": "Step" },
+                            "yaxis": { "label": "Execution time (s)" },
+                            "aggregations":[
+                                {"column":"date","agg":"max"}
+                            ]
                         }
                     ]
                 }
@@ -205,6 +231,19 @@
                             "yaxis": { "label": "Execution time (s)" },
                             "aggregations":[
                                 {"column":"performance_variable","agg":"sum"}
+                            ]
+                        },
+                        {
+                            "title": "Execution by environment",
+                            "plot_types": ["stacked_bar"],
+                            "transformation": "performance",
+                            "names": ["performance"],
+                            "xaxis": { "parameter": "nb_tasks.tasks", "label": "Tasks" },
+                            "secondary_axis": { "parameter": "environment", "label": "Environment" },
+                            "color_axis": { "parameter": "performance_variable", "label": "Step" },
+                            "yaxis": { "label": "Execution time (s)" },
+                            "aggregations":[
+                                {"column":"date","agg":"max"}
                             ]
                         }
                     ]

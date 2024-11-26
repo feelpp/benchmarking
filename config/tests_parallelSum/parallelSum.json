@@ -1,0 +1,51 @@
+{
+    "executable": "/data/home/cladellash/benchmarking/tests/data/parallelSum",
+    "output_directory": "{{machine.output_app_dir}}/tests/parallelSum",
+    "use_case_name": "parallel_sum",
+    "timeout":"0-0:5:0",
+    "options": [
+        "{{parameters.elements.value}}",
+        "{{output_directory}}/outputs/{{instance}}"
+    ],
+    "outputs": [
+        {
+            "filepath":"{{output_directory}}/outputs/{{instance}}/outputs.csv",
+            "format":"csv"
+        }
+    ],
+    "scalability": {
+        "directory": "{{output_directory}}/outputs/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "file": "scalability.json",
+                "format": "json",
+                "variables_path":"*"
+            }
+        ]
+    },
+    "sanity": {
+        "success": ["[SUCCESS]"],
+        "error": ["[OOPSIE]","Error"]
+    },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "sequence": [
+                {"tasks" : 1, "nodes":1, "exclusive_access":true},
+                {"tasks" : 2, "nodes":1, "exclusive_access":true},
+                {"tasks" : 4, "nodes":1, "exclusive_access":true},
+                {"tasks" : 8, "nodes":1, "exclusive_access":true},
+                {"tasks" : 16, "nodes":1, "exclusive_access":true}
+            ]
+        },
+        {
+            "name":"elements",
+            "linspace":{
+                "min":100000000,
+                "max":1000000000,
+                "n_steps":4
+            }
+        }
+    ]
+}
