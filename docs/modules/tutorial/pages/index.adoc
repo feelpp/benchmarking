@@ -6,10 +6,6 @@ The _Feel++ benchmarking_ project provides a framework for automating, centraliz
 This project, based on the https://reframe-hpc.readthedocs.io/en/stable/index.html[ReFrame-hpc framework], enables highly customized benchmarking using robust and comprehensive JSON configuration files that parametrize tests, validate executions and generate figures.
 It also provides concrete CI/CD/CB pipelines to fully automate the benchmarking step of any application.
 
-== How it works
-
-
-
 == Getting started
 
 === Installation
@@ -49,16 +45,50 @@ This Feel++ Benchmarking "Hello World" application will compute the sum of an ar
 
 Additionally, the app will measure the time taken to perform the partial sum, and will save it under a _scalability.json_ file.
 
-The executable is already provided as _tests/data/parallelSum_.
+The executable is already provided as _tests/data/parallelSum_. You can update it for a specific config
+[source,cmd]
+----
+mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
+----
 
-- Where configs are, (also reframe config).
-- execute-benchmark
+Local configuration files can be found under _config/test_parallelSum/_. They are explained more in detail in the following sections.
+They might require specific configurations depending on the system you are running the framework.
+
+Finally, to benchmark the test application, generate the reports and plot the figures, run
+[source,cmd]
+----
+execute-benchmark --machine-config config/machines/local.json --benchmark-config config/test_parallelSum/parallelSum.json --plots-config config/test_parallelSum/plots.json --website
+----
+
+The `--website` option will start an http-server on localhost, so the website can be visualized, check the console for more information.
 
 
+== How it works
+TODO: 
 
 == Configuration guide
 
+TODO: intro
+- Different config files, introduce special syntaxes, supported envs,
+
 === System configuration
+
+The system configuration files need to be placed under _src/feelpp/benchmarking/reframe/config/machineConfigs_, and are strictly ReFrame dependent. A single Python file should be provided per machine. Please follow https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame's configuration file reference] for precise settings.
+
+Example configurations are provided for the _Gaya_ machine and for a simple single node 8-core system.
+
+[NOTE]
+Processor bindings and other launcher options should be specified as a resource under the desired partition, with the `launcher_options` name field value for example. For example,
+
+[source,json]
+----
+"resources": [
+    {
+        "name":"launcher_options",
+        "options":["-bind-to","core"]
+    }
+]
+----
 
 === Magic strings
 
