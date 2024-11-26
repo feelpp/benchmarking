@@ -2,7 +2,7 @@
     "executable": "feelpp_toolbox_thermoelectric",
     "output_directory": "{{machine.output_app_dir}}/toolboxes/thermoelectric/HL_31",
     "use_case_name": "HL_31",
-    "timeout":"0-01:00:00s",
+    "timeout":"0-01:00:00",
     "platforms": {
         "apptainer":{
             "image": {
@@ -41,17 +41,17 @@
         "stages": [
             {
                 "name": "Constructor",
-                "file": "thermo-electric.scalibility.ThermoElectricConstructor.data",
+                "filepath": "thermo-electric.scalibility.ThermoElectricConstructor.data",
                 "format": "tsv"
             },
             {
                 "name": "PostProcessing",
-                "file": "thermo-electric.scalibility.ThermoElectricPostProcessing.data",
+                "filepath": "thermo-electric.scalibility.ThermoElectricPostProcessing.data",
                 "format": "tsv"
             },
             {
                 "name": "Solve",
-                "file": "thermo-electric.scalibility.ThermoElectricSolve.data",
+                "filepath": "thermo-electric.scalibility.ThermoElectricSolve.data",
                 "format": "tsv"
             }
         ]
@@ -59,10 +59,6 @@
     "sanity": {
         "success": [],
         "error": []
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "672b684fb0e95728eb010b5f"
     },
     "parameters": [
         {
