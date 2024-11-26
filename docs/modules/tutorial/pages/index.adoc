@@ -10,26 +10,26 @@ It also provides concrete CI/CD/CB pipelines to fully automate the benchmarking 
 
 === Installation
 
-. Clone the Repository
+1. Clone the Repository
 [source,cmd]
 ----
 git clone https://github.com/feelpp/benchmarking.git
 ----
 
-. Use a python virtual environment [Optional]
+2. Use a python virtual environment [Optional]
 [source,cmd]
 ----
 python3 -m venv .venv
 source .venv/bin/activate
 ----
 
-. Build the project
+3. Build the project
 [source,cmd]
 ----
 pip3 wheel --no-deps --wheel-dir dist .
 ----
 
-. Install requirements
+4. Install requirements
 
 This will install necessary dependencies as well as the built project from the previous step.
 [source,cmd]
@@ -78,8 +78,8 @@ The system configuration files need to be placed under _src/feelpp/benchmarking/
 Example configurations are provided for the _Gaya_ machine and for a simple single node 8-core system.
 
 [NOTE]
+====
 Processor bindings and other launcher options should be specified as a resource under the desired partition, with the `launcher_options` name field value for example. For example,
-
 [source,json]
 ----
 "resources": [
@@ -89,6 +89,7 @@ Processor bindings and other launcher options should be specified as a resource 
     }
 ]
 ----
+====
 
 === Magic strings
 
