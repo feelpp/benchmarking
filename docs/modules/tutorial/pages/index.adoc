@@ -1,11 +1,14 @@
 = feelpp.benchmarkign project
 
-== Introduction
+== Welcome to Feel++ Benchmarking
 
 The _Feel++ benchmarking_ project provides a framework for automating, centralizing and organizing performance evaluation of scientific simulations on HPC systems.
-This project, based on the ReFrame-hpc[TODO: Link] framework, enables highly customized benchmarking using robust and comprehensive JSON configuration files that parametrize tests, validate executions and generate figures.
+This project, based on the https://reframe-hpc.readthedocs.io/en/stable/index.html[ReFrame-hpc framework], enables highly customized benchmarking using robust and comprehensive JSON configuration files that parametrize tests, validate executions and generate figures.
 It also provides concrete CI/CD/CB pipelines to fully automate the benchmarking step of any application.
-TODO...
+
+== How it works
+
+
 
 == Getting started
 
@@ -38,8 +41,20 @@ This will install necessary dependencies as well as the built project from the p
 python3 -m pip install -r requirements.txt
 ----
 
-=== Initial setup
-TODO
+=== Quickstart
+
+The framwork includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _tests/data/parallelSum.cpp_.
+
+This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.
+
+Additionally, the app will measure the time taken to perform the partial sum, and will save it under a _scalability.json_ file.
+
+The executable is already provided as _tests/data/parallelSum_.
+
+- Where configs are, (also reframe config).
+- execute-benchmark
+
+
 
 == Configuration guide
 
