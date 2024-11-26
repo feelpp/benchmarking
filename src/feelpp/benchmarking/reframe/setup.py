@@ -195,6 +195,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         for param_name,subparameters in self.parameters.items():
             value = getattr(self,param_name)
             if param_name == "nb_tasks":
+
                 if "nodes" in value:
                     self.num_nodes = value["nodes"] #This does not do anything...
                     self.job.options += [f'--nodes={self.num_nodes}']
@@ -208,6 +209,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                     raise ValueError("The Tasks parameter should contain either (tasks_per_node,nodes), (tasks,nodes) or (tasks).")
 
                 self.job.options += ['--threads-per-core=1']
+
                 self.num_cpus_per_task = 1
                 self.exclusive_access = value["exclusive_access"] if "exclusive_access" in value else True
 
