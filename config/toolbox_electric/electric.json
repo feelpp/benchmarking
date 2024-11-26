@@ -2,6 +2,7 @@
     "executable": "feelpp_toolbox_electric",
     "output_directory": "{{machine.output_app_dir}}/toolboxes/electric/quarter_turn_3d",
     "use_case_name": "quarter_turn_3d",
+    "timeout":"0-01:00:00s",
     "platforms": {
         "apptainer":{
             "image": {
@@ -29,6 +30,9 @@
         "--electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/electric/Import/hsize\",\"value\": {{parameters.hsize.value}} }'"
     ],
     "outputs": [],
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/electric.information.adoc"
+    },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
@@ -73,178 +77,6 @@
                 "min": 0.03,
                 "max": 0.05,
                 "n_steps": 3
-            }
-        }
-    ],
-    "plots": [
-        {
-            "title": "Constructor step absolute performance",
-            "plot_types": [
-                "stacked_bar",
-                "table"
-            ],
-            "transformation": "performance",
-            "variables": [
-                "Constructor_createMesh",
-                "Constructor_createExporters",
-                "Constructor_graph",
-                "Constructor_matrixVector",
-                "Constructor_algebraicOthers"
-            ],
-            "names": [
-                "createMesh",
-                "createExporters",
-                "graph",
-                "matrixVector",
-                "algebraicOthers"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "hsize",
-                "label": "h size"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Constructor step relative performance",
-            "plot_types": [
-                "stacked_bar"
-            ],
-            "transformation": "relative_performance",
-            "variables": [
-                "Constructor_createMesh",
-                "Constructor_createExporters",
-                "Constructor_graph",
-                "Constructor_matrixVector",
-                "Constructor_algebraicOthers"
-            ],
-            "names": [
-                "createMesh",
-                "createExporters",
-                "graph",
-                "matrixVector",
-                "algebraicOthers"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "hsize",
-                "label": "h size"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Post Processing step performance",
-            "plot_types": [
-                "scatter"
-            ],
-            "transformation": "performance",
-            "variables": [
-                "PostProcessing_exportResults"
-            ],
-            "names": [
-                "exportResults"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "hsize",
-                "label": "h size"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": " Solve step absolute performance",
-            "plot_types": [
-                "stacked_bar",
-                "table"
-            ],
-            "transformation": "performance",
-            "variables": [
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve"
-            ],
-            "names": [
-                "algebraic-assembly",
-                "algebraic-solve"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "hsize",
-                "label": "h size"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": " Solve step relative performance",
-            "plot_types": [
-                "stacked_bar"
-            ],
-            "transformation": "relative_performance",
-            "variables": [
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve"
-            ],
-            "names": [
-                "algebraic-assembly",
-                "algebraic-solve"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "hsize",
-                "label": "h size"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Speedup by step",
-            "plot_types": [
-                "scatter"
-            ],
-            "transformation": "speedup",
-            "variables": [
-                "Constructor_init",
-                "PostProcessing_exportResults",
-                "Solve_solve"
-            ],
-            "names": [
-                "Constructor",
-                "PostProcessing",
-                "Solve"
-            ],
-            "xaxis": {
-                "parameter": "nb_tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "hsize",
-                "label": "h size"
-            },
-            "yaxis": {
-                "label": "Speedup"
             }
         }
     ]

@@ -67,12 +67,14 @@ class Parser():
         self.validateOptions()
         if self.args.dir:
             self.checkDirectoriesExist()
+        self.convertPathsToAbsolute()
         self.buildConfigList()
 
     def addArgs(self):
         """ Add the necessary arguments to the parser"""
         options = self.parser.add_argument_group("Options")
         options.add_argument('--exec-config', '-ec', required=True, type=str, metavar='EXEC_CONFIG', help='Path to JSON reframe execution configuration file, specific to a machine.')
+        options.add_argument('--plots-config', '-pc', required=False, default=None, type=str, help='Path to JSON plots configuration file, used to generate figures.')
         options.add_argument('--config', '-c', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON configuration files \nIn combination with --dir, specify only basenames for selecting JSON files')
         options.add_argument('--dir', '-d', type=str, nargs='+', action='extend', default=[], metavar='DIR', help='Name of the directory containing JSON configuration files')
         options.add_argument('--exclude', '-e', type=str, nargs='+', action='extend', default=[], metavar='EXCLUDE', help='To use in combination with --dir, mentioned files will not be launched')
@@ -81,6 +83,13 @@ class Parser():
         options.add_argument('--list-files', '-lf', action='store_true', help='List all benchmarking configuration file found')
         options.add_argument('--verbose', '-v', action='count', default=0, help='Select Reframe\'s verbose level by specifying multiple v\'s')
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
+
+    def convertPathsToAbsolute(self):
+        """ Converts arguments that contain paths to absolute. No change is made if absolute paths are provided"""
+        self.args.config = [os.path.abspath(c) for c in self.args.config]
+        self.args.exec_config = os.path.abspath(self.args.exec_config)
+        if self.args.plots_config:
+            self.args.plots_config = os.path.abspath(self.args.plots_config)
 
     def validateOptions(self):
         """ Checks that required args are present, and that they latch the expected format"""

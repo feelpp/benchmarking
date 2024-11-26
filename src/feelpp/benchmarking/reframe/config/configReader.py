@@ -59,29 +59,46 @@ class TemplateProcessor:
         return target
 
 
+# https://stackoverflow.com/questions/29959191/how-to-parse-json-file-with-c-style-comments
+class JSONWithCommentsDecoder(json.JSONDecoder):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+
+    def decode(self, s: str):
+        s = '\n'.join(l if not l.lstrip().startswith('//') else '' for l in s.split('\n'))
+        return super().decode(s)
+
 class ConfigReader:
     """ Class to load config files"""
-    def __init__(self, config_path, schema):
+    def __init__(self, config_paths, schema):
         """
         Args:
-            config_path (str) : Path to the config JSON file
+            config_paths (str | list[str]) : Path to the config JSON file. If a list is provided, files will be merged.
         """
         self.schema = schema
-        self.config = self.load(config_path, schema)
+        self.config = self.load(
+            config_paths if type(config_paths) == list else [config_paths],
+            schema
+        )
         self.processor = TemplateProcessor()
 
-    def load(self,config_path, schema):
+    def load(self,config_paths, schema):
         """ Loads the JSON file and checks if the file exists.
         Args:
-            config_path (str) : Path to the config JSON file
+            config_paths (list[str]) : Paths to the config JSON files to merge
             schema (cls) : The pydantic schema to validate the data
         Returns:
             Schema : parsed and validated configuration
         """
-        assert os.path.exists(os.path.abspath(config_path)), f"Cannot find config file {config_path}"
-        with open(config_path, "r") as cfg:
-            self.config = json.load(cfg)
-            self.config = schema(**self.config)
+
+        self.config = {}
+        for config in config_paths:
+            assert os.path.exists(os.path.abspath(config)), f"Cannot find config file {config}"
+            with open(config, "r") as cfg:
+                self.config.update(json.load(cfg, cls=JSONWithCommentsDecoder))
+
+        self.config = schema(**self.config)
+
         return self.config
 
     def updateConfig(self, flattened_replace = None):

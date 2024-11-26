@@ -12,6 +12,9 @@ on:
             benchmark_config:
                 description: 'Applcation related configuration'
                 required: True
+            girder_folder_id:
+                description: 'ID of the folder to upload to'
+                required: True
 
 jobs:
 
@@ -40,7 +43,6 @@ jobs:
         runs-on: self-ubuntu-22.04
         outputs:
             matrix: ${{ steps.hpc-systems.outputs.matrix }}
-            results_upload_id: ${{ steps.gather_arguments.outputs.results_upload_id }}
             executable_name: ${{ steps.gather_arguments.outputs.executable_name }}
             use_case: ${{ steps.gather_arguments.outputs.use_case }}
         steps:
@@ -92,11 +94,6 @@ jobs:
         -   name: Gather arguments
             id: gather_arguments
             run: |
-                if [ "$(jq -r '.upload.platform' ./tmp/benchmark_config.json)" == "girder" ]; then
-                    echo "results_upload_id=$(jq -r '.upload.folder_id' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
-                else
-                    echo "Platform not supported"
-                fi
                 echo "executable_name=$(jq -r '.executable' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
                 echo "use_case=$(jq -r '.use_case_name' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
         -   name: Upload configs
@@ -134,7 +131,7 @@ jobs:
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
-                execute-benchmark -ec ${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json --move_results ./tmp/results/ -v
+                execute-benchmark -ec ./${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json --move_results ./tmp/results/ -v
         -   name: Upload reframe report
             uses: actions/upload-artifact@v4
             with:
@@ -162,14 +159,22 @@ jobs:
             run: |
                 source .venv/bin/activate
                 new_foldername=./tmp/$(date +"%Y_%m_%dT%H_%M_%S")
-                mv ./tmp/results/ new_foldername
-                girder-upload --directory --girder_id ${{needs.factory.outputs.results_upload_id}}
-                rm -r new_foldername
+                mv ./tmp/results/ $new_foldername
+                if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                    girder_upload_id=${{ github.event.inputs.girder_folder_id }};
+                elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
+                    girder_upload_id=${{ github.event.client_payload.girder_folder_id }};
+                fi
+                girder-upload --directory $new_foldername --girder_id $girder_upload_id
+                rm -r $new_foldername
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name:  Reset reports
             run: |
                 rm -r ./docs/modules/ROOT/pages/applications/
+                rm -r ./docs/modules/ROOT/pages/machines/
+                rm -r ./docs/modules/ROOT/pages/reports/
+                rm -r ./docs/modules/ROOT/pages/use_cases/
                 rm -r ./reports/
         -   name: Render reports
             run: |
@@ -179,7 +184,7 @@ jobs:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
 
         -   name: Create Pull Request
-            uses: peter-evans/create-pull-request@v6
+            uses: peter-evans/create-pull-request@v7
             with:
                 title: "Add benchmark for ${{ needs.factory.outputs.executable_name }} - ${{ needs.factory.outputs.use_case }}"
                 body: |

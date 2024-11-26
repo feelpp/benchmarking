@@ -3,6 +3,7 @@ from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
+from feelpp.benchmarking.reframe.outputs import OutputsHandler
 
 import reframe as rfm
 import os, re, shutil
@@ -143,7 +144,7 @@ class AppSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         if machine_config.prog_environment == "builtin":
-            rfm_test.executable = os.path.join(self.reader.config.executable_dir,self.reader.config.executable) if self.reader.config.executable_dir else self.reader.config.executable
+            rfm_test.executable = self.reader.config.executable
             rfm_test.executable_opts = self.reader.config.options
         else:
             rfm_test.container_platform.command = f"{self.reader.config.executable} {' '.join(self.reader.config.options)}"
@@ -151,6 +152,7 @@ class AppSetup(Setup):
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):
     """ Reframe test used to setup the regression test"""
+    report_dir_path = variable(str)
 
     #TODO: Find a way to avoid env variables
     machine_setup = MachineSetup(str(os.environ.get("MACHINE_CONFIG_FILEPATH")))
@@ -176,6 +178,11 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         """ Sets the necessary post-init configurations"""
         self.app_setup.setupAfterInit(self)
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
+
+        #Used only to copy description
+        temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
+        temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
+
 
     @run_before('run')
     def updateSetups(self):

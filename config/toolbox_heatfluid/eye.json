@@ -2,6 +2,7 @@
     "executable": "feelpp_toolbox_heatfluid",
     "output_directory": "{{machine.output_app_dir}}/toolboxes/heatlfuid/eye",
     "use_case_name": "eye",
+    "timeout":"0-01:00:00s",
     "platforms": {
         "apptainer":{
             "image": {
@@ -30,6 +31,10 @@
         "--repository.append.np 0",
         "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"/data/home/saigre/pulications/mesh.eye/mesh/Mr/{{parameters.meshes.value}}/Eye_Mesh3D_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
+    "additional_files":{
+        "description_filepath":"{{output_directory}}/description.adoc",
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heatfluid.information.adoc"
+    },
     "outputs": [],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
@@ -87,93 +92,6 @@
         {
             "name": "solver",
             "sequence": ["simple"]
-        },
-        {
-            "name": "environment",
-            "sequence":["{{machine.prog_environment}}"]
-        }
-    ],
-    "plots": [
-        {
-            "title": "Performance",
-            "plot_types": [ "stacked_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_assembly",
-                "Solve_solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "meshes",
-                "label": "Mesh"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
-            }
-        },
-        {
-            "title": "Relative Performance",
-            "plot_types": [ "stacked_bar" ],
-            "transformation": "relative_performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_assembly",
-                "Solve_solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "meshes",
-                "label": "Mesh"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
-            }
-        },
-        {
-            "title": "Speedup",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "variables": [
-                "Constructor_init",
-                "Solve_assembly",
-                "Solve_solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "meshes",
-                "label": "Mesh"
-            },
-            "yaxis": {
-                "label": "Speedup"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
-            }
         }
     ]
 }
