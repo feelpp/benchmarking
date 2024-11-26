@@ -85,7 +85,7 @@ class MachineSetup(Setup):
             if not os.path.exists(platform.image.name):
                 raise FileExistsError(f"Cannot find image {platform.image.name}")
             rfm_test.container_platform.image = platform.image.name
-            rfm_test.container_platform.options = platform.options
+            rfm_test.container_platform.options = platform.options + self.reader.config.containers[self.reader.config.prog_environment].options
             rfm_test.container_platform.workdir = None
 
     def setTags(self,rfm_test):
