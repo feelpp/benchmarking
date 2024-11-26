@@ -24,7 +24,10 @@ class GirderHandler(DownloadHandler):
     def initClient(self):
         """ Initialize the Girder client """
         self.client = girder_client.GirderClient(apiUrl=self.base_url)
-        self.client.authenticate(apiKey=os.environ["GIRDER_API_KEY"])
+        if os.environ.get("GIRDER_API_KEY"):
+            self.client.authenticate(apiKey=os.environ["GIRDER_API_KEY"])
+        else:
+            print("WARNING: Girder client was not initialized.")
 
     def downloadFolder(self, folder_id, output_dir):
         """ Download a folder from Girder recursively

@@ -8,7 +8,7 @@ class ScalabilityHandler:
         self.directory = scalability_config.directory
         self.stages =  scalability_config.stages
         self.custom_variables = scalability_config.custom_variables
-        self.filepaths = {k.name if k.name else k.file : os.path.join(self.directory,k.file) for k in self.stages}
+        self.filepaths = {k.name if k.name else k.filepath : os.path.join(self.directory,k.filepath) for k in self.stages}
 
     def getPerformanceVariables(self,index):
         """ Opens and parses the performance variable values depending on the config setup.
@@ -22,7 +22,7 @@ class ScalabilityHandler:
                 pass
             elif stage.format == "tsv":
                 #WARNING: This assumes that index is in column 0
-                with open(self.filepaths[stage.name if stage.name else stage.file],"r") as f:
+                with open(self.filepaths[stage.name if stage.name else stage.filepath],"r") as f:
                     lines = f.readlines()
 
                 columns = re.sub("\s+"," ",lines[0].replace("# ","")).strip().split(" ")

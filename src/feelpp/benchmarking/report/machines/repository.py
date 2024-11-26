@@ -35,6 +35,6 @@ class MachineRepository(ModuleRepository):
                 if machine.id not in app_info:
                     continue
                 machine.tree[application] = {}
-                for use_case_id in app_info[machine.id]["use_cases"]:
+                for use_case_id, use_case in app_info[machine.id].items():
                     use_case = use_cases.get(use_case_id)
                     machine.tree[application][use_case] = []
