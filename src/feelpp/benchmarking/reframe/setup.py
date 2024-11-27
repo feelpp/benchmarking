@@ -196,20 +196,39 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             value = getattr(self,param_name)
             if param_name == "nb_tasks":
 
-                if "nodes" in value:
-                    self.num_nodes = value["nodes"] #This does not do anything...
-                    self.job.options += [f'--nodes={self.num_nodes}']
+                if "tasks" in value and "tasks_per_node" in value:
+                    self.num_tasks_per_node = int(value["tasks_per_node"])
+                    self.num_tasks = int(value["tasks"])
 
-                if "tasks_per_node" in value:
-                    self.num_tasks_per_node = value["tasks_per_node"]
-                    self.num_tasks = self.num_tasks_per_node * (self.num_nodes if "node" in value else 1)
+                    assert self.num_tasks % self.num_tasks_per_node == 0, f"Number of tasks is not divisible by tasks per node. ( {self.num_tasks} , {self.num_tasks_per_node})"
+                    assert self.num_tasks > 0 and self.num_tasks >= self.num_tasks_per_node > 0, "Tasks and tasks per node should be positive."
+                    assert self.num_tasks_per_node <= self.current_partition.processor.num_cpus, f"A node has not enough capacity ({self.current_partition.processor.num_cpus}, {self.num_tasks_per_node})"
+
+                elif "tasks_per_node" in value and "nodes" in value:
+                    self.num_tasks_per_node = int(value["tasks_per_node"])
+                    self.num_nodes = int(value["nodes"])
+                    self.num_tasks = self.num_tasks_per_node * self.num_nodes
+
+                    assert self.num_tasks_per_node <= self.current_partition.processor.num_cpus, f"A node has not enough capacity ({self.current_partition.processor.num_cpus}, {self.num_tasks_per_node})"
+                    assert self.num_tasks > 0, "Number of tasks must be strictly positive"
+
+                elif "tasks" in value and "nodes" in value:
+                    raise NotImplementedError("Number of tasks and Nodes combination is not yet supported")
+                    self.num_tasks = int(value["tasks"])
+                    self.num_nodes = int(value["nodes"])
+
+                    assert self.num_tasks > 0 and self.num_nodes > 0, "Number of Tasks and nodes should be strictly positive."
+                    assert self.num_nodes >= np.ceil(self.num_tasks/self.current_partition.processor.num_cpus), f"Cannot accomodate {self.num_tasks} tasks in {self.num_nodes} nodes"
+
                 elif "tasks" in value:
-                    self.num_tasks = value["tasks"]
+                    self.num_tasks = int(value["tasks"])
+
+                    assert self.num_tasks > 0, "Number of Tasks and nodes should be strictly positive."
+
                 else:
-                    raise ValueError("The Tasks parameter should contain either (tasks_per_node,nodes), (tasks,nodes) or (tasks).")
+                    raise ValueError("The Tasks parameter should contain either (tasks_per_node,nodes), (tasks,nodes), (tasks) or (tasks, tasks_per_node)")
 
                 self.job.options += ['--threads-per-core=1']
-
                 self.num_cpus_per_task = 1
                 self.exclusive_access = value["exclusive_access"] if "exclusive_access" in value else True
 
