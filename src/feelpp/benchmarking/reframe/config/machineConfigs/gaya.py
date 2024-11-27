@@ -12,7 +12,7 @@ site_configuration = {
                     'launcher': 'mpiexec',
                     'max_jobs': 8,
                     'access': ['--partition=production'],
-                    'environs': ['builtin','apptainer','builtin_hpcx','apptainer_hpcx'],
+                    'environs': ['default','hpcx'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
                         "export PATH=/opt/apptainer/v1.3.5/apptainer/bin/:$PATH"
