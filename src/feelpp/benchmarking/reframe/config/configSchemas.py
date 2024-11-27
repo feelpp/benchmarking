@@ -12,16 +12,15 @@ class Stage(BaseModel):
     name:str
     filepath:str
     format:Literal["csv","tsv","json"]
-    variables_path:Optional[str] = None
+    variables_path:Optional[Union[str,List[str]]] = []
 
     @model_validator(mode="after")
     def checkFormatOptions(self):
         if self.format == "json":
             if self.variables_path == None:
                 raise ValueError("variables_path must be specified if format == json")
-
-            if "*" not in self.variables_path:
-                raise ValueError("variables_path must contain a wildcard '*'")
+            if type(self.variables_path) == str:
+                self.variables_path = [self.variables_path]
 
         return self
 
