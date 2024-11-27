@@ -40,28 +40,14 @@ site_configuration = {
     ],
     'environments': [
         {
-            'name': 'builtin',
+            'name': 'default',
             'modules': [],
             'cc': 'clang',
             'cxx': 'clang++',
             'target_systems': ['gaya:production']
         },
         {
-            'name': 'builtin_hpcx',
-            'modules': ['hpcx'],
-            'cc': 'clang',
-            'cxx': 'clang++',
-            'target_systems': ['gaya:production']
-        },
-        {
-            'name': 'apptainer',
-            'modules': [],
-            'cc': 'clang',
-            'cxx': 'clang++',
-            'target_systems': ['gaya:production']
-        },
-        {
-            'name': 'apptainer_hpcx',
+            'name': 'hpcx',
             'modules': ['hpcx'],
             'cc': 'clang',
             'cxx': 'clang++',
