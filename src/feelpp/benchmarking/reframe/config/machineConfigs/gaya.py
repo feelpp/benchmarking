@@ -12,6 +12,7 @@ site_configuration = {
                     'launcher': 'mpiexec',
                     'max_jobs': 8,
                     'access': ['--partition=production'],
+                    'sched_options': { 'use_nodes_option': True },
                     'environs': ['builtin','apptainer'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
