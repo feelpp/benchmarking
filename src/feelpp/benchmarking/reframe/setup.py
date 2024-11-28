@@ -67,13 +67,24 @@ class MachineSetup(Setup):
         """
         self.setLaunchOptions(rfm_test)
 
+    def dispatchEnvironments(self,rfm_test):
+        current_partition_shortname = rfm_test.current_partition.fullname.split(":")[-1]
+        if rfm_test.current_environ.name not in self.reader.config.environment_map[current_partition_shortname]:
+            rfm_test.valid_prog_environs = []
+            rfm_test.valid_systems = []
+            rfm_test.skip(f"Skiping: {rfm_test.current_environ.name } is not specified for partition {current_partition_shortname} : {self.reader.config.environment_map[current_partition_shortname]}")
+
     def setValidEnvironments(self, rfm_test):
         """ Sets the valid_systems and valid_prog_environs attributes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        #WARNING: If the partition does not exist, NO ERROR WILL BE THROWN. It will just be skipped.
+        #Consider adding this to the docs
         rfm_test.valid_systems = [f"{self.reader.config.machine}:{part}" for part in self.reader.config.partitions]
         rfm_test.valid_prog_environs = self.reader.config.prog_environments
+        print("Valid Systems after init ", rfm_test.valid_systems)
+        print("Valid envs after init ", rfm_test.valid_prog_environs)
 
     def setPlatform(self, rfm_test,app_config):
         """ Sets the container_platform attributes
@@ -184,6 +195,9 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
         temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
 
+    @run_after('setup')
+    def setupAfterSetup(self):
+        self.machine_setup.dispatchEnvironments(self)
 
     @run_before('run')
     def updateSetups(self):
