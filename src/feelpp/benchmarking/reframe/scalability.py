@@ -1,5 +1,6 @@
 import reframe.utility.sanity as sn
 import os, re,json
+from feelpp.benchmarking.reframe.config.configReader import TemplateProcessor
 
 class ScalabilityHandler:
     """ Class to handle scalability related attributes"""
@@ -37,34 +38,42 @@ class ScalabilityHandler:
                 for i, col in enumerate(columns[1:]): #UNIT TEMPORARY HOTFIX
                     perf_variables.update( { f"{stage.name}_{col}" if stage.name else col: sn.make_performance_function(vars[i],unit="iter" if col.endswith("-niter") else "s")  })
             elif stage.format == "json":
-                splitted_keys = stage.variables_path.split("*")
+                for varpath in stage.variables_path:
+                    splitted_keys = varpath.split("*")
 
-                if len(splitted_keys) != 2:
-                    raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
+                    if len(splitted_keys) > 2:
+                        raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
 
-                left_keys = splitted_keys[0].strip(".").split(".")
-                right_keys = splitted_keys[1].strip(".").split(".")
+                    left_keys = splitted_keys[0].strip(".").split(".")
 
-                with open(self.filepaths[stage.name if stage.name else stage.filepath],"r") as f:
-                    j = json.load(f)
 
-                for left_key in left_keys:
-                    if left_key:
-                        j = j[left_key]
+                    with open(self.filepaths[stage.name if stage.name else stage.file],"r") as f:
+                        j = json.load(f)
 
-                wildcards = j.keys()
-                fields = {}
-                for wildcard in wildcards:
-                    fields[wildcard] = j[wildcard]
-                    for right_key in right_keys:
-                        if right_key:
-                            fields[wildcard] = fields[wildcard][right_key]
+                    for left_key in left_keys:
+                        if left_key:
+                            j = j[left_key]
 
-                for k,v in fields.items():
-                    perf_variables.update( {
-                        f"{stage.name}_{k}" if stage.name else k
-                        : sn.make_performance_function(sn.defer(v),unit="s")
-                    })
+                    fields = {}
+                    if len(splitted_keys) == 1:
+                        fields[left_keys[-1]] = j
+                    else:
+                        right_keys = splitted_keys[1].strip(".").split(".")
+
+                        wildcards = j.keys()
+                        for wildcard in wildcards:
+                            fields[wildcard] = j[wildcard]
+                            for right_key in right_keys:
+                                if right_key:
+                                    fields[wildcard] = fields[wildcard][right_key]
+
+                    fields = TemplateProcessor.flattenDict(fields)
+
+                    for k,v in fields.items():
+                        perf_variables.update( {
+                            f"{stage.name}_{k}" if stage.name else k
+                            : sn.make_performance_function(sn.defer(v),unit="s")
+                        })
 
             else:
                 raise NotImplementedError
