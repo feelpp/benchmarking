@@ -68,6 +68,8 @@ class MachineSetup(Setup):
         self.setLaunchOptions(rfm_test)
 
     def dispatchEnvironments(self,rfm_test):
+        if not self.reader.config.environment_map:
+            return
         current_partition_shortname = rfm_test.current_partition.fullname.split(":")[-1]
         if rfm_test.current_environ.name not in self.reader.config.environment_map[current_partition_shortname]:
             rfm_test.valid_prog_environs = []
