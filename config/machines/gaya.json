@@ -1,6 +1,9 @@
 {
     "machine": "gaya",
-    "targets":["production:apptainer:","production:apptainer:hpcx"],
+    "targets":["production:apptainer:"],
+    // "partitions":["*"],
+    // "platform":"apptainer",
+    // "prog_environments":["*"],
     "execution_policy": "async",
     "launch_options":["-bind-to core"],
     "reframe_base_dir":"$PWD/build/reframe",
