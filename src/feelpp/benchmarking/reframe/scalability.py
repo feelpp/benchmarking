@@ -47,7 +47,7 @@ class ScalabilityHandler:
                     left_keys = splitted_keys[0].strip(".").split(".")
 
 
-                    with open(self.filepaths[stage.name if stage.name else stage.file],"r") as f:
+                    with open(self.filepaths[stage.name if stage.name else stage.filepath],"r") as f:
                         j = json.load(f)
 
                     for left_key in left_keys:
