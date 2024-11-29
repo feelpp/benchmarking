@@ -2,6 +2,7 @@
 
 The core of the _Feel++ benchmarking_ framework are its configuration files.
 Users must provide the following configuration files:
+
 - A complete system description, based on ReFrame's configuration files.
 - A machine specific configuration, defining HOW to execute benchmarks.
 - A benchmark (or application) specific configuration, defining WHAT should be executed.
@@ -34,6 +35,7 @@ Processor bindings and other launcher options should be specified as a resource 
 
 Benchmarking configuration files support a special *placeholder* syntax, using double curly braces `{{placeholder}}`.
 This syntax is specially useful for:
+
 - Refactoring configuration fields.
 - Replacing with values from other configuration files, such as the machine config.
 - Making use of code variables modified at runtime, by having reserved keywords.
@@ -56,12 +58,12 @@ For replacing a value coming from the machine configuration, simply prepend any 
 === Reserved Keywords
 
 The framework is equiped with the following reserved keywords for placeholders:
+
 - `{{instance}}` : Returns the hashcode of the current ReFrame test.
-- `{{.value}}`: The value keyword must be appended to a parameter name.
+- `{{.value}}`: The value keyword must be appended to a parameter name (e.g. `{{parameters.my_param.value}}`). It fetches the current value of a given runtime variable (such as a parameter). More information on [Parameters TODO link]
 
+=== Nested placeholders
 
-[NOTE]
-====
 Nested placeholders are supported.
 
 For example, lets say you have a _machine_ configuration containing
@@ -81,12 +83,10 @@ And a benchmark configuration:
 "nested_placeholder":"My platform dependent value is {{ platforms.{{machine.platform}} }}"
 ----
 
-====
-
 The `nested_placeholder` field will then take the value of "My platform dependent value is my_buildin_value", because the machine config specifies that "platform" is "builtin". But this will change if "platform" is set to "other".
 
-[NOTE]
-====
+=== Using environment variables
+
 Environment variables can be specifed in any configuration file by prepending a `$`.
 For example,
 
@@ -94,6 +94,11 @@ For example,
 ----
 "my_home": "$HOME"
 ----
+
+[NOTE]
+====
+Shorthand representations, such as `~` are not supported, and relative paths starting by `.` are not supported.
+For relative file or folder paths, use `$PWD` instead.
 ====
 
 == Machine configuration

@@ -43,17 +43,20 @@ The executable is already provided as _tests/data/parallelSum_. You can update i
 mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
 ----
 
-Local configuration files can be found under _config/test_parallelSum/_. They are explained more in detail in the following configuration section.
-This folder cantins a _parallelSum.json_ file holding are benchmark related configurations. That is, instructions on what the benchmark should be. It also contains a `plots.json` file holding descriptions on the figures that should be generated for this benchmark.
-Additionally, machine specific configurations are found under _config/machines/_. These files contain general information on the environments to run the tests on, including containers, special options and base directories for inputs and outputs of the applications.
-It is important to know that these configuration files are user dependent, and will most certainly vary depending on the resource you will execute benchmarks on. For a simple example, the _local.json_ file can be used for running the application on a personal Linux or MacOS computer.
+// Local configuration files can be found under _config/test_parallelSum/_. They are explained more in detail in the following configuration section.
+// This folder cantins a _parallelSum.json_ file holding are benchmark related configurations. That is, instructions on what the benchmark should be. It also contains a `plots.json` file holding descriptions on the figures that should be generated for this benchmark.
+// Additionally, machine specific configurations are found under _config/machines/_. These files contain general information on the environments to run the tests on, including containers, special options and base directories for inputs and outputs of the applications.
+// It is important to know that these configuration files are user dependent, and will most certainly vary depending on the resource you will execute benchmarks on. For a simple example, the _local.json_ file can be used for running the application on a personal Linux or MacOS computer.
 
 Configuration files might require some changes for specific configurations depending on the system you are running the framework.
 
 Finally, to benchmark the test application, generate the reports and plot the figures, run
 [source,cmd]
 ----
-execute-benchmark --machine-config config/machines/local.json --benchmark-config config/test_parallelSum/parallelSum.json --plots-config config/test_parallelSum/plots.json --website
+execute-benchmark --machine-config config/machines/local.json \
+                    --benchmark-config config/test_parallelSum/parallelSum.json \
+                    --plots-config config/test_parallelSum/plots.json \
+                    --website
 ----
 
 The `--website` option will start an http-server on localhost, so the website can be visualized, check the console for more information.
