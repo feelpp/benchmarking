@@ -1,0 +1,105 @@
+= Configuration guide
+
+The core of the _Feel++ benchmarking_ framework are its configuration files.
+Users must provide the following configuration files:
+- A complete system description, based on ReFrame's configuration files.
+- A machine specific configuration, defining HOW to execute benchmarks.
+- A benchmark (or application) specific configuration, defining WHAT should be executed.
+- A figure description, containing information of what to display on the final reports.
+
+These files, with the exeption of ReFrame configuration, are equiped with a special placeholder syntax, allowing to dynamically update the files along the tests execution.
+Aditionally, multiple environments can be specified, including Apptainer containers.
+
+== System configuration
+
+The system configuration files need to be placed under _src/feelpp/benchmarking/reframe/config/machineConfigs_, and are strictly ReFrame dependent. A single Python file should be provided per machine. Please follow https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame's configuration file reference] for precise settings.
+
+Example configurations are provided for the _Gaya_ machine and for a simple single node 8-core system.
+
+[NOTE]
+====
+Processor bindings and other launcher options should be specified as a resource under the desired partition, with the `launcher_options` name field value for example. For example,
+[source,json]
+----
+"resources": [
+    {
+        "name":"launcher_options",
+        "options":["-bind-to","core"]
+    }
+]
+----
+====
+
+== Magic strings
+
+Benchmarking configuration files support a special *placeholder* syntax, using double curly braces `{{placeholder}}`.
+This syntax is specially useful for:
+- Refactoring configuration fields.
+- Replacing with values from other configuration files, such as the machine config.
+- Making use of code variables modified at runtime, by having reserved keywords.
+- Fetching defined parameters values that change during runtime.
+
+To get a value of a field in the same file, the field path must be separated by dots. For example,
+[source,json]
+----
+"field_a":{
+    "field_b":{
+        "field_c": "my value"
+    }
+}
+
+"example_placeholder": "{{field_a.field_b.field_c}}"
+----
+
+For replacing a value coming from the machine configuration, simply prepend any placeholder path with `machine.`
+
+=== Reserved Keywords
+
+The framework is equiped with the following reserved keywords for placeholders:
+- `{{instance}}` : Returns the hashcode of the current ReFrame test.
+- `{{.value}}`: The value keyword must be appended to a parameter name.
+
+
+[NOTE]
+====
+Nested placeholders are supported.
+
+For example, lets say you have a _machine_ configuration containing
+[source,json]
+----
+"platform":"builtin"
+----
+
+And a benchmark configuration:
+
+[source,json]
+----
+"platforms":{
+    "builtin":"my_builtin_value",
+    "other":"my_other_value"
+},
+"nested_placeholder":"My platform dependent value is {{ platforms.{{machine.platform}} }}"
+----
+
+====
+
+The `nested_placeholder` field will then take the value of "My platform dependent value is my_buildin_value", because the machine config specifies that "platform" is "builtin". But this will change if "platform" is set to "other".
+
+[NOTE]
+====
+Environment variables can be specifed in any configuration file by prepending a `$`.
+For example,
+
+[source,json]
+----
+"my_home": "$HOME"
+----
+====
+
+== Machine configuration
+
+== Benchmark configuration
+
+== Overview configuration
+
+== Plots configuration
