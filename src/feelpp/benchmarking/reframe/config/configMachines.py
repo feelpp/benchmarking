@@ -23,6 +23,7 @@ class MachineConfig(BaseModel):
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     reframe_base_dir:str
+    reports_base_dir:str
     input_dataset_base_dir:str
     output_app_dir:str
     containers:Optional[Dict[str,Container]] = {}
