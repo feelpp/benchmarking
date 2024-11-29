@@ -21,6 +21,12 @@ site_configuration = {
                     'processor': {
                         'num_cpus': 128
                     },
+                    'resources': [
+                        {
+                            'name':'launcher_options',
+                            'options':['-bind-to','core']
+                        }
+                    ],
                     'devices': [
                         {
                             'type': 'cpu',
