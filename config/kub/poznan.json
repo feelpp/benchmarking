@@ -1,5 +1,5 @@
 {
-    "executable": "/data/home/cladellash/ktirio-urban-building/build/src/cpp/feelpp_kub_cem",
+    "executable": "feelpp_kub_cem",
     "output_directory": "{{machine.output_app_dir}}/kub",
     "use_case_name": "poznan",
     "timeout":"0-0:15:0",
@@ -30,13 +30,13 @@
         "stages": [
             {
                 "name":"",
-                "file": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/timers.json",
+                "filepath": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/timers.json",
                 "format": "json",
                 "variables_path":"*"
             },
             {
                 "name":"",
-                "file": "logs/timers.json",
+                "filepath": "logs/timers.json",
                 "format": "json",
                 "variables_path":"*"
             }
@@ -45,10 +45,6 @@
     "sanity": {
         "success": ["[ Stopping Feel++ ]"],
         "error": ["Error"]
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "672a1452b0e95728eb010b38"
     },
     "parameters": [
         {
