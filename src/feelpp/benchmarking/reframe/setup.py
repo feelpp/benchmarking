@@ -67,25 +67,38 @@ class MachineSetup(Setup):
         """
         self.setLaunchOptions(rfm_test)
 
+    def dispatchEnvironments(self,rfm_test):
+        if not self.reader.config.environment_map:
+            return
+        current_partition_shortname = rfm_test.current_partition.fullname.split(":")[-1]
+        if rfm_test.current_environ.name not in self.reader.config.environment_map[current_partition_shortname]:
+            rfm_test.valid_prog_environs = []
+            rfm_test.valid_systems = []
+            rfm_test.skip(f"Skiping: {rfm_test.current_environ.name } is not specified for partition {current_partition_shortname} : {self.reader.config.environment_map[current_partition_shortname]}")
+
     def setValidEnvironments(self, rfm_test):
         """ Sets the valid_systems and valid_prog_environs attributes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        #WARNING: If the partition does not exist, NO ERROR WILL BE THROWN. It will just be skipped.
+        #Consider adding this to the docs
         rfm_test.valid_systems = [f"{self.reader.config.machine}:{part}" for part in self.reader.config.partitions]
-        rfm_test.valid_prog_environs = [self.reader.config.prog_environment]
+        rfm_test.valid_prog_environs = self.reader.config.prog_environments
+        print("Valid Systems after init ", rfm_test.valid_systems)
+        print("Valid envs after init ", rfm_test.valid_prog_environs)
 
     def setPlatform(self, rfm_test,app_config):
         """ Sets the container_platform attributes
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        platform = app_config.platforms[self.reader.config.prog_environment]
-        if self.reader.config.prog_environment != "builtin":
+        platform = app_config.platforms[self.reader.config.platform]
+        if self.reader.config.platform != "builtin":
             if not os.path.exists(platform.image.name):
                 raise FileExistsError(f"Cannot find image {platform.image.name}")
             rfm_test.container_platform.image = platform.image.name
-            rfm_test.container_platform.options = platform.options + self.reader.config.containers[self.reader.config.prog_environment].options
+            rfm_test.container_platform.options = platform.options + self.reader.config.containers[self.reader.config.platform].options
             rfm_test.container_platform.workdir = None
 
     def setTags(self,rfm_test):
@@ -143,7 +156,7 @@ class AppSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        if machine_config.prog_environment == "builtin":
+        if machine_config.platform == "builtin":
             rfm_test.executable = self.reader.config.executable
             rfm_test.executable_opts = self.reader.config.options
         else:
@@ -159,6 +172,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     app_setup = AppSetup(str(os.environ.get("APP_CONFIG_FILEPATH")),machine_setup.reader.config)
 
     use_case = variable(str,value=app_setup.reader.config.use_case_name)
+    platform = variable(str, value=machine_setup.reader.config.platform)
 
     parameters = {}
 
@@ -183,6 +197,9 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
         temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
 
+    @run_after('setup')
+    def setupAfterSetup(self):
+        self.machine_setup.dispatchEnvironments(self)
 
     @run_before('run')
     def updateSetups(self):
@@ -222,6 +239,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
                 elif "tasks" in value:
                     self.num_tasks = int(value["tasks"])
+                    self.num_tasks_per_node = min(self.num_tasks,self.current_partition.processor.num_cpus)
 
                     assert self.num_tasks > 0, "Number of Tasks and nodes should be strictly positive."
 
