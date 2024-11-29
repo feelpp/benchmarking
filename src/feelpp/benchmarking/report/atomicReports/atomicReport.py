@@ -66,12 +66,7 @@ class AtomicReport:
         hash_param_map = {}
         for run in data["runs"]:
             for testcase in run["testcases"]:
-                if "hash" in testcase:
-                    hash = testcase["hash"]
-                elif "hashcode" in testcase:
-                    hash = testcase["hashcode"]
-                else:
-                    raise ValueError("Hashcode not found in reframe report")
+                hash = testcase["hash"]
                 hash_param_map[hash] = {"check_params":testcase["check_params"]}
 
         return hash_param_map
