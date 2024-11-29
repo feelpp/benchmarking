@@ -239,6 +239,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
                 elif "tasks" in value:
                     self.num_tasks = int(value["tasks"])
+                    self.num_tasks_per_node = min(self.num_tasks,self.current_partition.processor.num_cpus)
 
                     assert self.num_tasks > 0, "Number of Tasks and nodes should be strictly positive."
 
