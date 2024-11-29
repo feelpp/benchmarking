@@ -24,7 +24,7 @@ class MachineConfig(BaseModel):
     execution_policy:Optional[Literal["serial","async"]] = "serial"
     reframe_base_dir:str
     reports_base_dir:str
-    input_dataset_base_dir:str
+    input_dataset_base_dir:Optional[str] = None
     output_app_dir:str
     containers:Optional[Dict[str,Container]] = {}
 
