@@ -59,7 +59,7 @@ jobs:
     - name: Test benchmarks
       run: |
         source .venv/bin/activate
-        execute-benchmark -ec config/machines/gaya.json --config config/tests_parallelSum/parallelSum.json -pc config/tests_parallelSum/plots.json
+        execute-benchmark -mc config/machines/gaya.json -bc config/tests_parallelSum/parallelSum.json -pc config/tests_parallelSum/plots.json
         echo $?
     - name: Dry-run reports
       run: |
