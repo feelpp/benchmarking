@@ -79,11 +79,12 @@ int main(int argc, char** argv)
         }
         else
             std::cerr << "[OOPSIE] Error opening file for writing [outputs]." << std::endl;
+
+        std::cout << "[SUCCESS]" << std::endl;
     }
 
     MPI_Finalize();
 
-    std::cout << "[SUCCESS]" << std::endl;
 
     return 0;
 }
