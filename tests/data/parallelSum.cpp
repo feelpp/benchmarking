@@ -50,7 +50,7 @@ int main(int argc, char** argv)
         std::cout << "Communication time: " << communication_time << " seconds\n";
 
         if (!fs::exists(output_dir))
-            fs::create_directory(output_dir);
+            fs::create_directories(output_dir);
 
         fs::path filename = "scalability.json";
 

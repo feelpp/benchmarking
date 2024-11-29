@@ -1,20 +1,20 @@
 {
-    "executable": "$PWD/tests/data/parallelSum",
-    "output_directory": "{{machine.output_app_dir}}/tests/parallelSum",
+    "executable": "{{machine.input_dataset_base_dir}}/tests/data/parallelSum",
+    "output_directory": "{{machine.output_app_dir}}/tests/data/outputs/parallelSum",
     "use_case_name": "parallel_sum",
     "timeout":"0-0:5:0",
     "options": [
         "{{parameters.elements.value}}",
-        "{{output_directory}}/outputs/{{instance}}"
+        "{{output_directory}}/{{instance}}"
     ],
     "outputs": [
         {
-            "filepath":"{{output_directory}}/outputs/{{instance}}/outputs.csv",
+            "filepath":"{{output_directory}}/{{instance}}/outputs.csv",
             "format":"csv"
         }
     ],
     "scalability": {
-        "directory": "{{output_directory}}/outputs/{{instance}}/",
+        "directory": "{{output_directory}}/{{instance}}/",
         "stages": [
             {
                 "name":"",
