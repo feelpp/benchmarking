@@ -56,7 +56,7 @@ def main_cli():
     parser = Parser()
     parser.printArgs()
 
-    machine_reader = ConfigReader(parser.args.exec_config,MachineConfig)
+    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig)
     machine_reader.updateConfig()
 
     #Sets the cachedir and tmpdir directories for containers
@@ -71,11 +71,11 @@ def main_cli():
 
     cmd_builder = CommandBuilder(machine_reader.config,parser)
 
-    os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.exec_config
+    os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.machine_config
 
     website_config = WebsiteConfig(machine_reader.config.reports_base_dir)
 
-    for config_filepath in parser.args.config:
+    for config_filepath in parser.args.benchmark_config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
 
 

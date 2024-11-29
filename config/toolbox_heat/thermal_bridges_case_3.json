@@ -21,7 +21,7 @@
         }
     },
     "options": [
-        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/case3.cfg",
+        "--config-files {{platforms.{{machine.platform}}.input_dir}}/case3.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -44,17 +44,17 @@
         "stages": [
             {
                 "name": "Constructor",
-                "file": "heat.scalibility.HeatConstructor.data",
+                "filepath": "heat.scalibility.HeatConstructor.data",
                 "format": "tsv"
             },
             {
                 "name": "PostProcessing",
-                "file": "heat.scalibility.HeatPostProcessing.data",
+                "filepath": "heat.scalibility.HeatPostProcessing.data",
                 "format": "tsv"
             },
             {
                 "name": "Solve",
-                "file": "heat.scalibility.HeatSolve.data",
+                "filepath": "heat.scalibility.HeatSolve.data",
                 "format": "tsv"
             }
         ]
@@ -62,10 +62,6 @@
     "sanity": {
         "success": [],
         "error": []
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "672a1269b0e95728eb010b36"
     },
     "parameters": [
         {

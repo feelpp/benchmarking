@@ -21,7 +21,7 @@
         }
     },
     "options": [
-        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/3d.cfg",
+        "--config-files {{platforms.{{machine.platform}}.input_dir}}/3d.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -38,17 +38,17 @@
         "stages": [
             {
                 "name": "Constructor",
-                "file": "electric.scalibility.ElectricConstructor.data",
+                "filepath": "electric.scalibility.ElectricConstructor.data",
                 "format": "tsv"
             },
             {
                 "name": "PostProcessing",
-                "file": "electric.scalibility.ElectricPostProcessing.data",
+                "filepath": "electric.scalibility.ElectricPostProcessing.data",
                 "format": "tsv"
             },
             {
                 "name": "Solve",
-                "file": "electric.scalibility.ElectricSolve.data",
+                "filepath": "electric.scalibility.ElectricSolve.data",
                 "format": "tsv"
             }
         ]
@@ -56,10 +56,6 @@
     "sanity": {
         "success": [],
         "error": []
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "6733114eb0e95728eb010ba5"
     },
     "parameters": [
         {

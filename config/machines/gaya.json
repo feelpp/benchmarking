@@ -1,8 +1,10 @@
 {
     "machine": "gaya",
+    "targets":["production:builtin:"],
+    // "partitions":["*"],
+    // "platform":"apptainer",
+    // "prog_environments":["*"],
     "execution_policy": "async",
-    "partitions":["production"],
-    "prog_environment":"builtin",
     "reframe_base_dir":"$PWD/build/reframe",
     "reports_base_dir":"$PWD/reports/",
     "input_dataset_base_dir":"/data/scratch/cladellash/feelppdb/input_data",
@@ -11,7 +13,11 @@
         "apptainer":{
             // "cachedir": "/home/u2/cladellash/.apptainer/cache",
             // "tmpdir": "/data/scratch/cladellash/images/tmp",
-            "image_base_dir":"/data/scratch/cladellash/images"
+            "image_base_dir":"/data/scratch/cladellash/images",
+            "options":[
+                "--sharens",
+                "--bind /opt/:/opt/"
+            ]
         }
     }
 }
