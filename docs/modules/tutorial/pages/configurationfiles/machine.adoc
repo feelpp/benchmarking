@@ -1,0 +1,152 @@
+= Machine configuration
+
+The machine configuration file contains all information related uniquely to the system where benchmarks will run on. It is used to tell the application HOW benchmarks will run on it.
+The framework supports multiple containers and environments such as Apptainer and Spack. This information should be specified here.
+
+The following table describes all supported fields.
+
+[cols="2,1,1,3,1"]
+|===
+| Field name  | Optional | type | description | Default
+
+| machine
+| No
+| str
+| The name of the machine. It needs to be the same as the name of the ReFrame configuration file.
+|
+
+| execution_policy
+| Yes
+| str
+| Either 'async' or 'serial'. The way in which ReFrame will run the tests.
+| Serial
+
+| reframe_base_dir
+| No
+| str
+| The base directory of ReFrame's _stage_ and _output_ directories. If it does not exist, it will be created.
+|
+
+| reports_base_dir
+| No
+| str
+| The base directory where ReFrame reports will be saved to.
+|
+
+| input_dataset_base_dir
+| Yes
+| str
+| The base directory where input data can be found (if applicable)
+| None
+
+| output_app_dir
+| No
+| str
+| The base directory where the benchmarked application should write its outputs to.
+|
+
+| targets
+| Yes
+| list[str] or str
+| Specifies in which partition, platform and prog_environment run benchmarks on.
+The syntax is `[partition:platform:prog_environment]`. Default values are supported by only putting `:`. For example `partition::prog_environment`. Default values are "default" for partition and prog_environment, and "builtin" for platform.
+Provide this field or all (partitions, platform, prog_environments) fields.
+| None
+
+| platform
+| Yes
+| str
+| Platform to run the benchmark on, possible values are "Apptainer" and "builtin". Docker will soon be supported.
+| builtin
+
+| partitions
+| Yes
+| List[str]
+| Partitions where the test can run on. Tests will run on the cartesian product of partitions and prog_environments, where environments are specified for the current partition on the ReFrame configuration.
+| []
+
+| prog_environments
+| Yes
+| List[str]
+| Environments where the test can run on. Test will run with this programming environment if it is specified on the current partition on the ReFrame configuration.
+| []
+
+| containers
+| Yes
+| Dict[str,Container]
+| Dictionary specifying container type "Apptainer" or "Docker" (not yet supported), and container related information. More details on the `Container` object below.
+| {}
+
+
+|===
+
+
+The containers object is defined as follow
+
+[cols="2,1,1,3,1"]
+|===
+| Field name | Optional | type | description | Default value
+
+| cachedir
+| Yes
+| str
+| Directory where the pulled images will be cached on.
+| None
+
+| tmpdir
+| Yes
+| str
+| Directory where temporary image files will be written.
+| None
+
+| image_base_dir
+| No
+| str
+| Base directory where images can be found in the system
+| None
+
+| options
+| Yes
+| List[str]
+| Options to add to the container execution command.
+| None
+
+|===
+
+Below, an example of a machine configuration file can be found, for a machine called "my_machine".
+
+[source,json]
+----
+{
+    "machine": "my_machine",
+    "targets":"production:builtin:hpcx",
+    "execution_policy": "async",
+    "reframe_base_dir":"$PWD/build/reframe",
+    "reports_base_dir":"$PWD/reports/",
+    "input_dataset_base_dir":"$PWD/input/",
+    "output_app_dir":"$PWD/output/",
+    "containers":{
+        "apptainer":{
+            "image_base_dir":"/data/images/",
+            "options":[ "--sharens", "--bind /opt/:/opt/" ]
+        }
+    }
+}
+----
+
+Let's review step by step what the file defines.
+
+- `"machine":"my_machine"` indicates that the ReFrame config can be found as _my\_machine.py_
+- `"targets":"production:builtin:hpcx"` tells reframe to run tests uniquely on the production partition with the builtin platform and the hpcx programming environment.
+- `"execution_policy":"async"` tells ReFrame to run tests asynchronously on available resources.
+- `"reframe_base_dir":"$PWD/build/reframe"` Reframe will use the _build/stage/_ folder and _build/output/_ folder of the current working directory for staging tests and storing the benchmarked application's standard output and errors.
+- `"reports_base_dir":"$PWD/reports/"` Means that the reframe reports will be found under the _reports/_ folder of the current working directory.
+- `"input_dataset_base_dir":"$PWD/input/"` Means that the framework should look for input somewhere under the _input/_ folder of the current working directory. The rest of the path is specified on the benchmark configuration.
+- `"output_app_dir":"$PWD/output/"` Means that the benchmarked application should write its output files under the _output/_ folder of the current working directory. The rest of the path is specified on the benchmark configuration.
+
+Concerning containers:
+
+- The `"apptainer"` key indicated that the application COULD be benchmarked using apptainer. Not necesserily that it will. If the `targets` field specifies the apptainer platform, then this field is mandatory.
+- `"image_base_dir":"/data/images"` indicates that the built apptainer images can be found somewhere under the _/data/images/ directory. The rest of the path is specified on the benchmark configuration.
+- `"options":"[ "--sharens", "--bind /opt/:/opt/" ]"` Tells ReFrame to add these options to the Apptainer execution command. For example, `mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/`. Only machine related options should be specified here, more options can be defined in the benchmark configuration.
+
