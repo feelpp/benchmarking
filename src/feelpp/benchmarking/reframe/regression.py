@@ -22,7 +22,7 @@ class RegressionTest(ReframeSetup):
     def setPerfVars(self):
         self.perf_variables = {}
         self.perf_variables.update(
-            self.scalability_handler.getPerformanceVariables(self.nb_tasks["tasks"])
+            self.scalability_handler.getPerformanceVariables(self.num_tasks)
         )
         self.perf_variables.update(
             self.scalability_handler.getCustomPerformanceVariables(self.perf_variables)
