@@ -65,7 +65,7 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
-        self.setLaunchOptions(rfm_test)
+        pass
 
     def dispatchEnvironments(self,rfm_test):
         if not self.reader.config.environment_map:
@@ -107,13 +107,6 @@ class MachineSetup(Setup):
             rfm_test (reframe class) : The test to apply the setup
         """
         rfm_test.tags = { self.reader.config.execution_policy }
-
-    def setLaunchOptions(self, rfm_test):
-        """ Sets the excusive_access and job.launcher.options attributes
-        Args:
-            rfm_test (reframe class) : The test to apply the setup
-        """
-        rfm_test.job.launcher.options = self.reader.config.launch_options
 
 
 
@@ -260,5 +253,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_before('run')
     def setupBeforeRun(self):
         """ Sets the necessary pre-run configurations"""
+        self.job.launcher.options += self.current_partition.get_resource('launcher_options')
+
         self.machine_setup.setupBeforeRun(self)
         self.app_setup.setupBeforeRun(self,self.machine_setup.reader.config)

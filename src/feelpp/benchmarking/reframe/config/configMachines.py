@@ -22,7 +22,6 @@ class MachineConfig(BaseModel):
     targets:Optional[str | List[str]] = None
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
-    launch_options: List[str]
     reframe_base_dir:str
     reports_base_dir:str
     input_dataset_base_dir:str
