@@ -6,7 +6,7 @@ class Container(BaseModel):
     cachedir:Optional[str] = None
     tmpdir:Optional[str] = None
     image_base_dir:str
-    options:Optional[list[str]] = []
+    options:Optional[List[str]] = []
 
     @field_validator("cachedir","tmpdir","image_base_dir",mode="before")
     @classmethod
@@ -19,7 +19,7 @@ class Container(BaseModel):
 
 class MachineConfig(BaseModel):
     machine:str
-    targets:Optional[str | List[str]] = None
+    targets:Optional[Union[str,List[str]]] = None
     active: Optional[bool] = True
     execution_policy:Optional[Literal["serial","async"]] = "serial"
     reframe_base_dir:str
