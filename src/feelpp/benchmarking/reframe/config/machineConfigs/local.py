@@ -10,7 +10,7 @@ site_configuration = {
                     'name': 'default',
                     'scheduler': 'local',
                     'launcher': 'mpiexec',
-                    'environs': ['builtin'],
+                    'environs': ['default'],
                     'processor': {
                         'num_cpus': 8
                     },
@@ -26,7 +26,7 @@ site_configuration = {
     ],
     'environments': [
         {
-            'name': 'builtin',
+            'name': 'default',
             'cc': 'clang',
             'cxx': 'clang++',
             'target_systems': ['local:default']
