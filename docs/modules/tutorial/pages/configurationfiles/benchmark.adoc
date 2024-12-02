@@ -290,12 +290,13 @@ Valid generators are :
 {
     "name": "my_linspace_generator",
     "logspace":{
-        "min":1,
+        "min":2,
         "max":10,
         "n_steps":5
     }
 }
 ----
+The example will yield `[2,4,6,8,10]`. Min and max are inclusive.
 
 - `logspace`:
 [source,json]
@@ -305,11 +306,12 @@ Valid generators are :
     "logspace":{
         "min":1,
         "max":10,
-        "n_steps":5,
+        "n_steps":4,
         "base":2
     }
 }
 ----
+The example will yield `[2,16,128,1024]`. Min and max are inclusive.
 
 - `range`:
 [source,json]
@@ -318,11 +320,12 @@ Valid generators are :
     "name": "my_range_generator",
     "logspace":{
         "min":1,
-        "max":10,
+        "max":5,
         "step":1
     }
 }
 ----
+The example will yield `[1,2,3,4,5]`. Min and max are inclusive.
 
 
 - `geometric`:
@@ -337,6 +340,7 @@ Valid generators are :
     }
 }
 ----
+The example will yield `[1,2,4,8,16]`.
 
 - `repeat`:
 [source,json]
@@ -345,24 +349,25 @@ Valid generators are :
     "name": "my_repeat_generator",
     "repeat":{
         "value":"a repeated value",
-        "count":5
+        "count":3
     }
 }
 ----
+The example will yield `["a repeated value", "a repeated value", "a repeated value"]`.
 
 - `sequence`:
+
+Sequence accepts
 
 [source,json]
 ----
 {
     "name": "my_sequence_generator",
-    "sequence":[
-        {"val1":1,"val2":2},
-        {"val1":3,"val2":4},
-        {"val1":5,"val2":6}
-    ]
+    "sequence":[ 1, 2, 3, 4]
 }
 ----
+Sequence is the simplest generator. It will yield exactly the given list.
+It accepts dictionnaries as items, which can then be accessed via the `.` separator.
 
 
 - `zip` and subparameters:
@@ -394,6 +399,7 @@ The `zip` generator takes a list of parameters to produce a list of python dicti
     ]
 }
 ----
+This example will yield `[{'param1': {'val1': 1, 'val2': 2}, 'param2': 'a repeated value'}, {'param1': {'val1': 3, 'val2': 4}, 'param2': 'a repeated value'}, {'param1': {'val1': 5, 'val2': 6}, 'param2': 'a repeated value'}]`
 
 [WARNING]
 ====
@@ -404,11 +410,10 @@ Zipped parameters need to have the same lenght.
 
 There is one special parameter: `nb_tasks`. If included, should follow some rules for its subparameters.
 
-- Accepts `exclusive_access` subparameter. Defaults to `true`.
-- Either specify `tasks_per_node` and `tasks` subparameters, OR
-- Specify `tasks_per_node` and `nodes` subparameters, OR
-- Specify only the `tasks` parameter.
-- Specifying `tasks` and `nodes` is NOT currently supported.
+Accepts `exclusive_access` subparameter. Defaults to `true`.
+Either specify `tasks_per_node` and `tasks` subparameters, OR specify `tasks_per_node` and `nodes` subparameters, OR Specify only the `tasks` parameter.
+
+Specifying `tasks` and `nodes` is NOT currently supported.
 
 The `nb_tasks` parameter and its subparameters are directly accesses by ReFrame.
 
