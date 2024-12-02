@@ -60,9 +60,6 @@ int main(int argc, char** argv)
             scal_outfile << "{\n";
             scal_outfile << "  \"computation_time\": " << computation_time << ",\n";
             scal_outfile << "  \"communication_time\": " << communication_time << ",\n";
-            scal_outfile << "  \"num_processes\": " << size << ",\n";
-            scal_outfile << "  \"N\": " << N << ",\n";
-            scal_outfile << "  \"sum\": " << global_sum << "\n";
             scal_outfile << "}\n";
             scal_outfile.close();
         }
@@ -73,8 +70,8 @@ int main(int argc, char** argv)
         std::ofstream out_outfile(output_dir/out_filename);
         if (out_outfile.is_open())
         {
-            out_outfile << "N,sum\n";
-            out_outfile << N << "," <<global_sum;
+            out_outfile << "N,sum,num_process\n";
+            out_outfile << N << "," << global_sum << "," << size ;
             out_outfile.close();
         }
         else
