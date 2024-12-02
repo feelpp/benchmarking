@@ -1,1 +1,212 @@
 = Figures
+:page-plotly: true
+:page-jupyter: true
+
+In order to generate reports, the _Feel++ benchmarking_ framework requires a figure description to specify what the website report page should contain.
+
+These descriptions should be provided either with a specific JSON file with the structure containing uniquely
+
+[source,json]
+----
+{
+    "plots":[]
+}
+----
+
+Or by specifying the `plots` field on the benchmark configuration JSON file.
+
+Each figure description should contain the following fields
+
+[source,json]
+----
+{
+    "title": "The figure title",
+    "plot_types": [], //List of figure types
+    "transformation": "", //Transformation type
+    "variables":[], // List of variables to consider
+    "names":[], //Respective labels for variables
+    "yaxis":{},
+    "xaxis":{},
+    "color_axis":{}, //Default: performance variables
+    "secondary_axis":{}
+}
+----
+
+Figures will appear in the same order as they appear on the list.
+
+Users can provide multiple plot_types in the same description field.
+
+[NOTE]
+====
+Only performance variables specified under the `variables` list will be considered. If the list is empty, ALL variables inside the ReFrame report will be taken into account.
+====
+
+== Axis
+Each axis (with the exception of the `yaxis`) take a `parameter` and a `label` field.
+The `yaxis` will always contain the performance values, therefore only the `label` key should be specified.
+
+The `parameter` field of each axis should correspond to either a single dimension parameter specified on the benchmark configuration.
+In the case of subparameters, the syntax should be the following: `parameter.subparameter`.
+
+By default, the color axis will contain the performance variables, but this can be customized.
+
+== Transformations
+
+The ReFrame report will be used to create a _Master DataFrame_, which will contain all performance variables and their respective values, as well as all parameters and environments.
+
+To explain how transformation and plot types work, we can consider the following example.
+
+[%dynamic%open%hide_code,python]
+----
+import json
+from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
+with open("./docs/modules/tutorial/data/reframe_report.json","r") as rfm_report:
+    report = json.load(rfm_report)
+
+model = AtomicReportModel(report["runs"])
+model.master_df = model.master_df[model.master_df["performance_variable"].isin(["computation_time","communication_time"])].loc[:,["performance_variable","value","unit",	"testcase_time_run","environment","platform","nb_tasks.tasks","nb_tasks.exclusive_access","elements"]]
+----
+
+
+[%dynamic%open%hide_code,python]
+----
+model.master_df
+----
+
+We can see that this dataframe contains the parameters:
+- environment
+- platform
+- nb_tasks.tasks
+- nb_tasks.exclusive_access
+- elements
+- performance_variable
+
+By having this common structure, we can make use of transformation strategies to manipulate values depending on the desired output.
+
+Strategies will depend on the figure axis. All strategies will create a pivot dataframe that will contain the parameter specified as `color_axis` as columns, `xaxis` as first level index and `secondary_axis` as second level index. Values of the dataframe will always be the `values` of the master dataframe.
+
+As an example, we will consider the following axis:
+[source,json]
+----
+"xaxis":{
+    "parameter":"nb_tasks.tasks",
+    "label":"Number of tasks"
+},
+"yaxis":{
+    "label":"Execution time (s)"
+},
+"secondary_axis":{
+    "parameter":"elements",
+    "label":"N"
+},
+"color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+}
+----
+
+Available strategies are:
+- performance
+
+This strategy should be seen as the "base" strategy. No transformation, other that a pivot, is done.
+For the given example, it produces the following dataframe
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.reframe.config.configPlots import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    }
+})
+strategy = StrategyFactory.create(plot_config)
+strategy.calculate(model.master_df)
+----
+
+- relative_performance
+
+The relative performance strategy computes the proportion of the time that a a `color_axis` variable takes with regards of the total.
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.reframe.config.configPlots import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "relative_performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    }
+})
+strategy = StrategyFactory.create(plot_config)
+strategy.calculate(model.master_df)
+----
+
+The sum along the column axis will always be equal to 1.
+
+- speedup
+
+The speedup strategy computes the speedup of the `color_axis` variables. The minimum of the `xaxis` values is taken as the base of the speedup.
+For the example, this strategy will produce the following.
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.reframe.config.configPlots import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "speedup",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    }
+})
+strategy = StrategyFactory.create(plot_config)
+strategy.calculate(model.master_df)
+----
+
+== Plot types
+
+- `scatter`
+
+- `stacked_bar`
+
+- `grouped_bar`
+
+- `table`
+
+
+
+== Custom layouts
+
+
+
