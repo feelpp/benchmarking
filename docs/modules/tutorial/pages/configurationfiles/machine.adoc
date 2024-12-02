@@ -136,7 +136,7 @@ Below, an example of a machine configuration file can be found, for a machine ca
 
 Let's review step by step what the file defines.
 
-- `"machine":"my_machine"` indicates that the ReFrame config can be found as _my\_machine.py_
+- `"machine":"my_machine"` indicates that the ReFrame config can be found as _my_machine.py_
 - `"targets":"production:builtin:hpcx"` tells reframe to run tests uniquely on the production partition with the builtin platform and the hpcx programming environment.
 - `"execution_policy":"async"` tells ReFrame to run tests asynchronously on available resources.
 - `"reframe_base_dir":"$PWD/build/reframe"` Reframe will use the _build/stage/_ folder and _build/output/_ folder of the current working directory for staging tests and storing the benchmarked application's standard output and errors.
@@ -148,5 +148,5 @@ Concerning containers:
 
 - The `"apptainer"` key indicated that the application COULD be benchmarked using apptainer. Not necesserily that it will. If the `targets` field specifies the apptainer platform, then this field is mandatory.
 - `"image_base_dir":"/data/images"` indicates that the built apptainer images can be found somewhere under the _/data/images/ directory. The rest of the path is specified on the benchmark configuration.
-- `"options":"[ "--sharens", "--bind /opt/:/opt/" ]"` Tells ReFrame to add these options to the Apptainer execution command. For example, `mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/`. Only machine related options should be specified here, more options can be defined in the benchmark configuration.
+- `"options":"[ "--sharens", "--bind /opt/:/opt/" ]"` Tells ReFrame to add these options to the Apptainer execution command. For example, `mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/ ...`. Only machine related options should be specified here, more options can be defined in the benchmark configuration.
 
