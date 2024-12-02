@@ -59,7 +59,7 @@ int main(int argc, char** argv)
         {
             scal_outfile << "{\n";
             scal_outfile << "  \"computation_time\": " << computation_time << ",\n";
-            scal_outfile << "  \"communication_time\": " << communication_time << ",\n";
+            scal_outfile << "  \"communication_time\": " << communication_time << "\n";
             scal_outfile << "}\n";
             scal_outfile.close();
         }
