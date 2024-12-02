@@ -3,16 +3,19 @@
     "output_directory": "{{machine.output_app_dir}}/tests/data/outputs/parallelSum",
     "use_case_name": "parallel_sum",
     "timeout":"0-0:5:0",
+    //Application options
     "options": [
         "{{parameters.elements.value}}",
         "{{output_directory}}/{{instance}}"
     ],
+    // Files containing app outputs
     "outputs": [
         {
             "filepath":"{{output_directory}}/{{instance}}/outputs.csv",
             "format":"csv"
         }
     ],
+    //Files containing execution times
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/",
         "stages": [
@@ -24,10 +27,12 @@
             }
         ]
     },
+    // Only stdout supported at the moment
     "sanity": {
         "success": ["[SUCCESS]"],
         "error": ["[OOPSIE]","Error"]
     },
+    // Test parameters
     "parameters": [
         {
             "name": "nb_tasks",
