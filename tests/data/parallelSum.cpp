@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 
     double start_time = MPI_Wtime();
     double local_sum = 0;
-    for (int i = 0; i < local_array.size(); ++i)
+    for (size_t i = 0; i < local_array.size(); ++i)
         local_sum += local_array[i];
     double end_time = MPI_Wtime();
 
