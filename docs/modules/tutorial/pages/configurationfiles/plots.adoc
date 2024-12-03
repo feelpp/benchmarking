@@ -196,17 +196,124 @@ strategy.calculate(model.master_df)
 
 == Plot types
 
+Considering the same example axis as above, the software can generate the following figures:
+
 - `scatter`
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.report.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
 
 - `stacked_bar`
 
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
+
+
 - `grouped_bar`
 
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "grouped_bar" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
+
 - `table`
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "table" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
 
 
 
 == Custom layouts
-
 
 
