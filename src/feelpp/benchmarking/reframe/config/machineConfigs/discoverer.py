@@ -12,7 +12,7 @@ site_configuration = {
                     'launcher': 'srun',
                     'max_jobs': 8,
                     'access': ['--partition=cn --account=ehpc-dev-2024d05-047 --qos=ehpc-dev-2024d05-047'],
-                    'environs': ['apptainer'],
+                    'environs': ['default'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
                         'export MODULEPATH=/opt/software/modulefiles',
@@ -48,7 +48,7 @@ site_configuration = {
     ],
     'environments': [
         {
-            'name':'apptainer',
+            'name':'default',
             'modules': ['python/3/3.9/latest','openmpi/4/gcc/latest'],
             'target_systems':['discoverer:cn']
         }
