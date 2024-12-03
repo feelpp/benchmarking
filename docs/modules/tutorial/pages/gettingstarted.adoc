@@ -67,6 +67,7 @@ The `--website` option will start an http-server on localhost, so the website ca
 In order to execute a benchmark, you can make use of the `execute-benchmark` command after all configuration files have been set ( xref:tutorial:configuration.adoc[Configuration Reference]).
 
 The script accepts the following options :
+
 - `--machine-config` (`-mc`) : The path to the machine configuration JSON file
 - `--benchmark-config` (`-bc`) : The path to the benchmark configuration JSON file
 - `--plots-config` (`-pc`) : The path to the plots configuration JSON file. If not provided, it will be assumed that the plots section is included in the benchmark config. Otherwise, no plots will be considered.
@@ -89,6 +90,7 @@ A file of the same type is generated after a benchmark is launched, called _webs
 Once this file is located, users can run the `render-benchmarks` command to render existing reports.
 
 The script takes the following arguments:
+
 - `config_file` : The path of the website configuration file.
 - `json_output_path`: [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
 - `modules_path`: [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
