@@ -1,0 +1,1644 @@
+{
+  "session_info": {
+    "cmdline": "/Users/cladellash/Documents/Repos/benchmarking/.venv/bin/reframe -C /Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/config/machineConfigs/local.py -c /Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py -S report_dir_path=/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28 --system=local --exec-policy=async --prefix=/Users/cladellash/Documents/Repos/benchmarking/build/reframe --report-file=/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28/reframe_report.json -J '#SBATCH --time=0-0:5:0' --perflogdir=/Users/cladellash/Documents/Repos/benchmarking/build/reframe/logs -v -r",
+    "config_files": [
+      "<builtin>",
+      "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/config/machineConfigs/local.py"
+    ],
+    "data_version": "3.1",
+    "hostname": "irma-dhcp-2.math.unistra.fr",
+    "log_files": [
+      "/var/folders/pd/r8v9chs90wb1bj6pm0x147jr0000gp/T/rfm-qml5j4xz.log"
+    ],
+    "prefix_output": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output",
+    "prefix_stage": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage",
+    "user": "cladellash",
+    "version": "4.6.3",
+    "workdir": "/Users/cladellash/Documents/Repos/benchmarking",
+    "time_start": "2024-12-02T14:46:29+0100",
+    "time_end": "2024-12-02T14:46:40+0100",
+    "time_elapsed": 11.50057601928711,
+    "num_cases": 12,
+    "num_failures": 0
+  },
+  "runs": [
+    {
+      "num_cases": 12,
+      "num_failures": 0,
+      "num_aborted": 0,
+      "num_skipped": 0,
+      "runid": 0,
+      "testcases": [
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=1000000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "aa223ed0",
+          "jobid": "99178",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=1000000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_aa223ed0",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.32933
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.052584
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1000000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1000000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 4.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_aa223ed0",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.006192207336425781,
+          "time_performance": 0.008784055709838867,
+          "time_run": 9.518624067306519,
+          "time_sanity": 0.007528066635131836,
+          "time_setup": 0.00566411018371582,
+          "time_total": 9.696507215499878,
+          "unique_name": "RegressionTest_11",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "1000000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/aa223ed0"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 4,
+              "exclusive_access": true
+            },
+            "elements": 1000000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=700000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "6a58f265",
+          "jobid": "99179",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=700000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_6a58f265",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.56971
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.005627
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 700000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 700000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 4.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_6a58f265",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.007662057876586914,
+          "time_performance": 0.038092851638793945,
+          "time_run": 8.129333019256592,
+          "time_sanity": 0.03859901428222656,
+          "time_setup": 0.009199142456054688,
+          "time_total": 8.30247712135315,
+          "unique_name": "RegressionTest_10",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "700000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/6a58f265"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 4,
+              "exclusive_access": true
+            },
+            "elements": 700000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=400000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "e8955ef5",
+          "jobid": "99180",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=400000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_e8955ef5",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.85582
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.180105
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 400000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 400000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 4.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_e8955ef5",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.008015155792236328,
+          "time_performance": 0.03525996208190918,
+          "time_run": 7.037631988525391,
+          "time_sanity": 0.03978276252746582,
+          "time_setup": 0.01161503791809082,
+          "time_total": 7.199726104736328,
+          "unique_name": "RegressionTest_09",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "400000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/e8955ef5"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 4,
+              "exclusive_access": true
+            },
+            "elements": 400000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=100000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "9886e190",
+          "jobid": "99181",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 4, 'exclusive_access': True} %elements=100000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_9886e190",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.062597
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.0161
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 100000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 100000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 4.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_9886e190",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.006299018859863281,
+          "time_performance": 0.017982006072998047,
+          "time_run": 1.7802720069885254,
+          "time_sanity": 0.014677762985229492,
+          "time_setup": 0.005388975143432617,
+          "time_total": 1.927483081817627,
+          "unique_name": "RegressionTest_08",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "100000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/9886e190"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 4,
+            "num_tasks_per_node": 4,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 4,
+              "exclusive_access": true
+            },
+            "elements": 100000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=1000000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "86092ceb",
+          "jobid": "99182",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=1000000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_86092ceb",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.13016
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.000502
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1000000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1000000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 2.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_86092ceb",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.00612187385559082,
+          "time_performance": 0.002651214599609375,
+          "time_run": 10.523810148239136,
+          "time_sanity": 0.0021507740020751953,
+          "time_setup": 0.005548954010009766,
+          "time_total": 10.664539098739624,
+          "unique_name": "RegressionTest_07",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "1000000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/86092ceb"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 2,
+            "num_tasks_per_node": 2,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 2,
+              "exclusive_access": true
+            },
+            "elements": 1000000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=700000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "b22a7385",
+          "jobid": "99183",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=700000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_b22a7385",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 5.06941
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.03559
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 700000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 700000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 2.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_b22a7385",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.00615692138671875,
+          "time_performance": 0.015397310256958008,
+          "time_run": 9.810746192932129,
+          "time_sanity": 0.025763988494873047,
+          "time_setup": 0.006819963455200195,
+          "time_total": 9.945525169372559,
+          "unique_name": "RegressionTest_06",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "700000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/b22a7385"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 2,
+            "num_tasks_per_node": 2,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 2,
+              "exclusive_access": true
+            },
+            "elements": 700000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=400000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "7dd0d8fb",
+          "jobid": "99184",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=400000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_7dd0d8fb",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.70458
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.129757
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 400000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 400000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 2.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_7dd0d8fb",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.006106138229370117,
+          "time_performance": 0.00861215591430664,
+          "time_run": 8.266666889190674,
+          "time_sanity": 0.006582021713256836,
+          "time_setup": 0.005933046340942383,
+          "time_total": 8.394183158874512,
+          "unique_name": "RegressionTest_05",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "400000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/7dd0d8fb"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 2,
+            "num_tasks_per_node": 2,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 2,
+              "exclusive_access": true
+            },
+            "elements": 400000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=100000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "e75954a0",
+          "jobid": "99185",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 2, 'exclusive_access': True} %elements=100000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_e75954a0",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.183174
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.003264
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 100000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 100000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 2.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_e75954a0",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.00605320930480957,
+          "time_performance": 0.019010066986083984,
+          "time_run": 1.770622968673706,
+          "time_sanity": 0.0030341148376464844,
+          "time_setup": 0.00586390495300293,
+          "time_total": 1.8920440673828125,
+          "unique_name": "RegressionTest_04",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "100000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/e75954a0"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 2,
+            "num_tasks_per_node": 2,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 2,
+              "exclusive_access": true
+            },
+            "elements": 100000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=1000000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "cbfe221b",
+          "jobid": "99225",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=1000000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_cbfe221b",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.8334
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.1e-05
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1000000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1000000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_cbfe221b",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.005920886993408203,
+          "time_performance": 0.0037949085235595703,
+          "time_run": 9.820374727249146,
+          "time_sanity": 0.003256082534790039,
+          "time_setup": 0.005385160446166992,
+          "time_total": 11.37114691734314,
+          "unique_name": "RegressionTest_03",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "1000000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/cbfe221b"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 1,
+            "num_tasks_per_node": 1,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 1,
+              "exclusive_access": true
+            },
+            "elements": 1000000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=700000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "be4af6da",
+          "jobid": "99226",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=700000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_be4af6da",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 4.90371
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.7e-05
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 700000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 700000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_be4af6da",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.005860805511474609,
+          "time_performance": 0.0030002593994140625,
+          "time_run": 9.275190114974976,
+          "time_sanity": 0.002341032028198242,
+          "time_setup": 0.005341053009033203,
+          "time_total": 10.844825267791748,
+          "unique_name": "RegressionTest_02",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "700000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/be4af6da"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 1,
+            "num_tasks_per_node": 1,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 1,
+              "exclusive_access": true
+            },
+            "elements": 700000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=400000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "e8e66601",
+          "jobid": "99278",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=400000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_e8e66601",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 2.24316
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.2e-05
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 400000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 400000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_e8e66601",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.0059511661529541016,
+          "time_performance": 0.002692699432373047,
+          "time_run": 4.065032005310059,
+          "time_sanity": 0.002173185348510742,
+          "time_setup": 0.005150794982910156,
+          "time_total": 10.587581872940063,
+          "unique_name": "RegressionTest_01",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "400000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/e8e66601"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 1,
+            "num_tasks_per_node": 1,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 1,
+              "exclusive_access": true
+            },
+            "elements": 400000000.0
+          }
+        },
+        {
+          "build_stderr": null,
+          "build_stdout": null,
+          "dependencies_actual": [],
+          "dependencies_conceptual": [],
+          "description": "",
+          "display_name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=100000000.0",
+          "environment": "default",
+          "fail_phase": null,
+          "fail_reason": null,
+          "filename": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe/regression.py",
+          "fixture": false,
+          "hash": "da2298ca",
+          "jobid": "99283",
+          "job_stderr": "rfm_job.err",
+          "job_stdout": "rfm_job.out",
+          "maintainers": [],
+          "name": "RegressionTest %nb_tasks={'tasks': 1, 'exclusive_access': True} %elements=100000000.0",
+          "nodelist": [
+            "irma-dhcp-2.math.unistra.fr"
+          ],
+          "outputdir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/output/local/default/default/RegressionTest_da2298ca",
+          "perfvars": [
+            {
+              "name": "computation_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 0.622329
+            },
+            {
+              "name": "communication_time",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "s",
+              "value": 3.2e-05
+            },
+            {
+              "name": "N",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 100000000.0
+            },
+            {
+              "name": "sum",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 100000000.0
+            },
+            {
+              "name": "num_process",
+              "reference": 0,
+              "thres_lower": null,
+              "thres_upper": null,
+              "unit": "",
+              "value": 1.0
+            }
+          ],
+          "prefix": "/Users/cladellash/Documents/Repos/benchmarking/.venv/lib/python3.8/site-packages/feelpp/benchmarking/reframe",
+          "result": "success",
+          "stagedir": "/Users/cladellash/Documents/Repos/benchmarking/build/reframe/stage/local/default/default/RegressionTest_da2298ca",
+          "scheduler": "local",
+          "system": "local:default",
+          "tags": [
+            "async"
+          ],
+          "time_compile": 0.005639791488647461,
+          "time_performance": 0.008454084396362305,
+          "time_run": 1.732982873916626,
+          "time_sanity": 0.0396878719329834,
+          "time_setup": 0.005467891693115234,
+          "time_total": 9.557442903518677,
+          "unique_name": "RegressionTest_00",
+          "check_vars": {
+            "valid_prog_environs": [
+              "default"
+            ],
+            "valid_systems": [
+              "local:default"
+            ],
+            "descr": "",
+            "sourcepath": "",
+            "sourcesdir": null,
+            "prebuild_cmds": [],
+            "postbuild_cmds": [],
+            "executable": "/Users/cladellash/Documents/Repos/benchmarking//tests/data/parallelSum",
+            "executable_opts": [
+              "100000000.0",
+              "/Users/cladellash/Documents/Repos/benchmarking/tests/data/outputs/parallelSum/da2298ca"
+            ],
+            "prerun_cmds": [],
+            "postrun_cmds": [],
+            "keep_files": [],
+            "readonly_files": [],
+            "tags": [
+              "async"
+            ],
+            "maintainers": [],
+            "strict_check": true,
+            "num_tasks": 1,
+            "num_tasks_per_node": 1,
+            "num_gpus_per_node": null,
+            "num_cpus_per_task": 1,
+            "num_tasks_per_core": null,
+            "num_tasks_per_socket": null,
+            "use_multithreading": null,
+            "max_pending_time": null,
+            "exclusive_access": true,
+            "local": false,
+            "modules": [],
+            "env_vars": {},
+            "variables": {},
+            "time_limit": null,
+            "build_time_limit": null,
+            "extra_resources": {},
+            "build_locally": true,
+            "report_dir_path": "/Users/cladellash/Documents/Repos/benchmarking/reports/parallelSum/parallel_sum/local/2024_12_02T14_46_28",
+            "use_case": "parallel_sum",
+            "platform": "builtin"
+          },
+          "check_params": {
+            "nb_tasks": {
+              "tasks": 1,
+              "exclusive_access": true
+            },
+            "elements": 100000000.0
+          }
+        }
+      ]
+    }
+  ],
+  "restored_cases": []
+}

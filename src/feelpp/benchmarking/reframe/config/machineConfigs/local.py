@@ -10,7 +10,7 @@ site_configuration = {
                     'name': 'default',
                     'scheduler': 'local',
                     'launcher': 'mpiexec',
-                    'environs': ['env_local'],
+                    'environs': ['default'],
                     'processor': {
                         'num_cpus': 8
                     },
@@ -26,10 +26,9 @@ site_configuration = {
     ],
     'environments': [
         {
-            'name': 'env_local',
-            'cc': 'gcc',
-            'cxx': 'g++',
-            'ftn': 'gfortran',
+            'name': 'default',
+            'cc': 'clang',
+            'cxx': 'clang++',
             'target_systems': ['local:default']
         }
     ]

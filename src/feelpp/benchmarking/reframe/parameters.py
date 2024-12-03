@@ -33,10 +33,10 @@ class LogspaceParameter(Parameter):
     """ Parameter that generates evenly spaced samples on a log scale using a min, max, a number of steps and the log base"""
     def __init__(self, param_config):
         super().__init__(param_config)
-        self.min = param_config.linspace.min
-        self.max = param_config.linspace.max
-        self.n_steps = param_config.linspace.n_steps
-        self.base = param_config.linspace.base
+        self.min = param_config.logspace.min
+        self.max = param_config.logspace.max
+        self.n_steps = param_config.logspace.n_steps
+        self.base = param_config.logspace.base
 
     def parametrize(self):
         yield from np.logspace(self.min,self.max,self.n_steps,endpoint=True,base=self.base,dtype=object)
