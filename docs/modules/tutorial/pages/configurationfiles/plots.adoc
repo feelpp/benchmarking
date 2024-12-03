@@ -312,8 +312,67 @@ fig = figures[0].createFigure(model.master_df)
 fig.show()
 ----
 
+== Aggregations
+
+Depending on the dashboard level that we are located at, it might be necessary to aggregate the data on the master dataframe.
+For example, if we have all use cases, applications and machines on the dataframe, and we want to see how a certain use case performs on different machines, we can make use of the `aggregations` field to group the data accordingly.
+
+[source,json]
+----
+"aggregations":[
+    {"column":"date","agg":"max"},
+    {"column":"applications","agg":"filter:my_app"},
+    {"column":"use_cases","agg":"filter:my_use_case"},
+    {"column":"performance_variable","agg":"sum"}
+]
+----
+
+The previous example will first get only the latest benchmarks (by getting the maximum date), then it will filter the application and the use case to find applications and use cases that correspond to "my_app" and "my_use_case". And finally it will compute the sum of all performance variables for the remaining rows.
+
+Users must provide a column and an aggregation function as a string.
+
+Available aggregations are:
+- `mean` : Computes the mean of the column
+- `mean` : Computes the sum of the column
+- `max` : Computes the maximum of the column
+- `min` : Computes the minimum of the column
+- `filter:value`: : Filters the column by `value`.
+
+
+[NOTE]
+====
+The order of the aggregations list is important.
+====
 
 
 == Custom layouts
 
+By providing the `layout_modifiers` field, users can pass custom layout options for rendering the figures.
+These options correspond to the accepted layout reference for Plotly: https://plotly.com/python/reference/layout/[Plotly layout reference]
+It accepts a nested dictionnary just as Plotly does.
 
+For example, we could customize a figure to have have its x-axis on a logscale.
+[source,json]
+----
+"layout_modifiers":{
+    "xaxis":{
+        "type":"log"
+    }
+}
+----
+
+
+++++
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+    line-height:0;
+}
+</style>
+++++
