@@ -11,7 +11,7 @@ site_configuration = {
                     'scheduler': 'slurm',
                     'launcher': 'srun',
                     'max_jobs': 8,
-                    'access': ['--partition=cn'], #ENV VAR? TODO: add --account and --qos
+                    'access': ['--partition=cn --account=ehpc-dev-2024d05-047 --qos=ehpc-dev-2024d05-047'],
                     'environs': ['apptainer'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
@@ -19,8 +19,14 @@ site_configuration = {
                         'export PATH=/opt/apptainer/v1.3.3/apptainer/bin/:$PATH' #NEEDED ?
                     ],
                     'processor': {
-                        'num_cpus': 128 #VALIDATE
+                        'num_cpus': 128
                     },
+                    'resources': [
+                        {
+                            'name':'launcher_options',
+                            'options':['-bind-to','core']
+                        }
+                    ],
                     'devices': [
                         {
                             'type': 'cpu',
