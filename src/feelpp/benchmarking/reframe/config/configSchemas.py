@@ -10,18 +10,17 @@ class Sanity(BaseModel):
 
 class Stage(BaseModel):
     name:str
-    file:str
+    filepath:str
     format:Literal["csv","tsv","json"]
-    variables_path:Optional[str] = None
+    variables_path:Optional[Union[str,List[str]]] = []
 
     @model_validator(mode="after")
     def checkFormatOptions(self):
         if self.format == "json":
             if self.variables_path == None:
                 raise ValueError("variables_path must be specified if format == json")
-
-            if "*" not in self.variables_path:
-                raise ValueError("variables_path must contain a wildcard '*'")
+            if type(self.variables_path) == str:
+                self.variables_path = [self.variables_path]
 
         return self
 
@@ -60,7 +59,7 @@ class Image(BaseModel):
 
 class Platform(BaseModel):
     image:Optional[Image] = None
-    input_dir:str
+    input_dir:Optional[str] = None
     options:Optional[List[str]]= []
     append_app_options:Optional[List[str]]= []
 
@@ -71,7 +70,7 @@ class AdditionalFiles(BaseModel):
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
-    platforms:Optional[Dict[str,Platform]] = None
+    platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     output_directory:str
     use_case_name: str
     options: List[str]
@@ -102,7 +101,7 @@ class ConfigFile(BaseModel):
                 for inner in outer.sequence[0].keys():
                     parameter_names.append(f"{outer.name}.{inner}")
 
-        parameter_names += [outer.name for outer in self.parameters if outer.sequence] + ["performance_variable"]
+        parameter_names += [outer.name for outer in self.parameters if outer] + ["performance_variable"]
         for plot in self.plots:
             for ax in [plot.xaxis,plot.secondary_axis,plot.yaxis,plot.color_axis]:
                 if ax and ax.parameter:

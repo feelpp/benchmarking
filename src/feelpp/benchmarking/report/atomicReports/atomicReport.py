@@ -6,12 +6,13 @@ class AtomicReport:
         Holds the data of benchmarks for a specific set of parameters.
         For example, in contains multiple executions with different number of cores, or different input files (but same test case), for a single machine and application.
     """
-    def __init__(self, application_id, machine_id, reframe_report_json, plot_config_json,partials_dir):
+    def __init__(self, application_id, machine_id, use_case_id, reframe_report_json, plot_config_json, partials_dir):
         """ Constructor for the AtomicReport class
         An atomic report is identified by a single application, machine and test case
         Args:
             application_id (str): The id of the application
             machine_id (str): The id of the machine
+            use_case_id (str): The id of the use case
             reframe_report_json (str): The path to the reframe report JSON file
             plot_config_json (str): The path to the plot configuration file (usually comes with the reframe report)
             partials_dir (str): The directory path where parametric descriptions of the use case can be found (usually comes with the reframe report). Pass None if non-existent
@@ -27,7 +28,7 @@ class AtomicReport:
 
         self.application_id = application_id
         self.machine_id = machine_id
-        self.use_case_id = self.findUseCase(data)
+        self.use_case_id = use_case_id
 
         self.application = None
         self.machine = None
