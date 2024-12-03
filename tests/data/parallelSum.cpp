@@ -34,7 +34,9 @@ int main(int argc, char** argv)
     std::vector<double> local_array(local_end - local_start, 1.0);
 
     double start_time = MPI_Wtime();
-    double local_sum = std::accumulate(local_array.begin(), local_array.end(), 0.0);
+    double local_sum = 0;
+    for (int i = 0; i < local_array.size(); ++i)
+        local_sum += local_array[i];
     double end_time = MPI_Wtime();
 
     double start_comm_time = MPI_Wtime();
