@@ -135,6 +135,7 @@ jobs:
             run: |
                 python${{matrix.python_version}} -m venv .venv
                 source .venv/bin/activate
+                python${{matrix.python_version}} -m pip install --upgrade pip
                 python${{matrix.python_version}} -m pip install -r requirements.txt
         -   name: Execute benchmarks
             run: |
