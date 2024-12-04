@@ -16,7 +16,8 @@ site_configuration = {
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
                         'export MODULEPATH=/opt/software/modulefiles',
-                        'export PATH=/opt/apptainer/v1.3.3/apptainer/bin/:$PATH' #NEEDED ?
+                        'export PATH=/opt/apptainer/v1.3.3/apptainer/bin/:$PATH', #NEEDED ?
+                        'export OMP_NUM_THREADS=1' # Just in case
                     ],
                     'processor': {
                         'num_cpus': 128
