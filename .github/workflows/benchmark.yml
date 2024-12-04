@@ -84,7 +84,7 @@ jobs:
 
                 if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
                     bench_cfg_id=${{ github.event.inputs.benchmark_config }};
-                    plot_cfg_id=${{ github.event.inputs.plots_config }};
+                    plots_cfg_id=${{ github.event.inputs.plots_config }};
                 elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
                     bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
                     plots_cfg_id=${{ github.event.client_payload.plots_config }};
