@@ -15,8 +15,8 @@ class HpcSystem:
         self.url =  ""
         self.submit =  ""
 
-    def toJson(self):
-        return json.dumps(self.__dict__)
+    def toDict(self):
+        return self.__dict__
 
     def writeConfig(self,output_dir,machine_data):
         self.machine_cfg = os.path.join(output_dir,f"{self.machine}.json")
@@ -114,7 +114,7 @@ def hpcSystemDispatcher_cli():
             args.plots_config_path,
             args.move_results
         )
-        matrix.append(hpc_system.toJson())
+        matrix.append(hpc_system.toDict())
 
 
     print(matrix)
