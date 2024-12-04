@@ -18,6 +18,11 @@ class RegressionTest(ReframeSetup):
         self.scalability_handler = ScalabilityHandler(self.app_setup.reader.config.scalability)
         self.outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
 
+    @run_after('run')
+    def executionGuard(self):
+        if self.is_dry_run():
+            self.skip("ReFrame is in dry-run mode, perormance and sanity are not going to be evaluated.")
+
     @run_before('performance')
     def setPerfVars(self):
         self.perf_variables = {}

@@ -83,6 +83,7 @@ class Parser():
         options.add_argument('--verbose', '-v', action='count', default=0, help='Select Reframe\'s verbose level by specifying multiple v\'s. ')
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
         options.add_argument('--website', '-w', action='store_true', help='Render reports, compile them and create the website.')
+        options.add_argument('--dry-run', action='store_true', help='Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.')
 
 
     def convertPathsToAbsolute(self):

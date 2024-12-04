@@ -33,6 +33,15 @@ class CommandBuilder:
 
         return str(self.report_folder_path)
 
+    def buildExecutionMode(self):
+        """Write the ReFrame execution flag depending on the parser arguments.
+            Examples are --dry-run or -r
+        """
+        if self.parser.args.dry_run:
+            return "--dry-run"
+        else:
+            return "-r"
+
     def buildCommand(self,timeout):
         assert self.report_folder_path is not None, "Report folder path not set"
         cmd = [
@@ -47,7 +56,7 @@ class CommandBuilder:
             f"-J '#SBATCH --time={timeout}'",
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
-            '-r',
+            f'{self.buildExecutionMode()}'
         ]
         return ' '.join(cmd)
 
