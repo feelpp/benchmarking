@@ -71,13 +71,6 @@ jobs:
                 girder-download -gid $machine_cfg_id -o ./tmp/ -fn "machines_config.json"
             env:
                 GIRDER_API_KEY: ${{secrets.GIRDER}}
-        -   id: hpc-systems
-            name: Set HPC systems matrix
-            run: |
-                source .venv/bin/activate
-                matrix=$(hpc-dispatch -mp ./tmp/machines_config.json -o ./tmp/machines/)
-                echo $matrix
-                echo "matrix={ include : $matrix }" >> $GITHUB_OUTPUT
         -   name: Donwload benchmark configuration
             run: |
                 source .venv/bin/activate
@@ -93,6 +86,13 @@ jobs:
                 girder-download -gid $plots_cfg_id -o ./tmp/ -fn "plots.json"
             env:
                 GIRDER_API_KEY: ${{secrets.GIRDER}}
+        -   id: hpc-systems
+            name: Set HPC systems matrix
+            run: |
+                source .venv/bin/activate
+                matrix=$(hpc-dispatch -mcp ./tmp/machines_config.json -mod ./tmp/machines/ -bcp ./tmp/benchmark_config.json -pcp ./tmp/plots.json -mv ./tmp/results)
+                echo $matrix
+                echo "matrix={ include : $matrix }" >> $GITHUB_OUTPUT
         -   name: pull_images
             run: |
                 source .venv/bin/activate
@@ -137,10 +137,12 @@ jobs:
                 source .venv/bin/activate
                 python${{matrix.python_version}} -m pip install --upgrade pip
                 python${{matrix.python_version}} -m pip install -r requirements.txt
-        -   name: Execute benchmarks
+
+        -   name: Execute benchmarks (cli)
             run: |
                 source .venv/bin/activate
-                execute-benchmark -mc ./${{matrix.machine_cfg}} -bc ./tmp/benchmark_config.json -pc ./tmp/plots.json --move-results ./tmp/results/ -v
+                $${{matrix.submit_command}}
+
         -   name: Upload reframe report
             uses: actions/upload-artifact@v4
             with:
