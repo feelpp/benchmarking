@@ -12,6 +12,9 @@ on:
             benchmark_config:
                 description: 'Applcation related configuration'
                 required: True
+            plots_config:
+                description: 'Plots related configuration'
+                required: True
             girder_folder_id:
                 description: 'ID of the folder to upload to'
                 required: True
@@ -81,10 +84,13 @@ jobs:
 
                 if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
                     bench_cfg_id=${{ github.event.inputs.benchmark_config }};
+                    plot_cfg_id=${{ github.event.inputs.plots_config }};
                 elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
                     bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
+                    plots_cfg_id=${{ github.event.client_payload.plots_config }};
                 fi
                 girder-download -gid $bench_cfg_id -o ./tmp/ -fn "benchmark_config.json"
+                girder-download -gid $plots_cfg_id -o ./tmp/ -fn "plots.json"
             env:
                 GIRDER_API_KEY: ${{secrets.GIRDER}}
         -   name: pull_images
@@ -102,6 +108,7 @@ jobs:
                 name: config-artifacts
                 path: |
                     ./tmp/benchmark_config.json
+                    ./tmp/plots.json
                     ./tmp/machines/
 
     benchmark:
@@ -113,6 +120,7 @@ jobs:
         timeout-minutes: 7200
         name: ${{matrix.machine}}
         steps:
+        -   uses: actions/checkout@v4
         -   name: Download wheel
             uses: actions/download-artifact@v4
             with:
@@ -131,7 +139,7 @@ jobs:
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
-                execute-benchmark -ec ./${{matrix.machine_cfg}} --config ./tmp/benchmark_config.json --move-results ./tmp/results/ -v
+                execute-benchmark -mc ./${{matrix.machine_cfg}} -bc ./tmp/benchmark_config.json -pc ./tmp/plots.json --move-results ./tmp/results/ -v
         -   name: Upload reframe report
             uses: actions/upload-artifact@v4
             with:
