@@ -65,7 +65,7 @@ def main_cli():
     parser = Parser()
     parser.printArgs()
 
-    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig)
+    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,dry_run=parser.args.dry_run)
     machine_reader.updateConfig()
 
     #Sets the cachedir and tmpdir directories for containers
@@ -91,7 +91,7 @@ def main_cli():
         configs = [config_filepath]
         if parser.args.plots_config:
             configs += [parser.args.plots_config]
-        app_reader = ConfigReader(configs,ConfigFile)
+        app_reader = ConfigReader(configs,ConfigFile,dry_run=parser.args.dry_run)
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
         report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))

@@ -6,7 +6,7 @@ from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.outputs import OutputsHandler
 
 import reframe as rfm
-import os, re, shutil
+import os, re, shutil, sys
 import numpy as np
 
 ##### TODO: This is very messy :( Rethink the design
@@ -48,7 +48,7 @@ class MachineSetup(Setup):
             config_filepath (str): Path of the machine configuration json file
         """
         super().__init__()
-        self.reader = ConfigReader(config_filepath,MachineConfig)
+        self.reader = ConfigReader(config_filepath,MachineConfig, dry_run = "--dry-run" in sys.argv)
         self.updateConfig()
 
     def setupAfterInit(self,rfm_test,app_config):
@@ -85,8 +85,6 @@ class MachineSetup(Setup):
         #Consider adding this to the docs
         rfm_test.valid_systems = [f"{self.reader.config.machine}:{part}" for part in self.reader.config.partitions]
         rfm_test.valid_prog_environs = self.reader.config.prog_environments
-        print("Valid Systems after init ", rfm_test.valid_systems)
-        print("Valid envs after init ", rfm_test.valid_prog_environs)
 
     def setPlatform(self, rfm_test,app_config):
         """ Sets the container_platform attributes
@@ -95,8 +93,6 @@ class MachineSetup(Setup):
         """
         platform = app_config.platforms[self.reader.config.platform]
         if self.reader.config.platform != "builtin":
-            if not os.path.exists(platform.image.name):
-                raise FileExistsError(f"Cannot find image {platform.image.name}")
             rfm_test.container_platform.image = platform.image.name
             rfm_test.container_platform.options = platform.options + self.reader.config.containers[self.reader.config.platform].options
             rfm_test.container_platform.workdir = None
@@ -119,7 +115,7 @@ class AppSetup(Setup):
         """
         super().__init__()
         self.config_filepath = config_filepath
-        self.reader = ConfigReader(config_filepath,ConfigFile)
+        self.reader = ConfigReader(config_filepath,ConfigFile, dry_run = "--dry-run" in sys.argv)
 
         self.updateConfig(self.reader.processor.flattenDict(machine_config,"machine"))
         self.updateConfig()

@@ -10,10 +10,13 @@ class Container(BaseModel):
 
     @field_validator("cachedir","tmpdir","image_base_dir",mode="before")
     @classmethod
-    def checkDirectories(cls,v):
+    def checkDirectories(cls,v, info):
         """Checks that the directories exists"""
         if v and not os.path.exists(v):
-            raise FileNotFoundError(f"Cannot find {v}")
+            if info.context.get("dry_run", False):
+                print(f"Dry Run: Skipping directory check for {v}")
+            else:
+                raise FileNotFoundError(f"Cannot find {v}")
 
         return v
 
@@ -35,7 +38,6 @@ class MachineConfig(BaseModel):
     #This field should be hidden from user schema ( are post-processed under parseTargets method )
     #TODO: maybe skipJsonSchema or something like that.
     environment_map: Optional[Dict[str,List[str]]] = {}
-
 
     @model_validator(mode="after")
     def parseTargets(self):
