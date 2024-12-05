@@ -11,7 +11,7 @@
 
 source /etc/profile.d/modules.sh
 export MODULEPATH=/opt/software/modulefiles
-module load python/3/3.10/3.10.12
+module load python/3/3.9/latest
 module load openmpi/4/gcc/latest
 
 matrix_config=""
