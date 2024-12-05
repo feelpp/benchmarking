@@ -32,6 +32,7 @@ done
 
 
 source .venv/bin/activate
+python3.9 -m pip install .
 execute-benchmark           \
     -mc $matrix_config      \
     -bc $benchmark_config   \
