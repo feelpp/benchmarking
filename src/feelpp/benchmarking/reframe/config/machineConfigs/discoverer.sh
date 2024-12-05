@@ -36,7 +36,6 @@ python3.9 -m venv .venv
 source .venv/bin/activate
 
 
-.venv/bin/python3.9 -m ensurepip --upgrade
 .venv/bin/python3.9 -m pip install --upgrade pip
 
 echo "Python executable: $(which python3.9)"
