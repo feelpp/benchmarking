@@ -24,7 +24,11 @@ while true; do
 done
 
 
+python3 -m venv .venv
 source .venv/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+
 execute-benchmark           \
     -mc $matrix_config      \
     -bc $benchmark_config   \

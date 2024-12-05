@@ -131,17 +131,8 @@ jobs:
             with:
                 name: config-artifacts
                 path: ./tmp/
-        -   name: Create Virtual Environment
-            run: |
-                python${{matrix.python_version}} -m venv .venv
-                source .venv/bin/activate
-                python${{matrix.python_version}} -m pip install --upgrade pip
-                python${{matrix.python_version}} -m pip install -r requirements.txt
-
         -   name: Execute benchmarks
-            run: |
-                source .venv/bin/activate
-                ${{matrix.submit_command}}
+            run: ${{matrix.submit_command}}
 
         -   name: Upload reframe report
             uses: actions/upload-artifact@v4
