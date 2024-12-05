@@ -22,7 +22,7 @@ class Container(BaseModel):
 
 class MachineConfig(BaseModel):
     machine:str
-    targets:Optional[str | List[str]] = None
+    targets:Optional[Union[str,List[str]]] = None
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     reframe_base_dir:str
