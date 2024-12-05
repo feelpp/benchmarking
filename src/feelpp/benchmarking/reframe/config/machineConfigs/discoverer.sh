@@ -41,7 +41,7 @@ source .venv/bin/activate
 echo "Python executable: $(which python3.9)"
 echo "Pip executable: $(which pip)"
 
-.venv/bin/python3.9 -m pip install --upgrade -r requirements.txt
+.venv/bin/python3.9 -m pip install --upgrade -I -r requirements.txt
 
 execute-benchmark           \
     -mc $matrix_config      \
