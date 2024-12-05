@@ -4,16 +4,25 @@ from feelpp.benchmarking.reframe.config.configReader import JSONWithCommentsDeco
 from pathlib import Path
 
 class HpcSystem:
-    def __init__(self):
-        self.runner = ""
-        self.machine = ""
-        self.python_version = ""
-        self.user_name = ""
-        self.api_version =  ""
-        self.user_name =  ""
-        self.account =  ""
-        self.url =  ""
-        self.submit =  ""
+    def __init__(
+        self,
+        runner,
+        machine,
+        python_version = "",
+        user_name = "",
+        api_version =  "",
+        account =  "",
+        url =  "",
+        submit =  ""
+    ):
+        self.runner = runner
+        self.machine = machine
+        self.python_version = python_version
+        self.user_name =  user_name
+        self.api_version =  api_version
+        self.account =  account
+        self.url =  url
+        self.submit =  submit
 
     def toDict(self):
         return self.__dict__
@@ -33,33 +42,14 @@ class HpcSystem:
             f"--move-results {move_results}"
         ])
 
-class Gaya(HpcSystem):
-    def __init__(self):
-        super().__init__()
-        self.runner = "self-gaya"
-        self.machine = "gaya"
-        self.python_version = "3.10"
-        self.user_name = "prudhomm"
-        self.submit =  "cli"
-
-class Discoverer(HpcSystem):
-    def __init__(self):
-        super().__init__()
-        self.runner = "self-discoverer"
-        self.machine = "discoverer"
-        self.partition = "truePartition"
-        self.python_version = "3.6"
-        self.user_name = "vchabannes"
-        self.submit = "cli"
-
 
 class HpcSystemFactory:
     @staticmethod
     def dispatch(machine_name):
         if machine_name == "gaya":
-            return Gaya()
+            return HpcSystem( runner = "self-gaya", machine = "gaya", python_version = "3.10", user_name = "prudhomm", submit =  "cli" )
         elif machine_name == "discoverer":
-            return Discoverer()
+            return HpcSystem( runner = "self-discoverer", machine = "discoverer", partition = "truePartition", python_version = "3.6", user_name = "vchabannes", submit = "cli" )
         else:
             raise ValueError(f"HPC resource {machine_name} not found...")
 
