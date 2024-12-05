@@ -15,14 +15,12 @@ export MODULEPATH=/opt/software/modulefiles
 matrix_config=""
 benchmark_config=""
 plots_config=""
-move_results=""
 
 while true; do
     case "$1" in
         --matrix-config ) matrix_config="$2"; shift 2 ;;
         --benchmark-config ) benchmark_config="$2"; shift 2 ;;
         --plots-config ) plots_config="$2"; shift 2 ;;
-        --move-results ) move_results="$2"; shift 2 ;;
         -- ) shift; break ;;
         * ) break ;;
     esac
@@ -35,15 +33,10 @@ source .venv/bin/activate
 
 
 .venv/bin/python3.9 -m pip install --upgrade pip
-
-echo "Python executable: $(which python3.9)"
-echo "Pip executable: $(which pip)"
-
 .venv/bin/python3.9 -m pip install -I -r requirements.txt
 
 execute-benchmark           \
     -mc $matrix_config      \
     -bc $benchmark_config   \
     -pc $plots_config       \
-    --move-results $move_results \
     -v

@@ -94,7 +94,7 @@ jobs:
             name: Set HPC systems matrix
             run: |
                 source .venv/bin/activate
-                matrix=$(hpc-dispatch -mcp ./tmp/machines_config.json -mod ./tmp/machines/ -bcp ./tmp/benchmark_config.json -pcp ./tmp/plots.json -mv ./tmp/results)
+                matrix=$(hpc-dispatch -mcp ./tmp/machines_config.json -mod ./tmp/machines/ -bcp ./tmp/benchmark_config.json -pcp ./tmp/plots.json)
                 echo $matrix
                 echo "matrix={ include : $matrix }" >> $GITHUB_OUTPUT
         -   name: pull_images
@@ -141,7 +141,7 @@ jobs:
             uses: actions/upload-artifact@v4
             with:
                 name: benchmark-results-${{matrix.machine}}
-                path: ./tmp/results/
+                path: ${{matrix.reports_path}}
 
     results:
         runs-on: self-ubuntu-22.04

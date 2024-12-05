@@ -10,14 +10,12 @@
 matrix_config=""
 benchmark_config=""
 plots_config=""
-move_results=""
 
 while true; do
     case "$1" in
         --matrix-config ) matrix_config="$2"; shift 2 ;;
         --benchmark-config ) benchmark_config="$2"; shift 2 ;;
         --plots-config ) plots_config="$2"; shift 2 ;;
-        --move-results ) move_results="$2"; shift 2 ;;
         -- ) shift; break ;;
         * ) break ;;
     esac
@@ -33,5 +31,4 @@ execute-benchmark           \
     -mc $matrix_config      \
     -bc $benchmark_config   \
     -pc $plots_config       \
-    --move-results $move_results \
     -v
