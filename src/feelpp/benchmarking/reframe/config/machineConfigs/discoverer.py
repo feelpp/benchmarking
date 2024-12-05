@@ -22,12 +22,6 @@ site_configuration = {
                     'processor': {
                         'num_cpus': 128
                     },
-                    'resources': [
-                        {
-                            'name':'launcher_options',
-                            'options':['-bind-to','core']
-                        }
-                    ],
                     'devices': [
                         {
                             'type': 'cpu',
@@ -36,7 +30,7 @@ site_configuration = {
                     ],
                     'container_platforms':[
                         {
-                            'type': 'Apptainer' # DOES IT WORK ? OR NEED 'Singularity'?
+                            'type': 'Singularity'
                         }
                     ],
                     'sched_options': { 'use_nodes_option': True },
@@ -50,7 +44,7 @@ site_configuration = {
     'environments': [
         {
             'name':'default',
-            'modules': ['python/3/3.9/latest','openmpi/4/gcc/latest'],
+            'modules': [],
             'target_systems':['discoverer:cn']
         }
     ]
