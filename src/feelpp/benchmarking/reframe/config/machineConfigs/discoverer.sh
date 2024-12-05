@@ -36,13 +36,13 @@ python3.9 -m venv .venv
 source .venv/bin/activate
 
 
-python3.9 -m ensurepip --upgrade
-python3.9 -m pip install --upgrade pip
+.venv/bin/python3.9 -m ensurepip --upgrade
+.venv/bin/python3.9 -m pip install --upgrade pip
 
 echo "Python executable: $(which python3.9)"
 echo "Pip executable: $(which pip)"
 
-python3.9 -m pip install --upgrade -r requirements.txt
+.venv/bin/python3.9 -m pip install --ignore-installed --upgrade --force-reinstall -r requirements.txt
 
 execute-benchmark           \
     -mc $matrix_config      \
