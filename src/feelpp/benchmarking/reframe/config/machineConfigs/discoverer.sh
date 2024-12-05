@@ -11,7 +11,6 @@
 
 source /etc/profile.d/modules.sh
 export MODULEPATH=/opt/software/modulefiles
-module load python/3/3.9/latest
 
 matrix_config=""
 benchmark_config=""
@@ -31,7 +30,7 @@ done
 
 
 
-python3.9 -m venv .venv
+/opt/software/python/3.9.7/bin/python3 -m venv .venv
 source .venv/bin/activate
 
 
@@ -40,7 +39,7 @@ source .venv/bin/activate
 echo "Python executable: $(which python3.9)"
 echo "Pip executable: $(which pip)"
 
-.venv/bin/python3.9 -m pip install --upgrade -I -r requirements.txt
+.venv/bin/python3.9 -m pip install -I -r requirements.txt
 
 execute-benchmark           \
     -mc $matrix_config      \
