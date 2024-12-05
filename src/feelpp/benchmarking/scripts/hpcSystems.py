@@ -8,6 +8,7 @@ class HpcSystem:
         self,
         runner,
         machine,
+        partition = "",
         python_version = "",
         user_name = "",
         api_version =  "",
@@ -17,6 +18,7 @@ class HpcSystem:
     ):
         self.runner = runner
         self.machine = machine
+        self.partition = partition
         self.python_version = python_version
         self.user_name =  user_name
         self.api_version =  api_version
