@@ -6,7 +6,7 @@ class Container(BaseModel):
     cachedir:Optional[str] = None
     tmpdir:Optional[str] = None
     image_base_dir:str
-    options:Optional[list[str]] = []
+    options:Optional[List[str]] = []
 
     @field_validator("cachedir","tmpdir","image_base_dir",mode="before")
     @classmethod
