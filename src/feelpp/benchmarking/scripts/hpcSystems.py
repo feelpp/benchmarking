@@ -31,7 +31,7 @@ class HpcSystem:
 
     def writeConfig(self,output_dir,machine_data):
         self.machine_cfg = os.path.join(output_dir,f"{self.machine}.json")
-        self.reports_path = os.path.expandvars(machine_data["reports_base_dir"])
+        self.reports_path = machine_data["reports_base_dir"]
         with open(self.machine_cfg,"w") as f:
             json.dump(machine_data,f)
 
