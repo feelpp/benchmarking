@@ -28,6 +28,8 @@ jobs:
                 run: |
                     source .venv/bin/activate
                     girder-download -gid 6752b5194c9ccbdde21a48b8 -o ./tmp/ -d
+                env:
+                    GIRDER_API_KEY: ${{secrets.GIRDER}}
             -   name: Merge Website Configs
                 run: |
                     source .venv/bin/activate
