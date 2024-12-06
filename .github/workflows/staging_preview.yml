@@ -12,7 +12,7 @@ jobs:
     preview-staging:
         runs-on: self-ubuntu-22.04
         name: Preview stage benchmarks
-        if: contains(github.event.pull_request.labels.*.name,'new-benchmark')
+        if: 1 || contains(github.event.pull_request.labels.*.name,'new-benchmark')
         steps:
             -   uses: actions/checkout@v4
             -   name: Build wheel
