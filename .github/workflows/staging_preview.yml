@@ -5,6 +5,9 @@ on:
         types:
             - labeled
             - opened
+    push:
+        branches:
+            - '181-handle-report-deployment' #TODO: Remove (DEBUG)
 jobs:
     preview-staging:
         runs-on: self-ubuntu-22.04
