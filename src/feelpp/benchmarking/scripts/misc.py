@@ -36,6 +36,3 @@ def jsonConfigMerge_cli():
         f.write(json.dumps(master_config))
 
     return 0
-
-if __name__=="__main__":
-    jsonConfigMerge_cli()
