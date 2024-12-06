@@ -38,10 +38,9 @@ jobs:
                 run: |
                     source .venv/bin/activate
                     merge-json-configs -fp ./tmp/**/website_config.json -o ./tmp/website_config.json -u
-            -   name: Trigger Preview
-                uses: netlify/actions/build@master
-                env:
-                    NETLIFY_CMD: "./netlify-stage-build.sh"
-                    NETLIFY_DIR: public
-                    GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
+            -   name: Render Benchmarks
+                run: |
+                    source .venv/bin/activate
+                    render-benchmarks --config_file=./tmp/website_config.json
+            -   name: Deploy Preview
+                run: echo "HOW???"
