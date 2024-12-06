@@ -6,20 +6,23 @@ class Container(BaseModel):
     cachedir:Optional[str] = None
     tmpdir:Optional[str] = None
     image_base_dir:str
-    options:Optional[list[str]] = []
+    options:Optional[List[str]] = []
 
     @field_validator("cachedir","tmpdir","image_base_dir",mode="before")
     @classmethod
-    def checkDirectories(cls,v):
+    def checkDirectories(cls,v, info):
         """Checks that the directories exists"""
         if v and not os.path.exists(v):
-            raise FileNotFoundError(f"Cannot find {v}")
+            if info.context.get("dry_run", False):
+                print(f"Dry Run: Skipping directory check for {v}")
+            else:
+                raise FileNotFoundError(f"Cannot find {v}")
 
         return v
 
 class MachineConfig(BaseModel):
     machine:str
-    targets:Optional[str | List[str]] = None
+    targets:Optional[Union[str,List[str]]] = None
     active: Optional[bool] = True
     execution_policy:Literal["serial","async"]
     reframe_base_dir:str
@@ -35,7 +38,6 @@ class MachineConfig(BaseModel):
     #This field should be hidden from user schema ( are post-processed under parseTargets method )
     #TODO: maybe skipJsonSchema or something like that.
     environment_map: Optional[Dict[str,List[str]]] = {}
-
 
     @model_validator(mode="after")
     def parseTargets(self):
