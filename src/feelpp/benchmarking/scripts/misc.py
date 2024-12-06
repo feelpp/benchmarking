@@ -39,7 +39,6 @@ def jsonConfigMerge_cli():
                 app,use_case,machine = report.split("/")[-5:-2]
 
                 current_config["execution_mapping"][app][machine][use_case]["path"] = os.path.join(file_dirpath,app,use_case,machine)
-                current_config["execution_mapping"][app][machine][use_case]["path"]["platform"] = "local"
 
             master_config = mergeDicts(master_config,current_config)
 
