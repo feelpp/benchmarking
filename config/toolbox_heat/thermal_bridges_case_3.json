@@ -14,11 +14,13 @@
                 "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ],
-            "append_app_option":[]
+            "append_app_option":[],
+            "env_variables":{}
         },
         "builtin":{
             "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
-            "append_app_option":[]
+            "append_app_option":[],
+            "env_variables":{}
         }
     },
     "options": [
@@ -30,6 +32,9 @@
         "--case.discretization {{parameters.discretization.value}}",
         "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
+    "env_variables":{
+        "OMP_NUM_THREADS":1
+    },
     "outputs": [
         {
             "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
