@@ -8,7 +8,7 @@ pip3 install -r requirements.txt
 pip3 wheel --no-deps --wheel-dir dist .
 pip3 install dist/*.whl
 npm i
-if [[ $BRANCH == *"new-benchmark"* ]]; then
+if [[ $HEAD == *"new-benchmark"* ]]; then
     echo "Downloading Staging benchmarks"
     config_id=6752b5194c9ccbdde21a48b8
     girder-download -gid $config_id -o ./tmp/ -d
