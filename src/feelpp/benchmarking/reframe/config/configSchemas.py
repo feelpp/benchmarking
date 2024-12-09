@@ -74,6 +74,7 @@ class Platform(BaseModel):
     input_dir:Optional[str] = None
     options:Optional[List[str]]= []
     append_app_options:Optional[List[str]]= []
+    env_variables:Optional[Dict] = {}
 
 class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
@@ -86,6 +87,7 @@ class ConfigFile(BaseModel):
     output_directory:str
     use_case_name: str
     options: List[str]
+    env_variables:Optional[Dict] = {}
     outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
