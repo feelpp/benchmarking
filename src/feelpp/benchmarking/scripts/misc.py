@@ -40,7 +40,7 @@ def jsonConfigMerge_cli():
 
                 current_config["execution_mapping"][app][machine][use_case]["path"] = os.path.join(file_dirpath,app,use_case,machine)
 
-            master_config = mergeDicts(master_config,current_config)
+        master_config = mergeDicts(master_config,current_config)
 
     with open(args.output_file_path,"w") as f:
         f.write(json.dumps(master_config))
