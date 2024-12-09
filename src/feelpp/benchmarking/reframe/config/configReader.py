@@ -70,12 +70,15 @@ class JSONWithCommentsDecoder(json.JSONDecoder):
 
 class ConfigReader:
     """ Class to load config files"""
-    def __init__(self, config_paths, schema):
+    def __init__(self, config_paths, schema, dry_run=False):
         """
         Args:
             config_paths (str | list[str]) : Path to the config JSON file. If a list is provided, files will be merged.
         """
         self.schema = schema
+        self.context = {
+            "dry_run":dry_run
+        }
         self.config = self.load(
             config_paths if type(config_paths) == list else [config_paths],
             schema
@@ -97,7 +100,7 @@ class ConfigReader:
             with open(config, "r") as cfg:
                 self.config.update(json.load(cfg, cls=JSONWithCommentsDecoder))
 
-        self.config = schema(**self.config)
+        self.config = schema.model_validate(self.config, context=self.context)
 
         return self.config
 
@@ -109,7 +112,7 @@ class ConfigReader:
         """
         if not flattened_replace:
             flattened_replace = self.processor.flattenDict(self.config.model_dump())
-        self.config = self.schema(**self.processor.recursiveReplace(self.config.model_dump(),flattened_replace))
+        self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context)
 
     def __repr__(self):
         return json.dumps(self.config.dict(), indent=4)
