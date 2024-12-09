@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
+echo "BRANCH"
 echo $BRANCH
+echo "HEAD"
+echo $HEAD
+
 
 python3 -m venv .venv
 source .venv/bin/activate
