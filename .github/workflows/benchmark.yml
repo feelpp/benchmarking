@@ -180,5 +180,6 @@ jobs:
                     [1]: https://github.com/peter-evans/create-pull-request
                 reviewers: JavierCladellas
                 labels: new-benchmark
+                branch: new-benchmark-{{needs.factory.outputs.executable_name}}
             env:
                 GITHUB_TOKEN: ${{ secrets.CR_PAT }}
