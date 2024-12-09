@@ -13,9 +13,6 @@ site_configuration = {
                     'max_jobs': 8,
                     'access': ['--partition=cn --account=ehpc-dev-2024d05-047 --qos=ehpc-dev-2024d05-047'],
                     'environs': ['default'],
-                    'prepare_cmds': [
-                        'export OMP_NUM_THREADS=1' # Just in case
-                    ],
                     'processor': {
                         'num_cpus': 128
                     },
