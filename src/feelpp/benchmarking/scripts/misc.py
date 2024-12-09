@@ -6,6 +6,8 @@ def mergeDicts(dict1, dict2):
     merged = copy.deepcopy(dict1)  # Make a deep copy of the first dictionary
     for key, value in dict2.items():
         if key in merged:
+            if not value: continue
+
             if isinstance(merged[key], dict) and isinstance(value, dict):
                 merged[key] = mergeDicts(merged[key], value)
             elif isinstance(merged[key], list) and isinstance(value, list):
