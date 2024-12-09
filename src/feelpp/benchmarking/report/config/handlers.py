@@ -60,7 +60,7 @@ class GirderHandler(DownloadHandler):
 
         self.client.downloadFile(fileId=file_id,path=filepath)
 
-    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True):
+    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True,reuse_existing=True):
         """ Upload a local file to an existing folder/item in Girder
         Args:
             file_pattern: The file pattern of the files to upload
@@ -68,7 +68,7 @@ class GirderHandler(DownloadHandler):
             parent_type (str) : "folder" or "item". Defaults to "folder"
             leaf_folder_as_items (bool): Whether to upload leaf folders as items or files
         """
-        self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items)
+        self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items, reuseExisting=reuse_existing)
 
 
 class ConfigHandler:
