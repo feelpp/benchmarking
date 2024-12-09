@@ -8,7 +8,7 @@ pip3 install -r requirements.txt
 pip3 wheel --no-deps --wheel-dir dist .
 pip3 install dist/*.whl
 npm i
-if [[ $BRANCH != *"new-benchmark"*]]; then
+if [[ $BRANCH != *"new-benchmark"* ]]; then
     config_id=6752f0734c9ccbdde21a48ca
     girder-download --girder_id=$config_id --output_dir=./tmp/ --filename=website_config.json
 fi
