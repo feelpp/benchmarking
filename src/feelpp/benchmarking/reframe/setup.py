@@ -133,7 +133,11 @@ class AppSetup(Setup):
         self.setExecutable(rfm_test,machine_config)
 
     def setupAfterInit(self, rfm_test):
-        pass
+        self.setEnvVariables()
+
+    def setEnvVariables(self):
+        for env_var_name,env_var_value in self.reader.config.env_variables.items():
+            os.environ[env_var_name] = env_var_value
 
     def cleanupDirectories(self):
         if os.path.exists(self.reader.config.scalability.directory):
