@@ -9,10 +9,12 @@ pip3 wheel --no-deps --wheel-dir dist .
 pip3 install dist/*.whl
 npm i
 if [[ $BRANCH == *"new-benchmark"* ]]; then
-    config_id=6752f0734c9ccbdde21a48ca
+    echo "Downloading Staging benchmarks"
+    config_id=6752b5194c9ccbdde21a48b8
     girder-download -gid $config_id -o ./tmp/ -d
     merge-json-configs -fp ./tmp/**/website_config.json -o ./tmp/website_config.json -u
 else
+    echo "Downloading Production benchmarks"
     config_id=6752f0734c9ccbdde21a48ca
     girder-download -gid $config_id -o ./tmp/ -fn website_config.json
 fi
