@@ -10,6 +10,7 @@ pip3 install dist/*.whl
 npm i
 if [[ $BRANCH == *"new-benchmark"* ]]; then
     echo "Downloading Staging benchmarks"
+    echo $BRANCH
     config_id=6752b5194c9ccbdde21a48b8
     girder-download -gid $config_id -o ./tmp/ -d
     merge-json-configs -fp ./tmp/**/website_config.json -o ./tmp/website_config.json -u
