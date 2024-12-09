@@ -21,7 +21,7 @@ def download_cli():
 
 def upload_cli():
     parser = ArgumentParser()
-    parser.add_argument("--directory", required=True, help="Path of the directory to upload as an item")
+    parser.add_argument("--item", required=True, help="Path of the directory or file to upload as an item")
     parser.add_argument("--girder_id", required=True, help="The Girder folder ID to which to upload the item")
     args = parser.parse_args()
 
