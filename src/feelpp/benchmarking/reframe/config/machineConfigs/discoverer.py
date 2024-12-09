@@ -14,8 +14,6 @@ site_configuration = {
                     'access': ['--partition=cn --account=ehpc-dev-2024d05-047 --qos=ehpc-dev-2024d05-047'],
                     'environs': ['default'],
                     'prepare_cmds': [
-                        'source /etc/profile.d/modules.sh',
-                        'export MODULEPATH=/opt/software/modulefiles',
                         'export OMP_NUM_THREADS=1' # Just in case
                     ],
                     'processor': {
