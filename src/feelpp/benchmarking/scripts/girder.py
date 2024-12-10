@@ -52,4 +52,4 @@ def move_cli():
             headers={"Girder-Token":token.json()["authToken"]["token"]}
         )
 
-        print(response.text)
+    return 0
