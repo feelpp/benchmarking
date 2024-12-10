@@ -1,6 +1,6 @@
 from feelpp.benchmarking.report.config.handlers import GirderHandler
 from argparse import ArgumentParser
-
+import requests, os
 
 
 def download_cli():
@@ -29,3 +29,27 @@ def upload_cli():
     girder_handler.upload( args.item, args.girder_id )
 
     return 0
+
+def move_cli():
+    """Move all folder contents to another one"""
+    parser = ArgumentParser()
+    parser.add_argument("--old_id","-oid", required=True, help="Id of the folder to move the items from")
+    parser.add_argument("--new_id","-nid", required=True, help="Id of the folder to move the items to")
+    args = parser.parse_args()
+
+    girder_handler = GirderHandler(download_base_dir=None)
+    children = girder_handler.listChildren(args.old_id)
+
+    token = requests.post(
+        f"{girder_handler.base_url}/api_key/token",
+        params={"key":os.environ["GIRDER_API_KEY"]}
+    )
+
+    for child in children:
+        response = requests.put(
+            f"{girder_handler.base_url}/{child['_modelType']}/{child['_id']}",
+            params={"parentId":args.new_id,"parentType":"folder"},
+            headers={"Girder-Token":token.json()["authToken"]["token"]}
+        )
+
+        print(response.text)
