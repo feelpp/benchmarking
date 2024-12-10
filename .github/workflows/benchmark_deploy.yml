@@ -73,6 +73,7 @@ jobs:
         -   name: Upload New Website config
             run: |
                 source .venv/bin/activate
+                source ./girder_deploy_config.sh
                 girder-upload --item ./configs_tmp/website_config.json --girder_id $production_folder_id
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
