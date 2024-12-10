@@ -24,10 +24,10 @@ class MachineConfig(BaseModel):
     machine:str
     targets:Optional[Union[str,List[str]]] = None
     active: Optional[bool] = True
-    execution_policy:Literal["serial","async"]
+    execution_policy:Optional[Literal["serial","async"]] = "serial"
     reframe_base_dir:str
     reports_base_dir:str
-    input_dataset_base_dir:str
+    input_dataset_base_dir:Optional[str] = None
     output_app_dir:str
     containers:Optional[Dict[str,Container]] = {}
 

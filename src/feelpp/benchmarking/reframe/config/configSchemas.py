@@ -83,7 +83,7 @@ class ConfigFile(BaseModel):
     executable: str
     timeout: str
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
-    output_directory:str
+    output_directory:Optional[str] = ""
     use_case_name: str
     options: List[str]
     outputs: List[AppOutput]
