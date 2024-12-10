@@ -82,7 +82,7 @@ def upldateStageConfig_cli():
                     prod_path = prod_info["path"]
 
                     if stage_platform == "local":
-                        for report_item_basename in os.listdir(report_item_basename):
+                        for report_item_basename in os.listdir(stage_path):
                             girder_client.upload( os.path.join(stage_path,report_item_basename), prod_path, reuse_existing=False)
                         stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["path"] = prod_path
                         stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["platform"] = prod_platorm
