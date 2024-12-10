@@ -60,6 +60,18 @@ class GirderHandler(DownloadHandler):
 
         self.client.downloadFile(fileId=file_id,path=filepath)
 
+    def listChildren(self,parent_id, children_name = None):
+        items = list(self.client.listItem(folderId=parent_id, name=children_name))
+        if len(items) == 0:
+            items = list(self.client.listFolder(parentId=parent_id, name=children_name))
+
+        if children_name:
+            assert len(items) <=1, f"More than one file found with the same name {children_name}"
+            assert len(items) >0, f"File not Found in Girder with the name {children_name}"
+            return items[0]
+
+        return items
+
     def upload(self, file_pattern, parent_id,leaf_folder_as_items=True,reuse_existing=True, return_id=False):
         """ Upload a local file to an existing folder/item in Girder
         Args:
@@ -71,12 +83,8 @@ class GirderHandler(DownloadHandler):
         self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items, reuseExisting=reuse_existing)
 
         if return_id:
-            items = list(self.client.listItem(folderId=parent_id, name=os.path.basename(file_pattern)))
-            if len(items) == 0:
-                items = list(self.client.listFolder(parentId=parent_id, name=os.path.basename(file_pattern)))
-            assert len(items) <=1, f"More than one file found with the same name {os.path.basename(file_pattern)}"
-            assert len(items) >0, f"File not Found in Girder with the name {os.path.basename(file_pattern)}"
-            return items[0]["_id"]
+            item = self.listChildren(parent_id,os.path.basename(file_pattern))
+            return item["_id"]
 
 class ConfigHandler:
     def __init__(self, config_filepath):
