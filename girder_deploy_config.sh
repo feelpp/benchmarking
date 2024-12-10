@@ -1,0 +1,7 @@
+#!/bin/bash
+
+production_website_config_id=6752f0734c9ccbdde21a48ca
+staging_folder_id=6752b5194c9ccbdde21a48b8
+production_folder_id=6752efed4c9ccbdde21a48c7
+accepted_folder_id=67580d534c9ccbdde21a4a75
+denied_folder_id=6752b66d4c9ccbdde21a48b9
