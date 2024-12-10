@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>System configuration :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/tutorial/configurationfiles/system.html">
+    <meta name="generator" content="Antora 3.1.9">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="../index.html">Documentation</a></li>
+    <li><a href="../configuration.html">Configuration Guide</a></li>
+    <li><a href="system.html">System Configuration</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/tutorial/pages/configurationfiles/system.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">System configuration</h1>
+<div class="paragraph">
+<p>The system configuration files need to be placed under <em>src/feelpp/benchmarking/reframe/config/machineConfigs</em>, and are strictly ReFrame dependent. A single Python file should be provided per machine. Please follow <a href="https://reframe-hpc.readthedocs.io/en/stable/config_reference.html">ReFrame&#8217;s configuration file reference</a> for precise settings.</p>
+</div>
+<div class="paragraph">
+<p>Example configurations are provided for the <em>Gaya</em> machine and for a simple single node 8-core system.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Processor bindings and other launcher options should be specified as a resource under the desired partition, with the <code>launcher_options</code> name field value for example. For example,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"resources": [
+    {
+        "name":"launcher_options",
+        "options":["-bind-to","core"]
+    }
+]</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2024 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<script async src="../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

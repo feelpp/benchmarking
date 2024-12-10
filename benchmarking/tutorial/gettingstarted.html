@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Getting started :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/tutorial/gettingstarted.html">
+    <meta name="generator" content="Antora 3.1.9">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="index.html">Documentation</a></li>
+    <li><a href="gettingstarted.html">Getting Started</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/tutorial/pages/gettingstarted.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Getting started</h1>
+<div class="sect1">
+<h2 id="_installation"><a class="anchor" href="#_installation"></a>1. Installation</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Clone the Repository</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>git clone https://github.com/feelpp/benchmarking.git</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use a python virtual environment [Optional]</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>python3 -m venv .venv
+source .venv/bin/activate</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Build the project</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>pip3 wheel --no-deps --wheel-dir dist .</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install requirements</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This will install necessary dependencies as well as the built project from the previous step.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cmd hljs" data-lang="cmd">python3 -m pip install -r requirements.txt</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quickstart"><a class="anchor" href="#_quickstart"></a>2. Quickstart</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The framwork includes a sample C++/MPI application that can be used to get familiar with the framework&#8217;s core concepts. It can be found under <em>tests/data/parallelSum.cpp</em>.</p>
+</div>
+<div class="paragraph">
+<p>This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, the app will measure the time taken to perform the partial sum, and will save it under a <em>scalability.json</em> file.</p>
+</div>
+<div class="paragraph">
+<p>The executable is already provided as <em>tests/data/parallelSum</em>. You can update it and recompile it for a specific config as needed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cmd hljs" data-lang="cmd">mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Configuration files might require some changes for specific configurations depending on the system you are running the framework.</p>
+</div>
+<div class="paragraph">
+<p>Finally, to benchmark the test application, generate the reports and plot the figures, run</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cmd hljs" data-lang="cmd">execute-benchmark --machine-config config/machines/local.json \
+                    --benchmark-config config/test_parallelSum/parallelSum.json \
+                    --plots-config config/test_parallelSum/plots.json \
+                    --website</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>--website</code> option will start an http-server on localhost, so the website can be visualized, check the console for more information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_executing_a_benchmark"><a class="anchor" href="#_executing_a_benchmark"></a>3. Executing a benchmark</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to execute a benchmark, you can make use of the <code>execute-benchmark</code> command after all configuration files have been set ( <a href="configuration.html" class="xref page">Configuration Reference</a>).</p>
+</div>
+<div class="paragraph">
+<p>The script accepts the following options :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>--machine-config</code> (<code>-mc</code>) : The path to the machine configuration JSON file</p>
+</li>
+<li>
+<p><code>--benchmark-config</code> (<code>-bc</code>) : The path to the benchmark configuration JSON file</p>
+</li>
+<li>
+<p><code>--plots-config</code> (<code>-pc</code>) : The path to the plots configuration JSON file. If not provided, it will be assumed that the plots section is included in the benchmark config. Otherwise, no plots will be considered.</p>
+</li>
+<li>
+<p><code>--dir</code> (<code>-d</code>) : [Optional] Directory path where benchmark configuration files can be found. If provided, the application will consider all benchmark configuration files inside the provided directory.</p>
+</li>
+<li>
+<p><code>--exclude</code> (<code>-e</code>) : [Optional] To use in combination with <code>--dir</code>, mentioned files will not be launched. Only provide basenames to exclude.</p>
+</li>
+<li>
+<p><code>--move-results</code> (<code>-mv</code>) : [Optional] Directory to move the resulting files to.  If not provided, result files will be located under the directory specified by the machine configuration.</p>
+</li>
+<li>
+<p><code>--list-files</code> (<code>-lf</code>) : [Optional] List all benchmarking configuration file found. If this option is provided, the application will not run. Use it for validation.</p>
+</li>
+<li>
+<p><code>--verbose</code> (<code>-v</code>) : [Optional] Select Reframe's verbose level by specifying multiple v's.</p>
+</li>
+<li>
+<p><code>--website</code> (<code>-w</code>) : [Optional] Render reports, compile them, create the website and start an http server.</p>
+</li>
+<li>
+<p><code>--help</code> (<code>-h</code>) : Display help and quit program</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When a benchmark is done, a <code>website_config.json</code> file will be created (or updated) with the current filepaths of the reports and plots generated by the framework. If the <code>--website</code> flag is active, the <code>render-benchmarks</code> command will be launched with this file as argument.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rendering_reports"><a class="anchor" href="#_rendering_reports"></a>4. Rendering reports</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To render reports, a webiste configuration file is needed. An example is provided under <em>src/benchmarking/reports/config/config.json</em>. This file indicates how the website views should be structured, and it indicates the hierarchy of the benchmarks.</p>
+</div>
+<div class="paragraph">
+<p>A file of the same type is generated after a benchmark is launched, called <em>website_config.json</em>, and it is found at the root of the <em>reports</em> directory specified under the <code>reports_base_dir</code> field of machine configuration file ( xref:tutorial:configfiles/machine.adoc).</p>
+</div>
+<div class="paragraph">
+<p>Once this file is located, users can run the <code>render-benchmarks</code> command to render existing reports.</p>
+</div>
+<div class="paragraph">
+<p>The script takes the following arguments:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>config_file</code> : The path of the website configuration file.</p>
+</li>
+<li>
+<p><code>json_output_path</code>: [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).</p>
+</li>
+<li>
+<p><code>modules_path</code>: [Optional] Path to the Antora module to render the reports to. It defaults to <em>docs/modules/ROOT/pages</em>. Multiple directories will be recursively created under the provided path.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2024 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+
+
+<script async src="../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

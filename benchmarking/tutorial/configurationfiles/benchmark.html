@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Benchmark configuration :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/tutorial/configurationfiles/benchmark.html">
+    <meta name="generator" content="Antora 3.1.9">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="../index.html">Documentation</a></li>
+    <li><a href="../configuration.html">Configuration Guide</a></li>
+    <li><a href="benchmark.html">Benchmark Configuration</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/tutorial/pages/configurationfiles/benchmark.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+      <li>
+        <a href="#"
+           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
+          <img class="jupyter-file-icon icon" src="../../../_/img/jupyter-logo.svg"/> .ipynb
+        </a>
+      </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Benchmark configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Configuring a benchmark can be quite extensive, as this framework focuses on flexibility. For this, the documentation will be divided in main sections.</p>
+</div>
+<div class="paragraph">
+<p>The base of the configuration file is shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "executable": "",
+    "use_case_name": "",
+    "timeout":"",
+    "platforms":{},
+    "options": [],
+    "outputs":{},
+    "scalability":{},
+    "sanity":{},
+    "parameters":{},
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fields_on_json_root"><a class="anchor" href="#_fields_on_json_root"></a>1. Fields on JSON root</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Users can add any field used for refactoring. For example, one can do the following.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"output_directory":"/data/outputs" // This is a custom field
+"options":["--output {{output_directory}}"]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mandatory and actionable fields are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">executable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path or name of the application executable.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use_case_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job execution timeout. Format: days-hours:minutes:seconds</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_platforms"><a class="anchor" href="#_platforms"></a>2. Platforms</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>platforms</code> object lists all options and directories related to the benchmark execution for each supported platform. A platform present on this object does not imply that it will be benchmarked, but it rather lists all possible options.</p>
+</div>
+<div class="paragraph">
+<p>The field is optional, if not provided, the builtin platform will be considered.</p>
+</div>
+<div class="paragraph">
+<p>The syntax for builtin platform is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms": {
+    "builtin":{
+        "input_dir":"",
+        "append_app_option":[]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>append_app_options</code> is in this case equivalent to the <code>options</code> field on the configuration root.</p>
+</li>
+<li>
+<p><code>input_dir</code> indicates the path of the directory where input files can be found.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following example shows how to configure the Apptainer platform:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms":{
+    "apptainer":{
+        "image":{
+            "name":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
+        },
+        "input_dir":"/input_data/",
+        "options":["--home {{machine.output_app_dir}}"],
+        "append_app_options":["--my_custom_option_for_apptainer"]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For any container, the <code>image</code> field must be specified, specifically <code>image.name</code>, containing the path of the image. Pulling images is not yet supported.</p>
+</div>
+<div class="paragraph">
+<p>In this case, <code>input_dir</code> represents the directory where input files will be found INSIDE the container.</p>
+</div>
+<div class="paragraph">
+<p>The <code>options</code> field contains a list of all the options to include on the container execution. It is equivalent to the machine&#8217;s <code>containers.apptainer.options</code> field. However, users should only include application dependent options in this list.</p>
+</div>
+<div class="paragraph">
+<p>The <code>append_app_options</code> lists all the options to add to the application execution. It does the same as the <code>options</code> field in the root of the file, but can be used for case handling.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_outputs"><a class="anchor" href="#_outputs"></a>3. Outputs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>outputs</code> field lists all the files where application outputs are exported.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of the file containing the outputs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str (csv, json)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format of the output file</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All columns or fields present on the output file will be considered.
+Outputs are added to the ReFrame report as pervormance variables.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Soon, the same syntax as scalability files will be used.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scalability"><a class="anchor" href="#_scalability"></a>4. Scalability</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lists all the files where performance times can be found.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">directory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common directory where scalability files can be found. Used for refactoring fields.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list[Stage]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of scalability file objects describing them.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each stage object is described as follows</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prefix to add to the performance variables found in the file</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partial filepath, relative to the <code>directory</code> field, where values are found.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format of the file. Supported values are (csv, json, tsv)</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">variables_path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only if format is json. Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of a single wildcard (<code>*</code>).</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An example of the scalability field is found and explained below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"scalability": {
+    "directory": "{{output_directory}}/{{instance}}/cem/",
+    "stages": [
+        {
+            "name":"custom_execution_name",
+            "filepath": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/execution_timers.json",
+            "format": "json",
+            "variables_path":"execution.*"
+        },
+        {
+            "name":"construction",
+            "filepath": "logs/timers.json",
+            "format": "json",
+            "variables_path":"*.constructor"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>directory</code> implies that scalability files can be found under <code>{{output_directory}}/{{instance}}/cem/</code>. Where <code>output_directory</code> is defined above, and <code>instance</code> is a reserved keyword containing the hashcode of the test.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are two scalability files in the example. Let&#8217;s suppose files are built like follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>logs/execution_timers.json</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "execution":{
+        "step1":0.5,
+        "step2":0.7,
+        "step3":1.0,
+    },
+    "postprocess":{...}
+}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>logs/timers.json</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "function1":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "function2":{
+        "constructor":1.0,
+        "init":0.1,
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, by specifying <code>"variables_path":"exection.*"</code>, performance variables will be <code>custom_execution_name.step1</code>, <code>custom_execution_name.step2</code> and <code>custom_execution_name.step3</code>.</p>
+</div>
+<div class="paragraph">
+<p>And by specifying <code>"variables_path":"*.constructor</code> for the other file, performance vairalbes will be <code>construction.function1</code>, and <code>construction.function2</code>.</p>
+</div>
+<div class="paragraph">
+<p>Note how variables are prefixed with the value under <code>name</code>, and that the wildcard (<code>*</code>) determines the variable names.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Deeply nested and complex JSON scalability files are supported.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sanity"><a class="anchor" href="#_sanity"></a>5. Sanity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>sanity</code> field is used to validate the application execution.</p>
+</div>
+<div class="paragraph">
+<p>The syntax is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"sanity":{
+    "success":[],
+    "error":[]
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>success</code> field contains a list of patterns to look for in the standard output. If any of the patterns are not found, the test will fail.</p>
+</li>
+<li>
+<p>The <code>error</code> field contains a list of patters that will make the test fail if found in the standard output. If any of these paterns are found, the test will fail.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At the moment, only validating standard output is supported. It will soon be possible to specify custom log files.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_parameters"><a class="anchor" href="#_parameters"></a>6. Parameters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>parameters</code> field list all parameters to be used in the test.
+The cartesian product of the elements in this list will determine the benchmarks.</p>
+</div>
+<div class="paragraph">
+<p>Parameters are accessible across the whole configuration file by using the syntax <code>{{parameters.my_parameter.value}}</code>.</p>
+</div>
+<div class="paragraph">
+<p>Each parameter is described by a name and a generator.</p>
+</div>
+<div class="paragraph">
+<p>Valid generators are :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>linspace</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_linspace_generator",
+    "logspace":{
+        "min":2,
+        "max":10,
+        "n_steps":5
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[2,4,6,8,10]</code>. Min and max are inclusive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>logspace</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_logspace_generator",
+    "logspace":{
+        "min":1,
+        "max":10,
+        "n_steps":4,
+        "base":2
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[2,16,128,1024]</code>. Min and max are inclusive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>range</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_range_generator",
+    "logspace":{
+        "min":1,
+        "max":5,
+        "step":1
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[1,2,3,4,5]</code>. Min and max are inclusive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>geometric</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_geometric_generator",
+    "logspace":{
+        "start":1,
+        "ratio":2,
+        "n_steps":5
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[1,2,4,8,16]</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>repeat</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_repeat_generator",
+    "repeat":{
+        "value":"a repeated value",
+        "count":3
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>["a repeated value", "a repeated value", "a repeated value"]</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sequence</code>:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Sequence accepts</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name": "my_sequence_generator",
+    "sequence":[ 1, 2, 3, 4]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sequence is the simplest generator. It will yield exactly the given list.
+It accepts dictionnaries as items, which can then be accessed via the <code>.</code> separator.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>zip</code> and subparameters:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Parameters can contain subparameters, which can be accessed recursively via the <code>.</code> separator. Its objective is to have parameters that depend on eachother, without producing a cartesian product.
+Aditionnaly, parameters can be zipped together via the <code>zip</code> generator.
+The <code>zip</code> generator takes a list of parameters to produce a list of python dictionaries. Each param inside the list can then have any desired generator from above.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name": "my_zip_generator",
+    "zip":[
+        {
+            "name":"param1",
+            "sequence":[
+                {"val1":1,"val2":2},
+                {"val1":3,"val2":4},
+                {"val1":5,"val2":6}
+            ]
+        },
+        {
+            "name":"param2",
+            "repeat":{
+                "value":"a repeated value",
+                "count":3
+            }
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example will yield <code>[{'param1': {'val1': 1, 'val2': 2}, 'param2': 'a repeated value'}, {'param1': {'val1': 3, 'val2': 4}, 'param2': 'a repeated value'}, {'param1': {'val1': 5, 'val2': 6}, 'param2': 'a repeated value'}]</code></p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Zipped parameters need to have the same lenght.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Special parameters</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There is one special parameter: <code>nb_tasks</code>. If included, should follow some rules for its subparameters.</p>
+</div>
+<div class="paragraph">
+<p>Accepts <code>exclusive_access</code> subparameter. Defaults to <code>true</code>.
+Either specify <code>tasks_per_node</code> and <code>tasks</code> subparameters, OR specify <code>tasks_per_node</code> and <code>nodes</code> subparameters, OR Specify only the <code>tasks</code> parameter.</p>
+</div>
+<div class="paragraph">
+<p>Specifying <code>tasks</code> and <code>nodes</code> is NOT currently supported.</p>
+</div>
+<div class="paragraph">
+<p>The <code>nb_tasks</code> parameter and its subparameters are directly accesses by ReFrame.</p>
+</div>
+<div class="paragraph">
+<p>Other parameters have only an impact on the application execution, meaning that they should be passed as options to the executable.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2024 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<script async src="../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

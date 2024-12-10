@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configuration guide :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/tutorial/configuration.html">
+    <meta name="generator" content="Antora 3.1.9">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="index.html">Documentation</a></li>
+    <li><a href="configuration.html">Configuration Guide</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/tutorial/pages/configuration.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+      <li>
+        <a href="#"
+           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
+          <img class="jupyter-file-icon icon" src="../../_/img/jupyter-logo.svg"/> .ipynb
+        </a>
+      </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Configuration guide</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The core of the <em>Feel++ benchmarking</em> framework are its configuration files.
+Users must provide the following configuration files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A complete system description, based on ReFrame&#8217;s configuration files.</p>
+</li>
+<li>
+<p>A machine specific configuration, defining HOW to execute benchmarks.</p>
+</li>
+<li>
+<p>A benchmark (or application) specific configuration, defining WHAT should be executed.</p>
+</li>
+<li>
+<p>A figure description, containing information of what to display on the final reports.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These files, with the exeption of ReFrame configuration, are equiped with a special placeholder syntax, allowing to dynamically update the files along the tests execution.
+Aditionally, multiple environments can be specified, including Apptainer containers.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Comments are supported on these JSON files.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_system_configuration"><a class="anchor" href="#_system_configuration"></a>1. System configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The system configuration files need to be placed under <em>src/feelpp/benchmarking/reframe/config/machineConfigs</em>, and are strictly ReFrame dependent. A single Python file should be provided per machine. Please follow <a href="https://reframe-hpc.readthedocs.io/en/stable/config_reference.html">ReFrame&#8217;s configuration file reference</a> for precise settings.</p>
+</div>
+<div class="paragraph">
+<p>Example configurations are provided for the <em>Gaya</em> machine and for a simple single node 8-core system.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Processor bindings and other launcher options should be specified as a resource under the desired partition, with the <code>launcher_options</code> name field value for example. For example,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"resources": [
+    {
+        "name":"launcher_options",
+        "options":["-bind-to","core"]
+    }
+]</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_magic_strings"><a class="anchor" href="#_magic_strings"></a>2. Magic strings</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Benchmarking configuration files support a special <strong>placeholder</strong> syntax, using double curly braces <code>{{placeholder}}</code>.
+This syntax is specially useful for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Refactoring configuration fields.</p>
+</li>
+<li>
+<p>Replacing with values from other configuration files, such as the machine config.</p>
+</li>
+<li>
+<p>Making use of code variables modified at runtime, by having reserved keywords.</p>
+</li>
+<li>
+<p>Fetching defined parameters values that change during runtime.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To get a value of a field in the same file, the field path must be separated by dots. For example,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"field_a":{
+    "field_b":{
+        "field_c": "my value"
+    }
+}
+
+"example_placeholder": "{{field_a.field_b.field_c}}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For replacing a value coming from the machine configuration, simply prepend any placeholder path with <code>machine.</code></p>
+</div>
+<div class="sect2">
+<h3 id="_reserved_keywords"><a class="anchor" href="#_reserved_keywords"></a>2.1. Reserved Keywords</h3>
+<div class="paragraph">
+<p>The framework is equiped with the following reserved keywords for placeholders:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{{instance}}</code> : Returns the hashcode of the current ReFrame test.</p>
+</li>
+<li>
+<p><code>{{.value}}</code>: The value keyword must be appended to a parameter name (e.g. <code>{{parameters.my_param.value}}</code>). It fetches the current value of a given runtime variable (such as a parameter). More information on the <a href="configurationfiles/benchmark.html#_parameters" class="xref page">Parameters</a> section.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nested_placeholders"><a class="anchor" href="#_nested_placeholders"></a>2.2. Nested placeholders</h3>
+<div class="paragraph">
+<p>Nested placeholders are supported.</p>
+</div>
+<div class="paragraph">
+<p>For example, lets say you have a <em>machine</em> configuration containing</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platform":"builtin"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And a benchmark configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms":{
+    "builtin":"my_builtin_value",
+    "other":"my_other_value"
+},
+"nested_placeholder":"My platform dependent value is {{ platforms.{{machine.platform}} }}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>nested_placeholder</code> field will then take the value of "My platform dependent value is my_buildin_value", because the machine config specifies that "platform" is "builtin". But this will change if "platform" is set to "other".</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_environment_variables"><a class="anchor" href="#_using_environment_variables"></a>2.3. Using environment variables</h3>
+<div class="paragraph">
+<p>Environment variables can be specifed in any configuration file by prepending a <code>$</code>.
+For example,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"my_home": "$HOME"</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Shorthand representations such as <code>~</code> and relative paths starting by <code>.</code> are not supported.
+For relative file or folder paths, use <code>$PWD</code> instead.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_machine_configuration"><a class="anchor" href="#_machine_configuration"></a>3. Machine configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The machine configuration file contains all information related uniquely to the system where benchmarks will run on. It is used to tell the application HOW benchmarks will run on it.
+The framework supports multiple containers and environments such as Apptainer and Spack. This information should be specified here.</p>
+</div>
+<div class="paragraph">
+<p>The following table describes all supported fields.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">machine</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the machine. It needs to be the same as the name of the ReFrame configuration file.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">execution_policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Either 'async' or 'serial'. The way in which ReFrame will run the tests.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">serial</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">reframe_base_dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory of ReFrame&#8217;s <em>stage</em> and <em>output</em> directories. If it does not exist, it will be created.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">reports_base_dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory where ReFrame reports will be saved to.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">input_dataset_base_dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory where input data can be found (if applicable)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">output_app_dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory where the benchmarked application should write its outputs to.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">targets</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list[str] or str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies in which partition, platform and prog_environment run benchmarks on.
+The syntax is <code>[partition:platform:prog_environment]</code>. Default values are supported by only putting <code>:</code>. For example <code>partition::prog_environment</code>. Default values are "default" for partition and prog_environment, and "builtin" for platform.
+Provide this field or all (partitions, platform, prog_environments) fields.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">platform</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Platform to run the benchmark on, possible values are "Apptainer" and "builtin". Docker will soon be supported.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">builtin</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partitions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List[str]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partitions where the test can run on. Tests will run on the cartesian product of partitions and prog_environments, where environments are specified for the current partition on the ReFrame configuration.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">prog_environments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List[str]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Environments where the test can run on. Test will run with this programming environment if it is specified on the current partition on the ReFrame configuration.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">containers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dict[str,Container]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dictionary specifying container type "Apptainer" or "Docker" (not yet supported), and container related information. More details on the <code>Container</code> object below.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">{}</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The containers object is defined as follow</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cachedir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where the pulled images will be cached on.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">tmpdir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where temporary image files will be written.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">image_base_dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base directory where images can be found in the system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">options</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List[str]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Options to add to the container execution command.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Below, an example of a machine configuration file can be found, for a machine called "my_machine".</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "machine": "my_machine",
+    "targets":"production:builtin:hpcx",
+    "execution_policy": "async",
+    "reframe_base_dir":"$PWD/build/reframe",
+    "reports_base_dir":"$PWD/reports/",
+    "input_dataset_base_dir":"$PWD/input/",
+    "output_app_dir":"$PWD/output/",
+    "containers":{
+        "apptainer":{
+            "image_base_dir":"/data/images/",
+            "options":[ "--sharens", "--bind /opt/:/opt/" ]
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s review step by step what the file defines.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>"machine":"my_machine"</code> indicates that the ReFrame config can be found as <em>my_machine.py</em></p>
+</li>
+<li>
+<p><code>"targets":"production:builtin:hpcx"</code> tells reframe to run tests uniquely on the production partition with the builtin platform and the hpcx programming environment.</p>
+</li>
+<li>
+<p><code>"execution_policy":"async"</code> tells ReFrame to run tests asynchronously on available resources.</p>
+</li>
+<li>
+<p><code>"reframe_base_dir":"$PWD/build/reframe"</code> Reframe will use the <em>build/stage/</em> folder and <em>build/output/</em> folder of the current working directory for staging tests and storing the benchmarked application&#8217;s standard output and errors.</p>
+</li>
+<li>
+<p><code>"reports_base_dir":"$PWD/reports/"</code> Means that the reframe reports will be found under the <em>reports/</em> folder of the current working directory.</p>
+</li>
+<li>
+<p><code>"input_dataset_base_dir":"$PWD/input/"</code> Means that the framework should look for input somewhere under the <em>input/</em> folder of the current working directory. The rest of the path is specified on the benchmark configuration.</p>
+</li>
+<li>
+<p><code>"output_app_dir":"$PWD/output/"</code> Means that the benchmarked application should write its output files under the <em>output/</em> folder of the current working directory. The rest of the path is specified on the benchmark configuration.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Concerning containers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>"apptainer"</code> key indicated that the application COULD be benchmarked using apptainer. Not necesserily that it will. If the <code>targets</code> field specifies the apptainer platform, then this field is mandatory.</p>
+</li>
+<li>
+<p><code>"image_base_dir":"/data/images"</code> indicates that the built apptainer images can be found somewhere under the _/data/images/ directory. The rest of the path is specified on the benchmark configuration.</p>
+</li>
+<li>
+<p><code>"options":"[ "--sharens", "--bind /opt/:/opt/" ]"</code> Tells ReFrame to add these options to the Apptainer execution command. For example, <code>mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/ &#8230;&#8203;</code>. Only machine related options should be specified here, more options can be defined in the benchmark configuration.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_benchmark_configuration"><a class="anchor" href="#_benchmark_configuration"></a>4. Benchmark configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Configuring a benchmark can be quite extensive, as this framework focuses on flexibility. For this, the documentation will be divided in main sections.</p>
+</div>
+<div class="paragraph">
+<p>The base of the configuration file is shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "executable": "",
+    "use_case_name": "",
+    "timeout":"",
+    "platforms":{},
+    "options": [],
+    "outputs":{},
+    "scalability":{},
+    "sanity":{},
+    "parameters":{},
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fields_on_json_root"><a class="anchor" href="#_fields_on_json_root"></a>4.1. Fields on JSON root</h3>
+<div class="paragraph">
+<p>Users can add any field used for refactoring. For example, one can do the following.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"output_directory":"/data/outputs" // This is a custom field
+"options":["--output {{output_directory}}"]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mandatory and actionable fields are:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">executable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path or name of the application executable.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">use_case_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job execution timeout. Format: days-hours:minutes:seconds</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_platforms"><a class="anchor" href="#_platforms"></a>4.2. Platforms</h3>
+<div class="paragraph">
+<p>The <code>platforms</code> object lists all options and directories related to the benchmark execution for each supported platform. A platform present on this object does not imply that it will be benchmarked, but it rather lists all possible options.</p>
+</div>
+<div class="paragraph">
+<p>The field is optional, if not provided, the builtin platform will be considered.</p>
+</div>
+<div class="paragraph">
+<p>The syntax for builtin platform is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms": {
+    "builtin":{
+        "input_dir":"",
+        "append_app_option":[]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>append_app_options</code> is in this case equivalent to the <code>options</code> field on the configuration root.</p>
+</li>
+<li>
+<p><code>input_dir</code> indicates the path of the directory where input files can be found.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following example shows how to configure the Apptainer platform:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms":{
+    "apptainer":{
+        "image":{
+            "name":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
+        },
+        "input_dir":"/input_data/",
+        "options":["--home {{machine.output_app_dir}}"],
+        "append_app_options":["--my_custom_option_for_apptainer"]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For any container, the <code>image</code> field must be specified, specifically <code>image.name</code>, containing the path of the image. Pulling images is not yet supported.</p>
+</div>
+<div class="paragraph">
+<p>In this case, <code>input_dir</code> represents the directory where input files will be found INSIDE the container.</p>
+</div>
+<div class="paragraph">
+<p>The <code>options</code> field contains a list of all the options to include on the container execution. It is equivalent to the machine&#8217;s <code>containers.apptainer.options</code> field. However, users should only include application dependent options in this list.</p>
+</div>
+<div class="paragraph">
+<p>The <code>append_app_options</code> lists all the options to add to the application execution. It does the same as the <code>options</code> field in the root of the file, but can be used for case handling.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_outputs"><a class="anchor" href="#_outputs"></a>4.3. Outputs</h3>
+<div class="paragraph">
+<p>The <code>outputs</code> field lists all the files where application outputs are exported.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of the file containing the outputs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str (csv, json)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format of the output file</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>All columns or fields present on the output file will be considered.
+Outputs are added to the ReFrame report as pervormance variables.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Soon, the same syntax as scalability files will be used.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scalability"><a class="anchor" href="#_scalability"></a>4.4. Scalability</h3>
+<div class="paragraph">
+<p>Lists all the files where performance times can be found.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">directory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common directory where scalability files can be found. Used for refactoring fields.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list[Stage]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of scalability file objects describing them.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each stage object is described as follows</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field name</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prefix to add to the performance variables found in the file</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partial filepath, relative to the <code>directory</code> field, where values are found.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">format</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format of the file. Supported values are (csv, json, tsv)</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">variables_path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only if format is json. Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of a single wildcard (<code>*</code>).</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>An example of the scalability field is found and explained below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"scalability": {
+    "directory": "{{output_directory}}/{{instance}}/cem/",
+    "stages": [
+        {
+            "name":"custom_execution_name",
+            "filepath": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/execution_timers.json",
+            "format": "json",
+            "variables_path":"execution.*"
+        },
+        {
+            "name":"construction",
+            "filepath": "logs/timers.json",
+            "format": "json",
+            "variables_path":"*.constructor"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>directory</code> implies that scalability files can be found under <code>{{output_directory}}/{{instance}}/cem/</code>. Where <code>output_directory</code> is defined above, and <code>instance</code> is a reserved keyword containing the hashcode of the test.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are two scalability files in the example. Let&#8217;s suppose files are built like follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>logs/execution_timers.json</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "execution":{
+        "step1":0.5,
+        "step2":0.7,
+        "step3":1.0,
+    },
+    "postprocess":{...}
+}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>logs/timers.json</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "function1":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "function2":{
+        "constructor":1.0,
+        "init":0.1,
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, by specifying <code>"variables_path":"exection.*"</code>, performance variables will be <code>custom_execution_name.step1</code>, <code>custom_execution_name.step2</code> and <code>custom_execution_name.step3</code>.</p>
+</div>
+<div class="paragraph">
+<p>And by specifying <code>"variables_path":"*.constructor</code> for the other file, performance vairalbes will be <code>construction.function1</code>, and <code>construction.function2</code>.</p>
+</div>
+<div class="paragraph">
+<p>Note how variables are prefixed with the value under <code>name</code>, and that the wildcard (<code>*</code>) determines the variable names.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Deeply nested and complex JSON scalability files are supported.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sanity"><a class="anchor" href="#_sanity"></a>4.5. Sanity</h3>
+<div class="paragraph">
+<p>The <code>sanity</code> field is used to validate the application execution.</p>
+</div>
+<div class="paragraph">
+<p>The syntax is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"sanity":{
+    "success":[],
+    "error":[]
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>success</code> field contains a list of patterns to look for in the standard output. If any of the patterns are not found, the test will fail.</p>
+</li>
+<li>
+<p>The <code>error</code> field contains a list of patters that will make the test fail if found in the standard output. If any of these paterns are found, the test will fail.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At the moment, only validating standard output is supported. It will soon be possible to specify custom log files.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_parameters"><a class="anchor" href="#_parameters"></a>4.6. Parameters</h3>
+<div class="paragraph">
+<p>The <code>parameters</code> field list all parameters to be used in the test.
+The cartesian product of the elements in this list will determine the benchmarks.</p>
+</div>
+<div class="paragraph">
+<p>Parameters are accessible across the whole configuration file by using the syntax <code>{{parameters.my_parameter.value}}</code>.</p>
+</div>
+<div class="paragraph">
+<p>Each parameter is described by a name and a generator.</p>
+</div>
+<div class="paragraph">
+<p>Valid generators are :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>linspace</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_linspace_generator",
+    "logspace":{
+        "min":2,
+        "max":10,
+        "n_steps":5
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[2,4,6,8,10]</code>. Min and max are inclusive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>logspace</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_logspace_generator",
+    "logspace":{
+        "min":1,
+        "max":10,
+        "n_steps":4,
+        "base":2
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[2,16,128,1024]</code>. Min and max are inclusive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>range</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_range_generator",
+    "logspace":{
+        "min":1,
+        "max":5,
+        "step":1
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[1,2,3,4,5]</code>. Min and max are inclusive.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>geometric</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_geometric_generator",
+    "logspace":{
+        "start":1,
+        "ratio":2,
+        "n_steps":5
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>[1,2,4,8,16]</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>repeat</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "name": "my_repeat_generator",
+    "repeat":{
+        "value":"a repeated value",
+        "count":3
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example will yield <code>["a repeated value", "a repeated value", "a repeated value"]</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sequence</code>:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Sequence accepts</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name": "my_sequence_generator",
+    "sequence":[ 1, 2, 3, 4]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sequence is the simplest generator. It will yield exactly the given list.
+It accepts dictionnaries as items, which can then be accessed via the <code>.</code> separator.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>zip</code> and subparameters:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Parameters can contain subparameters, which can be accessed recursively via the <code>.</code> separator. Its objective is to have parameters that depend on eachother, without producing a cartesian product.
+Aditionnaly, parameters can be zipped together via the <code>zip</code> generator.
+The <code>zip</code> generator takes a list of parameters to produce a list of python dictionaries. Each param inside the list can then have any desired generator from above.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name": "my_zip_generator",
+    "zip":[
+        {
+            "name":"param1",
+            "sequence":[
+                {"val1":1,"val2":2},
+                {"val1":3,"val2":4},
+                {"val1":5,"val2":6}
+            ]
+        },
+        {
+            "name":"param2",
+            "repeat":{
+                "value":"a repeated value",
+                "count":3
+            }
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example will yield <code>[{'param1': {'val1': 1, 'val2': 2}, 'param2': 'a repeated value'}, {'param1': {'val1': 3, 'val2': 4}, 'param2': 'a repeated value'}, {'param1': {'val1': 5, 'val2': 6}, 'param2': 'a repeated value'}]</code></p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Zipped parameters need to have the same lenght.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Special parameters</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There is one special parameter: <code>nb_tasks</code>. If included, should follow some rules for its subparameters.</p>
+</div>
+<div class="paragraph">
+<p>Accepts <code>exclusive_access</code> subparameter. Defaults to <code>true</code>.
+Either specify <code>tasks_per_node</code> and <code>tasks</code> subparameters, OR specify <code>tasks_per_node</code> and <code>nodes</code> subparameters, OR Specify only the <code>tasks</code> parameter.</p>
+</div>
+<div class="paragraph">
+<p>Specifying <code>tasks</code> and <code>nodes</code> is NOT currently supported.</p>
+</div>
+<div class="paragraph">
+<p>The <code>nb_tasks</code> parameter and its subparameters are directly accesses by ReFrame.</p>
+</div>
+<div class="paragraph">
+<p>Other parameters have only an impact on the application execution, meaning that they should be passed as options to the executable.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_figures"><a class="anchor" href="#_figures"></a>5. Figures</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to generate reports, the <em>Feel++ benchmarking</em> framework requires a figure description to specify what the website report page should contain.</p>
+</div>
+<div class="paragraph">
+<p>These descriptions should be provided either with a specific JSON file with the structure containing uniquely</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "plots":[]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or by specifying the <code>plots</code> field on the benchmark configuration JSON file.</p>
+</div>
+<div class="paragraph">
+<p>Each figure description should contain the following fields</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "title": "The figure title",
+    "plot_types": [], //List of figure types
+    "transformation": "", //Transformation type
+    "variables":[], // List of variables to consider
+    "names":[], //Respective labels for variables
+    "yaxis":{},
+    "xaxis":{},
+    "color_axis":{}, //Default: performance variables
+    "secondary_axis":{}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Figures will appear in the same order as they appear on the list.</p>
+</div>
+<div class="paragraph">
+<p>Users can provide multiple plot_types in the same description field.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Only performance variables specified under the <code>variables</code> list will be considered. If the list is empty, ALL variables inside the ReFrame report will be taken into account.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_axis"><a class="anchor" href="#_axis"></a>5.1. Axis</h3>
+<div class="paragraph">
+<p>Each axis (with the exception of the <code>yaxis</code>) take a <code>parameter</code> and a <code>label</code> field.
+The <code>yaxis</code> will always contain the performance values, therefore only the <code>label</code> key should be specified.</p>
+</div>
+<div class="paragraph">
+<p>The <code>parameter</code> field of each axis should correspond to either a single dimension parameter specified on the benchmark configuration.
+In the case of subparameters, the syntax should be the following: <code>parameter.subparameter</code>.</p>
+</div>
+<div class="paragraph">
+<p>By default, the color axis will contain the performance variables, but this can be customized.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transformations"><a class="anchor" href="#_transformations"></a>5.2. Transformations</h3>
+<div class="paragraph">
+<p>The ReFrame report will be used to create a <em>Master DataFrame</em>, which will contain all performance variables and their respective values, as well as all parameters and environments.</p>
+</div>
+<div class="paragraph">
+<p>To explain how transformation and plot types work, we can consider the following example.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import json
+from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
+with open("./docs/modules/tutorial/data/reframe_report.json","r") as rfm_report:
+    report = json.load(rfm_report)
+
+model = AtomicReportModel(report["runs"])
+model.master_df = model.master_df[model.master_df["performance_variable"].isin(["computation_time","communication_time"])].loc[:,["performance_variable","value","unit",	"testcase_time_run","environment","platform","nb_tasks.tasks","nb_tasks.exclusive_access","elements"]]</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">model.master_df</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>Out[1]:
+   performance_variable     value  ... nb_tasks.exclusive_access      elements
+0      computation_time  5.329330  ...                      True  1.000000e+09
+1    communication_time  0.052584  ...                      True  1.000000e+09
+5      computation_time  4.569710  ...                      True  7.000000e+08
+6    communication_time  0.005627  ...                      True  7.000000e+08
+10     computation_time  3.855820  ...                      True  4.000000e+08
+11   communication_time  0.180105  ...                      True  4.000000e+08
+15     computation_time  0.062597  ...                      True  1.000000e+08
+16   communication_time  0.016100  ...                      True  1.000000e+08
+20     computation_time  5.130160  ...                      True  1.000000e+09
+21   communication_time  0.000502  ...                      True  1.000000e+09
+25     computation_time  5.069410  ...                      True  7.000000e+08
+26   communication_time  0.035590  ...                      True  7.000000e+08
+30     computation_time  4.704580  ...                      True  4.000000e+08
+31   communication_time  0.129757  ...                      True  4.000000e+08
+35     computation_time  0.183174  ...                      True  1.000000e+08
+36   communication_time  0.003264  ...                      True  1.000000e+08
+40     computation_time  4.833400  ...                      True  1.000000e+09
+41   communication_time  0.000021  ...                      True  1.000000e+09
+45     computation_time  4.903710  ...                      True  7.000000e+08
+46   communication_time  0.000027  ...                      True  7.000000e+08
+50     computation_time  2.243160  ...                      True  4.000000e+08
+51   communication_time  0.000032  ...                      True  4.000000e+08
+55     computation_time  0.622329  ...                      True  1.000000e+08
+56   communication_time  0.000032  ...                      True  1.000000e+08
+
+[24 rows x 9 columns]</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>We can see that this dataframe contains the parameters:
+- environment
+- platform
+- nb_tasks.tasks
+- nb_tasks.exclusive_access
+- elements
+- performance_variable</p>
+</div>
+<div class="paragraph">
+<p>By having this common structure, we can make use of transformation strategies to manipulate values depending on the desired output.</p>
+</div>
+<div class="paragraph">
+<p>Strategies will depend on the figure axis. All strategies will create a pivot dataframe that will contain the parameter specified as <code>color_axis</code> as columns, <code>xaxis</code> as first level index and <code>secondary_axis</code> as second level index. Values of the dataframe will always be the <code>values</code> of the master dataframe.</p>
+</div>
+<div class="paragraph">
+<p>As an example, we will consider the following axis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"xaxis":{
+    "parameter":"nb_tasks.tasks",
+    "label":"Number of tasks"
+},
+"yaxis":{
+    "label":"Execution time (s)"
+},
+"secondary_axis":{
+    "parameter":"elements",
+    "label":"N"
+},
+"color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Available strategies are:
+- performance</p>
+</div>
+<div class="paragraph">
+<p>This strategy should be seen as the "base" strategy. No transformation, other that a pivot, is done.
+For the given example, it produces the following dataframe</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.reframe.config.configPlots import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    }
+})
+strategy = StrategyFactory.create(plot_config)
+strategy.calculate(model.master_df)</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>Out[1]:
+performance_variable         communication_time  computation_time
+elements     nb_tasks.tasks
+1.000000e+08 1                         0.000032          0.622329
+             2                         0.003264          0.183174
+             4                         0.016100          0.062597
+4.000000e+08 1                         0.000032          2.243160
+             2                         0.129757          4.704580
+             4                         0.180105          3.855820
+7.000000e+08 1                         0.000027          4.903710
+             2                         0.035590          5.069410
+             4                         0.005627          4.569710
+1.000000e+09 1                         0.000021          4.833400
+             2                         0.000502          5.130160
+             4                         0.052584          5.329330</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="ulist">
+<ul>
+<li>
+<p>relative_performance</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The relative performance strategy computes the proportion of the time that a a <code>color_axis</code> variable takes with regards of the total.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.reframe.config.configPlots import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "relative_performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    }
+})
+strategy = StrategyFactory.create(plot_config)
+strategy.calculate(model.master_df)</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>Out[1]:
+performance_variable         communication_time  computation_time
+elements     nb_tasks.tasks
+1.000000e+08 1                         0.005142         99.994858
+             2                         1.750716         98.249284
+             4                        20.458213         79.541787
+4.000000e+08 1                         0.001427         99.998573
+             2                         2.684070         97.315930
+             4                         4.462546         95.537454
+7.000000e+08 1                         0.000551         99.999449
+             2                         0.697160         99.302840
+             4                         0.122985         99.877015
+1.000000e+09 1                         0.000434         99.999566
+             2                         0.009784         99.990216
+             4                         0.977050         99.022950</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>The sum along the column axis will always be equal to 1.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>speedup</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The speedup strategy computes the speedup of the <code>color_axis</code> variables. The minimum of the <code>xaxis</code> values is taken as the base of the speedup.
+For the example, this strategy will produce the following.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.reframe.config.configPlots import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "speedup",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    }
+})
+strategy = StrategyFactory.create(plot_config)
+strategy.calculate(model.master_df)</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>Out[1]:
+performance_variable         communication_time  computation_time
+elements     nb_tasks.tasks
+1.000000e+08 1                         1.000000          1.000000
+             2                         0.009804          3.397475
+             4                         0.001988          9.941834
+4.000000e+08 1                         1.000000          1.000000
+             2                         0.000247          0.476803
+             4                         0.000178          0.581760
+7.000000e+08 1                         1.000000          1.000000
+             2                         0.000759          0.967314
+             4                         0.004798          1.073090
+1.000000e+09 1                         1.000000          1.000000
+             2                         0.041833          0.942154
+             4                         0.000399          0.906943</pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_plot_types"><a class="anchor" href="#_plot_types"></a>5.3. Plot types</h3>
+<div class="paragraph">
+<p>Considering the same example axis as above, the software can generate the following figures:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>scatter</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.report.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="42bc7d3b-b00a-48fa-8151-352a79c8a0f4" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("42bc7d3b-b00a-48fa-8151-352a79c8a0f4")) {                    Plotly.newPlot(                        "42bc7d3b-b00a-48fa-8151-352a79c8a0f4",                        [{"name":"communication_time","x":[1,2,4],"y":[3.2e-05,0.003264,0.0161],"type":"scatter"},{"name":"computation_time","x":[1,2,4],"y":[0.622329,0.183174,0.062597],"type":"scatter"}],                        {"legend":{"title":{"text":"Performance variable"}},"sliders":[{"active":0,"currentvalue":{"prefix":"N = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"100000000.0","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"400000000.0","method":"animate"},{"args":[["frame_2"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"700000000.0","method":"animate"},{"args":[["frame_3"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"1000000000.0","method":"animate"}],"transition":{"duration":0}}],"title":{"text":"Absolute performance"},"xaxis":{"title":{"text":"Number of tasks"}},"yaxis":{"range":[3.168e-05,0.6223293200000001],"title":{"text":"Execution time (s)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('42bc7d3b-b00a-48fa-8151-352a79c8a0f4', [{"data":[{"name":"communication_time","x":[1,2,4],"y":[3.2e-05,0.003264,0.0161],"type":"scatter"},{"name":"computation_time","x":[1,2,4],"y":[0.622329,0.183174,0.062597],"type":"scatter"}],"layout":{"yaxis":{"range":[3.168e-05,0.6223293200000001]}},"name":"frame_0"},{"data":[{"name":"communication_time","x":[1,2,4],"y":[3.2e-05,0.129757,0.180105],"type":"scatter"},{"name":"computation_time","x":[1,2,4],"y":[2.24316,4.70458,3.85582],"type":"scatter"}],"layout":{"yaxis":{"range":[3.168e-05,4.70458032]}},"name":"frame_1"},{"data":[{"name":"communication_time","x":[1,2,4],"y":[2.7e-05,0.03559,0.005627],"type":"scatter"},{"name":"computation_time","x":[1,2,4],"y":[4.90371,5.06941,4.56971],"type":"scatter"}],"layout":{"yaxis":{"range":[2.673e-05,5.0694102700000006]}},"name":"frame_2"},{"data":[{"name":"communication_time","x":[1,2,4],"y":[2.1e-05,0.000502,0.052584],"type":"scatter"},{"name":"computation_time","x":[1,2,4],"y":[4.8334,5.13016,5.32933],"type":"scatter"}],"layout":{"yaxis":{"range":[2.079e-05,5.329330209999999]}},"name":"frame_3"}]);
+                        }).then(function(){
+                            Plotly.animate('42bc7d3b-b00a-48fa-8151-352a79c8a0f4', null);
+                        })                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="ulist">
+<ul>
+<li>
+<p><code>stacked_bar</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="c88b54f8-b492-438b-bcf1-b7c5c2da364d" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("c88b54f8-b492-438b-bcf1-b7c5c2da364d")) {                    Plotly.newPlot(                        "c88b54f8-b492-438b-bcf1-b7c5c2da364d",                        [{"alignmentgroup":"True","hovertemplate":"variable=communication_time\u003cbr\u003eNumber of tasks=1\u003cbr\u003eN=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"communication_time","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"communication_time","offsetgroup":"communication_time","orientation":"v","showlegend":true,"textposition":"auto","x":["100000000.0","400000000.0","700000000.0","1000000000.0"],"xaxis":"x","y":[3.2e-05,3.2e-05,2.7e-05,2.1e-05],"yaxis":"y","type":"bar"},{"alignmentgroup":"True","hovertemplate":"variable=communication_time\u003cbr\u003eNumber of tasks=2\u003cbr\u003eN=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"communication_time","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"communication_time","offsetgroup":"communication_time","orientation":"v","showlegend":false,"textposition":"auto","x":["100000000.0","400000000.0","700000000.0","1000000000.0"],"xaxis":"x2","y":[0.003264,0.129757,0.03559,0.000502],"yaxis":"y2","type":"bar"},{"alignmentgroup":"True","hovertemplate":"variable=communication_time\u003cbr\u003eNumber of tasks=4\u003cbr\u003eN=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"communication_time","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"communication_time","offsetgroup":"communication_time","orientation":"v","showlegend":false,"textposition":"auto","x":["100000000.0","400000000.0","700000000.0","1000000000.0"],"xaxis":"x3","y":[0.0161,0.180105,0.005627,0.052584],"yaxis":"y3","type":"bar"},{"alignmentgroup":"True","hovertemplate":"variable=computation_time\u003cbr\u003eNumber of tasks=1\u003cbr\u003eN=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"computation_time","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"computation_time","offsetgroup":"computation_time","orientation":"v","showlegend":true,"textposition":"auto","x":["100000000.0","400000000.0","700000000.0","1000000000.0"],"xaxis":"x","y":[0.622329,2.24316,4.90371,4.8334],"yaxis":"y","type":"bar"},{"alignmentgroup":"True","hovertemplate":"variable=computation_time\u003cbr\u003eNumber of tasks=2\u003cbr\u003eN=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"computation_time","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"computation_time","offsetgroup":"computation_time","orientation":"v","showlegend":false,"textposition":"auto","x":["100000000.0","400000000.0","700000000.0","1000000000.0"],"xaxis":"x2","y":[0.183174,4.70458,5.06941,5.13016],"yaxis":"y2","type":"bar"},{"alignmentgroup":"True","hovertemplate":"variable=computation_time\u003cbr\u003eNumber of tasks=4\u003cbr\u003eN=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"computation_time","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"computation_time","offsetgroup":"computation_time","orientation":"v","showlegend":false,"textposition":"auto","x":["100000000.0","400000000.0","700000000.0","1000000000.0"],"xaxis":"x3","y":[0.062597,3.85582,4.56971,5.32933],"yaxis":"y3","type":"bar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,0.31999999999999995],"title":{"text":"N"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Execution time (s)"}},"xaxis2":{"anchor":"y2","domain":[0.33999999999999997,0.6599999999999999],"matches":"x","title":{"text":"N"}},"yaxis2":{"anchor":"x2","domain":[0.0,1.0],"matches":"y","showticklabels":false},"xaxis3":{"anchor":"y3","domain":[0.6799999999999999,0.9999999999999999],"matches":"x","title":{"text":"N"}},"yaxis3":{"anchor":"x3","domain":[0.0,1.0],"matches":"y","showticklabels":false},"annotations":[{"font":{},"showarrow":false,"text":"Number of tasks=1","x":0.15999999999999998,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{},"showarrow":false,"text":"Number of tasks=2","x":0.49999999999999994,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{},"showarrow":false,"text":"Number of tasks=4","x":0.8399999999999999,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"}],"legend":{"title":{"text":"Performance variable"},"tracegroupgap":0},"margin":{"t":60},"barmode":"relative","title":{"text":"Absolute performance"}},                        {"responsive": true}                    )                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="ulist">
+<ul>
+<li>
+<p><code>grouped_bar</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "grouped_bar" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="a08d4c1b-15bb-4ff0-b9f3-26e5b418d878" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("a08d4c1b-15bb-4ff0-b9f3-26e5b418d878")) {                    Plotly.newPlot(                        "a08d4c1b-15bb-4ff0-b9f3-26e5b418d878",                        [{"name":"communication_time","x":["1","2","4"],"y":[3.2e-05,0.003264,0.0161],"type":"bar"},{"name":"computation_time","x":["1","2","4"],"y":[0.622329,0.183174,0.062597],"type":"bar"}],                        {"legend":{"title":{"text":"Performance variable"}},"sliders":[{"active":0,"currentvalue":{"prefix":"N = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"100000000.0","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"400000000.0","method":"animate"},{"args":[["frame_2"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"700000000.0","method":"animate"},{"args":[["frame_3"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"1000000000.0","method":"animate"}],"transition":{"duration":0}}],"title":{"text":"Absolute performance"},"xaxis":{"title":{"text":"Number of tasks"}},"yaxis":{"range":[3.168e-05,0.6223293200000001],"title":{"text":"Execution time (s)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('a08d4c1b-15bb-4ff0-b9f3-26e5b418d878', [{"data":[{"name":"communication_time","x":["1","2","4"],"y":[3.2e-05,0.003264,0.0161],"type":"bar"},{"name":"computation_time","x":["1","2","4"],"y":[0.622329,0.183174,0.062597],"type":"bar"}],"layout":{"yaxis":{"range":[3.168e-05,0.6223293200000001]}},"name":"frame_0"},{"data":[{"name":"communication_time","x":["1","2","4"],"y":[3.2e-05,0.129757,0.180105],"type":"bar"},{"name":"computation_time","x":["1","2","4"],"y":[2.24316,4.70458,3.85582],"type":"bar"}],"layout":{"yaxis":{"range":[3.168e-05,4.70458032]}},"name":"frame_1"},{"data":[{"name":"communication_time","x":["1","2","4"],"y":[2.7e-05,0.03559,0.005627],"type":"bar"},{"name":"computation_time","x":["1","2","4"],"y":[4.90371,5.06941,4.56971],"type":"bar"}],"layout":{"yaxis":{"range":[2.673e-05,5.0694102700000006]}},"name":"frame_2"},{"data":[{"name":"communication_time","x":["1","2","4"],"y":[2.1e-05,0.000502,0.052584],"type":"bar"},{"name":"computation_time","x":["1","2","4"],"y":[4.8334,5.13016,5.32933],"type":"bar"}],"layout":{"yaxis":{"range":[2.079e-05,5.329330209999999]}},"name":"frame_3"}]);
+                        }).then(function(){
+                            Plotly.animate('a08d4c1b-15bb-4ff0-b9f3-26e5b418d878', null);
+                        })                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="ulist">
+<ul>
+<li>
+<p><code>table</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "table" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+    "parameter":"performance_variable",
+    "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="92b54b3e-5c58-480d-9cd6-29151811ca1d" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("92b54b3e-5c58-480d-9cd6-29151811ca1d")) {                    Plotly.newPlot(                        "92b54b3e-5c58-480d-9cd6-29151811ca1d",                        [{"cells":{"format":["",".3",".3"],"values":[[100000000.0,100000000.0,100000000.0,400000000.0,400000000.0,400000000.0,700000000.0,700000000.0,700000000.0,1000000000.0,1000000000.0,1000000000.0],[1,2,4,1,2,4,1,2,4,1,2,4],[3.2e-05,0.003264,0.0161,3.2e-05,0.129757,0.180105,2.7e-05,0.03559,0.005627,2.1e-05,0.000502,0.052584],[0.622329,0.183174,0.062597,2.24316,4.70458,3.85582,4.90371,5.06941,4.56971,4.8334,5.13016,5.32933]]},"header":{"values":["elements","nb_tasks.tasks","communication_time","computation_time"]},"type":"table"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}}},                        {"responsive": true}                    )                };                            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_aggregations"><a class="anchor" href="#_aggregations"></a>5.4. Aggregations</h3>
+<div class="paragraph">
+<p>Depending on the dashboard level that we are located at, it might be necessary to aggregate the data on the master dataframe.
+For example, if we have all use cases, applications and machines on the dataframe, and we want to see how a certain use case performs on different machines, we can make use of the <code>aggregations</code> field to group the data accordingly.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"aggregations":[
+    {"column":"date","agg":"max"},
+    {"column":"applications","agg":"filter:my_app"},
+    {"column":"use_cases","agg":"filter:my_use_case"},
+    {"column":"performance_variable","agg":"sum"}
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The previous example will first get only the latest benchmarks (by getting the maximum date), then it will filter the application and the use case to find applications and use cases that correspond to "my_app" and "my_use_case". And finally it will compute the sum of all performance variables for the remaining rows.</p>
+</div>
+<div class="paragraph">
+<p>Users must provide a column and an aggregation function as a string.</p>
+</div>
+<div class="paragraph">
+<p>Available aggregations are:
+- <code>mean</code> : Computes the mean of the column
+- <code>mean</code> : Computes the sum of the column
+- <code>max</code> : Computes the maximum of the column
+- <code>min</code> : Computes the minimum of the column
+- <code>filter:value</code>: : Filters the column by <code>value</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The order of the aggregations list is important.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_custom_layouts"><a class="anchor" href="#_custom_layouts"></a>5.5. Custom layouts</h3>
+<div class="paragraph">
+<p>By providing the <code>layout_modifiers</code> field, users can pass custom layout options for rendering the figures.
+These options correspond to the accepted layout reference for Plotly: <a href="https://plotly.com/python/reference/layout/">Plotly layout reference</a>
+It accepts a nested dictionnary just as Plotly does.</p>
+</div>
+<div class="paragraph">
+<p>For example, we could customize a figure to have have its x-axis on a logscale.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"layout_modifiers":{
+    "xaxis":{
+        "type":"log"
+    }
+}</code></pre>
+</div>
+</div>
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+    line-height:0;
+}
+</style>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2024 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+
+
+<script async src="../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>
