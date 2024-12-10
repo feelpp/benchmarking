@@ -60,7 +60,7 @@ class GirderHandler(DownloadHandler):
 
         self.client.downloadFile(fileId=file_id,path=filepath)
 
-    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True,reuse_existing=True):
+    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True,reuse_existing=True, return_id=False):
         """ Upload a local file to an existing folder/item in Girder
         Args:
             file_pattern: The file pattern of the files to upload
@@ -70,6 +70,11 @@ class GirderHandler(DownloadHandler):
         """
         self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items, reuseExisting=reuse_existing)
 
+        if return_id:
+            items = list(self.client.listItem(folderId=parent_id, name=os.path.basename(file_pattern)))
+            assert len(items) >0, f"File not Found in Girder with the name {os.path.basename(file_pattern)}"
+            assert len(items) <=1, f"More than one file found with the same name {os.path.basename(file_pattern)}"
+            return items[0]["_id"]
 
 class ConfigHandler:
     def __init__(self, config_filepath):
