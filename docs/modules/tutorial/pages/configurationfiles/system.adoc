@@ -1,0 +1,19 @@
+= System configuration
+
+The system configuration files need to be placed under _src/feelpp/benchmarking/reframe/config/machineConfigs_, and are strictly ReFrame dependent. A single Python file should be provided per machine. Please follow https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame's configuration file reference] for precise settings.
+
+Example configurations are provided for the _Gaya_ machine and for a simple single node 8-core system.
+
+[NOTE]
+====
+Processor bindings and other launcher options should be specified as a resource under the desired partition, with the `launcher_options` name field value for example. For example,
+[source,json]
+----
+"resources": [
+    {
+        "name":"launcher_options",
+        "options":["-bind-to","core"]
+    }
+]
+----
+====
