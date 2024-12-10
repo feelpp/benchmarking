@@ -72,8 +72,10 @@ class GirderHandler(DownloadHandler):
 
         if return_id:
             items = list(self.client.listItem(folderId=parent_id, name=os.path.basename(file_pattern)))
-            assert len(items) >0, f"File not Found in Girder with the name {os.path.basename(file_pattern)}"
+            if len(items) == 0:
+                items = list(self.client.listFolder(parentId=parent_id, name=os.path.basename(file_pattern)))
             assert len(items) <=1, f"More than one file found with the same name {os.path.basename(file_pattern)}"
+            assert len(items) >0, f"File not Found in Girder with the name {os.path.basename(file_pattern)}"
             return items[0]["_id"]
 
 class ConfigHandler:
