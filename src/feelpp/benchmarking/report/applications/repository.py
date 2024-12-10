@@ -20,7 +20,7 @@ class ApplicationRepository(ModuleRepository):
         ]
         self.id = "applications"
         self.display_name = "Applications"
-        self.description = "Applications [description TODO]"
+        self.description = "Applications"
 
     def link(self, machines, use_cases, execution_mapping):
         """ Create the links between the applications and the machines and test cases depending on the execution mapping

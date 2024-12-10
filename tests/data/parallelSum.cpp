@@ -34,7 +34,9 @@ int main(int argc, char** argv)
     std::vector<double> local_array(local_end - local_start, 1.0);
 
     double start_time = MPI_Wtime();
-    double local_sum = std::accumulate(local_array.begin(), local_array.end(), 0.0);
+    double local_sum = 0;
+    for (size_t i = 0; i < local_array.size(); ++i)
+        local_sum += local_array[i];
     double end_time = MPI_Wtime();
 
     double start_comm_time = MPI_Wtime();
@@ -59,10 +61,7 @@ int main(int argc, char** argv)
         {
             scal_outfile << "{\n";
             scal_outfile << "  \"computation_time\": " << computation_time << ",\n";
-            scal_outfile << "  \"communication_time\": " << communication_time << ",\n";
-            scal_outfile << "  \"num_processes\": " << size << ",\n";
-            scal_outfile << "  \"N\": " << N << ",\n";
-            scal_outfile << "  \"sum\": " << global_sum << "\n";
+            scal_outfile << "  \"communication_time\": " << communication_time << "\n";
             scal_outfile << "}\n";
             scal_outfile.close();
         }
@@ -73,8 +72,8 @@ int main(int argc, char** argv)
         std::ofstream out_outfile(output_dir/out_filename);
         if (out_outfile.is_open())
         {
-            out_outfile << "N,sum\n";
-            out_outfile << N << "," <<global_sum;
+            out_outfile << "N,sum,num_process\n";
+            out_outfile << N << "," << global_sum << "," << size ;
             out_outfile.close();
         }
         else

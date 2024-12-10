@@ -1,18 +1,14 @@
 {
     "executable": "{{machine.input_dataset_base_dir}}/tests/data/parallelSum",
-    "output_directory": "{{machine.output_app_dir}}/tests/data/outputs/parallelSum",
     "use_case_name": "parallel_sum",
     "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/tests/data/outputs/parallelSum",
+    //Application options
     "options": [
         "{{parameters.elements.value}}",
         "{{output_directory}}/{{instance}}"
     ],
-    "outputs": [
-        {
-            "filepath":"{{output_directory}}/{{instance}}/outputs.csv",
-            "format":"csv"
-        }
-    ],
+    //Files containing execution times
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/",
         "stages": [
@@ -24,19 +20,26 @@
             }
         ]
     },
+    // Files containing app outputs
+    "outputs": [
+        {
+            "filepath":"{{output_directory}}/{{instance}}/outputs.csv",
+            "format":"csv"
+        }
+    ],
+    // Test validation (Only stdout supported at the moment)
     "sanity": {
         "success": ["[SUCCESS]"],
         "error": ["[OOPSIE]","Error"]
     },
+    // Test parameters
     "parameters": [
         {
             "name": "nb_tasks",
             "sequence": [
                 {"tasks" : 1, "exclusive_access":true},
                 {"tasks" : 2, "exclusive_access":true},
-                {"tasks" : 4, "exclusive_access":true},
-                {"tasks" : 8, "exclusive_access":true},
-                {"tasks" : 16, "exclusive_access":true}
+                {"tasks" : 4, "exclusive_access":true}
             ]
         },
         {
