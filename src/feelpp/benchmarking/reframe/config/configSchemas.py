@@ -44,17 +44,29 @@ class Image(BaseModel):
     protocol:Optional[Literal["oras","docker","library","local"]] = None
     name:str
 
-    @model_validator(mode="after")
-    def extractProtocol(self):
+    @field_validator("protocol",mode="before")
+    @classmethod
+    def extractProtocol(cls, v, info):
         """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
         If local, checks if the image exists """
 
-        if "://" in self.name:
-            self.protocol = self.name.split("://")[0]
+        name = info.data.get("name","")
+        if "://" in name:
+            return name.split("://")[0]
         else:
-            self.protocol = "local"
+            return "local"
 
-        return self
+    @field_validator("name", mode="before")
+    @classmethod
+    def checkImage(cls,v,info):
+        if info.data["protocol"] == "local":
+            if not os.path.exists(v):
+                if info.context.get("dry_run", False):
+                   print(f"Dry Run: Skipping image check for {v}")
+                else:
+                    raise FileExistsError(f"Cannot find image {v}")
+
+        return v
 
 
 class Platform(BaseModel):
@@ -74,6 +86,7 @@ class ConfigFile(BaseModel):
     output_directory:Optional[str] = ""
     use_case_name: str
     options: List[str]
+    env_variables:Optional[Dict] = {}
     outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity

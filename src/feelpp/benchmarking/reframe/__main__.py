@@ -33,6 +33,15 @@ class CommandBuilder:
 
         return str(self.report_folder_path)
 
+    def buildExecutionMode(self):
+        """Write the ReFrame execution flag depending on the parser arguments.
+            Examples are --dry-run or -r
+        """
+        if self.parser.args.dry_run:
+            return "--dry-run"
+        else:
+            return "-r"
+
     def buildCommand(self,timeout):
         assert self.report_folder_path is not None, "Report folder path not set"
         cmd = [
@@ -47,7 +56,7 @@ class CommandBuilder:
             f"-J '#SBATCH --time={timeout}'",
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
-            '-r',
+            f'{self.buildExecutionMode()}'
         ]
         return ' '.join(cmd)
 
@@ -56,7 +65,7 @@ def main_cli():
     parser = Parser()
     parser.printArgs()
 
-    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig)
+    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,dry_run=parser.args.dry_run)
     machine_reader.updateConfig()
 
     #Sets the cachedir and tmpdir directories for containers
@@ -82,7 +91,7 @@ def main_cli():
         configs = [config_filepath]
         if parser.args.plots_config:
             configs += [parser.args.plots_config]
-        app_reader = ConfigReader(configs,ConfigFile)
+        app_reader = ConfigReader(configs,ConfigFile,dry_run=parser.args.dry_run)
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
         report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
