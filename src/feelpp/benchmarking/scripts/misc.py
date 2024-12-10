@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import glob, json, copy, os
+from feelpp.benchmarking.report.config.handlers import GirderHandler
 
 def mergeDicts(dict1, dict2):
     """Recursively merges two dictionaries."""
@@ -46,5 +47,59 @@ def jsonConfigMerge_cli():
 
     with open(args.output_file_path,"w") as f:
         f.write(json.dumps(master_config))
+
+    return 0
+
+
+def upldateStageConfig_cli():
+    """Upload new staged benchmarks to production and update production config"""
+    parser = ArgumentParser()
+    parser.add_argument("--stage_config", '-stag', required = True, type=str, help="File path of the stage configuration file")
+    parser.add_argument("--production_config","-prod",required=True,type=str,help="FIle path of the production configuration file")
+    parser.add_argument("--production_girder_id", "-prodid", required=True,type=str, help="Girder id of the production folder")
+    args = parser.parse_args()
+
+    with open(args.stage_config,"r") as f:
+        stage_cfg = json.load(f)
+    with open(args.production_config,"r") as f:
+        prod_cfg = json.load(f)
+
+    girder_client = GirderHandler(None)
+
+    for app_name, machines in stage_cfg["execution_mapping"].items():
+        for machine_name, use_cases in machines.items():
+            for use_case_name, info in use_cases.items():
+                stage_platform = info["platform"]
+                stage_path = info["path"]
+
+                if (
+                    app_name in prod_cfg["execution_mapping"] and
+                    machine_name in prod_cfg["execution_mapping"][app_name] and
+                    use_case_name in prod_cfg["execution_mapping"][app_name][machine_name]
+                ):
+                    prod_info = prod_cfg["execution_mapping"][app_name][machine_name][use_case_name]
+                    prod_platorm = prod_info["platform"]
+                    prod_path = prod_info["path"]
+
+                    if stage_platform == "local":
+                        for report_item_basename in os.listdir(report_item_basename):
+                            girder_client.upload( os.path.join(stage_path,report_item_basename), prod_path, reuse_existing=False)
+                        stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["path"] = prod_path
+                        stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["platform"] = prod_platorm
+                    else:
+                        raise ValueError("Unexpected: non local path but benchmark is staged")
+
+                else:
+                    print(f"{app_name}-{machine_name}-{use_case_name} not found in production... Adding it.")
+
+                    tmp_location = os.path.join("./tmp",f"{app_name}_{use_case_name}_{machine_name}")
+                    os.rename(stage_path,tmp_location)
+                    uploaded_id = girder_client.upload( tmp_location, args.production_girder_id, return_id=True )
+
+                    stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["path"] = uploaded_id
+                    stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["platform"] = "girder"
+
+    with open(args.stage_config,"w") as f:
+        json.dump(stage_cfg,f)
 
     return 0
