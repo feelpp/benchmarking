@@ -44,15 +44,15 @@ jobs:
         -   name: Download stage reports
             run: |
                 source .venv/bin/activate
-                config_id=6752b5194c9ccbdde21a48b8
-                girder-download -gid $config_id -o ./tmp/ -d
+                source ./girder_deploy_config.sh
+                girder-download -gid $staging_folder_id -o ./tmp/ -d
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name: Download Production config
             run: |
                 source .venv/bin/activate
-                config_id=6752f0734c9ccbdde21a48ca
-                girder-download -gid $config_id -o ./configs_tmp/ -fn production_config.json
+                source ./girder_deploy_config.sh
+                girder-download -gid $production_website_config_id -o ./configs_tmp/ -fn production_config.json
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name: Merge stage configs
@@ -62,7 +62,7 @@ jobs:
         -   name: Update Stage Config
             run: |
                 source .venv/bin/activate
-                production_folder_id=6752efed4c9ccbdde21a48c7
+                source ./girder_deploy_config.sh
                 update-stage-config -stag ./configs_tmp/stage_config.json -prod ./configs_tmp/production_config.json -prodid $production_folder_id
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
@@ -73,16 +73,15 @@ jobs:
         -   name: Upload New Website config
             run: |
                 source .venv/bin/activate
-                girder-upload --item ./configs_tmp/website_config.json --girder_id 6752efed4c9ccbdde21a48c7
+                girder-upload --item ./configs_tmp/website_config.json --girder_id $production_folder_id
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name: Cleanup stage folder
             run: |
                 echo "Moving all folders from staging/ to merged/"
                 source .venv/bin/activate
-                staging_id=6752b5194c9ccbdde21a48b8
-                merged_id=67580d534c9ccbdde21a4a75
-                girder-move -oid $staging_id -nid $merged_id
+                source ./girder_deploy_config.sh
+                girder-move -oid $staging_folder_id -nid $accepted_folder_id
     denied:
         if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels, 'new-benchmark')
         runs-on: self-ubuntu-22.04
@@ -103,6 +102,5 @@ jobs:
             run: |
                 echo "Moving all folders from staging/ to denied/"
                 source .venv/bin/activate
-                staging_id=6752b5194c9ccbdde21a48b8
-                denied_id=6752b66d4c9ccbdde21a48b9
-                girder-move -oid $staging_id -nid $denied_id
+                source ./girder_deploy_config.sh
+                girder-move -oid $staging_folder_id -nid $denied_folder_id

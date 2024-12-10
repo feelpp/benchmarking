@@ -102,8 +102,8 @@ jobs:
     - name: Download website config
       run: |
         source .venv/bin/activate
-        config_id=6752f0734c9ccbdde21a48ca
-        girder-download --girder_id=$config_id --output_dir=./tmp/ --filename=website_config.json
+        source ./girder_deploy_config.sh
+        girder-download --girder_id=$production_website_config_id --output_dir=./tmp/ --filename=website_config.json
       env:
         GIRDER_API_KEY: ${{secrets.GIRDER}}
     - name: Render reports
