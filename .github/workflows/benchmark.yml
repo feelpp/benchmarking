@@ -160,11 +160,8 @@ jobs:
         -   name: Upload to girder
             run: |
                 source .venv/bin/activate
-                new_foldername=./tmp/$(date +"%Y_%m_%dT%H_%M_%S")
-                mv ./tmp/results/ $new_foldername
                 girder_staging_id=6752b5194c9ccbdde21a48b8
-                girder-upload --item $new_foldername --girder_id $girder_staging_id
-                rm -r $new_foldername
+                girder-upload --item ./tmp/results/ --girder_id $girder_staging_id
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
         -   name: Update Index Date
