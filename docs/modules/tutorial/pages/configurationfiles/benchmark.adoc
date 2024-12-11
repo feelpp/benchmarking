@@ -292,7 +292,7 @@ Valid generators are :
 ----
 {
     "name": "my_linspace_generator",
-    "logspace":{
+    "geomspace":{
         "min":2,
         "max":10,
         "n_steps":5
@@ -301,12 +301,12 @@ Valid generators are :
 ----
 The example will yield `[2,4,6,8,10]`. Min and max are inclusive.
 
-- `logspace`:
+- `geomspace`:
 [source,json]
 ----
 {
-    "name": "my_logspace_generator",
-    "logspace":{
+    "name": "my_geomspace_generator",
+    "geomspace":{
         "min":1,
         "max":10,
         "n_steps":4,
@@ -321,7 +321,7 @@ The example will yield `[2,16,128,1024]`. Min and max are inclusive.
 ----
 {
     "name": "my_range_generator",
-    "logspace":{
+    "geomspace":{
         "min":1,
         "max":5,
         "step":1
@@ -336,7 +336,7 @@ The example will yield `[1,2,3,4,5]`. Min and max are inclusive.
 ----
 {
     "name": "my_geometric_generator",
-    "logspace":{
+    "geometric":{
         "start":1,
         "ratio":2,
         "n_steps":5

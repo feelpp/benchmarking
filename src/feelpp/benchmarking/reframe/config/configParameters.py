@@ -8,7 +8,7 @@ class Linspace(BaseModel):
     max:Union[float,int]
     n_steps:int
 
-class Logspace(Linspace):
+class Geomspace(Linspace):
     base:Union[int,float]
 
 class Range(BaseModel):
@@ -31,7 +31,7 @@ class Parameter(BaseModel):
     active:Optional[bool] = True
 
     linspace:Optional[Linspace] = None
-    logspace:Optional[Logspace] = None
+    geomspace:Optional[Geomspace] = None
     range:Optional[Range] = None
     sequence:Optional[List[Union[int,float,str,Dict]]] = None
     repeat:Optional[Repeat] = None
@@ -40,8 +40,8 @@ class Parameter(BaseModel):
 
     @model_validator(mode="after")
     def setMode(self):
-        if self.logspace is not None:
-            self.mode = "logspace"
+        if self.geomspace is not None:
+            self.mode = "geomspace"
         elif self.linspace is not None:
             self.mode = "linspace"
         elif self.range is not None:
@@ -57,6 +57,6 @@ class Parameter(BaseModel):
         else:
             raise NotImplementedError("Parameters need an implemented generator")
 
-        assert len([mode for mode in [self.linspace,self.logspace,self.geometric,self.range,self.zip,self.sequence,self.repeat] if mode is not None]) == 1, "Parameter can only have one generator"
+        assert len([mode for mode in [self.linspace,self.geomspace,self.geometric,self.range,self.zip,self.sequence,self.repeat] if mode is not None]) == 1, "Parameter can only have one generator"
 
         return self

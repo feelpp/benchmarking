@@ -29,17 +29,13 @@ class LinspaceParameter(Parameter):
         yield from np.linspace(self.min,self.max,self.n_steps,endpoint=True,dtype=object)
 
 
-class LogspaceParameter(Parameter):
+class GeomspaceParameter(LinspaceParameter):
     """ Parameter that generates evenly spaced samples on a log scale using a min, max, a number of steps and the log base"""
     def __init__(self, param_config):
         super().__init__(param_config)
-        self.min = param_config.logspace.min
-        self.max = param_config.logspace.max
-        self.n_steps = param_config.logspace.n_steps
-        self.base = param_config.logspace.base
 
     def parametrize(self):
-        yield from np.logspace(self.min,self.max,self.n_steps,endpoint=True,base=self.base,dtype=object)
+        yield from np.geomspace(self.min,self.max,self.n_steps,endpoint=True,dtype=object)
 
 class GeometricParameter(Parameter):
     """ Parameter that generates a geometric sequence a start, a ratio and a number of steps """
@@ -102,8 +98,8 @@ class ParameterFactory:
             return LinspaceParameter(param_config)
         elif param_config.mode == "range":
             return RangeParameter(param_config)
-        elif param_config.mode == "logspace":
-            return LogspaceParameter(param_config)
+        elif param_config.mode == "geomspace":
+            return GeomspaceParameter(param_config)
         elif param_config.mode == "sequence":
             return SequenceParameter(param_config)
         elif param_config.mode == "repeat":
