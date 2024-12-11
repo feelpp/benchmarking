@@ -1,13 +1,33 @@
+""" Tests for individual parameter generators"""
+
+
+
 import numpy as np
 import string
 import pytest
-from feelpp.benchmarking.reframe.parameters import ParameterFactory, LinspaceParameter, RangeParameter, GeomspaceParameter, SequenceParameter, RepeatParameter, GeometricParameter, ZipParameter
+from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 
 def createParameterDict(mode,param_config):
+    """Helper function to create the expected dictionnary for the Parameter schema, with the default name of "test_param"
+    Args:
+        mode (str): The parameter mode
+        param_config (dict|list): The parameter generator configuration. IT is what goes under the parameter mode, for example, {"min":0,"max":1,"n_steps":5} for the linspace parameter.
+    returns
+        dict: expected dictinonary to initialize the parameter object (schame valid)
+    """
     return { "name": "test_param", "mode": mode, mode: param_config }
 
-def genericParameterTest(mode,param_config,expected):
+def genericParameterTest(mode,param_config,expected=None):
+    """Helper function to compare the result of any parameter .parametrize() method agains an expected value.
+    If no expected value is provided, it will be calculated here depending on the parameter mode.
+    Args:
+        mode (str): The parameter mode
+        param_config (dict|list): The parameter generator configuration. IT is what goes under the parameter mode, for example, {"min":0,"max":1,"n_steps":5} for the linspace parameter.
+        expected: The expected result of the .parametrize() method of the parameter object.
+    Raises:
+        AssertionError: if the result does not match the expected value.
+    """
     param = ParameterFactory.create(Parameter(**createParameterDict(mode,param_config)))
     result = list(param.parametrize())
     if not expected:
@@ -40,6 +60,7 @@ def genericParameterTest(mode,param_config,expected):
 
 
 def parameter_test_cases():
+    """ Returns all parameter cases to test. Contains the mode, the parameter configuration and the expected values"""
     return {
         "linspace":[
             {"param_config":{"min": 0, "max": 10, "n_steps": 5}, "expected":[0.0, 2.5, 5.0, 7.5, 10.0]},  # Basic example
@@ -164,5 +185,5 @@ def parameter_test_cases():
     for test_case in cases
 ])
 def test_parameter_parametrization(mode, param_config, expected):
-    """Test parameterization for different modes."""
+    """Test parameterization for different modes. Given by the `parameter_test_cases()` function"""
     genericParameterTest(mode, param_config, expected)
