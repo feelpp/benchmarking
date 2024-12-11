@@ -29,10 +29,13 @@ class LinspaceParameter(Parameter):
         yield from np.linspace(self.min,self.max,self.n_steps,endpoint=True,dtype=object)
 
 
-class GeomspaceParameter(LinspaceParameter):
+class GeomspaceParameter(Parameter):
     """ Parameter that generates evenly spaced samples on a log scale using a min, max, a number of steps"""
     def __init__(self, param_config):
         super().__init__(param_config)
+        self.min = param_config.geomspace.min
+        self.max = param_config.geomspace.max
+        self.n_steps = param_config.geomspace.n_steps
 
     def parametrize(self):
         yield from np.geomspace(self.min,self.max,self.n_steps,endpoint=True,dtype=object)
