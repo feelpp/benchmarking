@@ -32,6 +32,10 @@ def genericParameterTest(mode,param_config,expected):
         assert np.array_equal(result, expected), f"Expected result does not match for {mode}"
         return
 
+    if mode == "zip":
+        assert result == expected
+        return
+
     assert np.allclose(result, expected, atol=1e-12), f"Expected result does not match for {mode}"
 
 
@@ -85,8 +89,73 @@ def parameter_test_cases():
             {"param_config": {"value": "test_value", "count": 5}, "expected": ["test_value"] * 5},  # Repeat a string
             {"param_config": {"value": [1, 2], "count": 3}, "expected": [[1, 2]] * 3},  # Repeat a list
         ],
-        "zip":[]
-}
+        "zip":[
+            # Basic test: zip two parameters
+            {
+                "param_config": [
+                    {"name": "param1", "mode": "range", "range": {"min": 0, "max": 10, "step": 5}},
+                    {"name": "param2", "mode": "linspace", "linspace": {"min": 0, "max": 5, "n_steps": 3}}
+                ],
+                "expected": [ {"param1": 0, "param2": 0.0}, {"param1": 5, "param2": 2.5}, {"param1": 10, "param2": 5.0} ]
+            },
+            # Test with complex subparameters
+            {
+                "param_config": [
+                    {"name": "param1", "mode": "geomspace", "geomspace": {"min": 1, "max": 100, "n_steps": 3}},
+                    {"name": "param2", "mode": "geometric", "geometric": {"start": 1, "ratio": 2, "n_steps": 3}}
+                ],
+                "expected": [ {"param1": 1.0, "param2": 1}, {"param1": 10.0, "param2": 2}, {"param1": 100.0, "param2": 4} ]
+            },
+            # Edge case: empty sequences
+            {
+                "param_config": [
+                    {"name": "param1", "mode": "sequence", "sequence": []},
+                    {"name": "param2", "mode": "sequence", "sequence": []}
+                ],
+                "expected": []
+            },
+            #Nested zips
+            {
+                "param_config": [
+                    {
+                        "name": "param1",
+                        "mode": "zip",
+                        "zip": [
+                            {"name": "param2", "mode": "linspace", "linspace": {"min": 0, "max": 10, "n_steps": 3}},
+                            {"name": "param3", "mode": "range", "range": {"min": 1, "max": 5, "step": 2}}
+                        ]
+                    },
+                    {
+                        "name": "param4",
+                        "mode": "zip",
+                        "zip": [
+                            {"name": "param5", "mode": "repeat", "repeat": {"value": 10, "count": 3}},
+                            {"name": "param6", "mode": "sequence", "sequence": [1, 2, 3]}
+                        ]
+                    }
+                ],
+                "expected": [
+                    {"param1": {"param2": 0.0, "param3": 1}, "param4": {"param5": 10, "param6": 1}},
+                    {"param1": {"param2": 5.0, "param3": 3}, "param4": {"param5": 10, "param6": 2}},
+                    {"param1": {"param2": 10.0, "param3": 5}, "param4": {"param5": 10, "param6": 3}}
+                ]
+            },
+            #Zipping 4 parameters
+            {
+                "param_config": [
+                    {"name": "param1", "mode": "linspace", "linspace": {"min": 1, "max": 5, "n_steps": 3}},
+                    {"name": "param2", "mode": "geomspace", "geomspace": {"min": 1, "max": 100, "n_steps": 3}},
+                    {"name": "param3", "mode": "repeat", "repeat": {"value": 2, "count": 3}},
+                    {"name": "param4", "mode": "range", "range": {"min": 0, "max": 6, "step": 2}}
+                ],
+                "expected": [
+                    {"param1": 1.0, "param2": 1.0, "param3": 2, "param4": 0},
+                    {"param1": 3.0, "param2": 10.0, "param3": 2, "param4": 2},
+                    {"param1": 5.0, "param2": 100.0, "param3": 2, "param4": 4}
+                ]
+            }
+        ]
+    }
 
 
 @pytest.mark.parametrize("mode, param_config, expected", [
