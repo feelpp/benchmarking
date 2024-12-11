@@ -1,3 +1,5 @@
+""" Tests the parameterFactory class"""
+
 import pytest
 from feelpp.benchmarking.reframe.parameters import ParameterFactory, LinspaceParameter, RangeParameter, GeomspaceParameter, SequenceParameter, RepeatParameter, GeometricParameter, ZipParameter
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
@@ -19,6 +21,9 @@ from feelpp.benchmarking.reframe.config.configParameters import Parameter
 def test_parameterFactory(param_config, expected_type):
     """Checks the correct instantiation of parameters from the ParameterFactory
     Also checks that all parameters are equiped with a `parametrize` method.
+    Args:
+        param_config dict: The dictionary fed to the parameter object to instantiate it.
+        expected_type: The class (type) that the parameterFactory should return for the given parameter mode (linspace, range, ...)
     """
     param = ParameterFactory.create(Parameter(**param_config))
     assert param.parametrize()
