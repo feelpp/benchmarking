@@ -1,3 +1,5 @@
+""" Tests for the validationHandler class"""
+
 import pytest
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from unittest.mock import patch
@@ -45,11 +47,17 @@ def generateErrorPatternTestCases():
 
 
 class TestValidationHandler:
+    """ Tests the ValidationHandler class methods"""
     #TODO: NOT ALL REGEX PATTERNS ARE SUPPORTED DUE TO ESCAPED CHARS,
     # THIS SHOULD BE DESCRIBED IN AN ISSUE AND ADD RESPECTIVE UNIT TESTS WHEN IMPLEMENTED
 
     @pytest.mark.parametrize("pattern, expected_result", generatSuccessPatternTestCases())
     def test_checkSuccess(self,pattern,expected_result,sample_stdout,monkeypatch):
+        """
+        Tests the check_success method of the ValudationHandler.
+        Checks that the pattern is found (or not) in the sample_stdout.
+        It compares what the function returns to a boolean symbolizing: True if the pattern is found, False if the pattern is NOT found
+        """
         validation_handler = ValidationHandler(MockSanityConfig(success=[pattern],error=[]))
 
         monkeypatch.setattr(sn, 'assert_found', sn.assert_found_s)
@@ -63,6 +71,11 @@ class TestValidationHandler:
 
     @pytest.mark.parametrize("pattern, expected_result", generateErrorPatternTestCases())
     def test_checkErrors(self,pattern,expected_result,sample_stdout,monkeypatch):
+        """
+        Tests the check_errors method of the ValudationHandler
+        Checks that the pattern is found (or not) in the sample_stdout.
+        It compares what the function returns to a boolean symbolizing: True if the pattern is NOT found, False if the pattern is found
+        """
         validation_handler = ValidationHandler(MockSanityConfig(success=[],error=[pattern]))
 
         monkeypatch.setattr(sn, 'assert_not_found', sn.assert_not_found_s)
