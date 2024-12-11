@@ -9,7 +9,7 @@ class Linspace(BaseModel):
     n_steps:int
 
 class Geomspace(Linspace):
-    base:Union[int,float]
+    pass
 
 class Range(BaseModel):
     min:Union[float,int]

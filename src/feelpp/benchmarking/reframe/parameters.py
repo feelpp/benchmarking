@@ -30,7 +30,7 @@ class LinspaceParameter(Parameter):
 
 
 class GeomspaceParameter(LinspaceParameter):
-    """ Parameter that generates evenly spaced samples on a log scale using a min, max, a number of steps and the log base"""
+    """ Parameter that generates evenly spaced samples on a log scale using a min, max, a number of steps"""
     def __init__(self, param_config):
         super().__init__(param_config)
 
