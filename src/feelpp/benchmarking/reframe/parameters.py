@@ -38,7 +38,7 @@ class GeomspaceParameter(Parameter):
         self.n_steps = param_config.geomspace.n_steps
 
     def parametrize(self):
-        yield from np.geomspace(self.min,self.max,self.n_steps,endpoint=True,dtype=object)
+        yield from np.geomspace(self.min,self.max,self.n_steps,endpoint=True).astype(object)
 
 class GeometricParameter(Parameter):
     """ Parameter that generates a geometric sequence a start, a ratio and a number of steps """
