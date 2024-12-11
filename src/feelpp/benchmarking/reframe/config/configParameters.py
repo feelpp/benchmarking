@@ -42,7 +42,7 @@ class Parameter(BaseModel):
     def setMode(self):
         if self.logspace is not None:
             self.mode = "logspace"
-        if self.linspace is not None:
+        elif self.linspace is not None:
             self.mode = "linspace"
         elif self.range is not None:
             self.mode = "range"
