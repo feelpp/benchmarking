@@ -21,6 +21,7 @@ class Geomspace(Linspace):
     def checkZeroInRange(self):
         if (self.min < 0 and self.max > 0) or (self.max < 0 and self.min>0):
             raise ValueError("0 cannot be contained between min and max")
+        return self
 
 class Range(BaseModel):
     min:Union[float,int]
