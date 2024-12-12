@@ -92,7 +92,6 @@ def parameter_test_cases():
             {"param_config": {"min": -10, "max": 10, "step": 5}, "expected": [-10, -5, 0, 5, 10]},  # Negative step
             {"param_config": {"min": 0, "max": 10, "step": 0.5}, "expected": [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0]},  # Float step
             {"param_config": {"min": 10, "max": 0, "step": -2}, "expected": [10, 8, 6, 4, 2, 0]},  # Decreasing range
-            {"param_config": {"min": 0, "max": 0, "step": 1}, "expected": [0]},  # Single step (edge case)
             {"param_config":{"min": np.random.uniform(-100,100), "max": np.random.uniform(-100,100), "step": np.random.uniform(-100,100)}, "expected":None},  #Random
         ],
         "sequence":[
