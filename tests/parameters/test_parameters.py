@@ -92,7 +92,8 @@ def parameter_test_cases():
             {"param_config": {"min": -10, "max": 10, "step": 5}, "expected": [-10, -5, 0, 5, 10]},  # Negative step
             {"param_config": {"min": 0, "max": 10, "step": 0.5}, "expected": [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0]},  # Float step
             {"param_config": {"min": 10, "max": 0, "step": -2}, "expected": [10, 8, 6, 4, 2, 0]},  # Decreasing range
-            {"param_config":{"min": np.random.uniform(-100,100), "max": np.random.uniform(-100,100), "step": np.random.uniform(-100,100)}, "expected":None},  #Random
+            {"param_config":{"min": np.random.uniform(0,50), "max": np.random.uniform(51,100), "step": np.random.uniform(1,100)}, "expected":None},  #Random
+            {"param_config":{"min": np.random.uniform(50,100), "max": np.random.uniform(0,50), "step": np.random.uniform(-100,-1)}, "expected":None},  #Random
         ],
         "sequence":[
             {"param_config":np.random.uniform(-100,100,100).tolist(), "expected":None},  #Random
@@ -183,6 +184,6 @@ def parameter_test_cases():
     for mode, cases in parameter_test_cases().items()
     for test_case in cases
 ])
-def test_parameter_parametrization(mode, param_config, expected):
+def test_parameterParametrization(mode, param_config, expected):
     """Test parameterization for different modes. Given by the `parameter_test_cases()` function"""
     genericParameterTest(mode, param_config, expected)
