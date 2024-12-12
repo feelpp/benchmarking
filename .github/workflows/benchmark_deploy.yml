@@ -58,7 +58,7 @@ jobs:
         -   name: Merge stage configs
             run: |
                 source .venv/bin/activate
-                merge-json-configs -fp ./tmp/**/website_config.json -o ./configs_tmp/stage_config.json -u
+                merge-json-configs -fp "./tmp/**/website_config.json" -o ./configs_tmp/stage_config.json -u
         -   name: Update Stage Config
             run: |
                 source .venv/bin/activate
@@ -69,7 +69,7 @@ jobs:
         -   name: Merge stage and prod configs
             run: |
                 source .venv/bin/activate
-                merge-json-configs -fp ./configs_tmp/**/*.json -o ./configs_tmp/website_config.json
+                merge-json-configs -fp "./configs_tmp/**/*.json" -o ./configs_tmp/website_config.json
         -   name: Upload New Website config
             run: |
                 source .venv/bin/activate
