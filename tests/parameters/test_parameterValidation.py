@@ -1,3 +1,5 @@
+"""Tests for parameter models validation by pydantic schemas"""
+
 import pytest
 from feelpp.benchmarking.reframe.config.configParameters import Parameter, Linspace,Geomspace,Range,Geometric,Repeat
 from pydantic import ValidationError
@@ -106,4 +108,4 @@ def test_geometric(start,ratio,n_steps,raises,raises_match):
 ])
 def test_repeat(value,count,raises,raises_match):
     """Tests the Repeat generator"""
-    Repeat(Geometric,{"value":value,"count":count},raises,raises_match)
+    validateGenerator(Repeat,{"value":value,"count":count},raises,raises_match)
