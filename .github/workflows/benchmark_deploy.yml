@@ -8,7 +8,7 @@ jobs:
     build_wheel:
         runs-on: self-ubuntu-22.04
         name: Build wheel package
-        if: contains(github.event.pull_request.labels, 'new-benchmark')
+        if: contains(github.event.pull_request.labels.*.name, 'new-benchmark')
         steps:
         -   uses: actions/checkout@v4
         -   name: Build wheel
@@ -25,7 +25,7 @@ jobs:
                 path: dist/*.whl
 
     accepted:
-        if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels, 'new-benchmark')
+        if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
         runs-on: self-ubuntu-22.04
         name: Move to production
         needs: build_wheel
@@ -84,7 +84,7 @@ jobs:
                 source ./girder_deploy_config.sh
                 girder-move -oid $staging_folder_id -nid $accepted_folder_id
     denied:
-        if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels, 'new-benchmark')
+        if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
         runs-on: self-ubuntu-22.04
         name: Move to denied
         needs: build_wheel
