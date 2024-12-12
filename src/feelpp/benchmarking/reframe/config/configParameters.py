@@ -3,9 +3,7 @@ from pydantic import BaseModel, model_validator, field_validator
 from typing import  Union, Optional, List, Any, Dict
 
 
-class Linspace(BaseModel):
-    min:Union[float,int]
-    max:Union[float,int]
+class NSteps(BaseModel):
     n_steps:int
 
     @field_validator("n_steps",mode="after")
@@ -14,6 +12,11 @@ class Linspace(BaseModel):
         if v <= 0:
             raise ValueError(f"Number of steps should be strictly positive ({v})")
         return v
+
+class Linspace(NSteps):
+    min:Union[float,int]
+    max:Union[float,int]
+
 
 class Geomspace(Linspace):
 
@@ -49,7 +52,7 @@ class Range(BaseModel):
         return self
 
 
-class Geometric(BaseModel):
+class Geometric(NSteps):
     start:Union[float,int]
     ratio:Union[float,int]
     n_steps:int
