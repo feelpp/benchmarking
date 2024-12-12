@@ -8,6 +8,13 @@ class Linspace(BaseModel):
     max:Union[float,int]
     n_steps:int
 
+    @field_validator("n_steps",mode="after")
+    @classmethod
+    def checkPositiveSteps(cls,v):
+        if v <= 0:
+            raise ValueError(f"Number of steps should be strictly positive ({v})")
+        return v
+
 class Geomspace(Linspace):
 
     @field_validator("min","max",mode="after")
