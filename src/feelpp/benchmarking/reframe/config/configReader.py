@@ -36,12 +36,20 @@ class TemplateProcessor:
                 items.append((new_key, value))
         return dict(items)
 
-    def replacePlaceholders(self,target,flattened_source):
+    def replacePlaceholders(self,target,flattened_source,processed_placeholders=None):
+        if processed_placeholders is None:
+            processed_placeholders = set()
+
         def replaceMatch(match):
+            placeholder = match.group(1).strip()
+            if placeholder in processed_placeholders:
+                return match.group(0)
+
+            processed_placeholders.add(placeholder)
             resolved = flattened_source.get(match.group(1).strip(),match.group(0))
             if match.group(1) in flattened_source:
                 if isinstance(resolved,str) and "{{" in resolved and "}}" in resolved:
-                    resolved = self.replacePlaceholders(resolved,flattened_source)
+                    resolved = self.replacePlaceholders(resolved,flattened_source,processed_placeholders)
             return resolved
 
         replaced = self.template_pattern.sub(replaceMatch,target)
