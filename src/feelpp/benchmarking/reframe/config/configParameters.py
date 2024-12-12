@@ -35,6 +35,20 @@ class Range(BaseModel):
     max:Union[float,int]
     step:Union[float,int]
 
+    @field_validator("step",mode="after")
+    @classmethod
+    def checkForZero(cls,v):
+        if v == 0:
+            raise ValueError("Step cannot be 0")
+        return v
+
+    @model_validator(mode="after")
+    def checkForEmpty(self):
+        if (self.min < self.max and self.step < 0) or (self.min > self.max and self.step > 0) or (self.min==self.max):
+            raise ValueError("Range will result empty")
+        return self
+
+
 class Geometric(BaseModel):
     start:Union[float,int]
     ratio:Union[float,int]
