@@ -83,6 +83,8 @@ jobs:
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
                 girder-move -oid $staging_folder_id -nid $accepted_folder_id
+            env:
+                GIRDER_API_KEY: ${{ secrets.GIRDER }}
     denied:
         if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
         runs-on: self-ubuntu-22.04
@@ -105,3 +107,5 @@ jobs:
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
                 girder-move -oid $staging_folder_id -nid $denied_folder_id
+            env:
+                GIRDER_API_KEY: ${{ secrets.GIRDER }}
