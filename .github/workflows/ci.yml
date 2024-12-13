@@ -99,10 +99,17 @@ jobs:
           pip3 install -I -r requirements.txt
           pip3 install dist/*.whl
           tree .venv
+    - name: Download website config
+      run: |
+        source .venv/bin/activate
+        source ./girder_deploy_config.sh
+        girder-download --girder_id=$production_website_config_id --output_dir=./tmp/ --filename=website_config.json
+      env:
+        GIRDER_API_KEY: ${{secrets.GIRDER}}
     - name: Render reports
       run: |
         source .venv/bin/activate
-        render-benchmarks
+        render-benchmarks --config_file=./tmp/website_config.json
       env:
         GIRDER_API_KEY: ${{ secrets.GIRDER }}
     - name: Build Antora Site
