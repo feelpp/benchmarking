@@ -30,6 +30,9 @@
         "--case.discretization {{parameters.discretization.value}}",
         "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
+    "env_variables":{
+        "OMP_NUM_THREADS":1
+    },
     "outputs": [
         {
             "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
