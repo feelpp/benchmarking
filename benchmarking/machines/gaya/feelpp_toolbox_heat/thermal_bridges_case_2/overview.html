@@ -298,12 +298,12 @@ File <ipython-input-1-959f0f8eb946>:1
 ----> 1 for fig in controller.generateAll():
       2     import sys; fig.write_html(file=sys.stdout, include_plotlyjs=False)
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/base/controller.py:20, in Controller.generateAll(self)
+File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/base/controller.py:20, in Controller.generateAll(self)
      18 for plot_config in self.view.plots_config:
      19     for plot in FigureFactory.create(plot_config):
 ---> 20         yield plot.createFigure(self.model.master_df)
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:107, in ScatterFigure.createFigure(self, df)
+File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:107, in ScatterFigure.createFigure(self, df)
     100 def createFigure(self,df):
     101     """ Creates a scatter plot from the master dataframe
     102     Args:
@@ -315,13 +315,13 @@ File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/ben
     109     if isinstance(df.index,MultiIndex):
     110         return self.createAnimation(df)
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/strategies.py:48, in PerformanceStrategy.calculate(self, df)
+File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/strategies.py:48, in PerformanceStrategy.calculate(self, df)
      46                 pivot = pivot[pivot[aggregation.column].astype(str) == aggregation.agg.split(":")[-1]]
      47             else:
 ---> 48                 pivot = pivot.groupby(agg_columns)["value"].agg(aggregation.agg).reset_index()
      50 return pivot.pivot(index=index,values="value",columns=self.dimensions["color_axis"])
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/pandas/core/frame.py:9183, in DataFrame.groupby(self, by, axis, level, as_index, sort, group_keys, observed, dropna)
+File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/pandas/core/frame.py:9183, in DataFrame.groupby(self, by, axis, level, as_index, sort, group_keys, observed, dropna)
    9180 if level is None and by is None:
    9181     raise TypeError("You have to supply one of 'by' and 'level'")
 -> 9183 return DataFrameGroupBy(
@@ -336,7 +336,7 @@ File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/ben
    9192     dropna=dropna,
    9193 )
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/pandas/core/groupby/groupby.py:1329, in GroupBy.__init__(self, obj, keys, axis, level, grouper, exclusions, selection, as_index, sort, group_keys, observed, dropna)
+File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/pandas/core/groupby/groupby.py:1329, in GroupBy.__init__(self, obj, keys, axis, level, grouper, exclusions, selection, as_index, sort, group_keys, observed, dropna)
    1326 self.dropna = dropna
    1328 if grouper is None:
 -> 1329     grouper, exclusions, obj = get_grouper(
@@ -351,7 +351,7 @@ File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/ben
    1339 if observed is lib.no_default:
    1340     if any(ping._passed_categorical for ping in grouper.groupings):
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/pandas/core/groupby/grouper.py:1043, in get_grouper(obj, key, axis, level, sort, observed, validate, dropna)
+File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/pandas/core/groupby/grouper.py:1043, in get_grouper(obj, key, axis, level, sort, observed, validate, dropna)
    1041         in_axis, level, gpr = False, gpr, None
    1042     else:
 -> 1043         raise KeyError(gpr)
