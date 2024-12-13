@@ -10,6 +10,8 @@ class SampleModel(BaseModel):
     nested: dict
 
 class TestTemplateProcessor:
+    """Tests for the TemplateProcessor class"""
+
     @pytest.mark.parametrize( "nested_json, parent_key, separator, expected",[
         # Case 1: Simple flat dictionary with default separator ('.')
         ({"key1": "value1", "key2": "value2"}, "", ".", {"key1": "value1", "key2": "value2"}),
@@ -58,6 +60,8 @@ class TestTemplateProcessor:
         ({"level1": {"level2": {"level3": "value"}}}, "", "|", {"level1|level2|level3": "value"})
     ])
     def test_flattenDict(self, nested_json, expected,separator,parent_key):
+        """Tests for the flattenDict method of the TemplateProcessor class.
+        It compares a the result of the function for a given nested_json to the corresponding expected result, for a variaty of separators and parent keys """
         result = TemplateProcessor.flattenDict(nested_json,parent_key=parent_key,separator=separator)
         assert result == expected
 
@@ -119,6 +123,10 @@ class TestTemplateProcessor:
         ("This is a circular placeholder: {{a.{{a}}}}",{"a": "{{a}}"},"This is a circular placeholder: {{a.{{a}}}}")
     ])
     def test_replacePlaceholders(self, target, flattened_source, expected, monkeypatch):
+        """Tests for the replacePlaceholders method of the TemplateProcessor class.
+        It compares a the result of the function for a given target and flattened source to see if placeholders where correctly replaced.
+        """
+
         processor = TemplateProcessor()
         if "$HOME" in expected:
             monkeypatch.setenv("HOME", "/home/user")
@@ -149,6 +157,9 @@ class TestTemplateProcessor:
         ]
     )
     def test_recursiveReplace(self,input_data, flattened_source, expected_output):
+        """Tests for the recursiveReplace method of the TemplateProcessor class.
+        It compares a the result of the function for a given target and flattened source to see if placeholders where correctly replaced for dictionaries
+        """
         processor = TemplateProcessor()
         result = processor.recursiveReplace(input_data, flattened_source)
         assert result == expected_output
