@@ -1,16 +1,16 @@
 #!/bin/bash -l
-#SBATCH --nodes=1                                                       # number of nodes
-#SBATCH --ntasks=1                                                      # number of tasks
-#SBATCH --qos=default                                                   # SLURM qos
-#SBATCH --ntasks-per-node=8                                             # number of tasks per node
-#SBATCH --cpus-per-task=1                                               # number of cores per task
-#SBATCH --time=02:00:00                                                 # time (HH:MM:SS)
-#SBATCH --partition=cn                                                  # partition
-#SBATCH --account=ehpc-dev-2024d05-047 --qos=ehpc-dev-2024d05-047     # project account
 
+SCRIPT_DIR=$(dirname "$0")
+source "$SCRIPT_DIR/hpc.env"
 
-source /etc/profile.d/modules.sh
-export MODULEPATH=/opt/software/modulefiles
+echo "================================================"
+sacctmgr show association where account=$discoverer_project_id
+
+sshare -A $discoverer_project_id -u " " -o account,user,GrpTRESRaw%80,GrpTRESMins,RawUsage
+
+lfs quota -g $discoverer_project_id /discofs
+lfs quota -g $discoverer_project_id /disco2fs
+echo "==============================================="
 
 matrix_config=""
 benchmark_config=""
