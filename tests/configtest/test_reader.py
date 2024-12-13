@@ -109,9 +109,12 @@ class TestTemplateProcessor:
         ( "My recursive nested placeholder is {{x.{{a.b}}.y}}", { "a.b": "c","x.c.y": "z"},"My recursive nested placeholder is z"),
 
         # Case 2: Deeply Nested Placeholders
-        ("The final result is {{x.{{y.{{a.b}}}}}}",{"a.b": "c","y.c": "x","x.x": "y","x.y": "z"},"The final result is z"),
+        ("The final result is {{x.{{y.{{a.b}}}}}}",{"a.b": "c","y.c": "x","x.x": "y","x.y": "z"},"The final result is y"),
 
-        # Case 3: Circular Placeholder (Should remain unchanged)
+        # Case 3: Deeply Nested Placeholders Not found
+        ("The final result is {{x.{{y.{{a.b}}}}}}",{"a.b": "c","y.c": "x","x.z": "y","x.y": "z"},"The final result is {{x.x}}"),
+
+        # Case 4: Circular Placeholder (Should remain unchanged)
         # For this case, we want to test what happens if a recursive cycle is formed
         ("This is a circular placeholder: {{a.{{a}}}}",{"a": "{{a}}"},"This is a circular placeholder: {{a.{{a}}}}")
     ])
