@@ -133,7 +133,7 @@ jobs:
             run: |
                 source .venv/bin/activate
                 execute-benchmark \
-                    -mc ./tmp/machines/${{matrix.machine}} \
+                    -mc ${{matrix.machine_cfg}} \
                     -bc ./tmp/benchmark_config.json \
                     -pc ./tmp/plots.json \
                     -v
