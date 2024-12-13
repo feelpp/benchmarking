@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reframe Report for Feel++ heat toolbox on Gaya :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/reports/2024-12-12T08:38:53+0100.html">
+    <meta name="description" content="Performance report for Gaya on 2024-12-12T09:09:55+0100">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="2024-12-12T08:38:53+0100.html">Reframe Report for Feel++ heat toolbox on Gaya</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/reports/2024-12-12T08:38:53+0100.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+      <li>
+        <a href="#"
+           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
+          <img class="jupyter-file-icon icon" src="../../_/img/jupyter-logo.svg"/> .ipynb
+        </a>
+      </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Reframe Report for Feel++ heat toolbox on Gaya</h1>
+<div class="sect1">
+<h2 id="_test_summary"><a class="anchor" href="#_test_summary"></a>1. Test Summary</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Total Tests: 4</p>
+</li>
+<li>
+<p>Failures: 3</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2858%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nb_tasks.tasks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nb_tasks.tasks_per_node</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nb_tasks.exclusive_access</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">meshes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">discretization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">solver</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">512</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gamg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">xref:[Description]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">384</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gamg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">xref:[Description]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">256</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gamg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">xref:[Description]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gamg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../descriptions/gaya/feelpp_toolbox_heat/ThermalBridgesENISO10211/2024_12_12T08_38_53Z0100/55473afe.html" class="xref page">Description</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
+from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
+from feelpp.benchmarking.report.atomicReports.view import AtomicReportView</code></pre>
+</div>
+</div>
+<details>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">model=AtomicReportModel([{'num_cases': 4, 'num_failures': 3, 'num_aborted': 0, 'num_skipped': 0, 'runid': 0, 'testcases': [{'build_stderr': None, 'build_stdout': None, 'dependencies_actual': [], 'dependencies_conceptual': [], 'description': '', 'display_name': "RegressionTest %nb_tasks={'tasks': 512, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'environment': 'default', 'fail_phase': 'performance', 'fail_reason': "file not found error: [Errno 2] No such file or directory: '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/0acc07a7/ThermalBridgesENISO10211/heat.scalibility.HeatConstructor.data'", 'filename': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py', 'fixture': False, 'hash': '0acc07a7', 'jobid': '75787', 'job_stderr': 'rfm_job.err', 'job_stdout': 'rfm_job.out', 'maintainers': [], 'name': "RegressionTest %nb_tasks={'tasks': 512, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'nodelist': ['gaya1', 'gaya2', 'gaya3', 'gaya4'], 'outputdir': None, 'perfvars': None, 'prefix': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe', 'result': 'failure', 'stagedir': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_0acc07a7', 'scheduler': 'squeue', 'system': 'gaya:production', 'tags': ['async'], 'time_compile': 0.011378288269042969, 'time_performance': 0.011943578720092773, 'time_run': 631.1360628604889, 'time_sanity': 0.011356353759765625, 'time_setup': 0.010324954986572266, 'time_total': 631.233232498169, 'unique_name': 'RegressionTest_3', 'fail_info': {'exc_type': 'FileNotFoundError', 'exc_value': "[Errno 2] No such file or directory: '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/0acc07a7/ThermalBridgesENISO10211/heat.scalibility.HeatConstructor.data'", 'traceback': ['  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/frontend/executors/__init__.py", line 317, in _safe_call\n    return fn(*args, **kwargs)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/core/hooks.py", line 107, in _fn\n    getattr(obj, h.__name__)()\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/core/hooks.py", line 38, in _fn\n    func(*args, **kwargs)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py", line 30, in setPerfVars\n    self.scalability_handler.getPerformanceVariables(self.num_tasks)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/scalability.py", line 25, in getPerformanceVariables\n    with open(self.filepaths[stage.name if stage.name else stage.filepath],"r") as f:\n']}, 'fail_severe': False, 'check_vars': {'valid_prog_environs': ['default'], 'valid_systems': ['gaya:production'], 'descr': '', 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_0acc07a7:/rfm_workdir" --home /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking --bind /data/scratch/cladellash/feelppdb/input_data/ThermalBridgesENISO10211/:/input_data --env OMP_NUM_THREADS=1 --sharens --bind /opt/:/opt/ /data/scratch/cladellash/images/feelpp-noble.sif feelpp_toolbox_heat --config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg /input_data/gamg.cfg --directory /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/0acc07a7 --repository.case ThermalBridgesENISO10211 --heat.scalability-save=1 --repository.append.np 0 --case.discretization P1 --heat.json.patch=\'{"op": "replace","path": "/Meshes/heat/Import/filename","value": "/input_data/partitioning/case3/M1/case3_p512.json" }\'', 'executable_opts': [], 'prerun_cmds': [], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': ['async'], 'maintainers': [], 'strict_check': True, 'num_tasks': 512, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': True, 'local': False, 'modules': [], 'env_vars': {}, 'variables': {}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True, 'report_dir_path': './reports/feelpp_toolbox_heat/ThermalBridgesENISO10211/gaya/2024_12_12T08_38_52', 'use_case': 'ThermalBridgesENISO10211', 'platform': 'apptainer'}, 'check_params': {'nb_tasks': {'tasks': 512, 'tasks_per_node': 128, 'exclusive_access': True}, 'meshes': 'M1', 'discretization': 'P1', 'solver': 'gamg'}}, {'build_stderr': None, 'build_stdout': None, 'dependencies_actual': [], 'dependencies_conceptual': [], 'description': '', 'display_name': "RegressionTest %nb_tasks={'tasks': 384, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'environment': 'default', 'fail_phase': 'performance', 'fail_reason': "file not found error: [Errno 2] No such file or directory: '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/5fc294c2/ThermalBridgesENISO10211/heat.scalibility.HeatConstructor.data'", 'filename': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py', 'fixture': False, 'hash': '5fc294c2', 'jobid': '75788', 'job_stderr': 'rfm_job.err', 'job_stdout': 'rfm_job.out', 'maintainers': [], 'name': "RegressionTest %nb_tasks={'tasks': 384, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'nodelist': ['gaya1', 'gaya2', 'gaya3'], 'outputdir': None, 'perfvars': None, 'prefix': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe', 'result': 'failure', 'stagedir': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_5fc294c2', 'scheduler': 'squeue', 'system': 'gaya:production', 'tags': ['async'], 'time_compile': 0.011035680770874023, 'time_performance': 0.011675596237182617, 'time_run': 1234.424732685089, 'time_sanity': 0.012776613235473633, 'time_setup': 0.009469985961914062, 'time_total': 1234.5264332294464, 'unique_name': 'RegressionTest_2', 'fail_info': {'exc_type': 'FileNotFoundError', 'exc_value': "[Errno 2] No such file or directory: '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/5fc294c2/ThermalBridgesENISO10211/heat.scalibility.HeatConstructor.data'", 'traceback': ['  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/frontend/executors/__init__.py", line 317, in _safe_call\n    return fn(*args, **kwargs)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/core/hooks.py", line 107, in _fn\n    getattr(obj, h.__name__)()\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/core/hooks.py", line 38, in _fn\n    func(*args, **kwargs)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py", line 30, in setPerfVars\n    self.scalability_handler.getPerformanceVariables(self.num_tasks)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/scalability.py", line 25, in getPerformanceVariables\n    with open(self.filepaths[stage.name if stage.name else stage.filepath],"r") as f:\n']}, 'fail_severe': False, 'check_vars': {'valid_prog_environs': ['default'], 'valid_systems': ['gaya:production'], 'descr': '', 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_5fc294c2:/rfm_workdir" --home /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking --bind /data/scratch/cladellash/feelppdb/input_data/ThermalBridgesENISO10211/:/input_data --env OMP_NUM_THREADS=1 --sharens --bind /opt/:/opt/ /data/scratch/cladellash/images/feelpp-noble.sif feelpp_toolbox_heat --config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg /input_data/gamg.cfg --directory /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/5fc294c2 --repository.case ThermalBridgesENISO10211 --heat.scalability-save=1 --repository.append.np 0 --case.discretization P1 --heat.json.patch=\'{"op": "replace","path": "/Meshes/heat/Import/filename","value": "/input_data/partitioning/case3/M1/case3_p384.json" }\'', 'executable_opts': [], 'prerun_cmds': [], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': ['async'], 'maintainers': [], 'strict_check': True, 'num_tasks': 384, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': True, 'local': False, 'modules': [], 'env_vars': {}, 'variables': {}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True, 'report_dir_path': './reports/feelpp_toolbox_heat/ThermalBridgesENISO10211/gaya/2024_12_12T08_38_52', 'use_case': 'ThermalBridgesENISO10211', 'platform': 'apptainer'}, 'check_params': {'nb_tasks': {'tasks': 384, 'tasks_per_node': 128, 'exclusive_access': True}, 'meshes': 'M1', 'discretization': 'P1', 'solver': 'gamg'}}, {'build_stderr': None, 'build_stdout': None, 'dependencies_actual': [], 'dependencies_conceptual': [], 'description': '', 'display_name': "RegressionTest %nb_tasks={'tasks': 256, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'environment': 'default', 'fail_phase': 'performance', 'fail_reason': "file not found error: [Errno 2] No such file or directory: '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/9666c623/ThermalBridgesENISO10211/heat.scalibility.HeatConstructor.data'", 'filename': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py', 'fixture': False, 'hash': '9666c623', 'jobid': '75789', 'job_stderr': 'rfm_job.err', 'job_stdout': 'rfm_job.out', 'maintainers': [], 'name': "RegressionTest %nb_tasks={'tasks': 256, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'nodelist': ['gaya1', 'gaya2'], 'outputdir': None, 'perfvars': None, 'prefix': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe', 'result': 'failure', 'stagedir': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_9666c623', 'scheduler': 'squeue', 'system': 'gaya:production', 'tags': ['async'], 'time_compile': 0.01085209846496582, 'time_performance': 0.013021230697631836, 'time_run': 1862.2359232902527, 'time_sanity': 0.013580322265625, 'time_setup': 0.009400129318237305, 'time_total': 1862.336742401123, 'unique_name': 'RegressionTest_1', 'fail_info': {'exc_type': 'FileNotFoundError', 'exc_value': "[Errno 2] No such file or directory: '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/9666c623/ThermalBridgesENISO10211/heat.scalibility.HeatConstructor.data'", 'traceback': ['  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/frontend/executors/__init__.py", line 317, in _safe_call\n    return fn(*args, **kwargs)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/core/hooks.py", line 107, in _fn\n    getattr(obj, h.__name__)()\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/reframe/core/hooks.py", line 38, in _fn\n    func(*args, **kwargs)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py", line 30, in setPerfVars\n    self.scalability_handler.getPerformanceVariables(self.num_tasks)\n', '  File "/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/scalability.py", line 25, in getPerformanceVariables\n    with open(self.filepaths[stage.name if stage.name else stage.filepath],"r") as f:\n']}, 'fail_severe': False, 'check_vars': {'valid_prog_environs': ['default'], 'valid_systems': ['gaya:production'], 'descr': '', 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_9666c623:/rfm_workdir" --home /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking --bind /data/scratch/cladellash/feelppdb/input_data/ThermalBridgesENISO10211/:/input_data --env OMP_NUM_THREADS=1 --sharens --bind /opt/:/opt/ /data/scratch/cladellash/images/feelpp-noble.sif feelpp_toolbox_heat --config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg /input_data/gamg.cfg --directory /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/9666c623 --repository.case ThermalBridgesENISO10211 --heat.scalability-save=1 --repository.append.np 0 --case.discretization P1 --heat.json.patch=\'{"op": "replace","path": "/Meshes/heat/Import/filename","value": "/input_data/partitioning/case3/M1/case3_p256.json" }\'', 'executable_opts': [], 'prerun_cmds': [], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': ['async'], 'maintainers': [], 'strict_check': True, 'num_tasks': 256, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': True, 'local': False, 'modules': [], 'env_vars': {}, 'variables': {}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True, 'report_dir_path': './reports/feelpp_toolbox_heat/ThermalBridgesENISO10211/gaya/2024_12_12T08_38_52', 'use_case': 'ThermalBridgesENISO10211', 'platform': 'apptainer'}, 'check_params': {'nb_tasks': {'tasks': 256, 'tasks_per_node': 128, 'exclusive_access': True}, 'meshes': 'M1', 'discretization': 'P1', 'solver': 'gamg'}}, {'build_stderr': None, 'build_stdout': None, 'dependencies_actual': [], 'dependencies_conceptual': [], 'description': '', 'display_name': "RegressionTest %nb_tasks={'tasks': 128, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'environment': 'default', 'fail_phase': None, 'fail_reason': None, 'filename': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe/regression.py', 'fixture': False, 'hash': '55473afe', 'jobid': '75790', 'job_stderr': 'rfm_job.err', 'job_stdout': 'rfm_job.out', 'maintainers': [], 'name': "RegressionTest %nb_tasks={'tasks': 128, 'tasks_per_node': 128, 'exclusive_access': True} %meshes=M1 %discretization=P1 %solver=gamg", 'nodelist': ['gaya4'], 'outputdir': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/output/gaya/production/default/RegressionTest_55473afe', 'perfvars': [{'name': 'Constructor_initMaterialProperties', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.016817083}, {'name': 'Constructor_initMesh', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.607123003}, {'name': 'Constructor_initFunctionSpaces', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.061911586}, {'name': 'Constructor_initPostProcess', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.019782744}, {'name': 'Constructor_graph', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.032098468}, {'name': 'Constructor_matrixVector', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.052568656}, {'name': 'Constructor_algebraicOthers', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 9.7223e-05}, {'name': 'Constructor_init', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 10.2526405}, {'name': 'PostProcessing_exportResults', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 2.97222268}, {'name': 'Solve_ksp-niter', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 'iter', 'value': 21.0}, {'name': 'Solve_algebraic-assembly', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.21334996}, {'name': 'Solve_algebraic-solve', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.210840628}, {'name': 'Solve_solve', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': 's', 'value': 0.42513217}, {'name': 'Normal_Heat_Flux_alpha', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 43.66448984966637}, {'name': 'Normal_Heat_Flux_beta', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 13.234932791681569}, {'name': 'Normal_Heat_Flux_gamma', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': -57.48518457279962}, {'name': 'Points_alpha_max_field_temperature', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 17.90222177847628}, {'name': 'Points_alpha_min_field_temperature', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 11.304866748371023}, {'name': 'Points_beta_max_field_temperature', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 16.84278824394345}, {'name': 'Points_beta_min_field_temperature', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 11.082223374054372}, {'name': 'Statistics_temperature_alpha_max', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 17.902169122052484}, {'name': 'Statistics_temperature_alpha_min', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 11.371955934523307}, {'name': 'Statistics_temperature_beta_max', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 16.842741157278983}, {'name': 'Statistics_temperature_beta_min', 'reference': 0, 'thres_lower': None, 'thres_upper': None, 'unit': '', 'value': 11.112161834358297}], 'prefix': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/reframe', 'result': 'success', 'stagedir': '/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_55473afe', 'scheduler': 'squeue', 'system': 'gaya:production', 'tags': ['async'], 'time_compile': 0.010848760604858398, 'time_performance': 0.019037723541259766, 'time_run': 656.43577003479, 'time_sanity': 0.01110696792602539, 'time_setup': 0.009494304656982422, 'time_total': 656.5343012809753, 'unique_name': 'RegressionTest_0', 'check_vars': {'valid_prog_environs': ['default'], 'valid_systems': ['gaya:production'], 'descr': '', 'sourcepath': '', 'sourcesdir': None, 'prebuild_cmds': [], 'postbuild_cmds': [], 'executable': 'apptainer exec -B"/data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/build/reframe/stage/gaya/production/default/RegressionTest_55473afe:/rfm_workdir" --home /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking --bind /data/scratch/cladellash/feelppdb/input_data/ThermalBridgesENISO10211/:/input_data --env OMP_NUM_THREADS=1 --sharens --bind /opt/:/opt/ /data/scratch/cladellash/images/feelpp-noble.sif feelpp_toolbox_heat --config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg /input_data/gamg.cfg --directory /data/cemosis/github-actions-runner/actions-runner-2/_work/benchmarking/benchmarking/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/55473afe --repository.case ThermalBridgesENISO10211 --heat.scalability-save=1 --repository.append.np 0 --case.discretization P1 --heat.json.patch=\'{"op": "replace","path": "/Meshes/heat/Import/filename","value": "/input_data/partitioning/case3/M1/case3_p128.json" }\'', 'executable_opts': [], 'prerun_cmds': [], 'postrun_cmds': [], 'keep_files': [], 'readonly_files': [], 'tags': ['async'], 'maintainers': [], 'strict_check': True, 'num_tasks': 128, 'num_tasks_per_node': 128, 'num_gpus_per_node': None, 'num_cpus_per_task': 1, 'num_tasks_per_core': None, 'num_tasks_per_socket': None, 'use_multithreading': None, 'max_pending_time': None, 'exclusive_access': True, 'local': False, 'modules': [], 'env_vars': {}, 'variables': {}, 'time_limit': None, 'build_time_limit': None, 'extra_resources': {}, 'build_locally': True, 'report_dir_path': './reports/feelpp_toolbox_heat/ThermalBridgesENISO10211/gaya/2024_12_12T08_38_52', 'use_case': 'ThermalBridgesENISO10211', 'platform': 'apptainer'}, 'check_params': {'nb_tasks': {'tasks': 128, 'tasks_per_node': 128, 'exclusive_access': True}, 'meshes': 'M1', 'discretization': 'P1', 'solver': 'gamg'}}]}])
+view=AtomicReportView([{'title': 'Validation measures', 'plot_types': ['scatter'], 'transformation': 'performance', 'aggregations': [{'column': 'nb_tasks.tasks', 'agg': 'filter:128'}], 'variables': ['Normal_Heat_Flux_alpha', 'Normal_Heat_Flux_beta', 'Normal_Heat_Flux_gamma', 'Points_alpha_max_field_temperature', 'Points_alpha_min_field_temperature', 'Points_beta_max_field_temperature', 'Points_beta_min_field_temperature', 'Statistics_temperature_alpha_max', 'Statistics_temperature_alpha_min', 'Statistics_temperature_beta_max', 'Statistics_temperature_beta_min'], 'names': [], 'xaxis': {'parameter': 'meshes', 'label': 'mesh levels'}, 'secondary_axis': {'parameter': 'performance_variable', 'label': 'Measures'}, 'yaxis': {'parameter': None, 'label': 'Heat flow [W]'}, 'color_axis': {'parameter': 'discretization', 'label': 'Discretization'}}, {'title': 'Performance (P1)', 'plot_types': ['stacked_bar', 'grouped_bar'], 'transformation': 'performance', 'aggregations': [{'column': 'discretization', 'agg': 'filter:P1'}], 'variables': ['Constructor_init', 'Solve_algebraic-assembly', 'PostProcessing_exportResults'], 'names': [], 'xaxis': {'parameter': 'nb_tasks.tasks', 'label': 'Number of tasks'}, 'secondary_axis': {'parameter': 'meshes', 'label': 'Mesh level'}, 'yaxis': {'parameter': None, 'label': 'execution time (s)'}, 'color_axis': {'parameter': 'performance_variable', 'label': 'Performance variable'}}, {'title': 'Speedup (P1)', 'plot_types': ['scatter'], 'transformation': 'speedup', 'aggregations': [{'column': 'discretization', 'agg': 'filter:P1'}], 'variables': ['Constructor_init', 'Solve_algebraic-assembly', 'PostProcessing_exportResults'], 'names': [], 'xaxis': {'parameter': 'nb_tasks.tasks', 'label': 'Number of tasks'}, 'secondary_axis': {'parameter': 'meshes', 'label': 'Mesh level'}, 'yaxis': {'parameter': None, 'label': 'Speedup'}, 'color_axis': {'parameter': 'performance_variable', 'label': 'Performance variable'}}, {'title': 'Performance (P2)', 'plot_types': ['stacked_bar', 'grouped_bar'], 'transformation': 'performance', 'aggregations': [{'column': 'discretization', 'agg': 'filter:P2'}], 'variables': ['Constructor_init', 'Solve_algebraic-assembly', 'PostProcessing_exportResults'], 'names': [], 'xaxis': {'parameter': 'nb_tasks.tasks', 'label': 'Number of tasks'}, 'secondary_axis': {'parameter': 'meshes', 'label': 'Mesh level'}, 'yaxis': {'parameter': None, 'label': 'execution time (s)'}, 'color_axis': {'parameter': 'performance_variable', 'label': 'Performance variable'}}, {'title': 'Speedup (P2)', 'plot_types': ['scatter'], 'transformation': 'speedup', 'aggregations': [{'column': 'discretization', 'agg': 'filter:P2'}], 'variables': ['Constructor_init', 'Solve_algebraic-assembly', 'PostProcessing_exportResults'], 'names': [], 'xaxis': {'parameter': 'nb_tasks.tasks', 'label': 'Number of tasks'}, 'secondary_axis': {'parameter': 'meshes', 'label': 'Mesh level'}, 'yaxis': {'parameter': None, 'label': 'Speedup'}, 'color_axis': {'parameter': 'performance_variable', 'label': 'Performance variable'}}])
+controller=AtomicReportController(model,view)</code></pre>
+</div>
+</div>
+<details>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">for fig in controller.generateAll():
+    fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>---------------------------------------------------------------------------
+IndexError                                Traceback (most recent call last)
+File <ipython-input-1-959f0f8eb946>:1
+----> 1 for fig in controller.generateAll():
+      2     import sys; fig.write_html(file=sys.stdout, include_plotlyjs=False)
+
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/base/controller.py:20, in Controller.generateAll(self)
+     18 for plot_config in self.view.plots_config:
+     19     for plot in FigureFactory.create(plot_config):
+---> 20         yield plot.createFigure(self.model.master_df)
+
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:110, in ScatterFigure.createFigure(self, df)
+    107 df = self.transformation_strategy.calculate(df)
+    109 if isinstance(df.index,MultiIndex):
+--> 110     return self.createAnimation(df)
+    111 else:
+    112     return self.createSimple(df)
+
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:56, in ScatterFigure.createAnimation(self, df)
+     42     frames.append([
+     43         go.Scatter(
+     44             x = frame_df.index,
+   (...)
+     48         for col in frame_df.columns
+     49     ])
+     50     ranges.append([
+     51         frame_df.min().min() - frame_df.min().min()*range_epsilon,
+     52         frame_df.max().max() + frame_df.min().min()*range_epsilon
+     53     ])
+     55 fig = go.Figure(
+---> 56     data = frames[0],
+     57     frames = [
+     58         go.Frame(
+     59             data = f,
+     60             name=f"frame_{i}",
+     61             layout=dict(
+     62                 yaxis=dict(range = ranges[i])
+     63             )
+     64         )
+     65         for i,f in enumerate(frames)],
+     66     layout=go.Layout(
+     67         yaxis=dict(range = ranges[0],title=self.config.yaxis.label),
+     68         xaxis=dict(title=self.config.xaxis.label),
+     69         title=self.config.title,
+     70         sliders=[dict(
+     71             active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
+     72             steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
+     73         )],
+     74         legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+     75     )
+     76 )
+     78 return fig
+
+IndexError: list index out of range</pre>
+</div>
+</div>
+</div>
+</details>
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+    line-height:0;
+}
+</style>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2024 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+
+
+<script async src="../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>
