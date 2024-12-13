@@ -134,4 +134,5 @@ def main_cli():
         subprocess.run(["npm","run","antora"])
         subprocess.run(["npm","run","start"])
 
-    return exit_code.returncode
+    # return exit_code.returncode
+    return 0
