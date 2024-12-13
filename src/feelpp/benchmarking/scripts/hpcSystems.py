@@ -66,12 +66,12 @@ class Cli(JobSubmission):
         super().__init__(machine)
         self.executable = "bash"
 
-    def buildCommand(self, options):
+    def buildCommand(self, options=[]):
         return " ".join([self.executable, self.script] + options)
 
 class SubmissionCommandFactory:
     @staticmethod
-    def create(submit,machine,options):
+    def create(submit,machine,options=[]):
         if submit == "cli":
             return Cli(machine).buildCommand(options)
         else:
