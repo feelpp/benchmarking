@@ -1,11 +1,4 @@
 #!/bin/bash -l
-#SBATCH --nodes=1                         # number of nodes
-#SBATCH --ntasks=1                       # number of tasks
-##SBATCH --qos=default                      # SLURM qos
-#SBATCH --ntasks-per-node=8              # number of tasks per node
-#SBATCH --cpus-per-task=1                  # number of cores per task
-#SBATCH --time=02:00:00                    # time (HH:MM:SS)
-#SBATCH --partition=public
 
 matrix_config=""
 benchmark_config=""
