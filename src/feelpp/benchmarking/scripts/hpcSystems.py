@@ -35,14 +35,10 @@ class HpcSystem:
         with open(self.machine_cfg,"w") as f:
             json.dump(machine_data,f)
 
-    def createSumbitCommand(self, benchmark_config_path, plots_config_path):
+    def createSumbitCommand(self):
         assert hasattr(self,"machine_cfg") and self.machine_cfg, "machine config path has not been set"
 
-        self.submit_command = SubmissionCommandFactory.create(self.submit,self.machine,[
-            f"--matrix-config {self.machine_cfg} ",
-            f"--benchmark-config {benchmark_config_path} ",
-            f"--plots-config {plots_config_path} "
-        ])
+        self.submit_command = SubmissionCommandFactory.create(self.submit,self.machine)
 
 
 class HpcSystemFactory:
@@ -84,8 +80,6 @@ class SubmissionCommandFactory:
 def hpcSystemDispatcher_cli():
     parser = ArgumentParser()
     parser.add_argument("--machine_config_path", "-mcp", required=True, type=str, help="path to the machines config json")
-    parser.add_argument("--benchmark_config_path", "-bcp", required=True, type=str, help="path to the benchmark config json")
-    parser.add_argument("--plots_config_path", "-pcp", required=True, type=str, help="path to the plots config json")
     parser.add_argument("--machine_output_dir", "-mod", required=True, type=str, help="path to folder where individual machine configs should be stored")
     args = parser.parse_args()
 
@@ -100,10 +94,7 @@ def hpcSystemDispatcher_cli():
     for machine_data in machines:
         hpc_system = HpcSystemFactory().dispatch(machine_data["machine"])
         hpc_system.writeConfig(args.machine_output_dir,machine_data)
-        hpc_system.createSumbitCommand(
-            args.benchmark_config_path,
-            args.plots_config_path
-        )
+        hpc_system.createSumbitCommand()
         matrix.append(hpc_system.toDict())
 
 
