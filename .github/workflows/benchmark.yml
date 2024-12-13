@@ -93,10 +93,6 @@ jobs:
                 matrix=$(hpc-dispatch -mcp ./tmp/machines_config.json -mod ./tmp/machines/)
                 echo $matrix
                 echo "matrix={ include : $matrix }" >> $GITHUB_OUTPUT
-        -   name: pull_images
-            run: |
-                source .venv/bin/activate
-                #ONLY IF NEEDED
         -   name: Gather arguments
             id: gather_arguments
             run: |
