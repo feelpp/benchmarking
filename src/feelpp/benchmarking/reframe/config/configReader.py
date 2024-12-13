@@ -42,19 +42,24 @@ class TemplateProcessor:
 
         def replaceMatch(match):
             placeholder = match.group(1).strip()
+
             if placeholder in processed_placeholders:
                 return match.group(0)
 
             processed_placeholders.add(placeholder)
             resolved = flattened_source.get(match.group(1).strip(),match.group(0))
+
             if match.group(1) in flattened_source:
                 if isinstance(resolved,str) and "{{" in resolved and "}}" in resolved:
                     resolved = self.replacePlaceholders(resolved,flattened_source,processed_placeholders)
             return resolved
 
-        replaced = self.template_pattern.sub(replaceMatch,target)
+        previous_target = None
+        while target != previous_target:
+            previous_target = target
+            target = self.template_pattern.sub(replaceMatch, target)
 
-        return os.path.expandvars(replaced) if "$" in replaced else replaced
+        return os.path.expandvars(target) if "$" in target else target
 
 
     def recursiveReplace(self,target,flattened_source):
