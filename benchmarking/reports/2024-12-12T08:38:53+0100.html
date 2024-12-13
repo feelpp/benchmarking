@@ -356,19 +356,19 @@ File <ipython-input-1-959f0f8eb946>:1
 ----> 1 for fig in controller.generateAll():
       2     import sys; fig.write_html(file=sys.stdout, include_plotlyjs=False)
 
-File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/base/controller.py:20, in Controller.generateAll(self)
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/base/controller.py:20, in Controller.generateAll(self)
      18 for plot_config in self.view.plots_config:
      19     for plot in FigureFactory.create(plot_config):
 ---> 20         yield plot.createFigure(self.model.master_df)
 
-File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:110, in ScatterFigure.createFigure(self, df)
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:110, in ScatterFigure.createFigure(self, df)
     107 df = self.transformation_strategy.calculate(df)
     109 if isinstance(df.index,MultiIndex):
 --> 110     return self.createAnimation(df)
     111 else:
     112     return self.createSimple(df)
 
-File /data/cemosis/github-actions-runner/actions-runner-3/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:56, in ScatterFigure.createAnimation(self, df)
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:56, in ScatterFigure.createAnimation(self, df)
      42     frames.append([
      43         go.Scatter(
      44             x = frame_df.index,
