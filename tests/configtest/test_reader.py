@@ -1,8 +1,10 @@
 """ tests for the configReader module"""
 
-import pytest, os
+import pytest, os,tempfile, json
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader, TemplateProcessor
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+from typing import Optional, Dict
+from unittest.mock import mock_open, patch, MagicMock
 
 class SampleModel(BaseModel):
     field1: str
@@ -165,6 +167,74 @@ class TestTemplateProcessor:
         assert result == expected_output
 
 
+class MockConfigFile(BaseModel):
+    field1: str
+    field2: int
+    field3: float
+    field4: Optional[Dict] = {}
+
+    @field_validator("field1",mode="before")
+    @classmethod
+    def dryRunMode(cls,v,info):
+        if info.context and info.context.get("dry_run",False):
+            v = "dry value"
+        return v
+
+    mock_merge_field: Optional[str] = None
 
 class TestConfigReader:
-    pass
+    """Tests for the ConfigReader class"""
+
+    def initConfig(self,configs,dry_run):
+        """ Helper function to initialize the configReader"""
+        files = []
+        for config in configs:
+            temp = tempfile.NamedTemporaryFile()
+            with open(temp.name,'w') as f:
+                f.write(config)
+            files.append(temp)
+
+        config_reader = ConfigReader([f.name for f in files], MockConfigFile, dry_run)
+        for f in files:
+            f.close()
+
+        return config_reader
+
+    @pytest.mark.parametrize(("configs","dry_run","expected"),[
+        #Basic test : single file
+        (['{"field1":"value1","field2":2,"field3":0.3,"field4":{"a":5}}'],False,MockConfigFile(field1="value1",field2=2,field3=0.3,field4={"a":5})),
+
+        #Single file optional field
+        (['{"field1":"value1","field2":2,"field3":0.3}'],False,MockConfigFile(field1="value1",field2=2,field3=0.3,field4={})),
+
+        #Single file with comments
+        (['{"field1":"value1",\n//This is a C-style comment\n"field2":2,"field3":0.3}'],False,MockConfigFile(field1="value1",field2=2,field3=0.3,field4={})),
+
+        #Multiple file merge
+        (['{"field1":"value1","field2":2,"field3":0.3}','{"mock_merge_field":"mock val"}'],False,MockConfigFile(field1="value1",field2=2,field3=0.3,field4={},mock_merge_field="mock val")),
+
+        #Dry-run, context aware
+        (['{"field1":"value1","field2":2,"field3":0.3}'],True,MockConfigFile(field1="dry value",field2=2,field3=0.3,field4={}))
+    ])
+    def test_init(self,configs,dry_run,expected):
+        """Tests the class instantiation. And the load method more precisely"""
+        config_reader = self.initConfig(configs,dry_run)
+        assert config_reader.config == expected
+
+    @pytest.mark.parametrize(("initial_configs","flattened_replace","expected"),[
+    # Test updateConfig on single file
+        #Simple external replace
+        (['{"field1":"Value from rep_field: {{rep_field}}", "field2":2, "field3":0.3}'],{"rep_field": "test value"},MockConfigFile(field1="Value from rep_field: test value",field2=2,field3=0.3)),
+
+        #Nested external replace
+        (['{"field1":"Value from rep_field: {{rep_field.value}}", "field2":2, "field3":0.3}'],{"rep_field.value": "test value"},MockConfigFile(field1="Value from rep_field: test value",field2=2,field3=0.3)),
+
+        #Self replace test
+        (['{"field1":"Value from field2: {{field2}}", "field2":2, "field3":0.3}'],None,MockConfigFile(field1="Value from field2: 2",field2=2,field3=0.3)),
+
+    ])
+    def test_updateConfig(self,initial_configs,flattened_replace,expected):
+        """Tests the updateConfig method of ConfigReader"""
+        config_reader = self.initConfig(initial_configs,dry_run=False)
+        config_reader.updateConfig(flattened_replace=flattened_replace)
+        assert config_reader.config == expected
