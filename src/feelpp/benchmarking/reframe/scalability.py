@@ -80,7 +80,8 @@ class ScalabilityHandler:
 
         return perf_variables
 
-    def aggregateCustomVar(self,op,column_values):
+    @staticmethod
+    def aggregateCustomVar(op,column_values):
         if op == "sum":
             return sum(column_values)
         elif op == "min":
