@@ -17,11 +17,13 @@ class Stage(BaseModel):
     @model_validator(mode="after")
     def checkFormatOptions(self):
         if self.format == "json":
-            if self.variables_path == None:
+            if not self.variables_path:
                 raise ValueError("variables_path must be specified if format == json")
             if type(self.variables_path) == str:
                 self.variables_path = [self.variables_path]
-
+        elif self.format != "json":
+            if self.variables_path:
+                raise ValueError("variables_path cannot be specified with other format than json")
         return self
 
 class CustomVariable(BaseModel):
