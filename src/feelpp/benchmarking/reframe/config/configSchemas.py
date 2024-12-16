@@ -102,6 +102,14 @@ class ConfigFile(BaseModel):
         pattern = r'^\d+-\d{1,2}:\d{1,2}:\d{1,2}$'
         if not re.match(pattern, v):
             raise ValueError(f"Time is not properly formatted (<days>-<hours>:<minutes>:<seconds>) : {v}")
+        days,time = v.split("-")
+        hours,minutes,seconds = time.split(":")
+
+        assert int(days) >= 0
+        assert 24>int(hours)>=0
+        assert 60>int(minutes)>=0
+        assert 60>int(seconds)>=0
+
         return v
 
     @model_validator(mode="after")
