@@ -129,6 +129,7 @@ class ConfigFile(BaseModel):
     def checkPlatforms(cls,v):
         accepted_platforms = ["builtin","apptainer","docker"]
         for k in v.keys():
-            assert k in accepted_platforms, f"{k} not implemented"
+            if k not in accepted_platforms:
+                raise ValueError(f"{k} not implemented")
         return v
 
