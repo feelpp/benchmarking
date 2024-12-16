@@ -12,7 +12,7 @@ source ./girder_deploy_config.sh
 if [[ $HEAD == *"new-benchmark"* ]]; then
     echo "Downloading Staging benchmarks"
     girder-download -gid $staging_folder_id -o ./tmp/ -d
-    merge-json-configs -fp ./tmp/**/website_config.json -o ./tmp/website_config.json -u
+    merge-json-configs -fp "./tmp/**/website_config.json" -o ./tmp/website_config.json -u
 else
     echo "Downloading Production benchmarks"
     girder-download -gid $production_website_config_id -o ./tmp/ -fn website_config.json

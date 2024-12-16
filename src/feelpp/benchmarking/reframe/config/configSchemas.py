@@ -86,6 +86,7 @@ class ConfigFile(BaseModel):
     output_directory:Optional[str] = ""
     use_case_name: str
     options: List[str]
+    env_variables:Optional[Dict] = {}
     outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
