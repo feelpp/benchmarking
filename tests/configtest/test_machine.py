@@ -70,7 +70,7 @@ class TestMachineValidation:
         assert config.environment_map == {"default":["default"]}
         assert config.containers == {}
 
-    def test_targets_validation(self):
+    def test_targetsValidation(self):
         """Tests validation of the `targets` field."""
         # Valid targets
         config = MachineConfig(
@@ -105,7 +105,7 @@ class TestMachineValidation:
                 targets=["partition1:apptainer:env1", "partition2:docker:env2"]
             )
 
-    def test_cartesian_product_validation(self):
+    def test_partitionEnvsProd(self):
         """Tests cartesian product validation when `targets` is not specified."""
         config = MachineConfig(
             machine="TestMachine",
@@ -131,7 +131,7 @@ class TestMachineValidation:
                 partitions=[]
             )
 
-    def test_check_container_types(self):
+    def test_checkContainerTypes(self):
         """Tests validation of `containers` field."""
         valid_containers = {
             "apptainer": Container(image_base_dir="tests/data"),
