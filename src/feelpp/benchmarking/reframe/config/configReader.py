@@ -52,7 +52,7 @@ class TemplateProcessor:
             if match.group(1) in flattened_source:
                 if isinstance(resolved,str) and "{{" in resolved and "}}" in resolved:
                     resolved = self.replacePlaceholders(resolved,flattened_source,processed_placeholders)
-            return resolved
+            return str(resolved)
 
         previous_target = None
         while target != previous_target:
