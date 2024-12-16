@@ -67,8 +67,8 @@ class Parser():
         self.validateOptions()
         if self.args.dir:
             self.checkDirectoriesExist()
-        self.convertPathsToAbsolute()
         self.buildConfigList()
+        self.convertPathsToAbsolute()
 
     def addArgs(self):
         """ Add the necessary arguments to the parser"""
