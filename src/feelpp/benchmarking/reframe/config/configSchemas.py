@@ -66,7 +66,7 @@ class Image(BaseModel):
                 if info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")
                 else:
-                    raise FileExistsError(f"Cannot find image {v}")
+                    raise FileNotFoundError(f"Cannot find image {v}")
 
         return v
 
