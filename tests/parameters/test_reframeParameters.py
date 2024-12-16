@@ -21,7 +21,7 @@ def configure_mock_runtime(mock_runtime):
 def setup_environment():
     """Set environment variables required for ReFrame tests."""
     os.environ["MACHINE_CONFIG_FILEPATH"] = "./config/machines/gaya_ci.json"
-    os.environ["APP_CONFIG_FILEPATH"] = "./tests/data/parameters/mockAppConfig.json"
+    os.environ["APP_CONFIG_FILEPATH"] = "./tests/data/configs/mockAppConfig.json"
 
 
 class TestReframeParameters:
