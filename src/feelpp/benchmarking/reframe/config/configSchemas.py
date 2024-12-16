@@ -46,24 +46,24 @@ class Image(BaseModel):
     protocol:Optional[Literal["oras","docker","library","local"]] = None
     name:str
 
-    @field_validator("protocol",mode="before")
-    @classmethod
-    def extractProtocol(cls, v, info):
+    @model_validator(mode="before")
+    def extractProtocol(self):
         """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
         If local, checks if the image exists """
 
-        name = info.data.get("name","")
-        if "://" in name:
-            return name.split("://")[0]
-        else:
-            return "local"
+        self["protocol"] = self["name"].split("://")[0] if "://" in self["name"] else "local"
 
-    @field_validator("name", mode="before")
+        if self["protocol"] not in ["oras","docker","library","local"]:
+            raise ValueError("Unkown Protocol")
+
+        return self
+
+    @field_validator("name", mode="after")
     @classmethod
     def checkImage(cls,v,info):
         if info.data["protocol"] == "local":
             if not os.path.exists(v):
-                if info.context.get("dry_run", False):
+                if info.context and info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")
                 else:
                     raise FileNotFoundError(f"Cannot find image {v}")
