@@ -2,6 +2,8 @@ import reframe.utility.sanity as sn
 import os, re,json
 from feelpp.benchmarking.reframe.config.configReader import TemplateProcessor
 
+
+#TODO: Factor this with outputs. Consider strategy pattern for formats
 class ScalabilityHandler:
     """ Class to handle scalability related attributes"""
     def __init__(self,scalability_config):
