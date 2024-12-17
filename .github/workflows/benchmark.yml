@@ -18,6 +18,10 @@ on:
                 description: 'Plots related configuration'
                 required: True
                 default: 675053424c9ccbdde21a470a
+            upload_id:
+                description: 'ID to upload the website to'
+                required: False
+                default: ""
 
 jobs:
 
@@ -139,11 +143,11 @@ jobs:
                 name: benchmark-results-${{matrix.machine}}
                 path: ${{matrix.reports_path}}
 
-    results:
+    deploy:
         runs-on: self-ubuntu-22.04
         needs: [benchmark,factory]
         name: Handle results and trigger rendering
-
+        if: ${{ github.event.inputs.upload_id == '' && github.event.client_payload.upload_id == '' }}
         steps:
         -   uses: actions/checkout@v4
         -   name: Download results
@@ -180,3 +184,46 @@ jobs:
                 branch: new-benchmark-${{needs.factory.outputs.executable_name}}
             env:
                 GITHUB_TOKEN: ${{ secrets.CR_PAT }}
+
+    user-results:
+        runs-on: self-ubuntu-22.04
+        needs: [benchmark,factory]
+        name: Deploy the website to a specific folder
+        if: ${{ github.event.inputs.upload_id != '' || github.event.client_payload.upload_id != '' }}
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: Download results
+                uses: actions/download-artifact@v4
+                with:
+                    pattern: benchmark-results-*
+                    path: ./tmp/results/
+                    merge-multiple: false
+            -   name: Create Virtual Environment
+                run: |
+                    python3 -m venv .venv
+                    source .venv/bin/activate
+                    pip3 install -r requirements.txt
+            -   name: Merge website configs
+                run: |
+                    source .venv/bin/activate
+                    merge-json-configs -fp "./tmp/**/website_config.json" -o ./tmp/website_config.json -u
+            -   name: Render docs
+                run: |
+                    source .venv/bin/activate
+                    render-benchmarks --config_file=./tmp/website_config.json
+            -   name: Compile docs
+                run: |
+                    source .venv/bin/activate
+                    npm install
+                    npm run antora
+            -   name: Upload
+                run: |
+                    source .venv/bin/activate
+                    if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+                        upload_id=${{ github.event.inputs.upload_id }};
+                    elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
+                        upload_id=${{ github.event.client_payload.upload_id }};
+                    fi
+                    girder-upload --item "./tmp/results/*" --girder_id $upload_id
+                    girder-upload --item "./public/" --girder_id $upload_id
+
