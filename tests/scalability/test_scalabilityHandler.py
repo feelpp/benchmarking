@@ -13,6 +13,13 @@ class StageMocker:
         self.name = name
         self.variables_path = variables_path
 
+class CustomVariableMocker:
+    def __init__(self, name="",columns=[],op="",unit="s"):
+        self.name = name
+        self.columns = columns
+        self.op = op
+        self.unit = unit
+
 class ScalabilityMocker:
     def __init__(self, directory="",stages=[],custom_variables=[]):
         self.directory = directory
@@ -22,6 +29,12 @@ class ScalabilityMocker:
 
 class TestScalabilityHandler:
 
+    @staticmethod
+    def buildTsvString(index, columns, values):
+        assert len(columns) == len(values)
+        tsv = "# nProc "+ "   ".join(columns) + "\n" + f"{index} " + "   ".join([str(v) for v in values]) + "\n"
+        return tsv
+
     def test_extractCsv(self):
         """ Test performance variable extraction for CSV files"""
         pass
@@ -29,23 +42,18 @@ class TestScalabilityHandler:
     def test_extractTsv(self):
         """ Test performance variable extraction for special TSV files [WILL BE REMOVED]"""
 
-        def buildTsvString(index, columns, values):
-            assert len(columns) == len(values)
-            tsv = "# nProc "+ "   ".join(columns) + "\n" + f"{index} " + "   ".join([str(v) for v in values]) + "\n"
-            return tsv
-
         index = 32
         file1 = tempfile.NamedTemporaryFile()
         columns1 = ["col1","col2","col3"]
         values1 = [1,2.5,1e-5]
         with open(file1.name,"w") as f:
-            f.write(buildTsvString(index,columns1,values=values1))
+            f.write(self.buildTsvString(index,columns1,values=values1))
 
         file2 = tempfile.NamedTemporaryFile()
         columns2 = ["col1","colX"]
         values2 = [4,5.5]
         with open(file2.name,"w") as f:
-            f.write(buildTsvString(index,columns2,values2))
+            f.write(self.buildTsvString(index,columns2,values2))
 
         scalability_handler = ScalabilityHandler(ScalabilityMocker(
             directory="",
@@ -148,4 +156,26 @@ class TestScalabilityHandler:
     def test_evaluateCustomVariables(self):
         """ Tests the manipulation of custom performance variables, built using existing variables. """
 
-        pass
+        index = 32
+        file = tempfile.NamedTemporaryFile()
+        columns = ["col1","col2","col3"]
+        values = [1,2.5,5.5]
+        with open(file.name,"w") as f:
+            f.write(self.buildTsvString(index,columns,values=values))
+
+        scalability_handler = ScalabilityHandler(ScalabilityMocker(
+            directory="",
+            stages = [
+                StageMocker(format="tsv",filepath=file.name,name=""),
+            ],
+            custom_variables=[
+                CustomVariableMocker(name="custom_var",columns=["col1","col3"],op="sum",unit="CUSTOM_UNIT")
+            ]
+        ))
+        perf_vars = scalability_handler.getPerformanceVariables(index)
+        perf_vars = scalability_handler.getCustomPerformanceVariables(perf_vars)
+
+        assert perf_vars["custom_var"].evaluate() == 6.5
+        assert perf_vars["custom_var"].unit == "CUSTOM_UNIT"
+
+        file.close()
