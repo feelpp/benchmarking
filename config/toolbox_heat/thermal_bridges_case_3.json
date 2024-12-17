@@ -3,6 +3,7 @@
     "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/ThermalBridgesENISO10211/Case3",
     "use_case_name": "ThermalBridgesENISO10211",
     "timeout":"0-00:10:00",
+    "memory":"250G",
     "platforms": {
         "apptainer":{
             "image": {
@@ -31,7 +32,7 @@
         "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
     "env_variables":{
-        "OMP_NUM_THREADS":1
+        "OMP_NUM_THREADS":"1"
     },
     "outputs": [
         {

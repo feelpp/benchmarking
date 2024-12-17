@@ -42,7 +42,17 @@ class CommandBuilder:
         else:
             return "-r"
 
-    def buildCommand(self,timeout):
+    def buildJobOptions(self,timeout,memory):
+        #TODO: Generalize (only workf for slurm ?)
+        options = []
+        if timeout:
+            options.append(f"-J time={timeout}")
+        if memory:
+            options.append(f"-J mem={memory}")
+        return " ".join(options)
+
+
+    def buildCommand(self,timeout,memory):
         assert self.report_folder_path is not None, "Report folder path not set"
         cmd = [
             'reframe',
@@ -53,7 +63,7 @@ class CommandBuilder:
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
             f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
-            f"-J '#SBATCH --time={timeout}'",
+            f"{self.buildJobOptions(timeout,memory)}",
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             f'{self.buildExecutionMode()}'
@@ -97,7 +107,7 @@ def main_cli():
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
-        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout )
+        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout, app_reader.config.memory)
 
         exit_code = os.system(reframe_cmd)
 
