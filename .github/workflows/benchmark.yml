@@ -226,4 +226,6 @@ jobs:
                     fi
                     girder-upload --item "./tmp/results/*" --girder_id $upload_id
                     girder-upload --item "./public/" --girder_id $upload_id
+                env:
+                    GIRDER_API_KEY: ${{secrets.GIRDER}}
 
