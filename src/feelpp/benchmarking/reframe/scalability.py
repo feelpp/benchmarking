@@ -110,16 +110,20 @@ class ScalabilityHandler:
 
 
         def evaluateCustomVariable(custom_var):
-
+            print("custom_perfvars",custom_perfvars)
+            print("computed_vars",computed_vars)
+            print("evaluating ",custom_var.name)
             if custom_var.name in computed_vars:
                 return computed_vars[custom_var.name]
 
             column_values = []
             for col in custom_var.columns:
                 if col in perfvars:
+                    print(f"found {col} in perfvars")
                     column_values.append(perfvars[col].evaluate())
                 elif col in custom_perfvars:
-                    column_values.append(evaluateCustomVariable(custom_perfvars[col]))
+                    print(f"found {col} in custom_perfvars")
+                    column_values.append(custom_perfvars[col])
                 else:
                     raise ValueError(f"Custom variable not found : {custom_var.name}")
 
@@ -130,6 +134,7 @@ class ScalabilityHandler:
 
 
         for custom_var in self.custom_variables:
+            print("computing ",custom_var.name)
             custom_perfvars[custom_var.name] = sn.make_performance_function(
                 sn.defer(evaluateCustomVariable(custom_var)),unit=custom_var.unit
             )
