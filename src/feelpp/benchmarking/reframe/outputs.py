@@ -43,13 +43,13 @@ class OutputsHandler:
             name(str): name of the new file (without extension)
         """
         if self.additional_files_config and self.additional_files_config.description_filepath:
-            file_extension = self.additional_files_config.description_filepath.split(".")[-1]
+            file_extension = self.additional_files_config.description_filepath.split(".")[-1] if "." in self.additional_files_config.description_filepath else None
 
             outdir = os.path.join(dir_path,"partials")
             if not os.path.exists(outdir):
                 os.mkdir(outdir)
 
-            filename = f"{name}.{file_extension}"
+            filename = f"{name}.{file_extension}" if file_extension else name
 
             shutil.copy2( self.additional_files_config.description_filepath, os.path.join(outdir,filename) )
 
@@ -63,13 +63,13 @@ class OutputsHandler:
         """
 
         if self.additional_files_config and self.additional_files_config.parameterized_descriptions_filepath:
-            file_extension = self.additional_files_config.parameterized_descriptions_filepath.split(".")[-1]
+            file_extension = self.additional_files_config.description_filepath.split(".")[-1] if "." in self.additional_files_config.description_filepath else None
 
             outdir = os.path.join(dir_path,"partials")
             if not os.path.exists(outdir):
                 os.mkdir(outdir)
 
-            filename = f"{name}.{file_extension}"
+            filename = f"{name}.{file_extension}" if file_extension else name
 
             shutil.copy2( self.additional_files_config.parameterized_descriptions_filepath, os.path.join(outdir,filename) )
 
