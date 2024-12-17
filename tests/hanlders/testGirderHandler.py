@@ -7,7 +7,7 @@ from requests.exceptions import HTTPError
 
 class TestGirderHandler:
     """Tests for the GirderHandler class"""
-    handler = GirderHandler(download_base_dir="./tests/data/outputs")
+    handler = GirderHandler(download_base_dir="./tests/data/")
 
     def test_initClient(self):
         """Tests girder client initialization"""
@@ -69,5 +69,31 @@ class TestGirderHandler:
             children = self.handler.listChildren(parent_id=test_folder_id, children_name="unkown_children")
 
     def test_upload(self):
-        """Tests uploading ressources to girder"""
-        pass #TODO
+        """Tests uploading ressources to girder
+        - Checks uploading a file
+        - Checks uploading a folder
+        - Checks updating a file
+        - Checks uploading as item
+        """
+        return
+        test_upload_folder_id = "67615ba54c9ccbdde21a4bf9"
+        #Uploading a file
+        with tempfile.NamedTemporaryFile() as tmp:
+            item_id = self.handler.upload(tmp.name, parent_id=test_upload_folder_id,return_id=True)
+
+            assert item_id
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with tempfile.NamedTemporaryFile(dir=tmpdir) as tmp1, tempfile.NamedTemporaryFile(dir=tmpdir) as tmp2:
+                item_id = self.handler.upload(tmpdir, parent_id=test_upload_folder_id,return_id=True)
+
+                assert item_id
+
+        with tempfile.NamedTemporaryFile() as tmp:
+            item_id1 = self.handler.upload(tmp.name, parent_id=test_upload_folder_id,return_id=True)
+            assert item_id1
+            with open(tmp.name,"w") as f:
+                f.write("OVERWRITE CONTENT")
+            item_id2 = self.handler.upload(tmp.name, parent_id=test_upload_folder_id,return_id=True)
+            assert item_id2 == item_id1
+
