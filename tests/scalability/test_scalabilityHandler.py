@@ -159,7 +159,7 @@ class TestScalabilityHandler:
         index = 32
         file = tempfile.NamedTemporaryFile()
         columns = ["col1","col2","col3"]
-        values = [1,2.5,5.5]
+        values = [1,2,5.5]
         with open(file.name,"w") as f:
             f.write(self.buildTsvString(index,columns,values=values))
 
@@ -173,9 +173,33 @@ class TestScalabilityHandler:
             ]
         ))
         perf_vars = scalability_handler.getPerformanceVariables(index)
-        perf_vars = scalability_handler.getCustomPerformanceVariables(perf_vars)
+        perf_vars.update(scalability_handler.getCustomPerformanceVariables(perf_vars))
 
         assert perf_vars["custom_var"].evaluate() == 6.5
         assert perf_vars["custom_var"].unit == "CUSTOM_UNIT"
+
+        #Testing recursive custom variables
+
+        scalability_handler = ScalabilityHandler(ScalabilityMocker(
+            directory="",
+            stages = [
+                StageMocker(format="tsv",filepath=file.name,name=""),
+            ],
+            custom_variables=[
+                CustomVariableMocker(name="custom_var1",columns=["col1","col3"],op="sum",unit="CUSTOM_UNIT"),
+                CustomVariableMocker(name="custom_var2",columns=["col1","col2"],op="max",unit="CUSTOM_UNIT"),
+                CustomVariableMocker(name="recursive_var",columns=["custom_var1","custom_var2","col1"],op="mean",unit="CUSTOM_UNIT"),
+                CustomVariableMocker(name="re_recursive_var",columns=["recursive_var","custom_var2","col3"],op="sum",unit="CUSTOM_UNIT"),
+            ]
+        ))
+        perf_vars = scalability_handler.getPerformanceVariables(index)
+        perf_vars.update(scalability_handler.getCustomPerformanceVariables(perf_vars))
+
+        assert perf_vars["custom_var1"].evaluate() == 6.5
+        assert perf_vars["custom_var2"].evaluate() == 2
+        assert perf_vars["recursive_var"].evaluate() == (6.5+2+1)/3
+        assert perf_vars["recursive_var"].unit == "CUSTOM_UNIT"
+        assert perf_vars["re_recursive_var"].evaluate() == perf_vars["recursive_var"].evaluate() + perf_vars["custom_var2"].evaluate() + perf_vars["col3"].evaluate()
+
 
         file.close()
