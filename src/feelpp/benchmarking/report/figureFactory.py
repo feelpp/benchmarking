@@ -122,7 +122,7 @@ class ScatterFigure(Figure):
             figure = self.createAnimation(df)
         else:
             figure = self.createSimple(df)
-        figure.update_layout(self.plot_config.layout_modifiers)
+        figure.update_layout(self.config.layout_modifiers)
         return figure
 
 
@@ -180,7 +180,7 @@ class TableFigure(Figure):
             figure = self.createMultiindex(df)
         else:
             figure = self.createSimple(df)
-        figure.update_layout(self.plot_config.layout_modifiers)
+        figure.update_layout(self.config.layout_modifiers)
         return figure
 
 class StackedBarFigure(Figure):
@@ -255,7 +255,7 @@ class StackedBarFigure(Figure):
         else:
             figure = self.createSimple(df)
 
-        figure.update_layout(self.plot_config.layout_modifiers)
+        figure.update_layout(self.config.layout_modifiers)
         return figure
 
 class GroupedBarFigure(Figure): #TODO: FACTOR animation and bar...
@@ -343,7 +343,7 @@ class GroupedBarFigure(Figure): #TODO: FACTOR animation and bar...
         else:
             figure = self.createSimple(df)
 
-        figure.update_layout(self.plot_config.layout_modifiers)
+        figure.update_layout(self.config.layout_modifiers)
         return figure
 
 class FigureFactory:
