@@ -1,17 +1,18 @@
 {
     "executable": "feelpp_toolbox_heat",
-    "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/thermal_bridges_case_3",
-    "use_case_name": "thermal_bridges_case_3",
-    "timeout":"0-01:00:00s",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/ThermalBridgesENISO10211/Case3",
+    "use_case_name": "ThermalBridgesENISO10211",
+    "timeout":"0-00:10:00",
     "platforms": {
         "apptainer":{
             "image": {
-                "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+                "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
             },
             "input_dir":"/input_data/",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
+                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}",
+                "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
@@ -21,37 +22,42 @@
         }
     },
     "options": [
-        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/case3.cfg",
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg {{platforms.{{machine.platform}}.input_dir}}/{{parameters.solver.value}}.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
-        "--fail-on-unknown-option 1",
         "--heat.scalability-save=1",
         "--repository.append.np 0",
         "--case.discretization {{parameters.discretization.value}}",
-        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"$cfgdir/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
+    "env_variables":{
+        "OMP_NUM_THREADS":1
+    },
     "outputs": [
         {
             "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
             "format": "csv"
         }
     ],
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc"
+    },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
             {
                 "name": "Constructor",
-                "file": "heat.scalibility.HeatConstructor.data",
+                "filepath": "heat.scalibility.HeatConstructor.data",
                 "format": "tsv"
             },
             {
                 "name": "PostProcessing",
-                "file": "heat.scalibility.HeatPostProcessing.data",
+                "filepath": "heat.scalibility.HeatPostProcessing.data",
                 "format": "tsv"
             },
             {
                 "name": "Solve",
-                "file": "heat.scalibility.HeatSolve.data",
+                "filepath": "heat.scalibility.HeatSolve.data",
                 "format": "tsv"
             }
         ]
@@ -60,15 +66,11 @@
         "success": [],
         "error": []
     },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "672a1269b0e95728eb010b36"
-    },
     "parameters": [
         {
             "name": "nb_tasks",
             "sequence": [
-                {"tasks":128,"nodes":1,"exclusive_access":true}
+                {"tasks":128,"tasks_per_node":128,"exclusive_access":true}
             ]
         },
         {
@@ -78,6 +80,10 @@
         {
             "name": "discretization",
             "sequence": ["P1"]
+        },
+        {
+            "name": "solver",
+            "sequence": ["gamg"]
         }
     ]
 }

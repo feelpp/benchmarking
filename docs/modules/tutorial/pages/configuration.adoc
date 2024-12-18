@@ -1,0 +1,29 @@
+= Configuration guide
+:page-plotly: true
+:page-jupyter: true
+
+The core of the _Feel++ benchmarking_ framework are its configuration files.
+Users must provide the following configuration files:
+
+- A complete system description, based on ReFrame's configuration files.
+- A machine specific configuration, defining HOW to execute benchmarks.
+- A benchmark (or application) specific configuration, defining WHAT should be executed.
+- A figure description, containing information of what to display on the final reports.
+
+These files, with the exeption of ReFrame configuration, are equiped with a special placeholder syntax, allowing to dynamically update the files along the tests execution.
+Aditionally, multiple environments can be specified, including Apptainer containers.
+
+[NOTE]
+====
+Comments are supported on these JSON files.
+====
+
+include::configurationfiles/system.adoc[leveloffset=+1]
+
+include::configurationfiles/magicstrings.adoc[leveloffset=+1]
+
+include::configurationfiles/machine.adoc[leveloffset=+1]
+
+include::configurationfiles/benchmark.adoc[leveloffset=+1]
+
+include::configurationfiles/plots.adoc[leveloffset=+1]

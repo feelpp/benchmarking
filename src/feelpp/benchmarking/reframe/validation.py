@@ -1,4 +1,5 @@
 import reframe.utility.sanity as sn
+import re
 
 class ValidationHandler:
     """ Class to handle test validation and sanity functions"""
@@ -8,8 +9,8 @@ class ValidationHandler:
 
     def check_success(self,stdout):
         """ Checks that all given regex patterns are found in an output (can be sn.stdout) """
-        return all(sn.assert_found(rf"{pattern}",stdout) for pattern in self.success)
+        return all(sn.assert_found(rf"{re.escape(pattern)}",stdout) for pattern in self.success)
 
     def check_errors(self,stdout):
         """ Checks that no given regex patterns are found in an output (can be sn.stdout) """
-        return all(sn.assert_not_found(rf"{pattern}",stdout) for pattern in self.errors)
+        return all(sn.assert_not_found(rf"{re.escape(pattern)}",stdout) for pattern in self.errors)

@@ -10,18 +10,17 @@ class Sanity(BaseModel):
 
 class Stage(BaseModel):
     name:str
-    file:str
+    filepath:str
     format:Literal["csv","tsv","json"]
-    variables_path:Optional[str] = None
+    variables_path:Optional[Union[str,List[str]]] = []
 
     @model_validator(mode="after")
     def checkFormatOptions(self):
         if self.format == "json":
             if self.variables_path == None:
                 raise ValueError("variables_path must be specified if format == json")
-
-            if "*" not in self.variables_path:
-                raise ValueError("variables_path must contain a wildcard '*'")
+            if type(self.variables_path) == str:
+                self.variables_path = [self.variables_path]
 
         return self
 
@@ -45,36 +44,54 @@ class Image(BaseModel):
     protocol:Optional[Literal["oras","docker","library","local"]] = None
     name:str
 
-    @model_validator(mode="after")
-    def extractProtocol(self):
+    @field_validator("protocol",mode="before")
+    @classmethod
+    def extractProtocol(cls, v, info):
         """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
         If local, checks if the image exists """
 
-        if "://" in self.name:
-            self.protocol = self.name.split("://")[0]
+        name = info.data.get("name","")
+        if "://" in name:
+            return name.split("://")[0]
         else:
-            self.protocol = "local"
+            return "local"
 
-        return self
+    @field_validator("name", mode="before")
+    @classmethod
+    def checkImage(cls,v,info):
+        if info.data["protocol"] == "local":
+            if not os.path.exists(v):
+                if info.context.get("dry_run", False):
+                   print(f"Dry Run: Skipping image check for {v}")
+                else:
+                    raise FileExistsError(f"Cannot find image {v}")
+
+        return v
 
 
 class Platform(BaseModel):
     image:Optional[Image] = None
-    input_dir:str
+    input_dir:Optional[str] = None
     options:Optional[List[str]]= []
     append_app_options:Optional[List[str]]= []
+
+class AdditionalFiles(BaseModel):
+    description_filepath: Optional[str] = None
+    parameterized_descriptions_filepath: Optional[str] = None
 
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
-    platforms:Optional[Dict[str,Platform]] = None
-    output_directory:str
+    platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
+    output_directory:Optional[str] = ""
     use_case_name: str
     options: List[str]
+    env_variables:Optional[Dict] = {}
     outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
+    additional_files: Optional[AdditionalFiles] = None
     plots: Optional[List[Plot]] = []
 
     @field_validator("timeout",mode="before")
@@ -97,7 +114,7 @@ class ConfigFile(BaseModel):
                 for inner in outer.sequence[0].keys():
                     parameter_names.append(f"{outer.name}.{inner}")
 
-        parameter_names += [outer.name for outer in self.parameters if outer.sequence] + ["performance_variable"]
+        parameter_names += [outer.name for outer in self.parameters if outer] + ["performance_variable"]
         for plot in self.plots:
             for ax in [plot.xaxis,plot.secondary_axis,plot.yaxis,plot.color_axis]:
                 if ax and ax.parameter:

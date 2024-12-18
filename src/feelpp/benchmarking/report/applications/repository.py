@@ -20,7 +20,7 @@ class ApplicationRepository(ModuleRepository):
         ]
         self.id = "applications"
         self.display_name = "Applications"
-        self.description = "Applications [description TODO]"
+        self.description = "Applications"
 
     def link(self, machines, use_cases, execution_mapping):
         """ Create the links between the applications and the machines and test cases depending on the execution mapping
@@ -35,7 +35,7 @@ class ApplicationRepository(ModuleRepository):
                 continue
             for machine_id, machine_info in execution_mapping[application.id].items():
                 machine = machines.get(machine_id)
-                for use_case_id in machine_info["use_cases"]:
+                for use_case_id, use_case in machine_info.items():
                     use_case = use_cases.get(use_case_id)
                     if use_case not in application.tree:
                         application.tree[use_case] = {}

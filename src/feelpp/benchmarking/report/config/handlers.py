@@ -24,7 +24,10 @@ class GirderHandler(DownloadHandler):
     def initClient(self):
         """ Initialize the Girder client """
         self.client = girder_client.GirderClient(apiUrl=self.base_url)
-        self.client.authenticate(apiKey=os.environ["GIRDER_API_KEY"])
+        if os.environ.get("GIRDER_API_KEY"):
+            self.client.authenticate(apiKey=os.environ["GIRDER_API_KEY"])
+        else:
+            print("WARNING: Girder client was not initialized.")
 
     def downloadFolder(self, folder_id, output_dir):
         """ Download a folder from Girder recursively
@@ -57,7 +60,19 @@ class GirderHandler(DownloadHandler):
 
         self.client.downloadFile(fileId=file_id,path=filepath)
 
-    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True):
+    def listChildren(self,parent_id, children_name = None):
+        items = list(self.client.listItem(folderId=parent_id, name=children_name))
+        if len(items) == 0:
+            items = list(self.client.listFolder(parentId=parent_id, name=children_name))
+
+        if children_name:
+            assert len(items) <=1, f"More than one file found with the same name {children_name}"
+            assert len(items) >0, f"File not Found in Girder with the name {children_name}"
+            return items[0]
+
+        return items
+
+    def upload(self, file_pattern, parent_id,leaf_folder_as_items=True,reuse_existing=True, return_id=False):
         """ Upload a local file to an existing folder/item in Girder
         Args:
             file_pattern: The file pattern of the files to upload
@@ -65,8 +80,11 @@ class GirderHandler(DownloadHandler):
             parent_type (str) : "folder" or "item". Defaults to "folder"
             leaf_folder_as_items (bool): Whether to upload leaf folders as items or files
         """
-        self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items)
+        self.client.upload(filePattern=file_pattern, parentId=parent_id, parentType="folder",leafFoldersAsItems=leaf_folder_as_items, reuseExisting=reuse_existing)
 
+        if return_id:
+            item = self.listChildren(parent_id,os.path.basename(file_pattern))
+            return item["_id"]
 
 class ConfigHandler:
     def __init__(self, config_filepath):
