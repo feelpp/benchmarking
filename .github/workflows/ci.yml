@@ -51,6 +51,7 @@ jobs:
       run: |
         python -m venv .venv
         source .venv/bin/activate
+        pip3 install --upgrade pip
         pip3 install -I -r requirements.txt
         pip3 install dist/*.whl
     - name: Unit tests
