@@ -18,6 +18,7 @@ class AtomicReport:
             partials_dir (str): The directory path where parametric descriptions of the use case can be found (usually comes with the reframe report). Pass None if non-existent
         """
         data = self.parseJson(reframe_report_json)
+        self.plots_config_path = plot_config_json
         self.plots_config = self.parseJson(plot_config_json)
         self.partials_dir = partials_dir
 
@@ -40,6 +41,12 @@ class AtomicReport:
         self.empty = all(testcase["perfvars"]==None for run in data["runs"] for testcase in run["testcases"])
 
         self.model = AtomicReportModel(self.runs)
+
+    def replacePlotsConfig(self,plot_config_json,save=False):
+        self.plots_config = self.parseJson(plot_config_json)
+        if save:
+            with open(self.plots_config_path, "w") as old_f, open(plot_config_json,"r") as new_f:
+                old_f.write(new_f.read())
 
     def setIndexes(self, application, machine, use_case):
         """ Set the indexes for the atomic report.
