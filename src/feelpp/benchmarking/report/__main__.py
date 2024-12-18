@@ -7,21 +7,15 @@ from feelpp.benchmarking.report.applications.repository import ApplicationReposi
 from feelpp.benchmarking.report.useCases.repository import UseCaseRepository
 
 from feelpp.benchmarking.report.renderer import RendererFactory
-
+from feelpp.benchmarking.report.parser import ReportArgParser
 
 
 def main_cli():
-    parser = argparse.ArgumentParser(description="Render all benchmarking reports")
-    parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./reports/website_config.json")
-    parser.add_argument("--json_output_path", type=str, help="Path to the output directory", default="reports")
-    parser.add_argument("--modules_path", type=str, help="Path to the modules directory", default="./docs/modules/ROOT/pages")
-    args = parser.parse_args()
+    parser = ReportArgParser()
+    parser.printArgs()
 
-    # Arguments treatment
-    json_output_path = args.json_output_path[:-1] if args.json_output_path[-1] == "/" else args.json_output_path
-
-    config_handler = ConfigHandler(args.config_file)
-    girder_handler = GirderHandler(json_output_path)
+    config_handler = ConfigHandler(parser.args.config_file)
+    girder_handler = GirderHandler(parser.args.remote_download_dir)
 
     applications = ApplicationRepository(config_handler.applications)
     use_cases = UseCaseRepository(config_handler.use_cases)
@@ -36,17 +30,17 @@ def main_cli():
     index_renderer = RendererFactory.create("index")
     overview_renderer = RendererFactory.create("atomic_overview")
 
-    with open("./src/feelpp/benchmarking/report/config/overviewConfig.json","r") as f:
+    with open(parser.args.overview_config,"r") as f:
         overview_config = json.load(f)
 
     for repository in [applications,machines,use_cases]:
         repository.printHierarchy()
-        repository.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+        repository.initModules(parser.args.modules_path, index_renderer, parent_id="catalog-index")
         repository.initOverviewModels(overview_config)
-        repository.createOverviews(args.modules_path,overview_renderer)
+        repository.createOverviews(parser.args.modules_path,overview_renderer)
 
 
     report_renderer = RendererFactory.create("benchmark")
 
-    atomic_reports.movePartials(os.path.join(args.modules_path,"descriptions"))
-    atomic_reports.createReports(os.path.join(args.modules_path,"reports"),report_renderer)
+    atomic_reports.movePartials(os.path.join(parser.args.modules_path,"descriptions"))
+    atomic_reports.createReports(os.path.join(parser.args.modules_path,"reports"),report_renderer)
