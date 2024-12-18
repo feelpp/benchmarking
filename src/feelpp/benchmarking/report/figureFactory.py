@@ -100,7 +100,7 @@ class ScatterFigure(Figure):
         )
         for i,col in enumerate(self.fill_lines):
             figure.add_trace(
-                go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i < len(self.fill_lines) else None, line=dict(color="black",dash="dash") ,mode="lines")
+                go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i > 0 else None, line=dict(color="black",dash="dash") ,mode="lines")
             )
 
         for col in [c for c in df.columns if c not in self.fill_lines]:
