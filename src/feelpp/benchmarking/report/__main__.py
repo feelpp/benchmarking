@@ -1,4 +1,4 @@
-import argparse, os, json
+import os, json
 
 from feelpp.benchmarking.report.config.handlers import ConfigHandler, GirderHandler
 from feelpp.benchmarking.report.atomicReports.repository import AtomicReportRepository
@@ -32,6 +32,9 @@ def main_cli():
 
     with open(parser.args.overview_config,"r") as f:
         overview_config = json.load(f)
+
+    if parser.args.plot_configs:
+        atomic_reports.patchPlotConfigs(parser.args.plot_configs, parser.args.patch_report_ids, parser.args.save_patches)
 
     for repository in [applications,machines,use_cases]:
         repository.printHierarchy()
