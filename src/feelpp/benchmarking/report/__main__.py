@@ -12,7 +12,7 @@ from feelpp.benchmarking.report.renderer import RendererFactory
 
 def main_cli():
     parser = argparse.ArgumentParser(description="Render all benchmarking reports")
-    parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./src/feelpp/benchmarking/report/config/config.json")
+    parser.add_argument("--config_file", type=str, help="Path to the JSON config file", default="./reports/website_config.json")
     parser.add_argument("--json_output_path", type=str, help="Path to the output directory", default="reports")
     parser.add_argument("--modules_path", type=str, help="Path to the modules directory", default="./docs/modules/ROOT/pages")
     args = parser.parse_args()
@@ -39,26 +39,12 @@ def main_cli():
     with open("./src/feelpp/benchmarking/report/config/overviewConfig.json","r") as f:
         overview_config = json.load(f)
 
-    print("----- APPLICATIONS VIEW -------")
-    applications.printHierarchy()
-    applications.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
-    applications.initOverviewModels(overview_config)
-    applications.createOverviews(args.modules_path,overview_renderer)
-    print("-------------------------------")
+    for repository in [applications,machines,use_cases]:
+        repository.printHierarchy()
+        repository.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
+        repository.initOverviewModels(overview_config)
+        repository.createOverviews(args.modules_path,overview_renderer)
 
-    print("----- MACHINES VIEW -------")
-    machines.printHierarchy()
-    machines.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
-    machines.initOverviewModels(overview_config)
-    machines.createOverviews(args.modules_path,overview_renderer)
-    print("-------------------------------")
-
-    print("----- USE CASES VIEW -------")
-    use_cases.printHierarchy()
-    use_cases.initModules(args.modules_path, index_renderer, parent_id="catalog-index")
-    use_cases.initOverviewModels(overview_config)
-    use_cases.createOverviews(args.modules_path,overview_renderer)
-    print("-------------------------------")
 
     report_renderer = RendererFactory.create("benchmark")
 
