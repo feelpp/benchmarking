@@ -158,6 +158,8 @@ class AtomicReportRepository(Repository):
         """
         if plot_configs:
             if not patch_reports_ids: # 1 plot config, No reports to patch (select latest)
+                if len(plot_configs)>1:
+                    raise ValueError("When no patch reports are provided, plot configuration should be of length one")
                 latest_report = max(self.data, key=lambda report: datetime.strptime(report.date, "%Y-%m-%dT%H:%M:%S%z"))
                 latest_report.replacePlotsConfig(plot_configs[0], save)
             else:
