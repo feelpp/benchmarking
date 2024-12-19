@@ -1,4 +1,4 @@
-import os, json
+import os, json, subprocess
 
 from feelpp.benchmarking.report.config.handlers import ConfigHandler, GirderHandler
 from feelpp.benchmarking.report.atomicReports.repository import AtomicReportRepository
@@ -47,3 +47,7 @@ def main_cli():
 
     atomic_reports.movePartials(os.path.join(parser.args.modules_path,"descriptions"))
     atomic_reports.createReports(os.path.join(parser.args.modules_path,"reports"),report_renderer)
+
+    if parser.args.website:
+        subprocess.run(["npm","run","antora"])
+        subprocess.run(["npm","run","start"])
