@@ -64,7 +64,7 @@ jobs:
     - name: Dry-run reports
       run: |
         source .venv/bin/activate
-        render-benchmarks --config_file reports/website_config.json
+        render-benchmarks --config-file reports/website_config.json
     - name: Check files
       run: | #TODO: check if not empty (maybe)
         nb_rfm_report_files=$(ls -1q reports/parallelSum/parallel_sum/gaya|wc -l)
@@ -109,7 +109,7 @@ jobs:
     - name: Render reports
       run: |
         source .venv/bin/activate
-        render-benchmarks --config_file=./tmp/website_config.json
+        render-benchmarks --config-file=./tmp/website_config.json
       env:
         GIRDER_API_KEY: ${{ secrets.GIRDER }}
     - name: Build Antora Site
