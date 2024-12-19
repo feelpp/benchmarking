@@ -161,10 +161,10 @@ class AtomicReportRepository(Repository):
                 latest_report = max(self.data, key=lambda report: datetime.strptime(report.date, "%Y-%m-%dT%H:%M:%S%z"))
                 latest_report.replacePlotsConfig(plot_configs[0], save)
             else:
-                for i,patch_report in patch_reports_ids:
+                for i,patch_report in enumerate(patch_reports_ids):
                     #Filter reports based on ids
                     patch_machine, patch_application, patch_usecase, patch_date = patch_report
-                    patch_machine_reports = list(filter(lambda x: x.machine_id == patch_machine, self.data.data))
+                    patch_machine_reports = list(filter(lambda x: x.machine_id == patch_machine, self.data))
 
                     if patch_application == "all":
                         patch_application_reports = patch_machine_reports
@@ -181,7 +181,7 @@ class AtomicReportRepository(Repository):
                     elif patch_date == "latest":
                         reports_to_patch = [max(patch_usecase_reports, key=lambda report: datetime.strptime(report.date, "%Y-%m-%dT%H:%M:%S%z"))]
                     else:
-                        reports_to_patch = list(filter(lambda x: datetime.strptime(x.date,"%Y-%m-%dT%H:%M:%S%z").strftime("%Y_%m_%dT%H_%M_%S") == patch_date ))
+                        reports_to_patch = list(filter(lambda x: datetime.strptime(x.date,"%Y-%m-%dT%H:%M:%S%z").strftime("%Y_%m_%dT%H_%M_%S") == patch_date, patch_usecase_reports))
 
                     for report_to_patch in reports_to_patch:
                         #1 plot config, many reports to patch

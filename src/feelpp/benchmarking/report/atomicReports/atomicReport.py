@@ -43,10 +43,11 @@ class AtomicReport:
         self.model = AtomicReportModel(self.runs)
 
     def replacePlotsConfig(self,plot_config_json,save=False):
-        self.plots_config = self.parseJson(plot_config_json)
+        print(f"Patching plots for {self.machine_id}-{self.application_id}-{self.use_case_id}-{self.date} with {plot_config_json}")
+        self.plots_config = self.parseJson(plot_config_json)["plots"]
         if save:
-            with open(self.plots_config_path, "w") as old_f, open(plot_config_json,"r") as new_f:
-                old_f.write(new_f.read())
+            with open(self.plots_config_path, "w") as old_f:
+                json.dump(self.plots_config,old_f)
 
     def setIndexes(self, application, machine, use_case):
         """ Set the indexes for the atomic report.

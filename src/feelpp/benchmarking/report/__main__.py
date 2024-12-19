@@ -34,7 +34,7 @@ def main_cli():
         overview_config = json.load(f)
 
     if parser.args.plot_configs:
-        atomic_reports.patchPlotConfigs(parser.args.plot_configs, parser.args.patch_report_ids, parser.args.save_patches)
+        atomic_reports.patchPlotConfigs(parser.args.plot_configs, parser.args.patch_reports, parser.args.save_patches)
 
     for repository in [applications,machines,use_cases]:
         repository.printHierarchy()
