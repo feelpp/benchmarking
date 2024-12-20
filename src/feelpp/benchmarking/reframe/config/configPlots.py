@@ -27,6 +27,7 @@ class Plot(BaseModel):
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
     color_axis:Optional[PlotAxis] = None
+    layout_modifiers: Optional[Dict] = {}
 
 
     @field_validator("xaxis","secondary_axis", mode="after")
