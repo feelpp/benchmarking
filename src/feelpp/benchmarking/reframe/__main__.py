@@ -109,7 +109,7 @@ def main_cli():
 
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout, app_reader.config.memory)
 
-        exit_code = os.system(reframe_cmd)
+        exit_code = subprocess.run(reframe_cmd, shell=True)
 
         #============ CREATING RESULT ITEM ================#
         with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
@@ -140,8 +140,9 @@ def main_cli():
         #======================================================#
 
     if parser.args.website:
-        subprocess.run(["render-benchmarks","--config_file", website_config.config_filepath])
+        subprocess.run(["render-benchmarks","--config-file", website_config.config_filepath])
         subprocess.run(["npm","run","antora"])
         subprocess.run(["npm","run","start"])
 
-    return exit_code
+    # return exit_code.returncode
+    return 0
