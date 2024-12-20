@@ -34,9 +34,6 @@ site_configuration = {
                     ],
                     'sched_options': { 'use_nodes_option': True },
                 }
-            ],
-            'env_vars':[
-                ["OMP_NUM_THREADS",1]
             ]
         }
     ],
