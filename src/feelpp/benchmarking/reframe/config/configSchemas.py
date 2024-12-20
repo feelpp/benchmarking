@@ -84,6 +84,7 @@ class AdditionalFiles(BaseModel):
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
+    memory: Optional[str] = None
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     output_directory:Optional[str] = ""
     use_case_name: str
