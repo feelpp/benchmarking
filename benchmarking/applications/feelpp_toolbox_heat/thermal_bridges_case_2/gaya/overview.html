@@ -303,17 +303,17 @@ File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/ben
      19     for plot in FigureFactory.create(plot_config):
 ---> 20         yield plot.createFigure(self.model.master_df)
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:119, in ScatterFigure.createFigure(self, df)
-    112 def createFigure(self,df):
-    113     """ Creates a scatter plot from the master dataframe
-    114     Args:
-    115         df (pd.DataFrame). The master dataframe containing all reframe test data
-    116     Returns:
-    117         go.Figure: Plotly figure corresponding to the Scatter type
-    118     """
---> 119     df = self.transformation_strategy.calculate(df)
-    121     if isinstance(df.index,MultiIndex):
-    122         figure = self.createAnimation(df)
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:122, in ScatterFigure.createFigure(self, df)
+    115 def createFigure(self,df):
+    116     """ Creates a scatter plot from the master dataframe
+    117     Args:
+    118         df (pd.DataFrame). The master dataframe containing all reframe test data
+    119     Returns:
+    120         go.Figure: Plotly figure corresponding to the Scatter type
+    121     """
+--> 122     df = self.transformation_strategy.calculate(df)
+    124     if isinstance(df.index,MultiIndex):
+    125         figure = self.createAnimation(df)
 
 File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/strategies.py:48, in PerformanceStrategy.calculate(self, df)
      46                 pivot = pivot[pivot[aggregation.column].astype(str) == aggregation.agg.split(":")[-1]]
