@@ -1,6 +1,9 @@
 #!/bin/bash -l
 
-python3 -m venv .venv
+# module load Python/3.12.3-GCCcore-13.3.0
+
+
+/cvmfs/sling.si/modules/el7/software/Python/3.12.3-GCCcore-13.3.0/bin/python -m venv .venv
 source .venv/bin/activate
-python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt
+.venv/bin/python3.12 -m pip install --upgrade pip
+.venv/bin/python3.12 -m pip install -r requirements.txt
