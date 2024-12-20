@@ -81,7 +81,8 @@ class TestSimpleStrategies:
         calculated_df = self.getCalculatedDf("speedup")
         assert np.isclose(calculated_df.loc[calculated_df.index.min(),:],1).all()
         pivot = self.getCalculatedDf("performance")
-        assert np.isclose(calculated_df,pivot.loc[pivot.index.min(),:] / pivot).all()
+        ignore_columns = ["optimal","half-optimal"]
+        assert np.isclose(calculated_df.loc[:,[col for col in calculated_df.columns if col not in ignore_columns]],pivot.loc[pivot.index.min(),:] / pivot).all()
 
 class TestComplexStrategies:
     plot_config = PlotConfigMocker(
@@ -133,5 +134,6 @@ class TestComplexStrategies:
         calculated_df = self.getCalculatedDf("speedup")
         assert np.isclose(calculated_df.loc[calculated_df.index.min(),:],1).all()
         pivot = self.getCalculatedDf("performance")
-        assert np.isclose(calculated_df,pivot.xs(pivot.index.get_level_values("xaxis").min(),level="xaxis",axis=0) / pivot).all()
+        ignore_columns = ["optimal","half-optimal"]
+        assert np.isclose(calculated_df.loc[:,[col for col in calculated_df.columns if col not in ignore_columns]],pivot.xs(pivot.index.get_level_values("xaxis").min(),level="xaxis",axis=0) / pivot).all()
 
