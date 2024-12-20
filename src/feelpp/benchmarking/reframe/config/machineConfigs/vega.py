@@ -9,7 +9,7 @@ site_configuration = {
             'name': 'vega',
             'descr': 'Vega',
             'hostnames': [f'{hostname}'],
-            'modules_system': 'tmod4',
+            'modules_system': 'lmod',
             'partitions': [
                 {
                     'name': 'cpu',
@@ -43,7 +43,7 @@ site_configuration = {
     'environments': [
         {
             'name':'default',
-            'modules': [],  #["OpenMPI/4.1.5-GCC-12.3.0"],
+            'modules': ["OpenMPI/4.1.5-GCC-12.3.0"],
             'target_systems':['vega:cpu']
         }
     ]
