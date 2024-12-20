@@ -13,7 +13,7 @@ class PlotConfigMocker:
     def __init__(
         self, transformation="",aggregations = [],
         xaxis = AxisMocker(), secondary_axis= AxisMocker(), color_axis=AxisMocker(),
-        variables = []
+        variables = [], plot_types = []
     ):
         self.transformation = transformation
         self.xaxis = xaxis
@@ -21,6 +21,7 @@ class PlotConfigMocker:
         self.color_axis = color_axis
         self.aggregations = aggregations
         self.variables = variables
+        self.plot_types = plot_types
 
 @pytest.mark.parametrize(("transformation","strategy"),[
     ("performance",PerformanceStrategy),
