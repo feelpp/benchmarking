@@ -343,47 +343,42 @@ File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/ben
      19     for plot in FigureFactory.create(plot_config):
 ---> 20         yield plot.createFigure(self.model.master_df)
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:110, in ScatterFigure.createFigure(self, df)
-    107 df = self.transformation_strategy.calculate(df)
-    109 if isinstance(df.index,MultiIndex):
---> 110     return self.createAnimation(df)
-    111 else:
-    112     return self.createSimple(df)
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:122, in ScatterFigure.createFigure(self, df)
+    119 df = self.transformation_strategy.calculate(df)
+    121 if isinstance(df.index,MultiIndex):
+--> 122     figure = self.createAnimation(df)
+    123 else:
+    124     figure = self.createSimple(df)
 
-File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:56, in ScatterFigure.createAnimation(self, df)
-     42     frames.append([
-     43         go.Scatter(
-     44             x = frame_df.index,
-   (...)
-     48         for col in frame_df.columns
-     49     ])
-     50     ranges.append([
-     51         frame_df.min().min() - frame_df.min().min()*range_epsilon,
-     52         frame_df.max().max() + frame_df.min().min()*range_epsilon
-     53     ])
-     55 fig = go.Figure(
----> 56     data = frames[0],
-     57     frames = [
-     58         go.Frame(
-     59             data = f,
-     60             name=f"frame_{i}",
-     61             layout=dict(
-     62                 yaxis=dict(range = ranges[i])
-     63             )
-     64         )
-     65         for i,f in enumerate(frames)],
-     66     layout=go.Layout(
-     67         yaxis=dict(range = ranges[0],title=self.config.yaxis.label),
-     68         xaxis=dict(title=self.config.xaxis.label),
-     69         title=self.config.title,
-     70         sliders=[dict(
-     71             active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
-     72             steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
-     73         )],
-     74         legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
-     75     )
-     76 )
-     78 return fig
+File /data/cemosis/github-actions-runner/actions-runner-4/_work/benchmarking/benchmarking/.venv/lib/python3.10/site-packages/feelpp/benchmarking/report/figureFactory.py:62, in ScatterFigure.createAnimation(self, df)
+     55     frames.append(frame_traces)
+     56     ranges.append([
+     57         frame_df.min().min() - frame_df.min().min()*range_epsilon,
+     58         frame_df.max().max() + frame_df.min().min()*range_epsilon
+     59     ])
+     61 fig = go.Figure(
+---> 62     data = frames[0],
+     63     frames = [
+     64         go.Frame(
+     65             data = f,
+     66             name=f"frame_{i}",
+     67             layout=dict(
+     68                 yaxis=dict(range = ranges[i])
+     69             )
+     70         )
+     71         for i,f in enumerate(frames)],
+     72     layout=go.Layout(
+     73         yaxis=dict(range = ranges[0],title=self.config.yaxis.label),
+     74         xaxis=dict(title=self.config.xaxis.label),
+     75         title=self.config.title,
+     76         sliders=[dict(
+     77             active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
+     78             steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
+     79         )],
+     80         legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+     81     )
+     82 )
+     84 return fig
 
 IndexError: list index out of range</pre>
 </div>
