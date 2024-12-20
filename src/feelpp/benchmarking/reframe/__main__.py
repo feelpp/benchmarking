@@ -140,7 +140,7 @@ def main_cli():
         #======================================================#
 
     if parser.args.website:
-        subprocess.run(["render-benchmarks","--config_file", website_config.config_filepath])
+        subprocess.run(["render-benchmarks","--config-file", website_config.config_filepath])
         subprocess.run(["npm","run","antora"])
         subprocess.run(["npm","run","start"])
 
