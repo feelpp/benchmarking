@@ -1,0 +1,54 @@
+{
+    "executable": "echo",
+    "use_case_name": "mock_data",
+    "timeout":"0-00:01:00",
+    "platforms": {
+        "builtin":{
+            "input_dir":"",
+            "append_app_option":[]
+        }
+    },
+    "options": [],
+    "outputs": [],
+    "additional_files":{},
+    "scalability": {
+        "directory":"",
+        "stages":[]
+    },
+    "sanity": { "success": [], "error": [] },
+    "parameters": [
+        {
+            "name": "nb_tasks",
+            "sequence": [
+                {"tasks":1,"tasks_per_node":128,"exclusive_access":true},
+                {"tasks":2,"tasks_per_node":128,"exclusive_access":true},
+                {"tasks":3,"tasks_per_node":128,"exclusive_access":true},
+                {"tasks":4,"tasks_per_node":128,"exclusive_access":true}
+            ]
+        },
+        {
+            "name": "param1",
+            "sequence": ["value1_1","value1_2","value1_3"]
+        },
+        {
+            "name": "param2",
+            "zip": [
+                {
+                    "name": "param2_1",
+                    "linspace":{
+                        "min":0,
+                        "max":1,
+                        "n_steps":3
+                    }
+                },
+                {
+                    "name": "param2_2",
+                    "repeat":{
+                        "value":{"custom_key":"custom_val"},
+                        "count":3
+                    }
+                }
+            ]
+        }
+    ]
+}
