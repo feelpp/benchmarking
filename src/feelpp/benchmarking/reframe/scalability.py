@@ -2,6 +2,8 @@ import reframe.utility.sanity as sn
 import os, re,json
 from feelpp.benchmarking.reframe.config.configReader import TemplateProcessor
 
+
+#TODO: Factor this with outputs. Consider strategy pattern for formats
 class ScalabilityHandler:
     """ Class to handle scalability related attributes"""
     def __init__(self,scalability_config):
@@ -80,7 +82,8 @@ class ScalabilityHandler:
 
         return perf_variables
 
-    def aggregateCustomVar(self,op,column_values):
+    @staticmethod
+    def aggregateCustomVar(op,column_values):
         if op == "sum":
             return sum(column_values)
         elif op == "min":
@@ -107,7 +110,6 @@ class ScalabilityHandler:
 
 
         def evaluateCustomVariable(custom_var):
-
             if custom_var.name in computed_vars:
                 return computed_vars[custom_var.name]
 
@@ -116,7 +118,7 @@ class ScalabilityHandler:
                 if col in perfvars:
                     column_values.append(perfvars[col].evaluate())
                 elif col in custom_perfvars:
-                    column_values.append(evaluateCustomVariable(custom_perfvars[col]))
+                    column_values.append(custom_perfvars[col])
                 else:
                     raise ValueError(f"Custom variable not found : {custom_var.name}")
 
