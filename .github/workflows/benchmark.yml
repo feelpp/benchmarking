@@ -131,6 +131,10 @@ jobs:
             with:
                 name: config-artifacts
                 path: ./tmp/
+        -   name: Debug module
+            run: |
+                module show Python/3.10.8-GCCcore-12.2.0
+                echo $LD_LIBRARY_PATH
         -   name: Setup machine and env
             run: ${{matrix.submit_command}}
         -   name: Execute benchmarks
