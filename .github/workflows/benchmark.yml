@@ -133,8 +133,6 @@ jobs:
                 path: ./tmp/
         -   name: Setup machine and env
             run: ${{matrix.submit_command}}
-        -   name: Echo available modules
-            run: module avail Python
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
