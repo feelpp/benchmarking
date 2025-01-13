@@ -131,6 +131,10 @@ jobs:
             with:
                 name: config-artifacts
                 path: ./tmp/
+        -   name: Debug python
+            run: |
+                ls /cvmfs/sling.si/modules/el7/software/Python/3.10.8-GCCcore-12.2.0/lib/libpython3.10.so.1.0
+                ldd /cvmfs/sling.si/modules/el7/software/Python/3.10.8-GCCcore-12.2.0/bin/python3.10
         -   name: Setup machine and env
             run: ${{matrix.submit_command}}
         -   name: Execute benchmarks
