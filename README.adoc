@@ -1,31 +1,150 @@
 :feelpp: Feel++
 :cpp: C++
-:project: benchmarking
+:project: feelpp.benchmarking
 :reframe: ReFrame
 
-= {feelpp} Template Project
-Christophe Prud'homme <https://github.com/prudhomm[@prudhomm]>
-v2:
+= {feelpp} Benchmarking Project
 
 image:https://github.com/feelpp/benchmarking/workflows/CI/badge.svg[CI]
 
-This repository provides a basic starting point for a {feelpp} application including:
+The {feelpp} benchmarking_ project provides a framework for automating, centralizing and organizing performance evaluation of scientific simulations on HPC systems.
+This project, based on the https://reframe-hpc.readthedocs.io/en/stable/index.html[ReFrame-hpc framework], enables highly customized benchmarking using robust and comprehensive JSON configuration files that parametrize tests, validate executions and generate figures.
+It also provides concrete CI/CD/CB pipelines to fully automate the benchmarking step of any application.
 
-- [x] {feelpp} applications in {cpp} to use {feelpp} and {feelpp} toolboxes in `src`
-- [x] documentation using asciidoc and antora
-- [x] python {feelpp} notebooks that can be downloaded from the documentation
-- [x] continuous integration including tests for the {cpp} applications
-- [x] docker image generation for the project
 
-The documentation for benchmarking is available at link:https://feelpp.github.io/benchmarking[here] and you can build on it for your project by enabling the link:https://docs.github.com/en/pages[github pages] for your repository.
+== Installation
 
-== Renaming the project
+- Clone the repository
 
-By default the project is named  `benchmarking` if you cloned the repository `feelpp/benchmarking`.
-However if you used the previous repository as a template, then the project is renamed using the name of the repository using the script `rename.sh` at the initialization of the repository.
-If the name does not suit you, you can change it again using the script `rename.sh` and providing the new name as argument.
+[source,cmd]
+----
+git clone https://github.com/feelpp/benchmarking.git
+----
 
-WARNING: the script `rename.sh` will rename the project however some url might be set properly if you rename the project yourself. You need to check the following files: `docs/site.yml` and `docs/package.json` and fix the urls after the rename process is done.
+- Use a python virtual environment (Optional)
+
+[source,cmd]
+----
+python3 -m venv .venv
+source .venv/bin/activate
+----
+
+- Build the project
+
+[source,cmd]
+----
+pip3 wheel --no-deps --wheel-dir dist .
+----
+
+- Install dependencies
+
+The following command will install necessary dependencies as well as the built project from the previous step
+
+[source,cmd]
+----
+python3 -m pip install -r requirements.txt
+----
+
+Dependencies are specified on `requirements.txt` file.
+To install them,
+
+
+== Quickstart
+
+The framwork includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _tests/data/parallelSum.cpp_.
+
+This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.
+
+Additionally, the app will measure the time taken to perform the partial sum, and will save it under a _scalability.json_ file.
+
+The executable is already provided as _tests/data/parallelSum_. You can update it and recompile it for a specific config as needed.
+[source,cmd]
+----
+mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
+----
+
+// Local configuration files can be found under _config/test_parallelSum/_. They are explained more in detail in the following configuration section.
+// This folder cantins a _parallelSum.json_ file holding are benchmark related configurations. That is, instructions on what the benchmark should be. It also contains a `plots.json` file holding descriptions on the figures that should be generated for this benchmark.
+// Additionally, machine specific configurations are found under _config/machines/_. These files contain general information on the environments to run the tests on, including containers, special options and base directories for inputs and outputs of the applications.
+// It is important to know that these configuration files are user dependent, and will most certainly vary depending on the resource you will execute benchmarks on. For a simple example, the _local.json_ file can be used for running the application on a personal Linux or MacOS computer.
+
+Configuration files might require some changes for specific configurations depending on the system you are running the framework.
+
+Finally, to benchmark the test application, generate the reports and plot the figures, run
+[source,cmd]
+----
+execute-benchmark --machine-config config/machines/local.json \
+                    --benchmark-config config/test_parallelSum/parallelSum.json \
+                    --plots-config config/test_parallelSum/plots.json \
+                    --website
+----
+
+The `--website` option will start an http-server on localhost, so the website can be visualized, check the console for more information.
+
+
+== Usage
+
+=== Executing a benchmark
+
+In order to execute a benchmark, you can make use of the `execute-benchmark` command after all configuration files have been set ( xref:tutorial:configuration.adoc[Configuration Reference]).
+
+The script accepts the following options :
+
+- `--machine-config` (`-mc`) : The path to the machine configuration JSON file
+- `--benchmark-config` (`-bc`) : The path to the benchmark configuration JSON file
+- `--plots-config` (`-pc`) : The path to the plots configuration JSON file. If not provided, it will be assumed that the plots section is included in the benchmark config. Otherwise, no plots will be considered.
+- `--dir` (`-d`) : [Optional] Directory path where benchmark configuration files can be found. If provided, the application will consider all benchmark configuration files inside the provided directory.
+- `--exclude` (`-e`) : [Optional] To use in combination with `--dir`, mentioned files will not be launched. Only provide basenames to exclude.
+- `--move-results` (`-mv`) : [Optional] Directory to move the resulting files to.  If not provided, result files will be located under the directory specified by the machine configuration.
+- `--list-files` (`-lf`) : [Optional] List all benchmarking configuration file found. If this option is provided, the application will not run. Use it for validation.
+- `--verbose` (`-v`) : [Optional] Select Reframe\'s verbose level by specifying multiple v\'s.
+- `--website` (`-w`) : [Optional] Render reports, compile them, create the website and start an http server.
+- `--help` (`-h`) : Display help and quit program
+
+When a benchmark is done, a `website_config.json` file will be created (or updated) with the current filepaths of the reports and plots generated by the framework. If the `--website` flag is active, the `render-benchmarks` command will be launched with this file as argument.
+
+=== Rendering reports
+
+To render reports, a webiste configuration file is needed. An example is provided under _src/benchmarking/reports/config/config.json_. This file indicates how the website views should be structured, and it indicates the hierarchy of the benchmarks.
+
+A file of the same type is generated after a benchmark is launched, called _website_config.json_, and it is found at the root of the _reports_ directory specified under the `reports_base_dir` field of machine configuration file ( xref:tutorial:configfiles/machine.adoc).
+
+Once this file is located, users can run the `render-benchmarks` command to render existing reports.
+
+The script takes the following arguments:
+
+- `config-file` : The path of the website configuration file.
+- `remote-download-dir`: [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
+- `modules-path`: [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
+
+- `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
+
+== CI/CD integration
+
+TODO
+
+== Notable Features
+
+. General dashboard creation
+
+   It is possible and easily feasible to use the *render* component of the *feelpp.benchmarking* tool to generate not only a benchmarking dashboard, but also any kind of gallery-like static website. This can be done by simply modifying the input templates and configuring the *Model-View-Controller (MVC)* components. This way, users can adapt the tool to suit their needs.
+
+. Flexible configuration files
+
+   Machine, benchmark and figure configuration files support complex parametrization and include a placeholder syntax for easy refactoring and reuse.
+
+. Container support and benchmark reproducibility
+
+   The *feelpp.benchmarking* tool seamlessly integrates Apptainer containers, ensuring compatibility across many HPC systems. The framework ensures, via input configuration, that results are consistent and reproducible. Additionally, the tool guarantees dashboard persistence, allowing users to track performance over time and across different views
+
+. HPC system integration
+
+   At the moment, the Discover supercomputer is supported, and many more machines are planned to be integrated into the framework. Integrating a new HPC system can be done easily by describing the hardware, following [ReFrame’s configuration reference](https://reframe-hpc.readthedocs.io/en/stable/config_reference.html) , and configuring access through the CI runners.
+
+. A Continuous Benchmarking (CB) workflow
+
+   The benchmarking framework of *Feel++* provides a pipeline that can be directly executed by any application via a REST request, enabling continuous benchmarking for any application through their CI/CD pipelines.
+
 
 == Updating the {project} version
 
@@ -37,36 +156,3 @@ You need to update with the same version in all files.
 - [x] update the version in CMakeLists.txt
 - [x] update the version in docs/antora.yml
 - [x] commit the changes with the message "Release vx.y.z". At this point the CI will generate the docker image and push it to docker hub
-
-== Running the benchmark
-
-=== Overview
-
-This repository uses link:https://reframe-hpc.readthedocs.io/en/stable/[ReFrame] for launching multiple tests parametrized by the number of CPU. Every system needs a configuration-file for architecture and environment description. This file contains for example the number of accessible nodes and CPU.
-
-For launching a case, it has to be configured through a JSON file. This file is needed for case-specific set up of both {reframe} and {feelpp}. Every configuration-file used for this benchmarking platform are available in `benchConfigs/`.
-
-{reframe} will extract and store the result in JSON format. The results will then be computed for generating an output file in _adoc_ format containing information about the run session, and also plots.
-
-_Note: Before continuing, make sure to have Feel++ installed on the system on which you want to run the test. If it's not the case, please refer to this link:https://docs.feelpp.org/user/latest/install/index.html[installation guide]._
-
-=== Step-by-step guide
-
-* Clone the repository on the machine 
-```bash
-git clone https://github.com/feelpp/benchmarking.git
-```
-
-* Add a system configuration-file in `src/feelpp/benchmarking/reframe/config-files/` for your machine. Refer to link:https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#system-configuration[this] for exploring the possibilities.
-
-* Configure the case (CPU number, {feelpp} config-files, paths, ...) with a JSON file. A template is available here: `src/feelpp/benchmarking/benchConfigTemplate.json`
-
-* Launch the test by specifying hostname, path to the {feelpp} root output directory and path to the case configuration. It is also possible to launch multiple JSON files inside a directory with the `--dir` option.
-```bash
-python launchProcess.py hostname --feelppdb your_path --config config1.json config2.json
-```
-* Generate _.adoc_ output files for the documentation site. `render.py` will recursively look for {reframe} run-reports inside `docs/modules/`
-```bash
-python docs/modules/render.py
-```
-* Push and merge into the main branch of the repository for updating the documentation site
