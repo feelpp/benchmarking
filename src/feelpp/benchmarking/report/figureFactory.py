@@ -5,6 +5,9 @@ from numpy import float64 as float64
 
 from feelpp.benchmarking.report.strategies import StrategyFactory
 
+
+#TODO: This code can be refactored, improved logic.
+
 class Figure:
     """ Abstract class for a figure """
     def __init__(self,plot_config,transformation_strategy):

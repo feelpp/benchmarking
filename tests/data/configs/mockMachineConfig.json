@@ -1,0 +1,15 @@
+{
+    "machine": "mockMachine",
+    "targets":[":builtin:"],
+    "execution_policy": "async",
+    "reframe_base_dir":"$PWD/build/reframe",
+    "reports_base_dir":"$PWD/reports/",
+    "input_dataset_base_dir":"$PWD",
+    "output_app_dir":"$PWD",
+    "containers":{
+        "apptainer":{
+            "image_base_dir":"tests/data/",
+            "options":["--bind /opt/:/opt/"]
+        }
+    }
+}
