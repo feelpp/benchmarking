@@ -61,7 +61,7 @@ class Image(BaseModel):
     @field_validator("name", mode="after")
     @classmethod
     def checkImage(cls,v,info):
-        if info.data["protocol"] == "local":
+        if info.data["protocol"] == "local" and ("{{" not in v  or "}}" not in v) :
             if not os.path.exists(v):
                 if info.context and info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")
