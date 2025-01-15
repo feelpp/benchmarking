@@ -61,27 +61,34 @@ class ScatterFigure(Figure):
                 frame_df.max().max() + frame_df.min().min()*range_epsilon
             ])
 
-        fig = go.Figure(
-            data = frames[0],
-            frames = [
-                go.Frame(
-                    data = f,
-                    name=f"frame_{i}",
-                    layout=dict(
-                        yaxis=dict(range = ranges[i])
+        if frames:
+            fig = go.Figure(
+                data = frames[0],
+                frames = [
+                    go.Frame(
+                        data = f,
+                        name=f"frame_{i}",
+                        layout=dict(
+                            yaxis=dict(range = ranges[i])
+                        )
                     )
+                    for i,f in enumerate(frames)],
+                layout=go.Layout(
+                    sliders=[dict(
+                        active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
+                        steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
+                    )],
+                    yaxis=dict(range = ranges[0]),
                 )
-                for i,f in enumerate(frames)],
-            layout=go.Layout(
-                yaxis=dict(range = ranges[0],title=self.config.yaxis.label),
-                xaxis=dict(title=self.config.xaxis.label),
-                title=self.config.title,
-                sliders=[dict(
-                    active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
-                    steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
-                )],
-                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
             )
+        else:
+            fig = go.Figure()
+
+        fig.update_layout(
+            yaxis=dict(title=self.config.yaxis.label),
+            xaxis=dict(title=self.config.xaxis.label),
+            title=self.config.title,
+            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
 
         return fig
@@ -288,27 +295,35 @@ class GroupedBarFigure(Figure): #TODO: FACTOR animation and bar...
                 frame_df.max().max() + frame_df.min().min()*range_epsilon
             ])
 
-        fig = go.Figure(
-            data = frames[0],
-            frames = [
-                go.Frame(
-                    data = f,
-                    name=f"frame_{i}",
-                    layout=dict(
-                        yaxis=dict(range = ranges[i])
+        if frames:
+            fig = go.Figure(
+                data = frames[0],
+                frames = [
+                    go.Frame(
+                        data = f,
+                        name=f"frame_{i}",
+                        layout=dict(
+                            yaxis=dict(range = ranges[i])
+                        )
                     )
+                    for i,f in enumerate(frames)],
+                layout=go.Layout(
+                    yaxis=dict(range = ranges[0]),
+                    sliders=[dict(
+                        active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
+                        steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
+                    )],
                 )
-                for i,f in enumerate(frames)],
-            layout=go.Layout(
-                yaxis=dict(range = ranges[0],title=self.config.yaxis.label),
-                xaxis=dict(title=self.config.xaxis.label),
-                title=self.config.title,
-                sliders=[dict(
-                    active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
-                    steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
-                )],
-                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
             )
+        else:
+            fig = go.Figure()
+
+
+        fig.update_layout(
+            yaxis=dict(title=self.config.yaxis.label),
+            xaxis=dict(title=self.config.xaxis.label),
+            title=self.config.title,
+            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
 
         return fig

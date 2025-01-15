@@ -86,6 +86,9 @@ class SpeedupStrategy(PerformanceStrategy):
         """
         pivot = super().calculate(df)
 
+        if pivot.empty:
+            return pd.DataFrame(columns=["optimal","half-optimal"])
+
         if isinstance(pivot.index, pd.MultiIndex):
             pivot = pivot.xs(pivot.index.get_level_values(self.dimensions["xaxis"]).min(),level=self.dimensions["xaxis"],axis=0) / pivot
             pivot["optimal"] = pivot.index.get_level_values(self.dimensions["xaxis"]) / pivot.index.get_level_values(self.dimensions["xaxis"]).min()
