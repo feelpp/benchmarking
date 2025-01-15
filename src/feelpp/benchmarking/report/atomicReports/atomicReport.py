@@ -178,7 +178,7 @@ class AtomicReport:
                 hash_params_headers = hash_params_headers,
                 description_path = self.description_path,
                 figures = controller.generateFiguresHtml(),
-                # csv_data = controller.buildCsvs()
+                figure_csvs = controller.buildCsvs()
             )
         )
 

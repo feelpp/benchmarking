@@ -8,13 +8,6 @@
 :author: Your Name
 :revdate: {{ session_info.time_end }}
 
-++++
-<button id="download-csv-{{parent_catalogs}}" > CSV </button>
-<script>
-
-</script>
-++++
-
 
 {% if description_path %}
 == Case Description
@@ -41,9 +34,28 @@ include::ROOT:{{description_path}}[leveloffset=+1]
 {% endfor %}
 |===
 
-{% for figure in figures %}
+{% for figure,csv in zip(figures,figure_csvs) %}
 ++++
+<button id="download-csv-{{parent_catalogs}}-{{loop.index}}" > CSV </button>
+
 {{figure}}
+
+<script>
+const csvData_{{loop.index}} = `{{csv | safe}}`;
+
+document.getElementById('download-csv-{{parent_catalogs}}-{{loop.index}}').addEventListener('click', function() {
+    const blob = new Blob([csvData_{{loop.index}}], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.csv'; // Desired file name
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+</script>
 ++++
 {% endfor %}
 
