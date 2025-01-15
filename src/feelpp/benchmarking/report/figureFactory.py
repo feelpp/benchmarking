@@ -6,73 +6,52 @@ from numpy import float64 as float64
 from feelpp.benchmarking.report.strategies import StrategyFactory
 
 
-#TODO: This code can be refactored, improved logic.
-
 class Figure:
     """ Abstract class for a figure """
     def __init__(self,plot_config,transformation_strategy):
         self.config = plot_config
         self.transformation_strategy = transformation_strategy
 
-    def createFigure(self,df):
-        """ Pure virtual method to create a figure
-        Args:
-            df (pd.DataFrame). The transformed dataframe
-        """
-        raise NotImplementedError("Not to be called directly.")
+    def createMultiindexFigure(self,df):
+        raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
+    def createSimpleFigure(self,df):
+        raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
-class ScatterFigure(Figure):
-    """ Concrete Figure class for scatter figures """
-    def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
-        super().__init__(plot_config,transformation_strategy)
-        self.fill_lines = fill_lines
+    def createTraces(self,df):
+        raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
-    def createAnimation(self,df):
-        """ Creates a plotly figure from a multiIndex dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe (must be multiindex)
-        Returns:
-            go.Figure: Scatter animation where the secondary_ axis corresponds to a specified parameter
-        """
-        frames = []
-        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
+    def updateLayout(self,fig):
+        """ Updates the layout of a figure with general (shared) information."""
+        fig.update_layout(
+            title=self.config.title,
+            xaxis=dict(title = self.config.xaxis.label),
+            yaxis=dict(title = self.config.yaxis.label),
+            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+        )
+        return fig
+
+    def getIdealRange(self,df):
         range_epsilon= 0.01
+        return [ df.min().min() - df.min().min()*range_epsilon, df.max().max() + df.min().min()*range_epsilon ]
 
+    def createSliderAnimation(self,df):
+        frames = []
         ranges=[]
+        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
 
-        for j,dim in enumerate(anim_dimension_values):
+        for dim in anim_dimension_values:
             frame_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
-
-            frame_traces = []
-            for i,col in enumerate(self.fill_lines):
-                frame_traces.append(
-                    go.Scatter( x = frame_df.index, y = frame_df.loc[:,col], name = col, fill='tonexty' if i > 0 else None, line=dict(color="black",dash="dash") ,mode="lines")
-                )
-
-            for col in [c for c in frame_df.columns if c not in self.fill_lines]:
-                frame_traces.append(
-                    go.Scatter( x = frame_df.index, y = frame_df.loc[:,col], name = col )
-                )
-
-            frames.append(frame_traces)
-            ranges.append([
-                frame_df.min().min() - frame_df.min().min()*range_epsilon,
-                frame_df.max().max() + frame_df.min().min()*range_epsilon
-            ])
+            frames.append(self.createTraces(frame_df))
+            ranges.append(self.getIdealRange(frame_df))
 
         if frames:
             fig = go.Figure(
                 data = frames[0],
                 frames = [
-                    go.Frame(
-                        data = f,
-                        name=f"frame_{i}",
-                        layout=dict(
-                            yaxis=dict(range = ranges[i])
-                        )
-                    )
-                    for i,f in enumerate(frames)],
+                    go.Frame( data = f, name=f"frame_{i}", layout=dict( yaxis=dict(range = ranges[i]) ) )
+                    for i,f in enumerate(frames)
+                ],
                 layout=go.Layout(
                     sliders=[dict(
                         active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
@@ -83,57 +62,59 @@ class ScatterFigure(Figure):
             )
         else:
             fig = go.Figure()
-
-        fig.update_layout(
-            yaxis=dict(title=self.config.yaxis.label),
-            xaxis=dict(title=self.config.xaxis.label),
-            title=self.config.title,
-            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
-        )
-
         return fig
 
-    def createSimple(self,df):
+    def createFigure(self,df):
+        """ Creates a figure from the master dataframe
+        Args:
+            df (pd.DataFrame). The master dataframe containing all reframe test data
+        Returns:
+            go.Figure: Plotly figure corresponding to the grouped Bar type
+        """
+        df = self.transformation_strategy.calculate(df)
+
+        if isinstance(df.index,MultiIndex):
+            figure = self.createMultiindexFigure(df)
+        else:
+            figure = self.createSimpleFigure(df)
+
+        figure.update_layout(self.config.layout_modifiers)
+        figure = self.updateLayout(figure)
+        return figure
+
+
+class ScatterFigure(Figure):
+    """ Concrete Figure class for scatter figures """
+    def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
+        super().__init__(plot_config,transformation_strategy)
+        self.fill_lines = fill_lines
+
+    def createTraces(self,df):
+        return [
+            go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i > 0 else None, line=dict(color="black",dash="dash") ,mode="lines")
+            for i,col in enumerate(self.fill_lines)
+        ] + [
+            go.Scatter( x = df.index, y = df.loc[:,col], name = col )
+            for col in [c for c in df.columns if c not in self.fill_lines]
+        ]
+
+    def createMultiindexFigure(self,df):
+        """ Creates a plotly figure from a multiIndex dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: Scatter animation where the secondary_ axis corresponds to a specified parameter
+        """
+        return self.createSliderAnimation(df)
+
+    def createSimpleFigure(self,df):
         """ Creates a plotly figure from a given dataframe
         Args:
             df (pd.DataFrame). The transformed dataframe
         Returns:
             go.Figure: Scatter plot
         """
-        figure = go.Figure(
-            layout=go.Layout(
-                title=self.config.title,
-                xaxis=dict( title = self.config.xaxis.label ),
-                yaxis=dict( title = self.config.yaxis.label ),
-                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
-            )
-        )
-        for i,col in enumerate(self.fill_lines):
-            figure.add_trace(
-                go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i > 0 else None, line=dict(color="black",dash="dash") ,mode="lines")
-            )
-
-        for col in [c for c in df.columns if c not in self.fill_lines]:
-            figure.add_trace(
-                go.Scatter( x = df.index, y = df.loc[:,col], name = col )
-            )
-        return figure
-
-    def createFigure(self,df):
-        """ Creates a scatter plot from the master dataframe
-        Args:
-            df (pd.DataFrame). The master dataframe containing all reframe test data
-        Returns:
-            go.Figure: Plotly figure corresponding to the Scatter type
-        """
-        df = self.transformation_strategy.calculate(df)
-
-        if isinstance(df.index,MultiIndex):
-            figure = self.createAnimation(df)
-        else:
-            figure = self.createSimple(df)
-        figure.update_layout(self.config.layout_modifiers)
-        return figure
+        return go.Figure(data = self.createTraces(df))
 
 
 class TableFigure(Figure):
@@ -142,7 +123,10 @@ class TableFigure(Figure):
         super().__init__(plot_config, transformation_strategy)
         self.precision = 3
 
-    def createMultiindex(self,df):
+    def cellFormat(self,df):
+        return [f'.{self.precision}' if t == float64 else '' for t in [df.index.dtype] + df.dtypes.values.tolist()]
+
+    def createMultiindexFigure(self,df):
         """ Creates a plotly table from a multiindex dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe (must be multiindex)
@@ -154,12 +138,12 @@ class TableFigure(Figure):
                 header=dict(values= df.index.names + df.columns.tolist()),
                 cells=dict(
                     values=[df.index.get_level_values(i) for i in range(len(df.index.names))] + [df[col] for col in df.columns],
-                    format=[f'.{self.precision}' if t == float64 else '' for t in [df.index.dtype] + df.dtypes.values.tolist()]
+                    format=self.cellFormat(df)
                 )
             )
         )
 
-    def createSimple(self,df):
+    def createSimpleFigure(self,df):
         """ Creates a simple plotly table from a dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe
@@ -171,34 +155,24 @@ class TableFigure(Figure):
                 header=dict(values= [df.index.name] + df.columns.tolist()),
                 cells=dict(
                     values= [df.index.values.tolist()] + [df[col] for col in df.columns],
-                    format=[f'.{self.precision}' if t == float64 else '' for t in [df.index.dtype] + df.dtypes.values.tolist()]
+                    format=self.cellFormat(df)
                 )
             )
         )
 
+    def updateLayout(self, fig):
+        """ Do not update general layout defined by the parent method """
+        pass
+        return fig
 
-    def createFigure(self,df):
-        """ Creates a table figure the master dataframe
-        Args:
-            df (pd.DataFrame). The master dataframe containing all reframe test data
-        Returns:
-            go.Figure: Plotly figure corresponding to the Table type
-        """
-        df = self.transformation_strategy.calculate(df)
 
-        if isinstance(df.index,MultiIndex):
-            figure = self.createMultiindex(df)
-        else:
-            figure = self.createSimple(df)
-        figure.update_layout(self.config.layout_modifiers)
-        return figure
 
 class StackedBarFigure(Figure):
     """ Concrete Figure class for stacked bar charts"""
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
 
-    def createGrouped(self,df):
+    def createMultiindexFigure(self,df):
         """ Creates a stacked and grouped plotly bar chart from a multiindex dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe (must be multiindex)
@@ -219,14 +193,9 @@ class StackedBarFigure(Figure):
             y=df.columns,
             facet_col=self.config.xaxis.label,
         )
-        fig.update_layout(
-            yaxis=dict(title=self.config.yaxis.label),
-            title = self.config.title,
-            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
-        )
         return fig
 
-    def createSimple(self,df):
+    def createSimpleFigure(self,df):
         """ Creates a stacked plotly bar chart from a single indexed dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe
@@ -238,131 +207,33 @@ class StackedBarFigure(Figure):
                 go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
                 for col in df.columns
             ],
-            layout=go.Layout(
-                barmode="stack",
-                xaxis=dict(
-                    title = self.config.xaxis.label
-                ),
-                yaxis=dict(
-                    title = self.config.yaxis.label
-                ),
-                title = self.config.title,
-                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
-            )
+            layout=go.Layout( barmode="stack",xaxis=dict(title = self.config.xaxis.label))
         )
 
-    def createFigure(self,df):
-        """ Creates a stacked bar figure from the master dataframe
-        Args:
-            df (pd.DataFrame). The master dataframe containing all reframe test data
-        Returns:
-            go.Figure: Plotly figure corresponding to the Stacked Bar type
-        """
-        df = self.transformation_strategy.calculate(df)
+    def updateLayout(self,fig):
+        fig.update_layout(
+            title=self.config.title,
+            yaxis=dict(title = self.config.yaxis.label),
+            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+        )
+        return fig
 
-        if isinstance(df.index,MultiIndex):
-            figure = self.createGrouped(df)
-        else:
-            figure = self.createSimple(df)
-
-        figure.update_layout(self.config.layout_modifiers)
-        return figure
-
-class GroupedBarFigure(Figure): #TODO: FACTOR animation and bar...
+class GroupedBarFigure(Figure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
 
-    def createGrouped(self,df):
-        frames = []
-        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
-        range_epsilon= 0.01
+    def createTraces(self,df):
+        return [
+            go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
+            for col in df.columns
+        ]
 
+    def createMultiindexFigure(self,df):
+        return self.createSliderAnimation(df)
 
-        ranges=[]
+    def createSimpleFigure(self,df):
+        return go.Figure(self.createTraces(df))
 
-        for j,dim in enumerate(anim_dimension_values):
-            frame_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
-            frames.append([
-                go.Bar(
-                    x = frame_df.index.astype(str),
-                    y = frame_df.loc[:,col],
-                    name=col
-                )
-                for col in frame_df.columns
-            ])
-            ranges.append([
-                frame_df.min().min() - frame_df.min().min()*range_epsilon,
-                frame_df.max().max() + frame_df.min().min()*range_epsilon
-            ])
-
-        if frames:
-            fig = go.Figure(
-                data = frames[0],
-                frames = [
-                    go.Frame(
-                        data = f,
-                        name=f"frame_{i}",
-                        layout=dict(
-                            yaxis=dict(range = ranges[i])
-                        )
-                    )
-                    for i,f in enumerate(frames)],
-                layout=go.Layout(
-                    yaxis=dict(range = ranges[0]),
-                    sliders=[dict(
-                        active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
-                        steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
-                    )],
-                )
-            )
-        else:
-            fig = go.Figure()
-
-
-        fig.update_layout(
-            yaxis=dict(title=self.config.yaxis.label),
-            xaxis=dict(title=self.config.xaxis.label),
-            title=self.config.title,
-            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
-        )
-
-        return fig
-
-    def createSimple(self,df):
-        return go.Figure(
-            data = [
-                go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
-                for col in df.columns
-            ],
-            layout=go.Layout(
-                xaxis=dict(
-                    title = self.config.xaxis.label
-                ),
-                yaxis=dict(
-                    title = self.config.yaxis.label
-                ),
-                title = self.config.title,
-                legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
-            )
-        )
-
-
-    def createFigure(self,df):
-        """ Creates a grouped bar figure from the master dataframe
-        Args:
-            df (pd.DataFrame). The master dataframe containing all reframe test data
-        Returns:
-            go.Figure: Plotly figure corresponding to the grouped Bar type
-        """
-        df = self.transformation_strategy.calculate(df)
-
-        if isinstance(df.index,MultiIndex):
-            figure = self.createGrouped(df)
-        else:
-            figure = self.createSimple(df)
-
-        figure.update_layout(self.config.layout_modifiers)
-        return figure
 
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
