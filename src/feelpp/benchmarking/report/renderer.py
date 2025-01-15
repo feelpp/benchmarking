@@ -10,6 +10,7 @@ class Renderer:
             template_path (str): The path to the Jinja2 template
         """
         env = Environment(loader=FileSystemLoader("."), trim_blocks=True, lstrip_blocks=True)
+        env.globals.update(zip=zip)
         self.template = env.get_template(template_path)
 
     def render(self, output_filepath, data):
