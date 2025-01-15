@@ -1,4 +1,5 @@
 from feelpp.benchmarking.report.figureFactory import FigureFactory
+from feelpp.benchmarking.report.strategies import StrategyFactory
 
 class Controller:
     """ Controller component , it orchestrates the model with the view"""
@@ -11,10 +12,28 @@ class Controller:
         self.model = model
         self.view = view
 
-    def generateAll(self):
-        """ Creates plotly figures for each plot specified on the view config file
+    def generateFigures(self):
+        """ Creates plotly figures in HTML for each plot specified on the view config file
         Returns a list of plotly figures.
         """
+        figures = []
         for plot_config in self.view.plots_config:
             for plot in FigureFactory.create(plot_config):
-                yield plot.createFigure(self.model.master_df)
+                figures.append( plot.createFigure(self.model.master_df) )
+        return figures
+
+    def generateFiguresHtml(self):
+        figures = self.generateFigures()
+        return [fig.to_html() for fig in figures]
+
+
+    def buildCsvs(self):
+        """
+        """
+        csvs = []
+        for plot_config in self.view.plots_config:
+            strategy = StrategyFactory.create(plot_config)
+            csv_data = strategy.calculate(self.model.master_df).to_csv()
+            csvs.append(csv_data)
+
+        return "<br>".join(csvs)

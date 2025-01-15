@@ -8,6 +8,14 @@
 :author: Your Name
 :revdate: {{ session_info.time_end }}
 
+++++
+<button id="download-csv-{{parent_catalogs}}" > CSV </button>
+<script>
+
+</script>
+++++
+
+
 {% if description_path %}
 == Case Description
 
@@ -33,25 +41,11 @@ include::ROOT:{{description_path}}[leveloffset=+1]
 {% endfor %}
 |===
 
-[%dynamic%close%hide_code,python]
-----
-from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
-from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
-from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
-----
-
-[%dynamic%close%hide_code,python]
-----
-model=AtomicReportModel({{ runs }})
-view=AtomicReportView({{ plots_config }})
-controller=AtomicReportController(model,view)
-----
-
-[%dynamic%open%hide_code,python]
-----
-for fig in controller.generateAll():
-    fig.show()
-----
+{% for figure in figures %}
+++++
+{{figure}}
+++++
+{% endfor %}
 
 {% endif %}
 

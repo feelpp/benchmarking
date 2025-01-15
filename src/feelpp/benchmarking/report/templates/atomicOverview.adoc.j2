@@ -11,26 +11,13 @@
     - {{parent.type.title()}} : {{parent.display_name}}
 {% endfor %}
 
-[%dynamic%close%hide_code,python]
-----
-from numpy import nan
-from feelpp.benchmarking.report.base.controller import Controller
-from feelpp.benchmarking.report.base.model import AggregationModel
-from feelpp.benchmarking.report.base.view import View
-----
+{% for figure in figures %}
+++++
+{{figure}}
+++++
+{% endfor %}
 
-[%dynamic%close%hide_code,python]
-----
-model=AggregationModel.fromDataframe({{ master_df }})
-view=View({{ plots_config }})
-controller=Controller(model,view)
-----
 
-[%dynamic%open%hide_code,python]
-----
-for fig in controller.generateAll():
-    fig.show()
-----
 
 ++++
 <style>
