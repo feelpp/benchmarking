@@ -177,9 +177,9 @@ class AtomicReport:
                 flat_hash_param_map = flat_hash_params,
                 hash_params_headers = hash_params_headers,
                 description_path = self.description_path,
-                figures = controller.generateFiguresHtml(),
-                figure_csvs = controller.buildCsvs(),
-                figure_pgfs = controller.buildPgfs()
+                figures = controller.generateData("html"),
+                figure_csvs = controller.generateData("csv"),
+                figure_pgfs = controller.generateData("pgf")
             )
         )
 
