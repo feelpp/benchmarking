@@ -22,7 +22,11 @@ class Figure:
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
     def updateLayout(self,fig):
-        """ Updates the layout of a figure with general (shared) information."""
+        """ Updates the layout of a figure with general (shared) information.
+        Args:
+            - fig (go.Figure): The plotly figure to update the layout for
+        Returns: (go.Figure) The updated plotly figure
+        """
         fig.update_layout(
             title=self.config.title,
             xaxis=dict(title = self.config.xaxis.label),
@@ -32,10 +36,21 @@ class Figure:
         return fig
 
     def getIdealRange(self,df):
+        """ Computes the [(min - eps), (max+eps)] interval for optimal y-axis display
+        Args:
+            - df (pd.DataFrame): The dataframe for which the interval should be computed
+        Returns list[float, float]: The  [(min - eps), (max+eps)] interval
+        """
         range_epsilon= 0.01
         return [ df.min().min() - df.min().min()*range_epsilon, df.max().max() + df.min().min()*range_epsilon ]
 
     def createSliderAnimation(self,df):
+        """ Creates a plotly slider animation figure from a pandas dataframe. Depending on the provided config parameters.
+        The slider axis corresponds to the secondary_axis parameter of the configuration file.
+        Args:
+            - df (pd.DataFrame): The dataframe containing the figure data.
+        Returns: (go.Figure) The plotly slider animation figure
+        """
         frames = []
         ranges=[]
         anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
@@ -90,6 +105,11 @@ class ScatterFigure(Figure):
         self.fill_lines = fill_lines
 
     def createTraces(self,df):
+        """ Creates the traces for a given dataframe. Useful for animation creation.
+        Args:
+            - df (pd.DataFrame): The dataframe containing the figure data.
+        Returns: (list[go.Trace]) The Scatter traces to display in the scatter figure.
+        """
         return [
             go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i > 0 else None, line=dict(color="black",dash="dash") ,mode="lines")
             for i,col in enumerate(self.fill_lines)
@@ -124,6 +144,12 @@ class TableFigure(Figure):
         self.precision = 3
 
     def cellFormat(self,df):
+        """ Computes the expected format of a table cell, expected by Plotly, depending on the precision and the dataframe dtypes.
+        Args:
+            df (pd.DataFrame) DataFrame containing table data.
+        Returns
+            list[float|'']. List containing the Table expected cell formats
+        """
         return [f'.{self.precision}' if t == float64 else '' for t in [df.index.dtype] + df.dtypes.values.tolist()]
 
     def createMultiindexFigure(self,df):
@@ -211,6 +237,7 @@ class StackedBarFigure(Figure):
         )
 
     def updateLayout(self,fig):
+        """ Sets the title, yaxis and legend attributes of the layout without specifying the xaxis"""
         fig.update_layout(
             title=self.config.title,
             yaxis=dict(title = self.config.yaxis.label),
@@ -223,15 +250,32 @@ class GroupedBarFigure(Figure):
         super().__init__(plot_config, transformation_strategy)
 
     def createTraces(self,df):
+        """ Creates the Bar traces for a given dataframe. Useful for animation creation.
+        Args:
+            - df (pd.DataFrame): The dataframe containing the figure data.
+        Returns: (list[go.Trace]) The Bar traces to display in the scatter figure.
+        """
         return [
             go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
             for col in df.columns
         ]
 
     def createMultiindexFigure(self,df):
+        """ Creates a plotly figure from a multiIndex dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: Bar animation where the secondary_ axis corresponds to a specified parameter
+        """
         return self.createSliderAnimation(df)
 
     def createSimpleFigure(self,df):
+        """ Creates a plotly figure from a given dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            go.Figure: Bar plot
+        """
         return go.Figure(self.createTraces(df))
 
 
