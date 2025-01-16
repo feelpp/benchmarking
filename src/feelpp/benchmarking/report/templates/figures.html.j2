@@ -1,6 +1,7 @@
 {% for figure in figures %}
 ++++
 <button id="download-csv-{{parent_catalogs}}-{{loop.index}}" > CSV </button>
+<button id="download-pgf-{{parent_catalogs}}-{{loop.index}}" > LaTeX </button>
 {{figure}}
 ++++
 {% endfor %}
@@ -8,8 +9,8 @@
 
 ++++
 <script>
-function downloadString(data, filename) {
-    const blob = new Blob([data], { type: 'text/csv' });
+function downloadString(data, filename, mimeType ) {
+    const blob = new Blob([data], { type: `${mimeType};charset=utf-8` });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -20,14 +21,15 @@ function downloadString(data, filename) {
     URL.revokeObjectURL(url);
 }
 
-function addDownloadListener( button_id, data, filename ) {
+function addDownloadListener( button_id, data, filename, mimeType = 'text/plain') {
     document.getElementById(button_id).addEventListener('click', function() {
-        downloadString(data,filename)
+        downloadString(data,filename,mimeType);
     });
 }
 
-{% for csv in figure_csvs %}
-    addDownloadListener('download-csv-{{parent_catalogs}}-{{loop.index}}' , `{{csv | safe}}`, 'data.csv')
+{% for csv,pgf in zip(figure_csvs,figure_pgfs) %}
+    addDownloadListener('download-csv-{{parent_catalogs}}-{{loop.index}}' , `{{csv | tojson}}`, 'data.csv', 'text/csv')
+    addDownloadListener('download-pgf-{{parent_catalogs}}-{{loop.index}}' , `{{pgf | tojson}}`, 'figure.tex' )
 {% endfor %}
 
 </script>

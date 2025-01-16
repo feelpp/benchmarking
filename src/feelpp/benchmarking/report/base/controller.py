@@ -1,6 +1,9 @@
 from feelpp.benchmarking.report.figureFactory import FigureFactory
 from feelpp.benchmarking.report.strategies import StrategyFactory
 
+import tempfile
+import tikzplotly
+
 class Controller:
     """ Controller component , it orchestrates the model with the view"""
     def __init__(self, model, view):
@@ -27,6 +30,31 @@ class Controller:
         Returns a list of plotly HTML figures """
         figures = self.generateFigures()
         return [fig.to_html() for fig in figures]
+
+    def buildPgfs(self):
+        figures = self.generateFigures()
+        pgf_figures = []
+
+        with tempfile.NamedTemporaryFile() as tmp_pgf_save:
+            for figure in figures:
+                if figure.frames:
+                    animation_pgf = []
+                    for frame in figure.frames:
+                        tikzplotly.save(tmp_pgf_save.name,frame)
+
+                        with open(tmp_pgf_save.name) as tmp:
+                            animation_pgf.append(tmp.read())
+                    pgf_figures.append("\n\n".join(animation_pgf))
+                else:
+                    try:
+                        tikzplotly.save(tmp_pgf_save.name,figure)
+                    except IndexError as e:
+                        print(e)
+                        pgf_figures.append("")
+                    else:
+                        with open(tmp_pgf_save.name) as tmp:
+                            pgf_figures.append(tmp.read())
+        return pgf_figures
 
 
     def buildCsvs(self):

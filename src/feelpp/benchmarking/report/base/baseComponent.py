@@ -143,7 +143,8 @@ class BaseComponent:
                 parent_catalogs = "-".join([parent.id for parent in parents]),
                 parents = parents,
                 figures = controller.generateFiguresHtml(),
-                figure_csvs = controller.buildCsvs()
+                figure_csvs = controller.buildCsvs(),
+                figure_pgfs = controller.buildPgfs()
             )
         )
 
