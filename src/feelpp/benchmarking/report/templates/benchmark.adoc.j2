@@ -48,7 +48,7 @@ document.getElementById('download-csv-{{parent_catalogs}}-{{loop.index}}').addEv
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'data.csv'; // Desired file name
+    a.download = 'data.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
