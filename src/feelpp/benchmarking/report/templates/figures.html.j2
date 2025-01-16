@@ -28,8 +28,8 @@ function addDownloadListener( button_id, data, filename, mimeType = 'text/plain'
 }
 
 {% for csv,pgf in zip(figure_csvs,figure_pgfs) %}
-    addDownloadListener('download-csv-{{parent_catalogs}}-{{loop.index}}' , `{{csv | tojson}}`, 'data.csv', 'text/csv')
-    addDownloadListener('download-pgf-{{parent_catalogs}}-{{loop.index}}' , `{{pgf | tojson}}`, 'figure.tex' )
+    addDownloadListener('download-csv-{{parent_catalogs}}-{{loop.index}}' , `{{csv | tojson | stripquotes}}`, 'data.csv', 'text/csv')
+    addDownloadListener('download-pgf-{{parent_catalogs}}-{{loop.index}}' , `{{pgf | tojson | stripquotes}}`, 'figure.tex' )
 {% endfor %}
 
 </script>

@@ -10,15 +10,29 @@ class Renderer:
             template_path (str): The path to the Jinja2 template folder
             template_filename (str): The template filename
         """
-        env = Environment(loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True)
-        env.globals.update(zip=zip)
-        self.template = env.get_template(template_filename)
+        self.env = Environment(loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True)
+        self.setGlobals()
+        self.setFilters()
+        self.template = self.env.get_template(template_filename)
 
     def render(self, output_filepath, data):
         """ Render the JSON file to an AsciiDoc file using a Jinja2 template and the given data"""
         with open(output_filepath, 'w') as f:
             f.write(self.template.render(data))
 
+    def setGlobals(self):
+        """ Set environment globals """
+        self.env.globals.update(zip=zip)
+
+    def setFilters(self):
+        """ Set environment filters """
+        self.env.filters["stripquotes"] = self.stripQuotes
+
+    @staticmethod
+    def stripQuotes(value):
+        if isinstance(value,str):
+            return value.strip('"')
+        return value
 
 class RendererFactory:
     @staticmethod
