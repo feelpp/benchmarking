@@ -3,7 +3,7 @@ import plotly.express as px
 from pandas import MultiIndex
 from numpy import float64 as float64
 
-from feelpp.benchmarking.report.transformationStrategies import TransformationStrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 
 
 class Figure:

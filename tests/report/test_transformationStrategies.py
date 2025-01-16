@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.transformationStrategies import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, TransformationStrategyFactory
+from feelpp.benchmarking.report.transformationFactory import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, TransformationStrategyFactory
 import pytest
 import pandas as pd
 import numpy as np

@@ -1,6 +1,6 @@
 import pytest
 from feelpp.benchmarking.report.figureFactory import FigureFactory
-from feelpp.benchmarking.report.transformationStrategies import TransformationStrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.report.dataGenerationStrategies import DataGeneratorFactory, PlotlyGenerator, PlotlyHtmlGenerator, CsvGenerator, PgfGenerator
 from test_transformationStrategies import PlotConfigMocker, AxisMocker, MockDataframe
 import pandas as pd
