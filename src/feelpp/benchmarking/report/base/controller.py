@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.dataGenerationStrategies import DataGeneratorFactory
+from feelpp.benchmarking.report.dataGenerationFactory import DataGeneratorFactory
 class Controller:
     """ Controller component , it orchestrates the model with the view"""
     def __init__(self, model, view):
