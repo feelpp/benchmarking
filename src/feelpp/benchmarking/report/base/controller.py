@@ -1,5 +1,5 @@
 from feelpp.benchmarking.report.figureFactory import FigureFactory
-from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.report.transformationStrategies import StrategyFactory
 
 import tempfile
 import tikzplotly
