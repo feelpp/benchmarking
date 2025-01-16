@@ -1,5 +1,5 @@
 from feelpp.benchmarking.report.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure
-from test_strategies import PlotConfigMocker
+from test_transformationStrategies import PlotConfigMocker
 import pytest
 
 
