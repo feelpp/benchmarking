@@ -36,21 +36,39 @@ def test_strategyFactory(transformation,strategy):
         with pytest.raises(NotImplementedError):
             StrategyFactory.create(PlotConfigMocker(transformation=transformation))
 
+class MockDataframe:
+    def __init__(self,index_type):
+        if index_type == "simple":
+            parameter_product = list(product([2,4,8,16,32,64,128],["a","b","c","d"]))
+            self.df = pd.DataFrame(
+                {
+                    "some_col":["sample_data"]*len(parameter_product),
+                    "xaxis" : [p[0] for p in parameter_product],
+                    "performance_variable": [p[1] for p in parameter_product],
+                    "value": np.random.uniform(-100,100,len(parameter_product))
+                }
+            )
+        elif index_type == "multi":
+            parameter_product = list(product([32,64,128],["M1","M2"],["A","B","C"]))
+            self.df = pd.DataFrame(
+                {
+                    "some_col":["sample_data"]*len(parameter_product),
+                    "xaxis" : [p[0] for p in parameter_product],
+                    "color_axis" : [p[1] for p in parameter_product],
+                    "secondary_axis": [p[2] for p in parameter_product],
+                    "value": np.random.uniform(-100,100,len(parameter_product)),
+                    "performance_variable":["a"]*len(parameter_product)
+                }
+            )
+        else:
+            raise NotImplementedError
+
 
 class TestSimpleStrategies:
     """Tests for strategies with simple confiugurations (just xaxis)"""
+
     plot_config = PlotConfigMocker( xaxis=AxisMocker(parameter="xaxis",label="x") )
-
-    parameter_product = list(product([2,4,8,16,32,64,128],["a","b","c","d"]))
-
-    mock_data = pd.DataFrame(
-        {
-            "some_col":["sample_data"]*len(parameter_product),
-            "xaxis" : [p[0] for p in parameter_product],
-            "performance_variable": [p[1] for p in parameter_product],
-            "value": np.random.uniform(-100,100,len(parameter_product))
-        }
-    )
+    mock_data = MockDataframe("simple").df
 
     def getCalculatedDf(self,transformation):
         self.plot_config.transformation = transformation
@@ -90,19 +108,7 @@ class TestComplexStrategies:
         secondary_axis=AxisMocker(parameter="secondary_axis",label="secondary"),
         color_axis=AxisMocker(parameter="color_axis",label="color")
     )
-
-    parameter_product = list(product([32,64,128],["M1","M2"],["A","B","C"]))
-
-    mock_data = pd.DataFrame(
-        {
-            "some_col":["sample_data"]*len(parameter_product),
-            "xaxis" : [p[0] for p in parameter_product],
-            "color_axis" : [p[1] for p in parameter_product],
-            "secondary_axis": [p[2] for p in parameter_product],
-            "value": np.random.uniform(-100,100,len(parameter_product)),
-            "performance_variable":["a"]*len(parameter_product)
-        }
-    )
+    mock_data = MockDataframe("multi").df
 
     def getCalculatedDf(self,transformation):
         self.plot_config.transformation = transformation
