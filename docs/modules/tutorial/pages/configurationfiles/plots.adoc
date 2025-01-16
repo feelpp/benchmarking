@@ -113,7 +113,7 @@ For the given example, it produces the following dataframe
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.transformationStrategies import StrategyFactory
+from feelpp.benchmarking.report.transformationStrategies import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -131,7 +131,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -141,7 +141,7 @@ The relative performance strategy computes the proportion of the time that a a `
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.transformationStrategies import StrategyFactory
+from feelpp.benchmarking.report.transformationStrategies import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -159,7 +159,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -172,7 +172,7 @@ For the example, this strategy will produce the following.
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.transformationStrategies import StrategyFactory
+from feelpp.benchmarking.report.transformationStrategies import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -190,7 +190,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 

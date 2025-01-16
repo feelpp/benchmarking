@@ -99,7 +99,7 @@ class SpeedupStrategy(PerformanceStrategy):
         pivot["half-optimal"] = (pivot["optimal"] -1) / 2 + 1
         return pivot
 
-class StrategyFactory:
+class TransformationStrategyFactory:
     """ Factory class to dispatch concrete transformation strategies"""
     @staticmethod
     def create(plot_config):

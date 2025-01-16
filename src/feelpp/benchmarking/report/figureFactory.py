@@ -3,7 +3,7 @@ import plotly.express as px
 from pandas import MultiIndex
 from numpy import float64 as float64
 
-from feelpp.benchmarking.report.transformationStrategies import StrategyFactory
+from feelpp.benchmarking.report.transformationStrategies import TransformationStrategyFactory
 
 
 class Figure:
@@ -287,7 +287,7 @@ class FigureFactory:
         Args:
             plot_config (Plot). Pydantic object with the plot configuration information
         """
-        strategy = StrategyFactory.create(plot_config)
+        strategy = TransformationStrategyFactory.create(plot_config)
         figures = []
         for plot_type in plot_config.plot_types:
             if plot_type ==  "scatter":

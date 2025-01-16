@@ -1,5 +1,5 @@
 from feelpp.benchmarking.report.figureFactory import FigureFactory
-from feelpp.benchmarking.report.transformationStrategies import StrategyFactory
+from feelpp.benchmarking.report.transformationStrategies import TransformationStrategyFactory
 
 import tempfile
 import tikzplotly
@@ -66,7 +66,7 @@ class CsvGenerator(DataGenerator):
         """
         csvs = []
         for plot_config in plots_config:
-            strategy = StrategyFactory.create(plot_config)
+            strategy = TransformationStrategyFactory.create(plot_config)
             csv_data = strategy.calculate(master_df).to_csv()
             for _ in plot_config.plot_types:
                 csvs.append(csv_data)

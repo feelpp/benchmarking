@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.transformationStrategies import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, StrategyFactory
+from feelpp.benchmarking.report.transformationStrategies import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, TransformationStrategyFactory
 import pytest
 import pandas as pd
 import numpy as np
@@ -31,10 +31,10 @@ class PlotConfigMocker:
 ])
 def test_strategyFactory(transformation,strategy):
     if strategy:
-        assert isinstance(StrategyFactory.create(PlotConfigMocker(transformation=transformation)),strategy)
+        assert isinstance(TransformationStrategyFactory.create(PlotConfigMocker(transformation=transformation)),strategy)
     else:
         with pytest.raises(NotImplementedError):
-            StrategyFactory.create(PlotConfigMocker(transformation=transformation))
+            TransformationStrategyFactory.create(PlotConfigMocker(transformation=transformation))
 
 class MockDataframe:
     def __init__(self,index_type):
@@ -72,7 +72,7 @@ class TestSimpleStrategies:
 
     def getCalculatedDf(self,transformation):
         self.plot_config.transformation = transformation
-        calculated_df = StrategyFactory.create(self.plot_config).calculate(self.mock_data)
+        calculated_df = TransformationStrategyFactory.create(self.plot_config).calculate(self.mock_data)
         assert calculated_df.index.name == "xaxis"
         assert calculated_df.columns.name == "performance_variable"
         assert calculated_df.isna().sum().sum() == 0
@@ -112,7 +112,7 @@ class TestComplexStrategies:
 
     def getCalculatedDf(self,transformation):
         self.plot_config.transformation = transformation
-        calculated_df = StrategyFactory.create(self.plot_config).calculate(self.mock_data)
+        calculated_df = TransformationStrategyFactory.create(self.plot_config).calculate(self.mock_data)
         assert calculated_df.index.names[0] == "secondary_axis"
         assert calculated_df.index.names[1] == "xaxis"
         assert calculated_df.columns.name == "color_axis"
