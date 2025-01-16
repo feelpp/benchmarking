@@ -4,14 +4,15 @@ import os
 class Renderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
 
-    def __init__(self, template_path):
+    def __init__(self, template_path, template_filename):
         """ Initialize the template for the renderer
         Args:
-            template_path (str): The path to the Jinja2 template
+            template_path (str): The path to the Jinja2 template folder
+            template_filename (str): The template filename
         """
-        env = Environment(loader=FileSystemLoader("."), trim_blocks=True, lstrip_blocks=True)
+        env = Environment(loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True)
         env.globals.update(zip=zip)
-        self.template = env.get_template(template_path)
+        self.template = env.get_template(template_filename)
 
     def render(self, output_filepath, data):
         """ Render the JSON file to an AsciiDoc file using a Jinja2 template and the given data"""
@@ -29,7 +30,7 @@ class RendererFactory:
             "atomic_overview" : "atomicOverview.adoc.j2"
         }
         try:
-            return Renderer(os.path.join(base, templates[renderer_type]))
+            return Renderer(base, templates[renderer_type])
         except KeyError:
             raise NotImplementedError(
                 f"'{renderer_type}' not recognized. Valid options are: {', '.join(templates.keys())}."
