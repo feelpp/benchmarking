@@ -1,0 +1,30 @@
+{% for figure,csv in zip(figures,figure_csvs) %}
+++++
+<button id="download-csv-{{parent_catalogs}}-{{loop.index}}" > CSV </button>
+
+{{figure}}
+
+<script>
+addDownloadListener('download-csv-{{parent_catalogs}}-{{loop.index}}' , `{{csv | safe}}`)
+</script>
+++++
+{% endfor %}
+
+
+++++
+<script>
+function addDownloadListener( button_id, csvData ) {
+    document.getElementById(button_id).addEventListener('click', function() {
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+}
+</script>
+++++
