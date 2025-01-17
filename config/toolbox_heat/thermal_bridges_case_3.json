@@ -1,6 +1,6 @@
 {
     "executable": "feelpp_toolbox_heat",
-    "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/ThermalBridgesENISO10211/Case3",
+    "output_directory": "{{machine.output_app_dir}}/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3",
     "use_case_name": "ThermalBridgesENISO10211",
     "timeout":"0-00:10:00",
     "memory":"250G",
@@ -9,7 +9,7 @@
             "image": {
                 "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
             },
-            "input_dir":"/input_data/",
+            "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
                 "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}",
@@ -29,11 +29,8 @@
         "--heat.scalability-save=1",
         "--repository.append.np 0",
         "--case.discretization {{parameters.discretization.value}}",
-        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
-    "env_variables":{
-        "OMP_NUM_THREADS":"1"
-    },
     "outputs": [
         {
             "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
@@ -70,17 +67,33 @@
     "parameters": [
         {
             "name": "nb_tasks",
-            "sequence": [
-                {"tasks":128,"tasks_per_node":128,"exclusive_access":true}
+            "zip":[
+                {
+                    "name":"tasks",
+                    "range":{ "min":128, "max":1280, "step":128}
+                },
+                {
+                    "name":"exclusive_access",
+                    "repeat":{"value":true,"count":10}
+                },
+                {
+                    "name":"tasks_per_node",
+                    "repeat":{"value":128,"count":10}
+                }
             ]
         },
         {
-            "name": "meshes",
-            "sequence": ["M1"]
+            "name":"mesh",
+            "sequence":["M1","M2","M3"]
         },
         {
-            "name": "discretization",
-            "sequence": ["P1"]
+            "name":"discretization",
+            "sequence":["P1","P2","P3"],
+            "conditions":{
+                "P1":{ "nb_tasks.tasks":[128, 256, 384, 512, 640, 768] },
+                "P2":{ "nb_tasks.tasks":[768, 896, 1024, 1152, 1280] },
+                "P3":{ "nb_tasks.tasks":[640, 768, 896, 1024, 1152, 1280] }
+            }
         },
         {
             "name": "solver",

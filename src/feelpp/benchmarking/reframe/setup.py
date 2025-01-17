@@ -181,6 +181,19 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             exec(f"{param_config.name}=parameter({param_values})")
 
     @run_after('init')
+    def pruneParameterSpace(self):
+        for param_config in self.app_setup.reader.config.parameters:
+            for current_param_value, filters in param_config.conditions.items():
+                if getattr(self,param_config.name) == current_param_value:
+                    for accept_name,accept_values in filters.items():
+                        param_path = accept_name.split(".")
+                        current_filter_value = getattr(self,param_path[0])
+                        if len(param_path) > 1:
+                            for p in param_path[1:]:
+                                current_filter_value = current_filter_value[p]
+                        self.skip_if( current_filter_value not in accept_values,  f"{accept_name}={current_filter_value} not in {param_config.name}={current_param_value} condition list ({accept_values})", )
+
+    @run_after('init')
     def setupAfterInit(self):
         """ Sets the necessary post-init configurations"""
         self.app_setup.setupAfterInit(self)

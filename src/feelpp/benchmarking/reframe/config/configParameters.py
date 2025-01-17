@@ -66,6 +66,8 @@ class Parameter(BaseModel):
     mode:str = None
     active:Optional[bool] = True
 
+    conditions: Optional[dict[str,dict[str,List]]] = {}
+
     linspace:Optional[Linspace] = None
     geomspace:Optional[Geomspace] = None
     range:Optional[Range] = None
