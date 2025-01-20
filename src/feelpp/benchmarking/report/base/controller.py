@@ -1,5 +1,4 @@
-from feelpp.benchmarking.report.figureFactory import FigureFactory
-
+from feelpp.benchmarking.report.dataGenerationFactory import DataGeneratorFactory
 class Controller:
     """ Controller component , it orchestrates the model with the view"""
     def __init__(self, model, view):
@@ -11,10 +10,6 @@ class Controller:
         self.model = model
         self.view = view
 
-    def generateAll(self):
-        """ Creates plotly figures for each plot specified on the view config file
-        Returns a list of plotly figures.
-        """
-        for plot_config in self.view.plots_config:
-            for plot in FigureFactory.create(plot_config):
-                yield plot.createFigure(self.model.master_df)
+    def generateData(self,format):
+        """ Creates a list of data depending on the desired format, using the plot configuration and the model's master dataframe"""
+        return DataGeneratorFactory.create(format).generate(self.view.plots_config,self.model.master_df)
