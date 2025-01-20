@@ -4,6 +4,8 @@ from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.outputs import OutputsHandler
+from feelpp.benchmarking.reframe.resources import ResourceHandler
+
 
 import reframe as rfm
 import os, re, shutil, sys
@@ -222,55 +224,12 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 self.app_setup.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
 
     @run_before('run')
-    def setResources(self): #TODO: Maybe use strategy for this
+    def setResources(self):
         resources = self.app_setup.reader.config.resources
-        if resources.tasks and resources.tasks_per_node:
-            self.num_tasks_per_node = int(resources.tasks_per_node)
-            self.num_tasks = int(resources.tasks)
-
-            assert self.num_tasks % self.num_tasks_per_node == 0, f"Number of tasks is not divisible by tasks per node. ( {self.num_tasks} , {self.num_tasks_per_node})"
-            assert self.num_tasks > 0 and self.num_tasks >= self.num_tasks_per_node > 0, "Tasks and tasks per node should be positive."
-            assert self.num_tasks_per_node <= self.current_partition.processor.num_cpus, f"A node has not enough capacity ({self.current_partition.processor.num_cpus}, {self.num_tasks_per_node})"
-
-        elif resources.tasks_per_node and resources.nodes:
-            self.num_tasks_per_node = int(resources.tasks_per_node)
-            self.num_nodes = int(resources.nodes)
-            self.num_tasks = self.num_tasks_per_node * self.num_nodes
-
-            assert self.num_tasks_per_node <= self.current_partition.processor.num_cpus, f"A node has not enough capacity ({self.current_partition.processor.num_cpus}, {self.num_tasks_per_node})"
-            assert self.num_tasks > 0, "Number of tasks must be strictly positive"
-
-        elif resources.tasks and resources.nodes:
-            raise NotImplementedError("Number of tasks and Nodes combination is not yet supported")
-            self.num_tasks = int(resources.tasks)
-            self.num_nodes = int(resources.nodes)
-
-            assert self.num_tasks > 0 and self.num_nodes > 0, "Number of Tasks and nodes should be strictly positive."
-            assert self.num_nodes >= np.ceil(self.num_tasks/self.current_partition.processor.num_cpus), f"Cannot accomodate {self.num_tasks} tasks in {self.num_nodes} nodes"
-
-        elif resources.tasks:
-            self.num_tasks = int(resources.tasks)
-            self.num_tasks_per_node = min(self.num_tasks,self.current_partition.processor.num_cpus)
-
-            assert self.num_tasks > 0, "Number of Tasks and nodes should be strictly positive."
-
-        else:
-            raise ValueError("The Tasks parameter should contain either (tasks_per_node,nodes), (tasks,nodes), (tasks) or (tasks, tasks_per_node)")
-
-
-        if resources.memory:
-            nodes = int(np.ceil(int(resources.memory) / self.current_partition.extras["memory_per_node"]))
-            if hasattr(self,"num_nodes"):
-                self.num_nodes = nodes
-            self.num_nodes = max(self.num_nodes,nodes)
-
-            self.num_tasks_per_node = min(self.num_tasks_per_node, self.num_tasks // self.num_nodes)
+        ResourceHandler.setResources(resources, self)
 
         self.job.options += ['--threads-per-core=1']
         self.num_cpus_per_task = 1
-        self.exclusive_access = bool(resources.exclusive_access) or True
-
-
 
 
     @run_before('run')
