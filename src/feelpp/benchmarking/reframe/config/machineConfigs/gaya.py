@@ -38,6 +38,9 @@ site_configuration = {
                             'type': 'Apptainer'
                         }
                     ],
+                    'extras':{
+                        'memory_per_node':515
+                    }
                 },
             ],
             'env_vars':[
