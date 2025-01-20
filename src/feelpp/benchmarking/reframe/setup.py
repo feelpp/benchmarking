@@ -162,6 +162,10 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     """ Reframe test used to setup the regression test"""
     report_dir_path = variable(str, value=".")
 
+    script = variable(str)
+    error_log = variable(str)
+    output_log = variable(str)
+
     #TODO: Find a way to avoid env variables
     machine_setup = MachineSetup(str(os.environ.get("MACHINE_CONFIG_FILEPATH")))
     app_setup = AppSetup(str(os.environ.get("APP_CONFIG_FILEPATH")),machine_setup.reader.config)
@@ -186,7 +190,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def pruneParameterSpace(self):
         for param_config in self.app_setup.reader.config.parameters:
             for current_param_value, filters in param_config.conditions.items():
-                if getattr(self,param_config.name) == current_param_value:
+                if str(getattr(self,param_config.name)) == current_param_value:
                     for accept_name,accept_values in filters.items():
                         param_path = accept_name.split(".")
                         current_filter_value = getattr(self,param_path[0])
