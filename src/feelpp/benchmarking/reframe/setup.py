@@ -222,7 +222,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 self.app_setup.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
 
     @run_before('run')
-    def setResources(self):
+    def setResources(self): #TODO: Maybe use strategy for this
         resources = self.app_setup.reader.config.resources
         if resources.tasks and resources.tasks_per_node:
             self.num_tasks_per_node = int(resources.tasks_per_node)
@@ -256,6 +256,15 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
         else:
             raise ValueError("The Tasks parameter should contain either (tasks_per_node,nodes), (tasks,nodes), (tasks) or (tasks, tasks_per_node)")
+
+
+        if resources.memory:
+            nodes = int(np.ceil(int(resources.memory) / self.current_partition.extras["memory_per_node"]))
+            if hasattr(self,"num_nodes"):
+                self.num_nodes = nodes
+            self.num_nodes = max(self.num_nodes,nodes)
+
+            self.num_tasks_per_node = min(self.num_tasks_per_node, self.num_tasks // self.num_nodes)
 
         self.job.options += ['--threads-per-core=1']
         self.num_cpus_per_task = 1
