@@ -7,7 +7,8 @@
     "resources":{
         "tasks":"{{parameters.resources.tasks.value}}",
         "tasks_per_node":"{{parameters.resources.tasks_per_node.value}}",
-        "exclusive_access":"{{parameters.resources.exclusive_access.value}}"
+        "exclusive_access":"{{parameters.resources.exclusive_access.value}}",
+        "memory":"{{parameters.memory.value}}"
     },
     "platforms": {
         "apptainer":{
@@ -33,7 +34,7 @@
         "--repository.case {{use_case_name}}",
         "--heat.scalability-save=1",
         "--repository.append.np 0",
-        "--case.discretization {{parameters.discretization.value}}",
+        "--case.discretization {{parameters.discretization.P.value}}",
         "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
     "outputs": [
@@ -75,15 +76,15 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "range":{ "min":128, "max":1280, "step":128}
-                },
-                {
-                    "name":"exclusive_access",
-                    "repeat":{"value":true,"count":10}
+                    "range":{ "min":128, "max":512, "step":128}
                 },
                 {
                     "name":"tasks_per_node",
-                    "repeat":{"value":128,"count":10}
+                    "repeat":{"value":128,"count":4}
+                },
+                {
+                    "name":"exclusive_access",
+                    "repeat":{"value":true,"count":4}
                 }
             ]
         },
@@ -92,12 +93,16 @@
             "sequence":["M1","M2","M3"]
         },
         {
+            "name":"memory",
+            "sequence":[515, 1024]
+        },
+        {
             "name":"discretization",
             "sequence":["P1","P2","P3"],
             "conditions":{
-                "P1":{ "resources.tasks":[128, 256, 384, 512, 640, 768] },
-                "P2":{ "resources.tasks":[768, 896, 1024, 1152, 1280] },
-                "P3":{ "resources.tasks":[640, 768, 896, 1024, 1152, 1280] }
+                "P1":{ "memory":[515] },
+                "P2":{ "memory":[515] },
+                "P3":{ "memory":[1024] }
             }
         },
         {
