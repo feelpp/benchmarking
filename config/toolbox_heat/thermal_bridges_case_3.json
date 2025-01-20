@@ -5,7 +5,6 @@
     "timeout":"0-00:10:00",
     "resources":{
         "tasks":"{{parameters.resources.tasks.value}}",
-        "tasks_per_node":"{{parameters.resources.tasks_per_node.value}}",
         "exclusive_access":"{{parameters.resources.exclusive_access.value}}",
         "memory":"{{parameters.memory.value}}"
     },
@@ -75,15 +74,11 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "range":{ "min":128, "max":256, "step":128}
-                },
-                {
-                    "name":"tasks_per_node",
-                    "repeat":{"value":128,"count":2}
+                    "repeat":{"value":128,"count":1}
                 },
                 {
                     "name":"exclusive_access",
-                    "repeat":{"value":true,"count":2}
+                    "repeat":{"value":true,"count":1}
                 }
             ]
         },
