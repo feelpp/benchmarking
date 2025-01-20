@@ -101,7 +101,6 @@ class Resources(BaseModel):
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
-    memory: Optional[str] = None
     resources: Resources
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     output_directory:Optional[str] = ""

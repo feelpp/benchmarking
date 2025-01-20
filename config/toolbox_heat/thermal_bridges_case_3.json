@@ -3,7 +3,6 @@
     "output_directory": "{{machine.output_app_dir}}/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3",
     "use_case_name": "ThermalBridgesENISO10211",
     "timeout":"0-00:10:00",
-    "memory":"250G",
     "resources":{
         "tasks":"{{parameters.resources.tasks.value}}",
         "tasks_per_node":"{{parameters.resources.tasks_per_node.value}}",
@@ -76,15 +75,15 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "range":{ "min":128, "max":384, "step":128}
+                    "range":{ "min":128, "max":256, "step":128}
                 },
                 {
                     "name":"tasks_per_node",
-                    "repeat":{"value":128,"count":3}
+                    "repeat":{"value":128,"count":2}
                 },
                 {
                     "name":"exclusive_access",
-                    "repeat":{"value":true,"count":3}
+                    "repeat":{"value":true,"count":2}
                 }
             ]
         },
