@@ -42,9 +42,6 @@ site_configuration = {
                         'memory_per_node':515
                     }
                 },
-            ],
-            'env_vars':[
-                ["OMP_NUM_THREADS",1]
             ]
         }
     ],
