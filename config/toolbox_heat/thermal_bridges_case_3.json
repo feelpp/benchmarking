@@ -4,6 +4,11 @@
     "use_case_name": "ThermalBridgesENISO10211",
     "timeout":"0-00:10:00",
     "memory":"250G",
+    "resources":{
+        "tasks":"{{parameters.resources.tasks.value}}",
+        "tasks_per_node":"{{parameters.resources.tasks_per_node.value}}",
+        "exclusive_access":"{{parameters.resources.exclusive_access.value}}"
+    },
     "platforms": {
         "apptainer":{
             "image": {
@@ -66,7 +71,7 @@
     },
     "parameters": [
         {
-            "name": "nb_tasks",
+            "name": "resources",
             "zip":[
                 {
                     "name":"tasks",
@@ -90,9 +95,9 @@
             "name":"discretization",
             "sequence":["P1","P2","P3"],
             "conditions":{
-                "P1":{ "nb_tasks.tasks":[128, 256, 384, 512, 640, 768] },
-                "P2":{ "nb_tasks.tasks":[768, 896, 1024, 1152, 1280] },
-                "P3":{ "nb_tasks.tasks":[640, 768, 896, 1024, 1152, 1280] }
+                "P1":{ "resources.tasks":[128, 256, 384, 512, 640, 768] },
+                "P2":{ "resources.tasks":[768, 896, 1024, 1152, 1280] },
+                "P3":{ "resources.tasks":[640, 768, 896, 1024, 1152, 1280] }
             }
         },
         {
