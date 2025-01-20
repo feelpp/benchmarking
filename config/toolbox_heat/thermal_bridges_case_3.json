@@ -35,7 +35,7 @@
         "--heat.scalability-save=1",
         "--repository.append.np 0",
         "--case.discretization {{parameters.discretization.P.value}}",
-        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json\" }'"
     ],
     "outputs": [
         {
@@ -76,15 +76,15 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "range":{ "min":128, "max":512, "step":128}
+                    "range":{ "min":128, "max":384, "step":128}
                 },
                 {
                     "name":"tasks_per_node",
-                    "repeat":{"value":128,"count":4}
+                    "repeat":{"value":128,"count":3}
                 },
                 {
                     "name":"exclusive_access",
-                    "repeat":{"value":true,"count":4}
+                    "repeat":{"value":true,"count":3}
                 }
             ]
         },
