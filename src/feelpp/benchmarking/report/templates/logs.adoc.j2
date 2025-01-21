@@ -1,0 +1,29 @@
+= ReFrame logs
+
+{% if script != "" %}
+== ReFrame scheduler script
+
+[source,bash]
+----
+{{ script }}
+----
+{% endif %}
+
+{% if error_log != "" %}
+== ReFrame log
+
+[source,bash]
+----
+{{ error_log }}
+----
+{% endif %}
+
+{% if output_log != "" %}
+== ReFrame output log
+
+[source,bash]
+----
+{{ output_log }}
+----
+
+{% endif %}

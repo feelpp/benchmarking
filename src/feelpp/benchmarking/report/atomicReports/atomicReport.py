@@ -112,6 +112,27 @@ class AtomicReport:
                 os.rename(os.path.join(self.partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
                 self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),description_file_basename)
 
+    def createLogReports(self,base_dir, renderer):
+        for run in self.runs:
+            for testcase in run["testcases"]:
+                check_vars = testcase["check_vars"]
+                if all(var not in check_vars for var in ["script","output_log","error_log"]):
+                    continue
+
+                logs_filepath = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase['hash']}.adoc").replace("-","_").replace(":","_").replace("+","Z")
+                if not os.path.exists(os.path.dirname(logs_filepath)):
+                    os.makedirs(os.path.dirname(logs_filepath))
+
+                self.hash_param_map[testcase["hash"]]["logs_filepath"] = os.path.relpath(logs_filepath,start="./docs/modules/ROOT/pages")
+                renderer.render(
+                    logs_filepath,
+                    dict(
+                        script = check_vars.get("script"),
+                        output_log = check_vars.get("output_log"),
+                        error_log = check_vars.get("error_log")
+                    )
+                )
+
 
     def filename(self):
         """ Build the filename for the report
@@ -137,6 +158,8 @@ class AtomicReport:
             parsed_hashmap[hash] = self.flatten(v["check_params"])
             if "partial_filepath" in v:
                 parsed_hashmap[hash]["partial_filepath"] = v["partial_filepath"]
+            if "logs_filepath" in v:
+                parsed_hashmap[hash]["logs_filepath"] = v["logs_filepath"]
 
         headers = []
         for entry in parsed_hashmap.values():
