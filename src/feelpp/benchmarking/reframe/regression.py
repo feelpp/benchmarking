@@ -45,7 +45,6 @@ class RegressionTest(ReframeSetup):
     def addRfmOutputFiles(self):
         with open(os.path.join(self.stagedir, self.job.script_filename), 'r') as f:
             self.script = f.read()
-            print(self.script)
 
         with open(os.path.join(self.stagedir,self.job.stdout), 'r') as f:
             self.output_log = f.read()
