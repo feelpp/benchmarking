@@ -39,7 +39,7 @@ site_configuration = {
                         }
                     ],
                     'extras':{
-                        'memory_per_node':515
+                        'memory_per_node':500
                     }
                 },
             ]
