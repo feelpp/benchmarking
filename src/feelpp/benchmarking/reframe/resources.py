@@ -78,13 +78,16 @@ class MemoryEnforcer:
         self.memory = int(memory)
 
     def enforceMemory(self, rfm_test):
-        nodes = int(np.ceil(self.memory / rfm_test.current_partition.extras["memory_per_node"]))
+        min_nodes_required = int(np.ceil(self.memory / rfm_test.current_partition.extras["memory_per_node"]))
         if not hasattr(rfm_test,"num_nodes"):
-            rfm_test.num_nodes = nodes
-        rfm_test.num_nodes = max(rfm_test.num_nodes,nodes)
-        rfm_test.num_tasks_per_node = max(min(rfm_test.num_tasks_per_node, rfm_test.num_tasks // rfm_test.num_nodes), 1)
+            rfm_test.num_nodes = min_nodes_required
+        rfm_test.num_nodes = max(rfm_test.num_nodes,min_nodes_required)
 
-        rfm_test.job.options += [f"--mem={int(np.ceil(self.memory /rfm_test.num_nodes))}G"]
+        max_tasks_per_node = rfm_test.current_partition.processor.num_cpus // min_nodes_required
+        rfm_test.num_tasks_per_node = max(min(rfm_test.num_tasks_per_node, max_tasks_per_node), 1)
+
+        app_memory_per_node = int(np.ceil(self.memory / rfm_test.num_nodes))
+        rfm_test.job.options += [f"--mem={app_memory_per_node}G"]
 
 class ExclusiveAccessEnforcer:
     """ Plugin to enforce exclusive access value to the nodes

@@ -16,7 +16,11 @@ class RfmTestMocker:
     """ Mocks the rfm_test object (a ReFrame Test) """
     def __init__(self, num_cpus, memory_per_node):
         self.current_partition = self.Partition(num_cpus=num_cpus, memory_per_node=memory_per_node)
+        self.job = self.Job()
 
+    class Job:
+        def __init__(self):
+            self.options = []
     class Partition:
         def __init__(self, num_cpus, memory_per_node):
             self.processor = self.Processor(num_cpus=num_cpus)
@@ -127,9 +131,10 @@ class TestResourcesStrategies:
 
 
     @pytest.mark.parametrize(("nodes","tasks_per_node","memory","expected_nodes","expected_tasks_per_node"), [
-        (1, 128, 1000, 1, 128), (2, 128, 1000, 2, 128),
+        (1, 128, 1000, 1, 128), (2, 128, 900, 2, 128),
         (1, 128, 500, 1, 128), (2, 64, 500, 2, 64),
-        (1, 128, 2000, 2, 64), (2, 128, 3500, 4, 64), (2, 64, 3500, 4, 32), (1, 128, 3500, 4, 32), (1, 128, 3000, 3, 42)
+        (1, 128, 2000, 2, 64), (2, 128, 3500, 4, 32),
+        (2, 64, 3500, 4, 32), (1, 128, 3500, 4, 32), (1, 128, 3000, 3, 42)
     ])
     def test_memoryEnforcer(self, nodes, tasks_per_node, memory, expected_nodes, expected_tasks_per_node):
         """ Tests the MemoryEnforcer
