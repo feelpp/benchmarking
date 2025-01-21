@@ -74,11 +74,11 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "repeat":{"value":128,"count":1}
+                    "sequence":[32,64,128,256]
                 },
                 {
                     "name":"exclusive_access",
-                    "repeat":{"value":true,"count":1}
+                    "repeat":{"value":true,"count":4}
                 }
             ]
         },
@@ -88,15 +88,15 @@
         },
         {
             "name":"memory",
-            "sequence":[515, 1024]
+            "sequence":[200, 600]
         },
         {
             "name":"discretization",
             "sequence":["P1","P2","P3"],
             "conditions":{
-                "P1":{ "memory":[515] },
-                "P2":{ "memory":[515] },
-                "P3":{ "memory":[1024] }
+                "P1":{ "memory":[200] },
+                "P2":{ "memory":[200] },
+                "P3":{ "memory":[600], "resources.tasks":[128,256] }
             }
         },
         {
