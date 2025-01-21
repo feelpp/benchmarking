@@ -131,6 +131,6 @@ class TestCommandBuilder:
             f"--perflogdir={os.path.join(machine_config.reframe_base_dir,'logs')} "
         )
         expected_command += "-" + "v"*parser.args.verbose if parser.args.verbose else ""
-        expected_command += " --dry-run" if parser.args.dry_run else " -r"
+        expected_command += " --dry-run --exec-policy serial" if parser.args.dry_run else " -r"
 
         assert expected_command == cmd_builder.buildCommand(timeout)

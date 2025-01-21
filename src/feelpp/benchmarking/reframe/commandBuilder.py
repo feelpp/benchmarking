@@ -33,7 +33,7 @@ class CommandBuilder:
             Examples are --dry-run or -r
         """
         if self.parser.args.dry_run:
-            return "--dry-run"
+            return "--dry-run --exec-policy serial"
         else:
             return "-r"
 
