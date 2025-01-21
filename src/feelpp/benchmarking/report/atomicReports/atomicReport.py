@@ -113,13 +113,6 @@ class AtomicReport:
                 self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),description_file_basename)
 
 
-    def findUseCase(self,data):
-        """ Find the test case of the report
-        """
-        use_case = data["runs"][0]["testcases"][0]["check_vars"]["use_case"]
-        assert all( testcase["check_vars"]["use_case"] == use_case for run in data["runs"] for testcase in run["testcases"]), "useCase differ from one testcase to another"
-        return use_case
-
     def filename(self):
         """ Build the filename for the report
         Returns:
