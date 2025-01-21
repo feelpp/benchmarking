@@ -113,6 +113,11 @@ class AtomicReport:
                 self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),description_file_basename)
 
     def createLogReports(self,base_dir, renderer):
+        """ Render the reframe logs (output, error, script) for each testcase
+        Args:
+            base_dir (str): The base directory where the logs will be created
+            renderer (Renderer): The renderer to use
+        """
         for run in self.runs:
             for testcase in run["testcases"]:
                 check_vars = testcase["check_vars"]
