@@ -82,8 +82,9 @@ class MemoryEnforcer:
         if not hasattr(rfm_test,"num_nodes"):
             rfm_test.num_nodes = nodes
         rfm_test.num_nodes = max(rfm_test.num_nodes,nodes)
-
         rfm_test.num_tasks_per_node = max(min(rfm_test.num_tasks_per_node, rfm_test.num_tasks // rfm_test.num_nodes), 1)
+
+        rfm_test.job.options += [f"--mem={int(np.ceil(self.memory /rfm_test.num_nodes))}G"]
 
 class ExclusiveAccessEnforcer:
     """ Plugin to enforce exclusive access value to the nodes
