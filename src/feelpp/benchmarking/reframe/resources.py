@@ -96,6 +96,7 @@ class MemoryEnforcer:
             assert rfm_test.num_tasks_per_node <= max_tasks_per_node, f"Number of tasks per node ({rfm_test.num_tasks_per_node}) should be less than {max_tasks_per_node}"
 
         app_memory_per_node = int(np.ceil(self.memory / rfm_test.num_nodes))
+        assert app_memory_per_node <= rfm_test.current_partition.extras["memory_per_node"], f"Memory per node ({app_memory_per_node}) should be less than {rfm_test.current_partition.extras['memory_per_node']}"
         rfm_test.job.options += [f"--mem={app_memory_per_node}G"]
 
 class ExclusiveAccessEnforcer:
