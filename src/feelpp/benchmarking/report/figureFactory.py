@@ -53,10 +53,11 @@ class Figure:
         """
         frames = []
         ranges=[]
-        anim_dimension_values = df.index.get_level_values(self.config.secondary_axis.parameter).unique().values
+        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"]
+        anim_dimension_values = df.index.get_level_values(secondary_axis).unique().values
 
         for dim in anim_dimension_values:
-            frame_df = df.xs(dim,level=self.config.secondary_axis.parameter,axis=0)
+            frame_df = df.xs(dim,level=secondary_axis,axis=0)
             frames.append(self.createTraces(frame_df))
             ranges.append(self.getIdealRange(frame_df))
 
@@ -205,14 +206,17 @@ class StackedBarFigure(Figure):
             Returns:
                 go.Figure. Containing a stacked and grouped bar traces for a multiindex dataframe
         """
+        xaxis = self.transformation_strategy.dimensions["xaxis"]
+        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"]
+
         fig = px.bar(
             df.reset_index().astype({
-                self.config.secondary_axis.parameter:"str",
-                self.config.xaxis.parameter:"str"
+                secondary_axis:"str",
+                xaxis:"str"
             }).rename(
                 columns = {
-                    self.config.xaxis.parameter:self.config.xaxis.label,
-                    self.config.secondary_axis.parameter:self.config.secondary_axis.label
+                    xaxis:self.config.xaxis.label,
+                    secondary_axis:self.config.secondary_axis.label
                 },
             ),
             x=self.config.secondary_axis.label,
