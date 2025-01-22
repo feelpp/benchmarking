@@ -45,7 +45,7 @@ site_configuration = {
     'environments': [
         {
             'name':'default',
-            'modules': ["openmpi/4/gcc/latest"],
+            'modules': [],
             'target_systems':['discoverer:cn']
         }
     ]
