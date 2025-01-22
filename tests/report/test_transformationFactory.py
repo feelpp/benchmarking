@@ -112,7 +112,7 @@ class TestSimpleStrategies:
         ("non_existent|param2","param2"),
         ("non_existent|param2|param3","param2"),
         ("non_existent",None),
-        (0,0), (None,None), (False,None),
+        (0,None), (None,None), (False,None),
     ])
     def test_chooseColumn(self,param_names,expected):
         df = pd.DataFrame(columns=["param1","param2","param3","param4"])

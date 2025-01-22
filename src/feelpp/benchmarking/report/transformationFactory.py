@@ -16,8 +16,7 @@ class TransformationStrategy:
     @staticmethod
     def chooseColumn(value,df):
         """ Chooses a column from a list of possible columns splitted by '|' from a dataframe, returns the first occurence in the dataframe.
-            If no column is found, returns None
-            If the value is null (0, False, None, ...), returns None
+            IF the value is null (0, False, None, ...) or not found, returns None
         Args:
             value (str): The string containing the possible columns, splitted by '|'. e.g. "column1|column2|column3"
             df (pd.DataFrame): The dataframe where the columns are searched
@@ -25,7 +24,7 @@ class TransformationStrategy:
             str: The first column found in the dataframe, or None
         """
         if not value:
-            return value
+            return None
 
         possible_columns = value.split("|")
         for column in possible_columns:
