@@ -50,23 +50,23 @@ class TestResourcesStrategies:
             strategy.validate(rfm_test)
 
 
-    @pytest.mark.parametrize(("tasks","expected_num_tasks_per_node"), [
-        (128, 128), (256, 128), (64, 64), (32, 32),
+    @pytest.mark.parametrize(("tasks","expected_nodes"), [
+        (128, 1), (256, 2), (64, 1), (32, 1), (280, 3), (384, 3),
         (0, False), (-1, False)
     ])
-    def test_taskStrategy(self, tasks, expected_num_tasks_per_node):
+    def test_taskStrategy(self, tasks, expected_nodes):
         """ Tests the TaskStrategy
         Checks if the number of tasks and the number of tasks per node are set correctly
         Args:
             tasks (int): The number of tasks
-            expected_num_tasks_per_node (int): The expected number of tasks per node
+            expected_nodes (int): The expected number of nodes
         """
         rfm_test = RfmTestMocker(num_cpus=128, memory_per_node=1000)
 
-        self.strategyTest(TasksStrategy(), ResourcesMocker(tasks=tasks), rfm_test, expected_num_tasks_per_node is False)
-        if expected_num_tasks_per_node:
+        self.strategyTest(TasksStrategy(), ResourcesMocker(tasks=tasks), rfm_test, expected_nodes is False)
+        if expected_nodes:
             assert rfm_test.num_tasks == tasks
-            assert rfm_test.num_tasks_per_node == expected_num_tasks_per_node
+            assert rfm_test.num_nodes == expected_nodes
 
     @pytest.mark.parametrize(("tasks","tasks_per_node","fails"), [
         (128, 128, False), (256, 128, False), (64, 64, False),
@@ -130,29 +130,29 @@ class TestResourcesStrategies:
             assert rfm_test.num_tasks == expected_tasks
 
 
-    @pytest.mark.parametrize(("nodes","tasks_per_node","memory","expected_nodes","expected_tasks_per_node"), [
-        (1, 128, 1000, 1, 128), (2, 128, 900, 2, 128),
-        (1, 128, 500, 1, 128), (2, 64, 500, 2, 64),
-        (1, 128, 2000, 2, 64), (2, 128, 3500, 4, 32),
-        (2, 64, 3500, 4, 32), (1, 128, 3500, 4, 32), (1, 128, 3000, 3, 42)
+    @pytest.mark.parametrize(("tasks","memory","expected_nodes","expected_tasks_per_node"), [
+        (128, 900, 1, None), (128, 1000, 1, None), (128, 1100, 2, 64), (128, 2100, 3, 42),
+        (64, 500, 1, None), (64, 1000, 1, None), (64, 1100, 2, 32),
+        (256, 900, 2, None), (256, 1100, 2, 128), (256, 2500, 3, 85), (256, 3500, 4, 64),
+        (301, 900, 3, None), (301, 1100, 3, 100), (301, 4100, 5, 60)
     ])
-    def test_memoryEnforcer(self, nodes, tasks_per_node, memory, expected_nodes, expected_tasks_per_node):
+    def test_memoryEnforcer(self, tasks, memory, expected_nodes, expected_tasks_per_node):
         """ Tests the MemoryEnforcer
         Checks if the number of nodes and the number of tasks per node are set correctly after enforcing the memory constraint
         Args:
-            nodes (int): The number of nodes
-            tasks_per_node (int): The number of tasks per node
+            tasks (int): The number of tasks
             memory (int): The memory
             expected_nodes (int): The expected number of nodes
             expected_tasks_per_node (int): The expected number of tasks per node
         """
         rfm_test = RfmTestMocker(num_cpus=128, memory_per_node=1000)
-        NodesAndTasksPerNodeStrategy().configure(ResourcesMocker(tasks_per_node=tasks_per_node, nodes=nodes), rfm_test)
+        TasksStrategy().configure(ResourcesMocker(tasks=tasks), rfm_test)
 
         memory_enforcer = MemoryEnforcer(memory)
         memory_enforcer.enforceMemory(rfm_test)
 
         assert rfm_test.num_nodes == expected_nodes
+        assert rfm_test.num_tasks == tasks
         assert rfm_test.num_tasks_per_node == expected_tasks_per_node
 
     @pytest.mark.parametrize(("exclusive_access","expected"), [

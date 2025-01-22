@@ -22,6 +22,7 @@ class TaskAndTaskPerNodeStrategy(ResourceStrategy):
     def configure(self, resources, rfm_test):
         rfm_test.num_tasks_per_node = int(resources.tasks_per_node)
         rfm_test.num_tasks = int(resources.tasks)
+        rfm_test.num_nodes = int(np.ceil(resources.tasks / resources.tasks_per_node))
 
     def validate(self, rfm_test):
         super().validate(rfm_test)
@@ -64,8 +65,8 @@ class TasksStrategy(ResourceStrategy):
     """
     def configure(self, resources, rfm_test):
         rfm_test.num_tasks = int(resources.tasks)
-        rfm_test.num_tasks_per_node = min(rfm_test.num_tasks,rfm_test.current_partition.processor.num_cpus)
-
+        rfm_test.num_nodes = int(np.ceil(rfm_test.num_tasks / rfm_test.current_partition.processor.num_cpus))
+        rfm_test.num_tasks_per_node = None
 
 class MemoryEnforcer:
     """ Plugin to recompute resources based on the memory requirements
@@ -76,15 +77,23 @@ class MemoryEnforcer:
             memory (int): The total memory requirement that an application needs (in GB)
         """
         self.memory = int(memory)
+        assert self.memory > 0, "Memory should be strictly positive"
 
     def enforceMemory(self, rfm_test):
         min_nodes_required = int(np.ceil(self.memory / rfm_test.current_partition.extras["memory_per_node"]))
-        if not hasattr(rfm_test,"num_nodes"):
-            rfm_test.num_nodes = min_nodes_required
-        rfm_test.num_nodes = max(rfm_test.num_nodes,min_nodes_required)
+        memory_per_task = self.memory / rfm_test.num_tasks
+        max_tasks_per_node_mem = rfm_test.current_partition.extras["memory_per_node"] // memory_per_task
+        max_tasks_per_node = min(max_tasks_per_node_mem, rfm_test.current_partition.processor.num_cpus)
 
-        max_tasks_per_node = rfm_test.current_partition.processor.num_cpus // min_nodes_required
-        rfm_test.num_tasks_per_node = max(min(rfm_test.num_tasks_per_node, max_tasks_per_node), 1)
+        rfm_test.num_nodes = max(min_nodes_required, rfm_test.num_nodes)
+
+
+        if self.memory > rfm_test.current_partition.extras["memory_per_node"]:
+            if rfm_test.num_tasks_per_node is None:
+                rfm_test.num_tasks_per_node = rfm_test.num_tasks // rfm_test.num_nodes
+            else:
+                rfm_test.num_tasks_per_node = max(min(rfm_test.num_tasks // rfm_test.num_nodes , rfm_test.num_tasks_per_node), 1)
+            assert rfm_test.num_tasks_per_node <= max_tasks_per_node, f"Number of tasks per node ({rfm_test.num_tasks_per_node}) should be less than {max_tasks_per_node}"
 
         app_memory_per_node = int(np.ceil(self.memory / rfm_test.num_nodes))
         rfm_test.job.options += [f"--mem={app_memory_per_node}G"]
