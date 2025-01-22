@@ -32,6 +32,7 @@ site_configuration = {
                             'type': 'Singularity'
                         }
                     ],
+                    'sched_options': { 'use_nodes_option': True },
                     'extras':{
                         'memory_per_node':256
                     }

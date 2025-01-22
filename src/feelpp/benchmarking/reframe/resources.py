@@ -66,7 +66,7 @@ class TasksStrategy(ResourceStrategy):
     def configure(self, resources, rfm_test):
         rfm_test.num_tasks = int(resources.tasks)
         rfm_test.num_nodes = int(np.ceil(rfm_test.num_tasks / rfm_test.current_partition.processor.num_cpus))
-        rfm_test.num_tasks_per_node = None
+        rfm_test.num_tasks_per_node = min(rfm_test.num_tasks, rfm_test.current_partition.processor.num_cpus)
 
 class MemoryEnforcer:
     """ Plugin to recompute resources based on the memory requirements
