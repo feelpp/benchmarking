@@ -162,6 +162,9 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     """ Reframe test used to setup the regression test"""
     report_dir_path = variable(str, value=".")
 
+    #set num_nodes as variable (as not implemented in reframe) - used for exporting
+    num_nodes = variable(int)
+
     script = variable(str)
     error_log = variable(str)
     output_log = variable(str)
