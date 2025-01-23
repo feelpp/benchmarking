@@ -13,7 +13,6 @@ site_configuration = {
                     'max_jobs': 8,
                     'access': ['--partition=production'],
                     'environs': ['default','hpcx'],
-                    'sched_options': { 'use_nodes_option': True },
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
                         "export PATH=/opt/apptainer/v1.3.5/apptainer/bin/:$PATH"
