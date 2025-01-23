@@ -35,7 +35,9 @@ site_configuration = {
                             'type': 'Singularity'
                         }
                     ],
-                    'sched_options': { 'use_nodes_option': True },
+                    'extras':{
+                        'memory_per_node':256
+                    }
                 }
             ]
         }
@@ -43,7 +45,7 @@ site_configuration = {
     'environments': [
         {
             'name':'default',
-            'modules': ["openmpi/4/gcc/latest"],
+            'modules': [],
             'target_systems':['discoverer:cn']
         }
     ]

@@ -1,0 +1,36 @@
+{% for figure in figures %}
+++++
+<button id="download-csv-{{parent_catalogs}}-{{loop.index}}" > CSV </button>
+<button id="download-pgf-{{parent_catalogs}}-{{loop.index}}" > LaTeX </button>
+{{figure}}
+++++
+{% endfor %}
+
+
+++++
+<script>
+function downloadString(data, filename, mimeType ) {
+    const blob = new Blob([data], { type: `${mimeType};charset=utf-8` });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function addDownloadListener( button_id, data, filename, mimeType = 'text/plain') {
+    document.getElementById(button_id).addEventListener('click', function() {
+        downloadString(data,filename,mimeType);
+    });
+}
+
+{% for csv,pgf in zip(figure_csvs,figure_pgfs) %}
+    addDownloadListener('download-csv-{{parent_catalogs}}-{{loop.index}}' , `{{csv | tojson | stripquotes}}`, 'data.csv', 'text/csv')
+    addDownloadListener('download-pgf-{{parent_catalogs}}-{{loop.index}}' , `{{pgf | tojson | stripquotes}}`, 'figure.tex' )
+{% endfor %}
+
+</script>
+++++

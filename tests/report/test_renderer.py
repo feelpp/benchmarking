@@ -7,7 +7,7 @@ import tempfile
 
 class TestRenderer:
 
-    renderer = Renderer("./tests/data/templates/template_test.adoc.j2")
+    renderer = Renderer("./tests/data/templates/","template_test.adoc.j2")
 
     def test_render(self):
         """ Tests that the renderer correctly renders the template with given data"""

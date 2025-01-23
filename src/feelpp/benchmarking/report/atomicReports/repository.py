@@ -147,6 +147,18 @@ class AtomicReportRepository(Repository):
         for atomic_report in self.data:
             atomic_report.movePartials(base_dir)
 
+    def createLogReports(self,base_dir, renderer):
+        """ Create all log reports under a single directory
+        Args:
+            base_dir (str): The base directory where the report will be created
+            renderer (Renderer): The renderer to use
+        """
+        if not os.path.exists(base_dir):
+            os.mkdir(base_dir)
+
+        for atomic_report in self.data:
+            atomic_report.createLogReports(base_dir,renderer)
+
 
     def patchPlotConfigs(self,plot_configs, patch_reports_ids, save = False):
         """ Replaces the plot configuration with a new one.

@@ -15,10 +15,15 @@
         "directory":"",
         "stages":[]
     },
+    "resources":{
+        "tasks": "{{parameters.resources.tasks.value}}",
+        "tasks_per_node": "{{parameters.resources.tasks_per_node.value}}",
+        "exclusive_access": "{{parameters.resources.exclusive_access.value}}"
+    },
     "sanity": { "success": [], "error": [] },
     "parameters": [
         {
-            "name": "nb_tasks",
+            "name": "resources",
             "sequence": [
                 {"tasks":1,"tasks_per_node":128,"exclusive_access":true},
                 {"tasks":2,"tasks_per_node":128,"exclusive_access":true},

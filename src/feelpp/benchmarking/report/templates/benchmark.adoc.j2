@@ -8,6 +8,7 @@
 :author: Your Name
 :revdate: {{ session_info.time_end }}
 
+
 {% if description_path %}
 == Case Description
 
@@ -23,49 +24,16 @@ include::ROOT:{{description_path}}[leveloffset=+1]
 {% if not empty %}
 
 |===
-{% for header in hash_params_headers %} | {% if header == 'partial_filepath' %} {% else %} {{ header }} {% endif %} {% endfor %}
+{% for header in hash_params_headers %} | {% if header == 'partial_filepath' or header == 'logs_filepath' %} {% else %} {{ header }} {% endif %} {% endfor %}
 
 {% for entry in flat_hash_param_map.values() %}
 {% for header in hash_params_headers %}
-  {% if header == 'partial_filepath' %} | xref:{{ entry.get(header, '') }}[Description] {% else %} | {{ entry.get(header, '') }} {% endif %}
+  {% if header == 'partial_filepath' %} | xref:{{ entry.get(header, '') }}[Description] {% elif header == 'logs_filepath' %} | xref:{{ entry.get(header, '') }}[Logs] {% else %} | {{ entry.get(header, '') }} {% endif %}
 {% endfor %}
 
 {% endfor %}
 |===
 
-[%dynamic%close%hide_code,python]
-----
-from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
-from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
-from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
-----
-
-[%dynamic%close%hide_code,python]
-----
-model=AtomicReportModel({{ runs }})
-view=AtomicReportView({{ plots_config }})
-controller=AtomicReportController(model,view)
-----
-
-[%dynamic%open%hide_code,python]
-----
-for fig in controller.generateAll():
-    fig.show()
-----
+{%include "figures.html.j2" %}
 
 {% endif %}
-
-++++
-<style>
-details>.title::before, details>.title::after {
-    visibility: hidden;
-}
-details>.content>.dynamic-py-result>.content>pre {
-    max-height: 100%;
-    padding: 0;
-    margin:16px;
-    background-color: white;
-    line-height:0;
-}
-</style>
-++++

@@ -44,8 +44,10 @@ def main_cli():
 
 
     report_renderer = RendererFactory.create("benchmark")
+    logs_renderer = RendererFactory.create("logs")
 
     atomic_reports.movePartials(os.path.join(parser.args.modules_path,"descriptions"))
+    atomic_reports.createLogReports(os.path.join(parser.args.modules_path,"logs"),logs_renderer)
     atomic_reports.createReports(os.path.join(parser.args.modules_path,"reports"),report_renderer)
 
     if parser.args.website:
