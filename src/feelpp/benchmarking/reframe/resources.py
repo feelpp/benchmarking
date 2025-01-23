@@ -80,20 +80,22 @@ class MemoryEnforcer:
         assert self.memory > 0, "Memory should be strictly positive"
 
     def enforceMemory(self, rfm_test):
-        min_nodes_required = int(np.ceil(self.memory / rfm_test.current_partition.extras["memory_per_node"]))
-        memory_per_task = self.memory / rfm_test.num_tasks
-        max_tasks_per_node_mem = rfm_test.current_partition.extras["memory_per_node"] // memory_per_task
-        max_tasks_per_node = min(max_tasks_per_node_mem, rfm_test.current_partition.processor.num_cpus)
+        min_nodes_required = int(np.ceil(self.memory / rfm_test.current_partition.extras["memory_per_node"])) #ceil( 2500/256 ) = 10
+        memory_per_task = self.memory / rfm_test.num_tasks #2500/1280 ---- 2500/1024 = 1,9531 ---- 2,4414
+        max_tasks_per_node_mem = rfm_test.current_partition.extras["memory_per_node"] // memory_per_task  # 256/1,9531 = 131,0723 ---- 256/2,4414 = 104,8576 --> 131 -- 104
+        max_tasks_per_node = min(max_tasks_per_node_mem, rfm_test.current_partition.processor.num_cpus) # min(131, 128) = 128 --- min(104, 128) = 104
 
-        rfm_test.num_nodes = max(min_nodes_required, rfm_test.num_nodes)
+        rfm_test.num_nodes = max(min_nodes_required, rfm_test.num_nodes)  #max ( 10, ceil(1280/128)) = max(10, 10) = 10 ------ max (10, ceil(1024/128)) = max(10, 8) = 10
 
 
         if self.memory > rfm_test.current_partition.extras["memory_per_node"]:
-            tpn = rfm_test.num_tasks // rfm_test.num_nodes
+            tpn = rfm_test.num_tasks // rfm_test.num_nodes # floor(1280/10) = 128 ---- floor(1024/10) = 102
             if rfm_test.num_tasks_per_node is None:
                 rfm_test.num_tasks_per_node = tpn
             else:
-                rfm_test.num_tasks_per_node = max(min(tpn , rfm_test.num_tasks_per_node), 1)
+                rfm_test.num_tasks_per_node = max(min(tpn , rfm_test.num_tasks_per_node), 1) #min(128, 128) = 128 ---- min(102, 128) = 102
+
+            rfm_test.num_nodes = int(np.ceil(rfm_test.num_tasks / rfm_test.num_tasks_per_node)) # ceil(1280/128) = 10 ---- ceil(1024/102) = 11
             assert rfm_test.num_tasks_per_node <= max_tasks_per_node, f"Number of tasks per node ({rfm_test.num_tasks_per_node}) should be less than {max_tasks_per_node}"
 
         app_memory_per_node = int(np.ceil(self.memory / rfm_test.num_nodes))
