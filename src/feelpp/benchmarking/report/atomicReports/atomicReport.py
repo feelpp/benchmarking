@@ -77,7 +77,18 @@ class AtomicReport:
         for run in data["runs"]:
             for testcase in run["testcases"]:
                 hash = testcase["hash"]
-                hash_param_map[hash] = {"check_params":testcase["check_params"]}
+                #Hotfix for adding actual resources:
+                check_params = testcase["check_params"]
+                check_vars = testcase["check_vars"]
+                #add test status
+                check_params["result"] = testcase.get("result")
+                for resource in ["num_nodes","num_tasks_per_node","num_tasks"]:
+                    if resource not in check_params:
+                        check_params[resource] = check_vars.get(resource)
+
+                hash_param_map[hash] = {"check_params":check_params}
+
+
 
         return hash_param_map
 
