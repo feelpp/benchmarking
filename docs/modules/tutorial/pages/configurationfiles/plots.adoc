@@ -284,6 +284,36 @@ fig = figures[0].createFigure(model.master_df)
 fig.show()
 ----
 
+- `heatmap`
+
+For this case, we will consider the `elements` (N) as `color_axis` and `performance_variable` for secondary axis (slider).
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "heatmap" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
+
 - `table`
 
 [%dynamic%open%hide_code,python]
@@ -311,6 +341,7 @@ figures = FigureFactory.create(Plot(**{
 fig = figures[0].createFigure(model.master_df)
 fig.show()
 ----
+
 
 == Aggregations
 

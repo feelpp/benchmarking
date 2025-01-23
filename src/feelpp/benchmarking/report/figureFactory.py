@@ -282,6 +282,51 @@ class GroupedBarFigure(Figure):
         """
         return go.Figure(self.createTraces(df))
 
+class HeatmapFigure(Figure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createTraces(self, df):
+        """ Creates the Heatmap traces for a given dataframe. Useful for animation creation.
+        Args:
+            - df (pd.DataFrame): The dataframe containing the figure data.
+        Returns: (go.Trace) The Heatmap traces to display in the scatter figure.
+        """
+        return go.Heatmap(
+                x=df.index.astype(str),
+                y=df.columns.astype(str),
+                z=df.T.values,
+                colorbar = dict(
+                    title = self.config.yaxis.label
+                )
+            )
+
+    def createMultiindexFigure(self, df):
+        """ Creates a plotly figure from a multiIndex dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: Heatmap animation where the secondary_ axis corresponds to a specified parameter
+        """
+        return self.createSliderAnimation(df)
+
+    def createSimpleFigure(self, df):
+        """ Creates a plotly figure from a given dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            go.Figure: Heatmap plot
+        """
+        return go.Figure(self.createTraces(df))
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(
+            title=self.config.title,
+            xaxis=dict(title=self.config.xaxis.label),
+            yaxis=dict(title=self.config.color_axis.label)
+        )
+        return fig
 
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
@@ -305,6 +350,8 @@ class FigureFactory:
                 figures.append(StackedBarFigure(plot_config,strategy))
             elif plot_type == "grouped_bar":
                 figures.append(GroupedBarFigure(plot_config,strategy))
+            elif plot_type == "heatmap":
+                figures.append(HeatmapFigure(plot_config,strategy))
             else:
                 raise NotImplementedError
 
