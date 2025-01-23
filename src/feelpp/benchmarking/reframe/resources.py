@@ -89,10 +89,11 @@ class MemoryEnforcer:
 
 
         if self.memory > rfm_test.current_partition.extras["memory_per_node"]:
+            tpn = rfm_test.num_tasks // rfm_test.num_nodes
             if rfm_test.num_tasks_per_node is None:
-                rfm_test.num_tasks_per_node = rfm_test.num_tasks // rfm_test.num_nodes
+                rfm_test.num_tasks_per_node = tpn
             else:
-                rfm_test.num_tasks_per_node = max(min(rfm_test.num_tasks // rfm_test.num_nodes , rfm_test.num_tasks_per_node), 1)
+                rfm_test.num_tasks_per_node = max(min(tpn , rfm_test.num_tasks_per_node), 1)
             assert rfm_test.num_tasks_per_node <= max_tasks_per_node, f"Number of tasks per node ({rfm_test.num_tasks_per_node}) should be less than {max_tasks_per_node}"
 
         app_memory_per_node = int(np.ceil(self.memory / rfm_test.num_nodes))
