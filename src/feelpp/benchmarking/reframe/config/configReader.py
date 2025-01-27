@@ -36,17 +36,30 @@ class TemplateProcessor:
                 items.append((new_key, value))
         return dict(items)
 
-    def replacePlaceholders(self,target,flattened_source):
+    def replacePlaceholders(self,target,flattened_source,processed_placeholders=None):
+        if processed_placeholders is None:
+            processed_placeholders = set()
+
         def replaceMatch(match):
+            placeholder = match.group(1).strip()
+
+            if placeholder in processed_placeholders:
+                return match.group(0)
+
+            processed_placeholders.add(placeholder)
             resolved = flattened_source.get(match.group(1).strip(),match.group(0))
+
             if match.group(1) in flattened_source:
                 if isinstance(resolved,str) and "{{" in resolved and "}}" in resolved:
-                    resolved = self.replacePlaceholders(resolved,flattened_source)
-            return resolved
+                    resolved = self.replacePlaceholders(resolved,flattened_source,processed_placeholders)
+            return str(resolved)
 
-        replaced = self.template_pattern.sub(replaceMatch,target)
+        previous_target = None
+        while target != previous_target:
+            previous_target = target
+            target = self.template_pattern.sub(replaceMatch, target)
 
-        return os.path.expandvars(replaced) if "$" in replaced else replaced
+        return os.path.expandvars(target) if "$" in target else target
 
 
     def recursiveReplace(self,target,flattened_source):
@@ -70,12 +83,15 @@ class JSONWithCommentsDecoder(json.JSONDecoder):
 
 class ConfigReader:
     """ Class to load config files"""
-    def __init__(self, config_paths, schema):
+    def __init__(self, config_paths, schema, dry_run=False):
         """
         Args:
             config_paths (str | list[str]) : Path to the config JSON file. If a list is provided, files will be merged.
         """
         self.schema = schema
+        self.context = {
+            "dry_run":dry_run
+        }
         self.config = self.load(
             config_paths if type(config_paths) == list else [config_paths],
             schema
@@ -97,7 +113,7 @@ class ConfigReader:
             with open(config, "r") as cfg:
                 self.config.update(json.load(cfg, cls=JSONWithCommentsDecoder))
 
-        self.config = schema(**self.config)
+        self.config = schema.model_validate(self.config, context=self.context)
 
         return self.config
 
@@ -109,7 +125,7 @@ class ConfigReader:
         """
         if not flattened_replace:
             flattened_replace = self.processor.flattenDict(self.config.model_dump())
-        self.config = self.schema(**self.processor.recursiveReplace(self.config.model_dump(),flattened_replace))
+        self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context)
 
     def __repr__(self):
         return json.dumps(self.config.dict(), indent=4)

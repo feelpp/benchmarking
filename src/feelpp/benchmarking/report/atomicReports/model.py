@@ -29,7 +29,8 @@ class AtomicReportModel(Model):
                     "status": None,
                     "absolute_error": None,
                     "testcase_time_run": testcase["time_run"],
-                    "environment":testcase["environment"]
+                    "environment":testcase["environment"],
+                    "platform":testcase["check_vars"]["platform"]
                 }
                 for dim, v in testcase["check_params"].items():
                     tmp_dct[dim] = v
@@ -47,6 +48,8 @@ class AtomicReportModel(Model):
                 tmp_dct["status"] = tmp_dct["thres_lower"] <= tmp_dct["value"] <= tmp_dct["thres_upper"] if not np.isnan(tmp_dct["thres_lower"]) and not np.isnan(tmp_dct["thres_upper"]) else np.nan
                 tmp_dct["absolute_error"] = np.abs(tmp_dct["value"] - tmp_dct["reference"])
                 tmp_dct["testcase_time_run"] = testcase["time_run"]
+                tmp_dct["environment"] = testcase["environment"]
+                tmp_dct["platform"] = testcase["check_vars"]["platform"] if "platform" in testcase["check_vars"] else np.nan
 
                 for dim, v in testcase["check_params"].items():
                     if isinstance(v,dict):

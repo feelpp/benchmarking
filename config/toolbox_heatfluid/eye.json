@@ -2,7 +2,7 @@
     "executable": "feelpp_toolbox_heatfluid",
     "output_directory": "{{machine.output_app_dir}}/toolboxes/heatlfuid/eye",
     "use_case_name": "eye",
-    "timeout":"0-01:00:00s",
+    "timeout":"0-01:00:00",
     "platforms": {
         "apptainer":{
             "image": {
@@ -21,7 +21,7 @@
         }
     },
     "options": [
-        "--config-files {{platforms.{{machine.prog_environment}}.input_dir}}/eye-{{parameters.position.value}}.cfg {{platforms.{{machine.prog_environment}}.input_dir}}/pc_{{parameters.solver.value}}.cfg",
+        "--config-files {{platforms.{{machine.platform}}.input_dir}}/eye-{{parameters.position.value}}.cfg {{platforms.{{machine.platform}}.input_dir}}/pc_{{parameters.solver.value}}.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -31,23 +31,27 @@
         "--repository.append.np 0",
         "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"/data/home/saigre/pulications/mesh.eye/mesh/Mr/{{parameters.meshes.value}}/Eye_Mesh3D_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
     ],
+    "additional_files":{
+        "description_filepath":"{{output_directory}}/description.adoc",
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heatfluid.information.adoc"
+    },
     "outputs": [],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "stages": [
             {
                 "name": "Constructor",
-                "file": "heat-fluid.scalibility.HeatFluidConstructor.data",
+                "filepath": "heat-fluid.scalibility.HeatFluidConstructor.data",
                 "format": "tsv"
             },
             {
                 "name": "PostProcessing",
-                "file": "heat-fluid.scalibility.HeatFluidPostProcessing.data",
+                "filepath": "heat-fluid.scalibility.HeatFluidPostProcessing.data",
                 "format": "tsv"
             },
             {
                 "name": "Solve",
-                "file": "heat-fluid.scalibility.HeatFluidSolve.data",
+                "filepath": "heat-fluid.scalibility.HeatFluidSolve.data",
                 "format": "tsv"
             }
         ],
@@ -63,10 +67,6 @@
     "sanity": {
         "success": [],
         "error": []
-    },
-    "upload": {
-        "platform": "girder",
-        "folder_id": "672c95e5b0e95728eb010b85"
     },
     "parameters": [
         {

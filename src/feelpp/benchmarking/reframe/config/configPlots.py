@@ -22,11 +22,12 @@ class Plot(BaseModel):
     transformation:Literal["performance","relative_performance","speedup"]
     aggregations:Optional[List[Aggregation]] = None
     variables:Optional[List[str]] = None
-    names:List[str]
+    names:Optional[List[str]] = []
     xaxis:PlotAxis
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
     color_axis:Optional[PlotAxis] = None
+    layout_modifiers: Optional[Dict] = {}
 
 
     @field_validator("xaxis","secondary_axis", mode="after")

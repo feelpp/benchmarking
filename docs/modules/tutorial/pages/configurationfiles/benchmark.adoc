@@ -1,0 +1,423 @@
+= Benchmark configuration
+:page-plotly: true
+:page-jupyter: true
+
+Configuring a benchmark can be quite extensive, as this framework focuses on flexibility. For this, the documentation will be divided in main sections.
+
+The base of the configuration file is shown below.
+[source,json]
+----
+{
+    "executable": "",
+    "use_case_name": "",
+    "timeout":"",
+    "platforms":{},
+    "options": [],
+    "outputs":{},
+    "scalability":{},
+    "sanity":{},
+    "parameters":{},
+}
+----
+
+== Fields on JSON root
+
+Users can add any field used for refactoring. For example, one can do the following.
+
+[source,json]
+----
+"output_directory":"/data/outputs" // This is a custom field
+"options":["--output {{output_directory}}"]
+----
+
+Mandatory and actionable fields are:
+
+[cols="2,1,1,3,1"]
+|===
+| Field name  | Optional | type | description | Default
+
+| executable
+| No
+| str
+| Path or name of the application executable.
+|
+
+| use_case_name
+| No
+| str
+| Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.
+|
+
+| timeout
+| No
+| str
+| Job execution timeout. Format: days-hours:minutes:seconds
+|
+
+|===
+
+== Platforms
+
+The `platforms` object lists all options and directories related to the benchmark execution for each supported platform. A platform present on this object does not imply that it will be benchmarked, but it rather lists all possible options.
+
+The field is optional, if not provided, the builtin platform will be considered.
+
+The syntax for builtin platform is the following:
+
+[source,json]
+----
+"platforms": {
+    "builtin":{
+        "input_dir":"",
+        "append_app_option":[]
+    }
+}
+----
+
+- `append_app_options` is in this case equivalent to the `options` field on the configuration root.
+- `input_dir` indicates the path of the directory where input files can be found.
+
+The following example shows how to configure the Apptainer platform:
+
+[source,json]
+----
+"platforms":{
+    "apptainer":{
+        "image":{
+            "name":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
+        },
+        "input_dir":"/input_data/",
+        "options":["--home {{machine.output_app_dir}}"],
+        "append_app_options":["--my_custom_option_for_apptainer"]
+    }
+}
+----
+
+For any container, the `image` field must be specified, specifically `image.name`, containing the path of the image. Pulling images is not yet supported.
+
+In this case, `input_dir` represents the directory where input files will be found INSIDE the container.
+
+The `options` field contains a list of all the options to include on the container execution. It is equivalent to the machine's `containers.apptainer.options` field. However, users should only include application dependent options in this list.
+
+The `append_app_options` lists all the options to add to the application execution. It does the same as the `options` field in the root of the file, but can be used for case handling.
+
+== Outputs
+
+The `outputs` field lists all the files where application outputs are exported.
+
+
+[cols="2,1,1,3,1"]
+|===
+| Field name  | Optional | type | description | Default
+
+| filepath
+| No
+| str
+| Path of the file containing the outputs
+|
+
+| filepath
+| No
+| str (csv, json)
+| Format of the output file
+|
+
+|===
+
+All columns or fields present on the output file will be considered. 
+Outputs are added to the ReFrame report as pervormance variables.
+
+[NOTE]
+====
+Soon, the same syntax as scalability files will be used.
+====
+
+== Scalability
+
+Lists all the files where performance times can be found.
+
+[cols="2,1,1,3,1"]
+|===
+| Field name  | Optional | type | description | Default
+
+| directory
+| No
+| str
+| Common directory where scalability files can be found. Used for refactoring fields.
+|
+
+| stages
+| No
+| list[Stage]
+| List of scalability file objects describing them.
+|
+
+|===
+
+Each stage object is described as follows
+
+[cols="2,1,1,3,1"]
+|===
+| Field name  | Optional | type | description | Default
+
+| name
+| No
+| str
+| Prefix to add to the performance variables found in the file
+|
+
+| filepath
+| No
+| str
+| partial filepath, relative to the `directory` field, where values are found.
+|
+
+
+| format
+| No
+| str
+| Format of the file. Supported values are (csv, json, tsv)
+|
+
+| variables_path
+| Yes
+| str
+| Only if format is json. Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of a single wildcard (`*`).
+|
+
+|===
+
+An example of the scalability field is found and explained below.
+
+[source,json]
+----
+"scalability": {
+    "directory": "{{output_directory}}/{{instance}}/cem/",
+    "stages": [
+        {
+            "name":"custom_execution_name",
+            "filepath": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/execution_timers.json",
+            "format": "json",
+            "variables_path":"execution.*"
+        },
+        {
+            "name":"construction",
+            "filepath": "logs/timers.json",
+            "format": "json",
+            "variables_path":"*.constructor"
+        }
+    ]
+}
+----
+
+- `directory` implies that scalability files can be found under `{{output_directory}}/{{instance}}/cem/`. Where `output_directory` is defined above, and `instance` is a reserved keyword containing the hashcode of the test.
+
+There are two scalability files in the example. Let's suppose files are built like follows: 
+
+- _logs/execution_timers.json_
+[source,json]
+----
+{
+    "execution":{
+        "step1":0.5,
+        "step2":0.7,
+        "step3":1.0,
+    },
+    "postprocess":{...}
+}
+----
+
+- _logs/timers.json_
+[source,json]
+----
+{
+    "function1":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "function2":{
+        "constructor":1.0,
+        "init":0.1,
+    }
+}
+----
+
+Then, by specifying `"variables_path":"exection.*"`, performance variables will be `custom_execution_name.step1`, `custom_execution_name.step2` and `custom_execution_name.step3`.
+
+And by specifying `"variables_path":"*.constructor` for the other file, performance vairalbes will be `construction.function1`, and `construction.function2`.
+
+Note how variables are prefixed with the value under `name`, and that the wildcard (`*`) determines the variable names.
+
+[NOTE]
+====
+Deeply nested and complex JSON scalability files are supported.
+====
+
+== Sanity
+
+The `sanity` field is used to validate the application execution.
+
+The syntax is the following:
+
+[source,json]
+----
+"sanity":{
+    "success":[],
+    "error":[]
+}
+----
+
+- The `success` field contains a list of patterns to look for in the standard output. If any of the patterns are not found, the test will fail.
+- The `error` field contains a list of patters that will make the test fail if found in the standard output. If any of these paterns are found, the test will fail.
+
+[NOTE]
+====
+At the moment, only validating standard output is supported. It will soon be possible to specify custom log files.
+====
+
+== Parameters
+
+The `parameters` field list all parameters to be used in the test.
+The cartesian product of the elements in this list will determine the benchmarks.
+
+Parameters are accessible across the whole configuration file by using the syntax `{{parameters.my_parameter.value}}`.
+
+Each parameter is described by a name and a generator.
+
+Valid generators are :
+
+
+- `linspace`:
+[source,json]
+----
+{
+    "name": "my_linspace_generator",
+    "geomspace":{
+        "min":2,
+        "max":10,
+        "n_steps":5
+    }
+}
+----
+The example will yield `[2,4,6,8,10]`. Min and max are inclusive.
+
+- `geomspace`:
+[source,json]
+----
+{
+    "name": "my_geomspace_generator",
+    "geomspace":{
+        "min":1,
+        "max":10,
+        "n_steps":4
+    }
+}
+----
+The example will yield `[2,16,128,1024]`. Min and max are inclusive.
+
+- `range`:
+[source,json]
+----
+{
+    "name": "my_range_generator",
+    "geomspace":{
+        "min":1,
+        "max":5,
+        "step":1
+    }
+}
+----
+The example will yield `[1,2,3,4,5]`. Min and max are inclusive.
+
+
+- `geometric`:
+[source,json]
+----
+{
+    "name": "my_geometric_generator",
+    "geometric":{
+        "start":1,
+        "ratio":2,
+        "n_steps":5
+    }
+}
+----
+The example will yield `[1,2,4,8,16]`.
+
+- `repeat`:
+[source,json]
+----
+{
+    "name": "my_repeat_generator",
+    "repeat":{
+        "value":"a repeated value",
+        "count":3
+    }
+}
+----
+The example will yield `["a repeated value", "a repeated value", "a repeated value"]`.
+
+- `sequence`:
+
+Sequence accepts
+
+[source,json]
+----
+{
+    "name": "my_sequence_generator",
+    "sequence":[ 1, 2, 3, 4]
+}
+----
+Sequence is the simplest generator. It will yield exactly the given list.
+It accepts dictionnaries as items, which can then be accessed via the `.` separator.
+
+
+- `zip` and subparameters:
+
+Parameters can contain subparameters, which can be accessed recursively via the `.` separator. Its objective is to have parameters that depend on eachother, without producing a cartesian product.
+Aditionnaly, parameters can be zipped together via the `zip` generator.
+The `zip` generator takes a list of parameters to produce a list of python dictionaries. Each param inside the list can then have any desired generator from above.
+
+[source,json]
+----
+{
+    "name": "my_zip_generator",
+    "zip":[
+        {
+            "name":"param1",
+            "sequence":[
+                {"val1":1,"val2":2},
+                {"val1":3,"val2":4},
+                {"val1":5,"val2":6}
+            ]
+        },
+        {
+            "name":"param2",
+            "repeat":{
+                "value":"a repeated value",
+                "count":3
+            }
+        }
+    ]
+}
+----
+This example will yield `[{'param1': {'val1': 1, 'val2': 2}, 'param2': 'a repeated value'}, {'param1': {'val1': 3, 'val2': 4}, 'param2': 'a repeated value'}, {'param1': {'val1': 5, 'val2': 6}, 'param2': 'a repeated value'}]`
+
+[WARNING]
+====
+Zipped parameters need to have the same lenght.
+====
+
+- Special parameters
+
+There is one special parameter: `nb_tasks`. If included, should follow some rules for its subparameters.
+
+Accepts `exclusive_access` subparameter. Defaults to `true`.
+Either specify `tasks_per_node` and `tasks` subparameters, OR specify `tasks_per_node` and `nodes` subparameters, OR Specify only the `tasks` parameter.
+
+Specifying `tasks` and `nodes` is NOT currently supported.
+
+The `nb_tasks` parameter and its subparameters are directly accesses by ReFrame.
+
+Other parameters have only an impact on the application execution, meaning that they should be passed as options to the executable.
+

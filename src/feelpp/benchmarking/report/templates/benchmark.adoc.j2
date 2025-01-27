@@ -3,10 +3,17 @@
 :page-jupyter: true
 :page-tags: toolbox, catalog
 :parent-catalogs: {{parent_catalogs}}
-:description: Performance report for {{ machine_display_name }} on {{ session_info.time_end }}
+:description: Performance report for {{ machine_display_name }} on {{ session_info.time_start }}
 :page-illustration: {{ machine_id }}.jpg
 :author: Your Name
 :revdate: {{ session_info.time_end }}
+
+{% if description_path %}
+== Case Description
+
+include::ROOT:{{description_path}}[leveloffset=+1]
+{% endif %}
+
 
 == Test Summary
 
@@ -14,6 +21,17 @@
 * Failures: {{ session_info.num_failures }}
 
 {% if not empty %}
+
+|===
+{% for header in hash_params_headers %} | {% if header == 'partial_filepath' %} {% else %} {{ header }} {% endif %} {% endfor %}
+
+{% for entry in flat_hash_param_map.values() %}
+{% for header in hash_params_headers %}
+  {% if header == 'partial_filepath' %} | xref:{{ entry.get(header, '') }}[Description] {% else %} | {{ entry.get(header, '') }} {% endif %}
+{% endfor %}
+
+{% endfor %}
+|===
 
 [%dynamic%close%hide_code,python]
 ----
@@ -24,7 +42,7 @@ from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
 
 [%dynamic%close%hide_code,python]
 ----
-model=AtomicReportModel({{ runs }} )
+model=AtomicReportModel({{ runs }})
 view=AtomicReportView({{ plots_config }})
 controller=AtomicReportController(model,view)
 ----
