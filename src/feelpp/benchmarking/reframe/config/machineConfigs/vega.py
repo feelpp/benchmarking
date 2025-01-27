@@ -1,25 +1,22 @@
-from dotenv import load_dotenv
-from pathlib import Path
-import os
+import socket
 
-load_dotenv(os.path.join(Path(__file__).resolve().parent,"hpc.env"))
-
-project_id = os.getenv("discoverer_project_id")
+hostname = socket.gethostname()
+print("Hostname:", hostname)
 
 site_configuration = {
     'systems':[
         {
-            'name': 'discoverer',
-            'descr': 'Discoverer',
-            'hostnames': ['login\d+.discoverer.sofiatech.bg','cn*'],
-            'modules_system': 'tmod4',
+            'name': 'vega',
+            'descr': 'Vega',
+            'hostnames': [f'{hostname}'],
+            'modules_system': 'lmod',
             'partitions': [
                 {
-                    'name': 'cn',
+                    'name': 'cpu',
                     'scheduler': 'slurm',
                     'launcher': 'srun',
-                    'max_jobs': 8,
-                    'access': [f"--partition=cn --account={project_id} --qos={project_id}"],
+                    # 'max_jobs': 8,
+                    'access': [f"--partition=cpu"],
                     'environs': ['default'],
                     'processor': {
                         'num_cpus': 128
@@ -27,7 +24,7 @@ site_configuration = {
                     'devices': [
                         {
                             'type': 'cpu',
-                            'num_devices': 1320 #VALIDATE
+                            'num_devices': 960
                         }
                     ],
                     'container_platforms':[
@@ -45,8 +42,8 @@ site_configuration = {
     'environments': [
         {
             'name':'default',
-            'modules': [],
-            'target_systems':['discoverer:cn']
+            'modules': ["OpenMPI/4.1.5-GCC-12.3.0"],
+            'target_systems':['vega:cpu']
         }
     ]
 }

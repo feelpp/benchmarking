@@ -13,7 +13,7 @@
             ],
             "names": [ ],
             "xaxis": {
-                "parameter": "meshes",
+                "parameter": "mesh",
                 "label": "mesh levels"
             },
             "yaxis": {
@@ -28,7 +28,7 @@
                 "label": "Measures"
             },
             "aggregations":[
-                {"column":"nb_tasks.tasks","agg":"filter:128"}
+                {"column":"resources.tasks","agg":"filter:640"}
             ]
         },
         {
@@ -42,11 +42,11 @@
             ],
             "names": [ ],
             "xaxis": {
-                "parameter": "nb_tasks.tasks",
+                "parameter": "resources.tasks",
                 "label": "Number of tasks"
             },
             "secondary_axis": {
-                "parameter": "meshes",
+                "parameter": "mesh",
                 "label": "Mesh level"
             },
             "yaxis": {
@@ -71,11 +71,11 @@
             ],
             "names": [ ],
             "xaxis": {
-                "parameter": "nb_tasks.tasks",
+                "parameter": "resources.tasks",
                 "label": "Number of tasks"
             },
             "secondary_axis": {
-                "parameter": "meshes",
+                "parameter": "mesh",
                 "label": "Mesh level"
             },
             "yaxis": {
@@ -100,11 +100,11 @@
             ],
             "names": [ ],
             "xaxis": {
-                "parameter": "nb_tasks.tasks",
+                "parameter": "resources.tasks",
                 "label": "Number of tasks"
             },
             "secondary_axis": {
-                "parameter": "meshes",
+                "parameter": "mesh",
                 "label": "Mesh level"
             },
             "yaxis": {
@@ -129,11 +129,11 @@
             ],
             "names": [ ],
             "xaxis": {
-                "parameter": "nb_tasks.tasks",
+                "parameter": "resources.tasks",
                 "label": "Number of tasks"
             },
             "secondary_axis": {
-                "parameter": "meshes",
+                "parameter": "mesh",
                 "label": "Mesh level"
             },
             "yaxis": {
@@ -145,6 +145,64 @@
             },
             "aggregations":[
                 {"column":"discretization","agg":"filter:P2"}
+            ]
+        },
+        {
+            "title": "Performance (P3)",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "resources.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "mesh",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P3"}
+            ]
+        },
+        {
+            "title": "Speedup (P3)",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [
+                "Constructor_init",
+                "Solve_algebraic-assembly",
+                "PostProcessing_exportResults"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "resources.tasks",
+                "label": "Number of tasks"
+            },
+            "secondary_axis": {
+                "parameter": "mesh",
+                "label": "Mesh level"
+            },
+            "yaxis": {
+                "label": "Speedup"
+            },
+            "color_axis":{
+                "parameter":"performance_variable",
+                "label":"Performance variable"
+            },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P3"}
             ]
         }
     ]

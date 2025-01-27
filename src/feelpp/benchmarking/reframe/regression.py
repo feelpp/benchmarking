@@ -5,7 +5,7 @@ from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
 from feelpp.benchmarking.reframe.outputs import OutputsHandler
 
 
-import shutil
+import shutil, os
 
 @rfm.simple_test
 class RegressionTest(ReframeSetup):
@@ -23,6 +23,17 @@ class RegressionTest(ReframeSetup):
         if self.is_dry_run():
             self.skip("ReFrame is in dry-run mode, perormance and sanity are not going to be evaluated.")
 
+    @run_after('run')
+    def addRfmOutputFiles(self):
+        with open(os.path.join(self.stagedir, self.job.script_filename), 'r') as f:
+            self.script = f.read()
+
+        with open(os.path.join(self.stagedir,self.job.stdout), 'r') as f:
+            self.output_log = f.read()
+
+        with open(os.path.join(self.stagedir,self.job.stderr), 'r') as f:
+            self.error_log = f.read()
+
     @run_before('performance')
     def setPerfVars(self):
         self.perf_variables = {}
@@ -35,7 +46,6 @@ class RegressionTest(ReframeSetup):
         self.perf_variables.update(
             self.outputs_handler.getOutputs()
         )
-
 
     @run_before('performance')
     def copyParametrizedFiles(self):

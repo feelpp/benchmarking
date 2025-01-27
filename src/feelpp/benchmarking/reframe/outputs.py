@@ -63,7 +63,7 @@ class OutputsHandler:
         """
 
         if self.additional_files_config and self.additional_files_config.parameterized_descriptions_filepath:
-            file_extension = self.additional_files_config.description_filepath.split(".")[-1] if "." in self.additional_files_config.description_filepath else None
+            file_extension = self.additional_files_config.parameterized_descriptions_filepath.split(".")[-1] if "." in self.additional_files_config.parameterized_descriptions_filepath else None
 
             outdir = os.path.join(dir_path,"partials")
             if not os.path.exists(outdir):

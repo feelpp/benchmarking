@@ -48,6 +48,8 @@ class HpcSystemFactory:
             return HpcSystem( runner = "self-gaya", machine = "gaya", python_version = "3.10", user_name = "prudhomm", submit =  "cli" )
         elif machine_name == "discoverer":
             return HpcSystem( runner = "self-discoverer", machine = "discoverer", partition = "truePartition", python_version = "3.6", user_name = "vchabannes", submit = "cli" )
+        elif machine_name == "vega":
+            return HpcSystem( runner= "self-vega", machine="vega", python_version = "3", user_name = "euvincentc", submit ="cli" )
         else:
             raise ValueError(f"HPC resource {machine_name} not found...")
 

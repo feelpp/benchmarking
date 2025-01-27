@@ -33,7 +33,11 @@ class AtomicReportModel(Model):
                     "platform":testcase["check_vars"]["platform"]
                 }
                 for dim, v in testcase["check_params"].items():
-                    tmp_dct[dim] = v
+                    if isinstance(v,dict):
+                        for subdim, v2 in v.items():
+                            tmp_dct[f"{dim}.{subdim}"] = v2
+                    else:
+                        tmp_dct[dim] = v
                 processed_data.append(tmp_dct)
                 continue
 
