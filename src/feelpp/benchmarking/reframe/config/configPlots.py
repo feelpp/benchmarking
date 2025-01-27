@@ -29,6 +29,11 @@ class Plot(BaseModel):
     color_axis:Optional[PlotAxis] = None
     layout_modifiers: Optional[Dict] = {}
 
+    @model_validator(mode="after")
+    def checkNames(self):
+        if self.variables and self.names:
+            assert len(self.variables)==len(self.names)
+        return self
 
     @field_validator("xaxis","secondary_axis", mode="after")
     @classmethod

@@ -80,6 +80,13 @@ class Figure:
             fig = go.Figure()
         return fig
 
+    def renameColumns(self,df):
+        if self.config.variables and self.config.names:
+            assert len(self.config.variables) == len(self.config.names)
+            df = df.rename(columns = {var:name for var,name in zip(self.config.variables,self.config.names)})
+
+        return df
+
     def createFigure(self,df):
         """ Creates a figure from the master dataframe
         Args:
@@ -88,6 +95,7 @@ class Figure:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
         df = self.transformation_strategy.calculate(df)
+        df = self.renameColumns(df)
 
         if isinstance(df.index,MultiIndex):
             figure = self.createMultiindexFigure(df)
