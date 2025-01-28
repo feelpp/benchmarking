@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.figureFactory import FigureFactory
+from feelpp.benchmarking.report.figureFactory import PlotlyFigureFactory
 from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 
 import tempfile
@@ -19,7 +19,7 @@ class PlotlyGenerator(DataGenerator):
         """
         figures = []
         for plot_config in plots_config:
-            for plot in FigureFactory.create(plot_config):
+            for plot in PlotlyFigureFactory.create(plot_config):
                 figures.append( plot.createFigure(master_df) )
         return figures
 

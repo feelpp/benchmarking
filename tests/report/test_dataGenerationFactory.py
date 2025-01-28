@@ -1,5 +1,5 @@
 import pytest
-from feelpp.benchmarking.report.figureFactory import FigureFactory
+from feelpp.benchmarking.report.figureFactory import PlotlyFigureFactory
 from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.report.dataGenerationFactory import DataGeneratorFactory, PlotlyGenerator, PlotlyHtmlGenerator, CsvGenerator, PgfGenerator
 from test_transformationFactory import PlotConfigMocker, AxisMocker, MockDataframe
@@ -32,9 +32,9 @@ class TestDataGeneratorStrategies:
         generator = PlotlyGenerator()
         figures = self.getData(generator)
 
-        expected_figures = [plot.createFigure(self.mock_data) for plot in FigureFactory.create(self.plot_config)]
+        expected_figures = [plot.createFigure(self.mock_data) for plot in PlotlyFigureFactory.create(self.plot_config)]
 
-        assert figures == expected_figures, "Figures are not the same as returned by the FigureFactory"
+        assert figures == expected_figures, "Figures are not the same as returned by the PlotlyFigureFactory"
 
     def test_plotlyHtmlGenerator(self):
         """ Tests for the plotlyHtmlGenerator strategy.
@@ -43,7 +43,7 @@ class TestDataGeneratorStrategies:
         """
         generator = PlotlyHtmlGenerator()
         figures = self.getData(generator)
-        expected_figures = [plot.createFigure(self.mock_data).to_html() for plot in FigureFactory.create(self.plot_config)]
+        expected_figures = [plot.createFigure(self.mock_data).to_html() for plot in PlotlyFigureFactory.create(self.plot_config)]
 
         assert all([fig.startswith("<html>") and fig.endswith("</html>") for fig in figures]), "Figures do not start or end with html tags"
         assert all([len(fig) == len(expected_fig) for fig,expected_fig in zip(figures,expected_figures)]), "Figures html does not have the expected length"

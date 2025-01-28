@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure
+from feelpp.benchmarking.report.figureFactory import PlotlyFigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure
 from test_transformationFactory import PlotConfigMocker
 import pytest
 
@@ -13,14 +13,14 @@ import pytest
     (["unkown"],[])
 ])
 def test_figureFactory(types,expected_classes):
-    """ Tests the correct generation of Figure objects by the FigureFactory class """
+    """ Tests the correct generation of Figure objects by the PlotlyFigureFactory class """
     plot_config = PlotConfigMocker(transformation="speedup",plot_types=types)
     if expected_classes:
-        figures = FigureFactory.create(plot_config)
+        figures = PlotlyFigureFactory.create(plot_config)
         assert len(types) == len(figures)
         for figure,expected_class in zip(figures,expected_classes):
             assert isinstance(figure,expected_class)
             assert hasattr(figure,"createFigure") and callable(figure.createFigure)
     else:
         with pytest.raises(NotImplementedError):
-            figures = FigureFactory.create(plot_config)
+            figures = PlotlyFigureFactory.create(plot_config)

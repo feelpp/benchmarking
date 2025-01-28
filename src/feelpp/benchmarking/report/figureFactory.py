@@ -6,7 +6,7 @@ from numpy import float64 as float64
 from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 
 
-class Figure:
+class PlotlyFigure:
     """ Abstract class for a figure """
     def __init__(self,plot_config,transformation_strategy):
         self.config = plot_config
@@ -98,7 +98,7 @@ class Figure:
         return figure
 
 
-class ScatterFigure(Figure):
+class ScatterFigure(PlotlyFigure):
     """ Concrete Figure class for scatter figures """
     def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
         super().__init__(plot_config,transformation_strategy)
@@ -137,7 +137,7 @@ class ScatterFigure(Figure):
         return go.Figure(data = self.createTraces(df))
 
 
-class TableFigure(Figure):
+class TableFigure(PlotlyFigure):
     """ Concrete Figure class for scatter figures """
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
@@ -193,7 +193,7 @@ class TableFigure(Figure):
 
 
 
-class StackedBarFigure(Figure):
+class StackedBarFigure(PlotlyFigure):
     """ Concrete Figure class for stacked bar charts"""
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
@@ -245,7 +245,7 @@ class StackedBarFigure(Figure):
         )
         return fig
 
-class GroupedBarFigure(Figure):
+class GroupedBarFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
 
@@ -279,7 +279,7 @@ class GroupedBarFigure(Figure):
         return go.Figure(self.createTraces(df))
 
 
-class FigureFactory:
+class PlotlyFigureFactory:
     """ Factory class to dispatch concrete figure elements"""
     @staticmethod
     def create(plot_config):
