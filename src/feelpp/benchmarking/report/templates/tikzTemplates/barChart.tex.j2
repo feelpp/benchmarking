@@ -1,0 +1,41 @@
+\documentclass[12pt]{article}
+
+\usepackage{pgf-pie}  % For pie charts
+\usepackage{currfile} % Required for getting the current file name
+\usepackage{tikz}     % Required for drawing graphics
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+\newcommand{\plot}[2][]{
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=\textwidth, height=0.6172\textwidth,
+      xlabel={ {{xaxis.label}} }, ylabel={ {{yaxis.label}} },
+      xtick=data, xtick align=outside,
+      ymin=0, ymajorgrids=true, yminorgrids=true,
+      bar width=7pt,
+      cycle list name=color list,
+      ybar,
+      legend style={at={(0.5,-0.1)},anchor=north}
+    ]
+    {% for var,name in zip(variables,names) %}
+      \addplot table [x={{xaxis.parameter}}, y={{ var }}] {{'{#2}'}} ;
+      \addlegendentry{ {{name}} }
+    {% endfor %}
+
+    \end{axis}
+  \end{tikzpicture}
+}
+
+\pgfplotstableread{
+{{df_csv}}
+}\dataPa
+
+\begin{figure}
+  \plot{\dataPa}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,26 @@
+\documentclass[12pt]{article}
+
+\usepackage{pgf-pie}  % For pie charts
+\usepackage{currfile} % Required for getting the current file name
+\usepackage{tikz}     % Required for drawing graphics
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+\newcommand{\plot}[2][]{
+  \begin{tikzpicture}
+    {{figure_data}}
+  \end{tikzpicture}
+}
+
+\pgfplotstableread{
+{{df_csv}}
+}\data
+
+\begin{figure}
+  \plot{\data}
+\end{figure}
+
+\end{document}

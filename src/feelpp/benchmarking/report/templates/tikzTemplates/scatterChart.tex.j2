@@ -1,0 +1,50 @@
+\documentclass[12pt]{article}
+
+\usepackage{pgf-pie}  % For pie charts
+\usepackage{currfile} % Required for getting the current file name
+\usepackage{tikz}     % Required for drawing graphics
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{fillbetween}
+
+\begin{document}
+
+\newcommand{\plot}[2][]{
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=\textwidth, height=0.6172\textwidth,
+      xlabel={ {{xaxis.label}} }, ylabel={ {{yaxis.label}} },
+      xtick=data, xtick align=outside,
+      ymin=0, ymajorgrids=true, yminorgrids=true,
+      cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}
+      #1
+    ]
+    {% for var,name in zip(variables,names) %}
+      {% if fill_lines and var not in fill_lines %}
+      \addplot table [x={{xaxis.parameter}}, y={{ var }}] {{'{#2}'}} ;
+      \addlegendentry{ {{name}} }
+      {% endif %}
+    {% endfor %}
+
+    {% for fill_col in fill_lines %}
+      \addplot[black, name path={{fill_col}}] table [x={{xaxis.parameter}}, y={{ fill_col }}] {{'{#2}'}} ;
+      \addlegendentry{ {{fill_col}} }
+    {% endfor %}
+    {% if fill_lines %}
+        \addplot[black, fill opacity=0.2] fill between[of={{fill_lines[0]}} and {{fill_lines[-1]}}];
+    {% endif %}
+
+    \end{axis}
+  \end{tikzpicture}
+}
+
+\pgfplotstableread{
+{{df_csv}}
+}\dataPa
+
+\begin{figure}
+  \plot{\dataPa}
+\end{figure}
+
+\end{document}

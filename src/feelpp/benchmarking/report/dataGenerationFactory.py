@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.figureFactory import PlotlyFigureFactory
+from feelpp.benchmarking.report.figureFactory import PlotlyFigureFactory, TikzFigureFactory
 from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 
 import tempfile
@@ -34,30 +34,12 @@ class PlotlyHtmlGenerator(PlotlyGenerator):
 class PgfGenerator(PlotlyGenerator):
     def generate(self,plots_config,master_df):
         """ Creates PGF plots for each figure specified on the view config file
-        Returns a list of strings contianing LaTeX code defining the figures using PGF/TikZ
         """
-        plotly_figures = super().generate(plots_config,master_df)
-        pgf_figures = []
-        with tempfile.NamedTemporaryFile() as tmp_pgf_save:
-            for figure in plotly_figures:
-                if figure.frames:
-                    animation_pgf = []
-                    for frame in figure.frames:
-                        tikzplotly.save(tmp_pgf_save.name,frame)
-
-                        with open(tmp_pgf_save.name) as tmp:
-                            animation_pgf.append(tmp.read())
-                    pgf_figures.append("\n\n".join(animation_pgf))
-                else:
-                    try:
-                        tikzplotly.save(tmp_pgf_save.name,figure)
-                    except IndexError as e:
-                        print(e)
-                        pgf_figures.append("")
-                    else:
-                        with open(tmp_pgf_save.name) as tmp:
-                            pgf_figures.append(tmp.read())
-        return pgf_figures
+        figures = []
+        for plot_config in plots_config:
+            for plot in TikzFigureFactory.create(plot_config):
+                figures.append( plot.createTex(master_df) )
+        return figures
 
 class CsvGenerator(DataGenerator):
     def generate(self,plots_config,master_df):
