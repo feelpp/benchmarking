@@ -192,15 +192,32 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_after('init')
     def pruneParameterSpace(self):
         for param_config in self.app_setup.reader.config.parameters:
-            for current_param_value, filters in param_config.conditions.items():
-                if str(getattr(self,param_config.name)) == current_param_value:
-                    for accept_name,accept_values in filters.items():
-                        param_path = accept_name.split(".")
-                        current_filter_value = getattr(self,param_path[0])
-                        if len(param_path) > 1:
-                            for p in param_path[1:]:
-                                current_filter_value = current_filter_value[p]
-                        self.skip_if( current_filter_value not in accept_values,  f"{accept_name}={current_filter_value} not in {param_config.name}={current_param_value} condition list ({accept_values})", )
+            if not param_config.conditions:
+                continue
+
+            active_parameter_value = str(getattr(self,param_config.name))
+            filters_list = param_config.conditions.get(active_parameter_value)
+            if not filters_list:
+                continue
+
+            active_filter_values = {}
+            for filters in filters_list:
+                for filter_name in filters.keys():
+                    param_path = filter_name.split(".")
+                    active_filter_values[filter_name] = getattr(self,param_path[0])
+                    if len(param_path) > 1:
+                        for p in param_path[1:]:
+                            active_filter_values[filter_name] = active_filter_values[filter_name].get(p)
+
+            is_valid = any(
+                all(
+                    active_filter_values[filter_key] in filter_values
+                    for filter_key, filter_values in filters.items()
+                )
+                for filters in filters_list
+            )
+
+            self.skip_if(not is_valid , f"Invalid parameter combination ({active_filter_values}) for condition list {param_config.name}={active_parameter_value} condition list ({filters_list})", )
 
     @run_after('init')
     def setupAfterInit(self):

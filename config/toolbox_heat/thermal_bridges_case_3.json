@@ -74,11 +74,11 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence":[32,64,128,256]
+                    "sequence":[128,256,384,512,640,768,896,1024,1152,1280]
                 },
                 {
                     "name":"exclusive_access",
-                    "repeat":{"value":true,"count":4}
+                    "repeat":{"value":true,"count":10}
                 }
             ]
         },
@@ -88,15 +88,20 @@
         },
         {
             "name":"memory",
-            "sequence":[200, 600]
+            "sequence":[200, 300, 3000],
+            "conditions":{
+                "200": [ { "discretization": ["P1","P2"], "mesh": ["M1","M2"] }, { "discretization": ["P2"], "mesh": ["M3"] } ],
+                "300": [ { "discretization": ["P1"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M1","M2"] } ],
+                "3000": [ { "discretization": ["P3"], "mesh": ["M3"] } ]
+            }
         },
         {
             "name":"discretization",
             "sequence":["P1","P2","P3"],
             "conditions":{
-                "P1":{ "memory":[200] },
-                "P2":{ "memory":[200] },
-                "P3":{ "memory":[600], "resources.tasks":[128,256] }
+                "P1":[{ "resources.tasks":[128,256,384,512,640,768] }],
+                "P2":[{ "resources.tasks":[768,896,1024,1152,1280] }],
+                "P3":[{ "resources.tasks":[640,768,896,1024,1152,1280] }]
             }
         },
         {
