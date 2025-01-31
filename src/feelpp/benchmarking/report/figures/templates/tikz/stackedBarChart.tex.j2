@@ -7,9 +7,24 @@
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=newest}
 
+\makeatletter
+\newcommand\resetstackedplots{
+\makeatletter
+\pgfplots@stacked@isfirstplottrue
+\makeatother
+}
+
 \begin{document}
 
-\newcommand{\plot}[2][]{
+{% for df in csv_datasets %}
+\pgfplotstableread{
+{{df}}
+}\data{{loop.index | inttouniquestr }}
+{% endfor %}
+
+
+\begin{figure}
+
   \begin{tikzpicture}
     \begin{axis}[
       width=\textwidth, height=0.6172\textwidth,
@@ -21,21 +36,24 @@
       ybar,
       legend style={at={(0.5,-0.1)},anchor=north}
     ]
-    {% for var,name in zip(variables,names) %}
-      \addplot table [x={{xaxis.parameter}}, y={{ var }}] {{'{#2}'}} ;
+
+    {% for df in csv_datasets %}
+      {% set i = loop.index %}
+      {% if i != 1 %}
+      \resetstackedplots
+      {% endif %}
+      {% for var,name in zip(variables,names) %}
+      \addplot table [x={{xaxis.parameter}}, y={{ var }}] {\data{{i | inttouniquestr}}} ;
+      {% if i == 1%}
       \addlegendentry{ {{name}} }
+      {% endif %}
+      {% endfor %}
     {% endfor %}
 
     \end{axis}
   \end{tikzpicture}
-}
 
-\pgfplotstableread{
-{{df_csv}}
-}\dataPa
-
-\begin{figure}
-  \plot{\dataPa}
+  \caption{ {{caption}} }
 \end{figure}
 
 \end{document}

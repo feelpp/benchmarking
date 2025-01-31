@@ -202,8 +202,8 @@ Considering the same example axis as above, the software can generate the follow
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.figureFactory import PlotlyFigureFactory
-figures = PlotlyFigureFactory.create(Plot(**{
+from feelpp.benchmarking.report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
     "title": "Absolute performance",
     "plot_types": [ "scatter" ],
     "transformation": "performance",
@@ -231,7 +231,7 @@ fig.show()
 
 [%dynamic%open%hide_code,python]
 ----
-figures = PlotlyFigureFactory.create(Plot(**{
+figures = FigureFactory.create(Plot(**{
     "title": "Absolute performance",
     "plot_types": [ "stacked_bar" ],
     "transformation": "performance",
@@ -260,7 +260,7 @@ fig.show()
 
 [%dynamic%open%hide_code,python]
 ----
-figures = PlotlyFigureFactory.create(Plot(**{
+figures = FigureFactory.create(Plot(**{
     "title": "Absolute performance",
     "plot_types": [ "grouped_bar" ],
     "transformation": "performance",
@@ -288,7 +288,7 @@ fig.show()
 
 [%dynamic%open%hide_code,python]
 ----
-figures = PlotlyFigureFactory.create(Plot(**{
+figures = FigureFactory.create(Plot(**{
     "title": "Absolute performance",
     "plot_types": [ "table" ],
     "transformation": "performance",

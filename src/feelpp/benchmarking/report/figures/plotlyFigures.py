@@ -1,23 +1,14 @@
 import plotly.graph_objects as go
 import plotly.express as px
-from pandas import MultiIndex
+
+from feelpp.benchmarking.report.figures.base import Figure
 from numpy import float64 as float64
 
-from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
-from feelpp.benchmarking.report.renderer import Renderer
 
-
-class PlotlyFigure:
-    """ Abstract class for a figure """
-    def __init__(self,plot_config,transformation_strategy):
-        self.config = plot_config
-        self.transformation_strategy = transformation_strategy
-
-    def createMultiindexFigure(self,df):
-        raise NotImplementedError("Pure virtual function. Not to be called from the base class")
-
-    def createSimpleFigure(self,df):
-        raise NotImplementedError("Pure virtual function. Not to be called from the base class")
+class PlotlyFigure(Figure):
+    """ Base class for a Plotly figure """
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
 
     def createTraces(self,df):
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
@@ -35,15 +26,6 @@ class PlotlyFigure:
             legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
         return fig
-
-    def getIdealRange(self,df):
-        """ Computes the [(min - eps), (max+eps)] interval for optimal y-axis display
-        Args:
-            - df (pd.DataFrame): The dataframe for which the interval should be computed
-        Returns list[float, float]: The  [(min - eps), (max+eps)] interval
-        """
-        range_epsilon= 0.01
-        return [ df.min().min() - df.min().min()*range_epsilon, df.max().max() + df.min().min()*range_epsilon ]
 
     def createSliderAnimation(self,df):
         """ Creates a plotly slider animation figure from a pandas dataframe. Depending on the provided config parameters.
@@ -87,16 +69,13 @@ class PlotlyFigure:
         Returns:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
-        df = self.transformation_strategy.calculate(df)
-
-        if isinstance(df.index,MultiIndex):
-            figure = self.createMultiindexFigure(df)
-        else:
-            figure = self.createSimpleFigure(df)
-
+        figure = super().createFigure(df)
         figure.update_layout(self.config.layout_modifiers)
         figure = self.updateLayout(figure)
         return figure
+
+    def createHtml(self,df):
+        return self.createFigure(df).to_html()
 
 
 class PlotlyScatterFigure(PlotlyFigure):
@@ -193,7 +172,6 @@ class PlotlyTableFigure(PlotlyFigure):
         return fig
 
 
-
 class PlotlyStackedBarFigure(PlotlyFigure):
     """ Concrete Figure class for stacked bar charts"""
     def __init__(self, plot_config, transformation_strategy):
@@ -246,6 +224,7 @@ class PlotlyStackedBarFigure(PlotlyFigure):
         )
         return fig
 
+
 class PlotlyGroupedBarFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
@@ -278,95 +257,3 @@ class PlotlyGroupedBarFigure(PlotlyFigure):
             go.Figure: Bar plot
         """
         return go.Figure(self.createTraces(df))
-
-
-class PlotlyFigureFactory:
-    """ Factory class to dispatch concrete figure elements"""
-    @staticmethod
-    def create(plot_config):
-        """ Creates a concrete figure element
-        Args:
-            plot_config (Plot). Pydantic object with the plot configuration information
-        """
-        strategy = TransformationStrategyFactory.create(plot_config)
-        figures = []
-        for plot_type in plot_config.plot_types:
-            if plot_type ==  "scatter":
-                fill_lines = []
-                if plot_config.transformation=="speedup":
-                    fill_lines = ["optimal","half-optimal"]
-                figures.append(PlotlyScatterFigure(plot_config,strategy, fill_lines))
-            elif plot_type == "table":
-                figures.append(PlotlyTableFigure(plot_config,strategy))
-            elif plot_type == "stacked_bar":
-                figures.append(PlotlyStackedBarFigure(plot_config,strategy))
-            elif plot_type == "grouped_bar":
-                figures.append(PlotlyGroupedBarFigure(plot_config,strategy))
-            else:
-                raise NotImplementedError
-
-        return figures
-
-
-
-
-class TikzFigure:
-    def __init__(self,plot_config, transformation_strategy, renderer_filename):
-        self.config = plot_config
-        self.transformation_strategy = transformation_strategy
-        self.template_dirpath = "./src/feelpp/benchmarking/report/templates/tikzTemplates" #TODO: DO NOT HARDCODE PATHS
-
-        self.renderer = Renderer(self.template_dirpath,renderer_filename)
-
-    def createTex(self,df, **args):
-        df = self.transformation_strategy.calculate(df)
-
-        return self.renderer.template.render(
-            xaxis = self.config.xaxis,
-            yaxis = self.config.yaxis,
-            variables = df.columns.to_list(),
-            names = self.config.names or df.columns.to_list(),
-            df_csv = df.to_csv(sep="\t"),
-            **args
-        )
-
-class TikzBarFigure(TikzFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy, "barChart.tex.j2")
-
-    def createTex(self, df):
-        return super().createTex(df)
-
-class TikzScatterFigure(TikzFigure):
-    def __init__(self, plot_config, transformation_strategy, fill_lines = []):
-        super().__init__(plot_config, transformation_strategy, "scatterChart.tex.j2")
-        self.fill_lines = fill_lines
-
-    def createTex(self, df):
-        return super().createTex(df, fill_lines = self.fill_lines)
-
-class TikzFigureFactory:
-    @staticmethod
-    def create(plot_config):
-        """ Creates a concrete figure element
-        Args:
-            plot_config (Plot). Pydantic object with the plot configuration information
-        """
-        strategy = TransformationStrategyFactory.create(plot_config)
-        figures = []
-        for plot_type in plot_config.plot_types:
-            if plot_type == "grouped_bar":
-                figures.append(TikzBarFigure(plot_config,strategy))
-            elif plot_type == "scatter":
-                fill_lines = []
-                if plot_config.transformation=="speedup":
-                    fill_lines = ["optimal","half-optimal"]
-                figures.append(TikzScatterFigure(plot_config,strategy,fill_lines))
-            elif plot_type == "stacked_bar":
-                raise NotImplementedError
-            elif plot_type == "table":
-                raise NotImplementedError
-            else:
-                raise NotImplementedError
-
-        return figures
