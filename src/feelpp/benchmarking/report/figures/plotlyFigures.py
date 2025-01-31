@@ -62,6 +62,24 @@ class PlotlyFigure(Figure):
             fig = go.Figure()
         return fig
 
+    def createMultiindexFigure(self,df):
+        """ Creates a plotly figure from a multiIndex dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: animation where the secondary_ axis corresponds to a specified parameter
+        """
+        return self.createSliderAnimation(df)
+
+    def createSimpleFigure(self,df):
+        """ Creates a plotly figure from a given dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            go.Figure: plot
+        """
+        return go.Figure(self.createTraces(df))
+
     def createFigure(self,df):
         """ Creates a figure from the master dataframe
         Args:
@@ -97,24 +115,6 @@ class PlotlyScatterFigure(PlotlyFigure):
             go.Scatter( x = df.index, y = df.loc[:,col], name = col )
             for col in [c for c in df.columns if c not in self.fill_lines]
         ]
-
-    def createMultiindexFigure(self,df):
-        """ Creates a plotly figure from a multiIndex dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe (must be multiindex)
-        Returns:
-            go.Figure: Scatter animation where the secondary_ axis corresponds to a specified parameter
-        """
-        return self.createSliderAnimation(df)
-
-    def createSimpleFigure(self,df):
-        """ Creates a plotly figure from a given dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe
-        Returns:
-            go.Figure: Scatter plot
-        """
-        return go.Figure(data = self.createTraces(df))
 
 
 class PlotlyTableFigure(PlotlyFigure):
@@ -239,21 +239,3 @@ class PlotlyGroupedBarFigure(PlotlyFigure):
             go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
             for col in df.columns
         ]
-
-    def createMultiindexFigure(self,df):
-        """ Creates a plotly figure from a multiIndex dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe (must be multiindex)
-        Returns:
-            go.Figure: Bar animation where the secondary_ axis corresponds to a specified parameter
-        """
-        return self.createSliderAnimation(df)
-
-    def createSimpleFigure(self,df):
-        """ Creates a plotly figure from a given dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe
-        Returns:
-            go.Figure: Bar plot
-        """
-        return go.Figure(self.createTraces(df))

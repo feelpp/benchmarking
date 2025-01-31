@@ -12,6 +12,12 @@ class TikzFigure(Figure):
 
 
     def createMultiindexFigure(self, df, **args):
+        """ Creates a latex tikz (pgfplots) figure from a multiIndex dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            str: latex file content where containing multiple pgfplots figures, for each value of secondary axis
+        """
         return self.renderer.template.render(
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
@@ -25,6 +31,12 @@ class TikzFigure(Figure):
         )
 
     def createSimpleFigure(self, df, **args):
+        """ Creates a latex tikz (pgfplots) figure from a given dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            str: latex file content containing the pgfplots figure
+        """
         return self.renderer.template.render(
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
@@ -37,6 +49,7 @@ class TikzFigure(Figure):
 
 
 class TikzScatterFigure(TikzFigure):
+    """ Concrete Figure class for pgfplots scatter figure"""
     def __init__(self, plot_config, transformation_strategy, fill_lines = []):
         super().__init__(plot_config, transformation_strategy, "scatterChart.tex.j2")
         self.fill_lines = fill_lines
@@ -45,13 +58,16 @@ class TikzScatterFigure(TikzFigure):
         return super().createFigure(df, fill_lines = self.fill_lines)
 
 class TikzTableFigure(TikzFigure):
+    """ Concrete Figure class for pgfplots table"""
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy, "tableChart.tex.j2")
 
 class TikzStackedBarFigure(TikzFigure):
+    """ Concrete Figure class for pgfplots stacked bar figure"""
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy, "stackedBarChart.tex.j2")
 
 class TikzGroupedBarFigure(TikzFigure):
+    """ Concrete Figure class for pgfplots grouped bar figure"""
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy, "groupedBarChart.tex.j2")

@@ -21,7 +21,7 @@
       #1
     ]
     {% for var,name in zip(variables,names) %}
-      {% if fill_lines and var not in fill_lines %}
+      {% if var not in fill_lines %}
       \addplot table [x={{xaxis.parameter}}, y={{ var }}] {{'{#2}'}} ;
       \addlegendentry{ {{name}} }
       {% endif %}

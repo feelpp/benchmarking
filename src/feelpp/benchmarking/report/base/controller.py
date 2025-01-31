@@ -34,7 +34,7 @@ class Controller:
         """ Create a list containing the data for each plot specified on the view config in CSV format.
         Returns (list[str]): List of csv data.
         """
-        return [ figure.createTex(self.model.master_df) for figure in self.view.figures ]
+        return [ figure.createCsv(self.model.master_df) for figure in self.view.figures ]
 
 
     def generateData(self,format):
