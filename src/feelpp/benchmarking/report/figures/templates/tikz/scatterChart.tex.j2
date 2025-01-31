@@ -39,12 +39,25 @@
   \end{tikzpicture}
 }
 
+
+{% for df in csv_datasets %}
 \pgfplotstableread{
-{{df_csv}}
-}\dataPa
+{{df}}
+}\data{{loop.index | inttouniquestr }}
+{% endfor %}
+
 
 \begin{figure}
-  \plot{\dataPa}
+
+{% if anim_dimension_values %}
+  {% for dim in anim_dimension_values %}
+  \plot{\data{{ loop.index | inttouniquestr }}}
+  \caption{ {{secondary_axis.label}}={{dim}} }
+  {% endfor %}
+{% else %}
+  \plot{\data{{1 | inttouniquestr }}}
+{% endif %}
+\caption{ {{caption}} }
 \end{figure}
 
 \end{document}

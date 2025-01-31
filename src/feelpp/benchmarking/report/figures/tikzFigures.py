@@ -48,22 +48,10 @@ class TikzTableFigure(TikzFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy, "tableChart.tex.j2")
 
-    def createFigure(self, df):
-        return super().createFigure(df)
-
-
 class TikzStackedBarFigure(TikzFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy, "stackedBarChart.tex.j2")
 
-    def createFigure(self, df):
-        return super().createFigure(df)
-
-
 class TikzGroupedBarFigure(TikzFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy, "groupedBarChart.tex.j2")
-
-    def createFigure(self, df):
-        return super().createFigure(df)
-
