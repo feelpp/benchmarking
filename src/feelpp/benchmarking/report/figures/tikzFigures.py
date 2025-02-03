@@ -9,9 +9,10 @@ class TikzFigure(Figure):
         self.template_dirpath = "./src/feelpp/benchmarking/report/figures/templates/tikz/" #TODO: DO NOT HARDCODE PATHS
 
         self.renderer = Renderer(self.template_dirpath,renderer_filename)
+        self.xcolors = ["red","green","blue","magenta","yellow","black","gray","white","darkgray","lightgray","olive","orange","pink","purple","teal","violet","cyan","brown","lime"]
 
     def parseSpecialCharacters(self, value, replace_map = {"_":"-"}):
-        """ Replaces certain characters with other ones depending on the replace_map 
+        """ Replaces certain characters with other ones depending on the replace_map
         Args:
             value (str): String to parse
             replace_map (dict[str,str]): Characters to replace and their respective replace values
@@ -78,6 +79,9 @@ class TikzStackedBarFigure(TikzFigure):
     """ Concrete Figure class for pgfplots stacked bar figure"""
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy, "stackedBarChart.tex.j2")
+
+    def createFigure(self,df):
+        return super().createFigure(df, colors=self.xcolors[:len(df.columns)])
 
 class TikzGroupedBarFigure(TikzFigure):
     """ Concrete Figure class for pgfplots grouped bar figure"""
