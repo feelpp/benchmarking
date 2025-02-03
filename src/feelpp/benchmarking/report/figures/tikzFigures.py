@@ -10,6 +10,18 @@ class TikzFigure(Figure):
 
         self.renderer = Renderer(self.template_dirpath,renderer_filename)
 
+    def parseSpecialCharacters(self, value, replace_map = {"_":"-"}):
+        """ Replaces certain characters with other ones depending on the replace_map 
+        Args:
+            value (str): String to parse
+            replace_map (dict[str,str]): Characters to replace and their respective replace values
+        Returns:
+            str: Parsed string with characters replaced
+        """
+        parsed_value = str(value)
+        for char,replace_char in replace_map.items():
+            parsed_value = parsed_value.replace(char,replace_char)
+        return parsed_value
 
     def createMultiindexFigure(self, df, **args):
         """ Creates a latex tikz (pgfplots) figure from a multiIndex dataframe
@@ -18,7 +30,7 @@ class TikzFigure(Figure):
         Returns:
             str: latex file content where containing multiple pgfplots figures, for each value of secondary axis
         """
-        return self.renderer.template.render(
+        return self.parseSpecialCharacters(self.renderer.template.render(
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
             caption = self.config.title,
@@ -28,7 +40,7 @@ class TikzFigure(Figure):
             anim_dimension_values = [str(dim) for dim in df.index.get_level_values(self.config.secondary_axis.parameter).unique().values],
             csv_datasets = [df.xs(dim,level=self.config.secondary_axis.parameter,axis=0).to_csv(sep="\t") for dim in df.index.get_level_values(self.config.secondary_axis.parameter).unique().values],
             **args
-        )
+        ))
 
     def createSimpleFigure(self, df, **args):
         """ Creates a latex tikz (pgfplots) figure from a given dataframe
@@ -37,7 +49,7 @@ class TikzFigure(Figure):
         Returns:
             str: latex file content containing the pgfplots figure
         """
-        return self.renderer.template.render(
+        return self.parseSpecialCharacters(self.renderer.template.render(
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
             caption = self.config.title,
@@ -45,7 +57,7 @@ class TikzFigure(Figure):
             names = self.config.names or df.columns.to_list(),
             csv_datasets = [df.to_csv(sep="\t")],
             **args
-        )
+        ))
 
 
 class TikzScatterFigure(TikzFigure):
