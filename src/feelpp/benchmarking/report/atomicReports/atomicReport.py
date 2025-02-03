@@ -82,6 +82,8 @@ class AtomicReport:
                 check_vars = testcase["check_vars"]
                 #add test status
                 check_params["result"] = testcase.get("result")
+                #Add test total run time
+                check_params["time_total"] = testcase.get("time_total")
                 for resource in ["num_nodes","num_tasks_per_node","num_tasks"]:
                     if resource not in check_params:
                         check_params[resource] = check_vars.get(resource)
