@@ -29,6 +29,7 @@
     \begin{axis}[
       width=\textwidth, height=0.6172\textwidth,
       xlabel={ {{xaxis.label}} }, ylabel={ {{yaxis.label}} },
+      xticklabels from table={\dataA}{{'{'}}{{xaxis.parameter}}{{'}'}},
       xtick=data, xtick align=outside,
       ymajorgrids=true, yminorgrids=true,
       bar width=7pt,
@@ -43,7 +44,7 @@
       \resetstackedplots
       {% endif %}
       {% for var,name in zip(variables,names) %}
-      \addplot table [x={{xaxis.parameter}}, y={{ var }}] {\data{{i | inttouniquestr}}} ;
+      \addplot table [x expr=\coordindex, y={{ var }}] {\data{{i | inttouniquestr}}} ;
       {% if i == 1%}
       \addlegendentry{ {{name}} }
       {% endif %}

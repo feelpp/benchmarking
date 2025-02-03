@@ -15,6 +15,7 @@
       width=\textwidth, height=0.6172\textwidth,
       xlabel={ {{xaxis.label}} }, ylabel={ {{yaxis.label}} },
       xtick=data, xtick align=outside,
+      xticklabels from table={{'{#2}'}}{{'{'}}{{xaxis.parameter}}{{'}'}},
       ymajorgrids=true, yminorgrids=true,
       bar width=7pt,
       cycle list name=color list,
@@ -22,7 +23,7 @@
       legend style={at={(0.5,-0.1)},anchor=north}
     ]
     {% for var,name in zip(variables,names) %}
-      \addplot table [x={{xaxis.parameter}}, y={{ var }}] {{'{#2}'}} ;
+      \addplot table [x expr=\coordindex, y={{ var }}] {{'{#2}'}} ;
       \addlegendentry{ {{name}} }
     {% endfor %}
 
