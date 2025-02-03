@@ -37,9 +37,6 @@ class Scalability(BaseModel):
     stages: List[Stage]
     custom_variables:Optional[List[CustomVariable]] = []
 
-class AppOutput(BaseModel):
-    filepath: str
-    format: str
 
 
 class Image(BaseModel):
@@ -107,7 +104,6 @@ class ConfigFile(BaseModel):
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
-    outputs: List[AppOutput]
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
