@@ -2,33 +2,19 @@
 
     "plots": [
         {
-            "title": "Constructor Absolute performance",
+            "title": "Constructor UpdateForUse Absolute performance",
             "plot_types": [ "grouped_bar" ],
             "transformation": "performance",
             "variables": [
-                "constructor.updateForUse.SunModel", "constructor.updateForUse.updateMeshBuilding", "constructor.updateForUse.weather",
-                "constructor.updateForUse.buildingMap", "constructor.updateForUse.gisMeshInit", "constructor.updateForUse.gisPartition",
-                "constructor.updateForUse.initBuildingModels", "constructor.updateForUse.scenarios", "constructor.updateForUse.total"
+                "constructor.subtimers.updateForUse.subtimers.SunModel.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.updateMeshBuilding.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.weather.timeElapsed.max",
+                "constructor.subtimers.updateForUse.subtimers.buildingMap.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisMeshInit.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisPartition.timeElapsed.max",
+                "constructor.subtimers.updateForUse.subtimers.initBuildingModels.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.scenarios.timeElapsed.max"
             ],
-            "names": [], 
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Constructor Relative performance",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "relative_performance",
-            "variables": [
-                "constructor.updateForUse.SunModel", "constructor.updateForUse.updateMeshBuilding", "constructor.updateForUse.weather",
-                "constructor.updateForUse.buildingMap", "constructor.updateForUse.gisMeshInit", "constructor.updateForUse.gisPartition",
-                "constructor.updateForUse.initBuildingModels", "constructor.updateForUse.scenarios", "constructor.updateForUse.total"
+            "names": [
+                "SunModel", "updateMeshBuilding", "weather",
+                "buildingMap", "gisMeshInit", "gisPartition",
+                "initBuildingModels", "scenarios"
             ],
-            "names": [],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -42,11 +28,15 @@
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
             "variables": [
-                "constructor.updateForUse.SunModel", "constructor.updateForUse.updateMeshBuilding", "constructor.updateForUse.weather",
-                "constructor.updateForUse.buildingMap", "constructor.updateForUse.gisMeshInit", "constructor.updateForUse.gisPartition",
-                "constructor.updateForUse.initBuildingModels", "constructor.updateForUse.scenarios", "constructor.updateForUse.SunModel"
-             ],
-            "names": [],
+                "constructor.subtimers.updateForUse.subtimers.SunModel.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.updateMeshBuilding.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.weather.timeElapsed.max",
+                "constructor.subtimers.updateForUse.subtimers.buildingMap.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisMeshInit.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisPartition.timeElapsed.max",
+                "constructor.subtimers.updateForUse.subtimers.initBuildingModels.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.scenarios.timeElapsed.max"
+            ],
+            "names": [
+                "SunModel", "updateMeshBuilding", "weather",
+                "buildingMap", "gisMeshInit", "gisPartition",
+                "initBuildingModels", "scenarios"
+            ],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -60,25 +50,10 @@
             "plot_types": [ "grouped_bar" ],
             "transformation": "performance",
             "variables": [
-                "execute.simulation.total", "execute.simulation.solarMasks.total", "execute.simulation.buildingExecuteStep"
+                "execute.subtimers.simulation.subtimers.solarMasks.timeElapsed.max",
+                "execute.subtimers.simulation.subtimers.buildingExecuteStep.timeElapsed.max"
             ],
-            "names": [],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Simulation Relative performance",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "relative_performance",
-            "variables": [
-                "execute.simulation.total", "execute.simulation.solarMasks.total", "execute.simulation.buildingExecuteStep"
-            ],
-            "names": [],
+            "names": ["Solar Masks","Building Execute Step"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -92,9 +67,10 @@
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
             "variables": [
-                "execute.simulation.total", "execute.simulation.solarMasks.total", "execute.simulation.buildingExecuteStep"
-             ],
-            "names": [],
+                "execute.subtimers.simulation.subtimers.solarMasks.timeElapsed.max",
+                "execute.subtimers.simulation.subtimers.buildingExecuteStep.timeElapsed.max"
+            ],
+             "names": ["Solar Masks","Building Execute Step"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -108,25 +84,9 @@
             "plot_types": [ "grouped_bar" ],
             "transformation": "performance",
             "variables": [
-                "execute.postprocess.total", "execute.postprocess.exportOutputs"
+                "execute.subtimers.postprocess.timeElapsed.max"
             ],
-            "names": [],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Postprocess Relative performance",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "relative_performance",
-            "variables": [
-                "execute.postprocess.total", "execute.postprocess.exportOutputs"
-            ],
-            "names": [],
+            "names": ["PostProcess"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -140,9 +100,9 @@
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
             "variables": [
-                "execute.postprocess.total", "execute.postprocess.exportOutputs"
+                "execute.subtimers.postprocess.timeElapsed.max"
             ],
-            "names": [],
+            "names": ["PostProcess"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -156,9 +116,9 @@
             "plot_types": [ "grouped_bar" ],
             "transformation": "performance",
             "variables": [
-                "constructor.total", "execute.simulation.total","execute.postprocess.total"
+                "constructor.timeElapsed.max", "execute.subtimers.simulation.timeElapsed.max","execute.subtimers.postprocess.timeElapsed.max"
             ],
-            "names": [],
+            "names": ["Constructor", "Simulation", "PostProcess"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -172,9 +132,9 @@
             "plot_types": [ "stacked_bar", "grouped_bar" ],
             "transformation": "relative_performance",
             "variables": [
-                "constructor.total", "execute.simulation.total","execute.postprocess.total"
+                "constructor.timeElapsed.max", "execute.subtimers.simulation.timeElapsed.max","execute.subtimers.postprocess.timeElapsed.max"
             ],
-            "names": [],
+            "names": ["Constructor", "Simulation", "PostProcess"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -188,9 +148,9 @@
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
             "variables": [
-                "constructor.total", "execute.simulation.total","execute.postprocess.total"
+                "constructor.timeElapsed.max", "execute.subtimers.simulation.timeElapsed.max","execute.subtimers.postprocess.timeElapsed.max"
             ],
-            "names": [],
+            "names": ["Constructor", "Simulation", "PostProcess"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"

@@ -1,6 +1,6 @@
 {
     "executable": "feelpp_kub_cem",
-    "output_directory": "{{machine.output_app_dir}}/kub",
+    "output_directory": "{{machine.output_app_dir}}/javier_test/kub",
     "use_case_name": "poznan",
     "timeout":"0-0:15:0",
     "resources":{
@@ -15,7 +15,8 @@
             "input_dir":"/input_data/",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/kub/cfg/:{{platforms.apptainer.input_dir}}"
+                "--bind {{machine.input_dataset_base_dir}}/kub/cfg/:{{platforms.apptainer.input_dir}}",
+                "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
@@ -54,11 +55,10 @@
         {
             "name": "resources",
             "sequence": [
-                {"tasks":8, "exclusive_access":true},
-                {"tasks":16, "exclusive_access":true},
-                {"tasks":32, "exclusive_access":true},
                 {"tasks":64, "exclusive_access":true},
-                {"tasks":128, "exclusive_access":true}
+                {"tasks":128, "exclusive_access":true},
+                {"tasks":256, "exclusive_access":true},
+                {"tasks":384, "exclusive_access":true}
             ]
         }
     ]
