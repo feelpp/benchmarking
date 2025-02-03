@@ -226,7 +226,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
 
         #Used only to copy description
-        temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
+        temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.additional_files)
         temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
 
     @run_after('setup')
