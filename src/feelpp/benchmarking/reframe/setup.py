@@ -154,10 +154,20 @@ class AppSetup(Setup):
         outdir = os.path.join(dir_path,"partials")
         if not os.path.exists(outdir):
             os.mkdir(outdir)
-
         filename = f"{name}.{file_extension}" if file_extension else name
-
         shutil.copy2( filepath, os.path.join(outdir,filename) )
+
+    def copyDescriptionFile(self,dir_path,name):
+        """ copies the file from the description_filepath field"""
+        if self.reader.config.additional_files.description_filepath:
+            self.copyFile(dir_path,name,self.reader.config.additional_files.description_filepath)
+
+    def copyParametrizedDescriptionFile(self,dir_path,name):
+        """ copies the file from the parameterized_descriptions_filepath field"""
+        if self.reader.config.additional_files.parameterized_descriptions_filepath:
+            self.copyFile(dir_path,name,self.reader.config.additional_files.parameterized_descriptions_filepath)
+
+
 
     def setExecutable(self, rfm_test, machine_config):
         """ Sets the executable and executable_opts attrbiutes
@@ -238,12 +248,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.app_setup.setupAfterInit(self)
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
 
-        if self.app_setup.reader.config.additional_files and self.app_setup.reader.config.additional_files.description_filepath:
-            self.app_setup.copyFile(
-                self.app_setup.reader.config.additional_files.description_filepath,
-                self.report_dir_path,
-                name="description"
-            )
+        self.app_setup.copyDescriptionFile(self.report_dir_path,name="description")
 
     @run_after('setup')
     def setupAfterSetup(self):
