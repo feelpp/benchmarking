@@ -9,9 +9,24 @@ class Extractor:
         self.stage_name = stage_name
         self.unit = "s"
 
-    def extract(self):
-        raise NotImplementedError("Not to be called directly from Extractor base class")
+    def _getPerfVars(self,columns,vars):
+        perf_variables = {}
+        nb_rows = len(vars.evaluate())
+        for line in range(nb_rows):
+            for i, col in enumerate(columns): #UNIT TEMPORARY HOTFIX
+                perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
+                if nb_rows > 1:
+                    perfvar_name = f"{perfvar_name}_{line}"
+                perf_variables[perfvar_name] = sn.make_performance_function(vars[line][i],unit=self.unit)
 
+        return perf_variables
+
+    def _extractVariables(self):
+        raise NotImplementedError("Not to be called from base class")
+
+    def extract(self):
+        columns,vars = self._extractVariables()
+        return self._getPerfVars(columns,vars)
 
 class TsvExtractor(Extractor):
     def __init__(self,filepath,stage_name,index):
@@ -23,33 +38,18 @@ class TsvExtractor(Extractor):
             content = f.readlines()
         return content
 
-    def _extractVariables(self,content):
+    def _extractVariables(self):
+        content = self._getFileContent()
         #WARNING: This assumes that index is in column 0
         columns = re.sub("\s+"," ",content[0].replace("# ","")).strip().split(" ")
-
         vars = sn.extractall_s(
             patt=rf'^{self.index}[\s]+' + r'([0-9e\-\+\.]+)[\s]+'*(len(columns)-1),
             string="\n".join(content[1:]),
             conv=float,
             tag=range(1,len(columns))
         )[0]
+        return columns[1:],sn.defer([vars])
 
-        return columns,vars
-
-
-    def _getPerfVars(self,columns,vars):
-        perf_variables = {}
-        for i, col in enumerate(columns[1:]): #UNIT TEMPORARY HOTFIX
-            perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
-            perf_variables[perfvar_name] = sn.make_performance_function(vars[i],unit="iter" if col.endswith("-niter") else self.unit)
-
-        return perf_variables
-
-
-    def extract(self):
-        content = self._getFileContent()
-        columns,vars = self._extractVariables(content)
-        return self._getPerfVars(columns,vars)
 
 class CsvExtractor(Extractor):
     def __init__(self, filepath, stage_name):
@@ -57,33 +57,16 @@ class CsvExtractor(Extractor):
 
     def _extractVariables(self):
         number_regex = re.compile(r'^-?\d+(\.\d+)?([eE][-+]?\d+)?$')
-        rows = sn.extractall(
+        vars = sn.extractall(
             r'^(?!\s*$)(.*?)[\s\r\n]*$',
             self.filepath,
             0,
             conv=lambda x: [float(col.strip()) if number_regex.match(col.strip()) else col.strip() for col in x.split(',') if col.strip()]
         )
-        header = rows[0]
-        rows = rows[1:]
-
-        assert all ( len(header.evaluate()) == len(row) for row in rows), f"CSV File {self.filepath} is incorrectly formatted"
-        return header,rows
-
-    def _getPerfVars(self,columns,vars):
-        perf_variables = {}
-        nb_rows = len(vars.evaluate())
-        for line in range(nb_rows):
-            for i,col in enumerate(columns):
-                perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
-                if nb_rows > 1:
-                    perfvar_name = f"{perfvar_name}_{line}"
-                perf_variables[perfvar_name] = sn.make_performance_function(vars[line][i],unit=self.unit)
-
-        return perf_variables
-
-    def extract(self):
-        header,rows = self._extractVariables()
-        return self._getPerfVars(header,rows)
+        columns = vars[0]
+        vars = vars[1:]
+        assert all ( len(columns.evaluate()) == len(row) for row in vars), f"CSV File {self.filepath} is incorrectly formatted"
+        return columns,vars
 
 
 class JsonExtractor(Extractor):
@@ -96,52 +79,55 @@ class JsonExtractor(Extractor):
             content = json.load(f)
         return content
 
-    def _extractVariables(self,content,varpath):
-        splitted_keys = varpath.split("*")
-
-        if len(splitted_keys) > 2:
-            raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
-
-        left_keys = splitted_keys[0].strip(".").split(".")
-
-        j = content.copy()
-        for left_key in left_keys:
-            if left_key:
-                j = j[left_key]
-
-        fields = {}
-        if len(splitted_keys) == 1:
-            fields[left_keys[-1]] = j
-        else:
-            right_keys = splitted_keys[1].strip(".").split(".")
-
-            wildcards = j.keys()
-            for wildcard in wildcards:
-                fields[wildcard] = j[wildcard]
-                for right_key in right_keys:
-                    if right_key:
-                        fields[wildcard] = fields[wildcard][right_key]
-
-        fields = TemplateProcessor.flattenDict(fields)
-
-        return fields.items()
-
-    def _getPerfVars(self,items):
-        perf_variables = {}
-        for k,v in items:
-            perfvar_name = f"{self.stage_name}_{k}" if self.stage_name else k
-            perf_variables[perfvar_name] = sn.make_performance_function(sn.defer(v),unit=self.unit)
-
-        return perf_variables
-
-
-    def extract(self):
+    def _extractVariables(self):
+        items = {}
         content = self._getFileContent()
-        perf_variables = {}
         for varpath in self.variables_path:
-            items= self._extractVariables(content,varpath)
-            perf_variables.update(self._getPerfVars(items))
-        return perf_variables
+            splitted_keys = varpath.split("*")
+
+            if len(splitted_keys) > 2:
+                raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
+
+            left_keys = splitted_keys[0].strip(".").split(".")
+
+            j = content.copy()
+            for left_key in left_keys:
+                if left_key:
+                    j = j[left_key]
+
+            fields = {}
+            if len(splitted_keys) == 1:
+                fields[left_keys[-1]] = j
+            else:
+                right_keys = splitted_keys[1].strip(".").split(".")
+
+                wildcards = j.keys()
+                for wildcard in wildcards:
+                    fields[wildcard] = j[wildcard]
+                    for right_key in right_keys:
+                        if right_key:
+                            fields[wildcard] = fields[wildcard][right_key]
+
+            fields = TemplateProcessor.flattenDict(fields)
+
+            items.update(fields)
+        return items.keys(),sn.defer([[sn.defer(v) for v in items.values()]])
+
+
+class ExtractorFactory:
+    """Factory class for extractor strategies"""
+    @staticmethod
+    def create(stage,directory,index=None):
+        filepath = os.path.join(directory,stage.filepath)
+        if stage.format == "csv":
+            return CsvExtractor(filepath=filepath, stage_name = stage.name)
+        elif stage.format == "tsv":
+            return TsvExtractor(filepath=filepath,stage_name = stage.name,index=index)
+        elif stage.format == "json":
+            return JsonExtractor(filepath=filepath,stage_name = stage.name, variables_path=stage.variables_path)
+        else:
+            raise NotImplementedError
+
 
 class ScalabilityHandler:
     """ Class to handle scalability related attributes"""
@@ -149,7 +135,6 @@ class ScalabilityHandler:
         self.directory = scalability_config.directory
         self.stages =  scalability_config.stages
         self.custom_variables = scalability_config.custom_variables
-        self.filepaths = {k.name if k.name else k.filepath : os.path.join(self.directory,k.filepath) for k in self.stages}
 
     def getPerformanceVariables(self,index=None):
         """ Opens and parses the performance variable values depending on the config setup.
@@ -159,32 +144,22 @@ class ScalabilityHandler:
         """
         perf_variables = {}
         for stage in self.stages:
-            filepath = self.filepaths[stage.name if stage.name else stage.filepath]
-            if stage.format == "csv":
-                extractor = CsvExtractor(filepath=filepath, stage_name = stage.name)
-            elif stage.format == "tsv":
-                extractor = TsvExtractor(filepath=filepath,stage_name = stage.name,index=index)
-            elif stage.format == "json":
-                extractor = JsonExtractor(filepath=filepath,stage_name = stage.name, variables_path=stage.variables_path)
-            else:
-                raise NotImplementedError
+            extractor = ExtractorFactory.create(stage,self.directory,index)
             perf_variables.update( extractor.extract() )
 
         return perf_variables
 
     @staticmethod
     def aggregateCustomVar(op,column_values):
-        if op == "sum":
-            return sum(column_values)
-        elif op == "min":
-            return min(column_values)
-        elif op =="max":
-            return max(column_values)
-        elif op == "mean":
-            return sum(column_values)/len(column_values)
-        else:
+        ops = {
+            "sum":sum,
+            "min":min,
+            "max":max,
+            "mean": lambda v : sum(v)/len(v)
+        }
+        if op not in ops:
             raise NotImplementedError(f"Operation {op} is not implemented")
-
+        return ops[op](column_values)
 
     def getCustomPerformanceVariables(self,perfvars):
         """ Creates custom aggregated performance variables from existing ones
