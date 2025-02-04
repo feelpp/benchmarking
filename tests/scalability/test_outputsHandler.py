@@ -15,31 +15,6 @@ class AdditionalFilesMocker:
 
 class TestOutputsHandler:
 
-    @staticmethod
-    def buildCsvString(columns,values):
-        """Helper function to create the content of a CSV from a list of columns and a list of values"""
-        assert len(columns) == len(values)
-        return ",".join(columns) + "\n" + ",".join([str(v) for v in values])
-
-
-    def test_getOutputsCsv(self):
-        """Tests the getOutputs method with csv format"""
-        file = tempfile.NamedTemporaryFile()
-        columns = ["col1","col2","col3"]
-        values = [1,2,3]
-        with open(file.name,"w") as f:
-            f.write(self.buildCsvString(columns,values))
-
-        outputs_handler = OutputsHandler(
-            [OutputsConfigMocker(filepath=file.name,format="csv")]
-        )
-
-        perfvars = outputs_handler.getOutputs()
-
-        for i,column in enumerate(columns):
-            assert perfvars[column].evaluate() == values[i]
-
-        file.close()
 
     def test_copyDescription(self):
         """Test the copyDescription method of the OutputsHandler class.
@@ -48,10 +23,7 @@ class TestOutputsHandler:
             with open(file.name,"w") as f:
                 f.write("TEST DESCRIPTION FILE")
 
-            outputs_handler = OutputsHandler(
-                outputs_config = [],
-                additional_files_config=AdditionalFilesMocker(description_filepath=file.name)
-            )
+            outputs_handler = OutputsHandler( additional_files_config=AdditionalFilesMocker(description_filepath=file.name) )
 
             with tempfile.TemporaryDirectory() as tmp_dir:
                 outputs_handler.copyDescription(dir_path=tmp_dir,name="test_description")
@@ -68,10 +40,7 @@ class TestOutputsHandler:
             with open(file.name,"w") as f:
                 f.write("TEST PARAMETRIZED DESCRIPTION FILE")
 
-            outputs_handler = OutputsHandler(
-                outputs_config = [],
-                additional_files_config=AdditionalFilesMocker(parameterized_descriptions_filepath=file.name)
-            )
+            outputs_handler = OutputsHandler( additional_files_config=AdditionalFilesMocker(parameterized_descriptions_filepath=file.name) )
 
             with tempfile.TemporaryDirectory() as tmp_dir:
                 outputs_handler.copyParametrizedDescriptions(dir_path=tmp_dir,name="test_parametrized_description")

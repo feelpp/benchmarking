@@ -3,7 +3,6 @@
 import pytest
 import tempfile, json
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
-from unittest.mock import patch
 import numpy as np
 
 class StageMocker:
@@ -35,13 +34,36 @@ class TestScalabilityHandler:
         tsv = "# nProc "+ "   ".join(columns) + "\n" + f"{index} " + "   ".join([str(v) for v in values]) + "\n"
         return tsv
 
+    @staticmethod
+    def buildCsvString(columns,values):
+        """Helper function to create the content of a CSV from a list of columns and a list of values"""
+        assert len(columns) == len(values)
+        return ",".join(columns) + "\n" + ",".join([str(v) for v in values])
+
+
     def test_extractCsv(self):
-        """ Test performance variable extraction for CSV files"""
-        pass
+        file = tempfile.NamedTemporaryFile()
+        columns = ["col1","col2","col3"]
+        values = [1,2,3]
+        with open(file.name,"w") as f:
+            f.write(self.buildCsvString(columns,values))
+
+        outputs_handler = ScalabilityHandler(ScalabilityMocker(
+            directory="",
+            stages=[
+                StageMocker(format="csv",filepath=file.name,name="")
+            ]
+        ))
+
+        perfvars = outputs_handler.getPerformanceVariables()
+
+        for i,column in enumerate(columns):
+            assert perfvars[column].evaluate() == values[i]
+
+        file.close()
 
     def test_extractTsv(self):
         """ Test performance variable extraction for special TSV files [WILL BE REMOVED]"""
-
         index = 32
         file1 = tempfile.NamedTemporaryFile()
         columns1 = ["col1","col2","col3"]
