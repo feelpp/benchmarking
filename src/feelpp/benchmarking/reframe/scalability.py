@@ -60,9 +60,12 @@ class CsvExtractor(Extractor):
 
         assert all ( len(header.evaluate()) == len(row) for row in rows), f"CSV File {self.filepath} is incorrectly formatted"
 
-        for line in range(len(rows.evaluate())):
+        nb_rows = len(rows.evaluate())
+        for line in range(nb_rows):
             for i,col in enumerate(header):
                 perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
+                if nb_rows > 1:
+                    perfvar_name = f"{perfvar_name}_{line}"
                 perf_variables[perfvar_name] = sn.make_performance_function(rows[line][i],unit=self.unit)
 
         return perf_variables
