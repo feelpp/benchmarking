@@ -13,6 +13,13 @@ class Stage(BaseModel):
     filepath:str
     format:Literal["csv","tsv","json"]
     variables_path:Optional[Union[str,List[str]]] = []
+    units: Optional[Dict[str,str]] = {}
+
+    @field_validator("units",mode="before")
+    @classmethod
+    def parseUnits(cls,v):
+        v["*"] = v.get("*","s")
+        return v
 
     @model_validator(mode="after")
     def checkFormatOptions(self):

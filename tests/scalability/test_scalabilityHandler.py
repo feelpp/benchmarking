@@ -6,11 +6,12 @@ from feelpp.benchmarking.reframe.scalability import ScalabilityHandler, CsvExtra
 import numpy as np
 
 class StageMocker:
-    def __init__(self,format="",filepath="",name="",variables_path=[]):
+    def __init__(self,format="",filepath="",name="",variables_path=[],units={"*":"s"}):
         self.format = format
         self.filepath = filepath
         self.name = name
         self.variables_path = variables_path
+        self.units = units
 
 class CustomVariableMocker:
     def __init__(self, name="",columns=[],op="",unit="s"):
@@ -50,7 +51,7 @@ class TestExtractors:
         with open(file.name,"w") as f:
             f.write(self.buildCsvString(columns,values))
 
-        extractor = CsvExtractor(filepath=file.name,stage_name="")
+        extractor = CsvExtractor(filepath=file.name,stage_name="",units={"*":"s"})
         perfvars = extractor.extract()
         for j,column in enumerate(columns):
             for i in range(len(values)):
@@ -74,7 +75,7 @@ class TestExtractors:
         with open(file.name,"w") as f:
             f.write(self.buildTsvString(index,columns,values=values))
 
-        extractor = TsvExtractor(filepath=file.name,stage_name="file",index=index)
+        extractor = TsvExtractor(filepath=file.name,stage_name="file",index=index,units={"*":"s"})
         perfvars = extractor.extract()
         for i,col1 in enumerate(columns):
             assert perfvars[f"file_{col1}"].evaluate() == values[i]
@@ -99,13 +100,13 @@ class TestExtractors:
             json.dump(values,f)
 
         #Test no variables path
-        extractor = JsonExtractor(file.name,"",[])
+        extractor = JsonExtractor(file.name,"",units={"*":"s"},variables_path=[])
         perfvars = extractor.extract()
         assert perfvars == {}
 
 
         #Test with *
-        extractor = JsonExtractor(file.name,"",["*"])
+        extractor = JsonExtractor(file.name,"",units={"*":"s"},variables_path=["*"])
         perfvars = extractor.extract()
         for k,v in perfvars.items():
             path = k.split(".")
@@ -116,7 +117,7 @@ class TestExtractors:
             assert val == v.evaluate()
 
         #Test with specific paths
-        extractor = JsonExtractor(file.name,"",["field2.field2_2.*","field1"])
+        extractor = JsonExtractor(file.name,"",units={"*":"s"},variables_path=["field2.field2_2.*","field1"])
         perfvars = extractor.extract()
         assert len(perfvars.keys()) == 3
         assert perfvars["field1"].evaluate() == values["field1"]
@@ -162,7 +163,7 @@ class TestExtractors:
             json.dump(values,f)
 
 
-        extractor = JsonExtractor(file.name,"",["hardware.*.mem.*.host"])
+        extractor = JsonExtractor(file.name,"",variables_path=["hardware.*.mem.*.host"],units={"*":"s"})
         perfvars = extractor.extract()
         assert perfvars["gaya2.available"] == values["hardware"]["gaya2"]["mem"]["available"]["host"]
         assert perfvars["gaya2.total"] == values["hardware"]["gaya2"]["mem"]["total"]["host"]
@@ -171,7 +172,7 @@ class TestExtractors:
 
 
 
-        extractor = JsonExtractor(file.name,"",["hardware.*.mem.*"])
+        extractor = JsonExtractor(file.name,"",variables_path=["hardware.*.mem.*"],units={"*":"s"})
         perfvars = extractor.extract()
         assert perfvars["gaya2.available.host"] == values["hardware"]["gaya2"]["mem"]["available"]["host"]
         assert perfvars["gaya2.available.physical"] == values["hardware"]["gaya2"]["mem"]["available"]["physical"]

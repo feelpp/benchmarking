@@ -4,20 +4,20 @@ from feelpp.benchmarking.reframe.config.configReader import TemplateProcessor
 
 
 class Extractor:
-    def __init__(self,filepath,stage_name):
+    def __init__(self,filepath,stage_name, units):
         self.filepath = filepath
         self.stage_name = stage_name
-        self.unit = "s"
+        self.units = units
 
     def _getPerfVars(self,columns,vars):
         perf_variables = {}
         nb_rows = len(vars.evaluate())
         for line in range(nb_rows):
-            for i, col in enumerate(columns): #UNIT TEMPORARY HOTFIX
+            for i, col in enumerate(columns):
                 perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
                 if nb_rows > 1:
                     perfvar_name = f"{perfvar_name}_{line}"
-                perf_variables[perfvar_name] = sn.make_performance_function(vars[line][i],unit=self.unit)
+                perf_variables[perfvar_name] = sn.make_performance_function(vars[line][i],unit=self.units.get(col,self.units["*"]))
 
         return perf_variables
 
@@ -29,8 +29,8 @@ class Extractor:
         return self._getPerfVars(columns,vars)
 
 class TsvExtractor(Extractor):
-    def __init__(self,filepath,stage_name,index):
-        super().__init__(filepath,stage_name)
+    def __init__(self,filepath,stage_name,units,index):
+        super().__init__(filepath,stage_name,units)
         self.index = index
 
     def _getFileContent(self):
@@ -52,8 +52,8 @@ class TsvExtractor(Extractor):
 
 
 class CsvExtractor(Extractor):
-    def __init__(self, filepath, stage_name):
-        super().__init__(filepath, stage_name)
+    def __init__(self, filepath, stage_name, units):
+        super().__init__(filepath, stage_name, units)
 
     def _extractVariables(self):
         number_regex = re.compile(r'^-?\d+(\.\d+)?([eE][-+]?\d+)?$')
@@ -70,8 +70,8 @@ class CsvExtractor(Extractor):
 
 
 class JsonExtractor(Extractor):
-    def __init__(self, filepath, stage_name, variables_path):
-        super().__init__(filepath, stage_name)
+    def __init__(self, filepath, stage_name, units, variables_path):
+        super().__init__(filepath, stage_name, units)
         self.variables_path = variables_path
 
     def _getFileContent(self):
@@ -126,11 +126,11 @@ class ExtractorFactory:
     def create(stage,directory,index=None):
         filepath = os.path.join(directory,stage.filepath)
         if stage.format == "csv":
-            return CsvExtractor(filepath=filepath, stage_name = stage.name)
+            return CsvExtractor(filepath=filepath, stage_name = stage.name, units=stage.units)
         elif stage.format == "tsv":
-            return TsvExtractor(filepath=filepath,stage_name = stage.name,index=index)
+            return TsvExtractor(filepath=filepath,stage_name = stage.name,index=index, units=stage.units)
         elif stage.format == "json":
-            return JsonExtractor(filepath=filepath,stage_name = stage.name, variables_path=stage.variables_path)
+            return JsonExtractor(filepath=filepath,stage_name = stage.name, variables_path=stage.variables_path, units=stage.units)
         else:
             raise NotImplementedError
 
