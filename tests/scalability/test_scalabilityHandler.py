@@ -125,6 +125,68 @@ class TestExtractors:
 
         file.close()
 
+        #Test with multiple wildcards
+        file = tempfile.NamedTemporaryFile()
+        values = {
+            "hardware": {
+                "gaya3": {
+                    "mem": {
+                        "available": {
+                            "host": "527759648",
+                            "physical": "442275",
+                            "virtual": "51059"
+                        },
+                        "total": {
+                            "host": "527759648",
+                            "physical": "515390",
+                            "virtual": "51199"
+                        }
+                    }
+                },
+                "gaya2":{
+                    "mem": {
+                        "available": {
+                            "host": "101010101",
+                            "physical": "442275",
+                        },
+                        "total": {
+                            "host": "202020202",
+                            "physical": "515390",
+                            "virtual": "51199"
+                        }
+                    }
+                }
+            }
+        }
+        with open(file.name,"w") as f:
+            json.dump(values,f)
+
+
+        extractor = JsonExtractor(file.name,"",["hardware.*.mem.*.host"])
+        perfvars = extractor.extract()
+        assert perfvars["gaya2.available"] == values["hardware"]["gaya2"]["mem"]["available"]["host"]
+        assert perfvars["gaya2.total"] == values["hardware"]["gaya2"]["mem"]["total"]["host"]
+        assert perfvars["gaya3.available"] == values["hardware"]["gaya3"]["mem"]["available"]["host"]
+        assert perfvars["gaya3.total"] == values["hardware"]["gaya3"]["mem"]["total"]["host"]
+
+
+
+        extractor = JsonExtractor(file.name,"",["hardware.*.mem.*"])
+        perfvars = extractor.extract()
+        assert perfvars["gaya2.available.host"] == values["hardware"]["gaya2"]["mem"]["available"]["host"]
+        assert perfvars["gaya2.available.physical"] == values["hardware"]["gaya2"]["mem"]["available"]["physical"]
+        assert perfvars["gaya2.total.host"] == values["hardware"]["gaya2"]["mem"]["total"]["host"]
+        assert perfvars["gaya2.total.physical"] == values["hardware"]["gaya2"]["mem"]["total"]["physical"]
+
+        assert perfvars["gaya3.available.host"] == values["hardware"]["gaya3"]["mem"]["available"]["host"]
+        assert perfvars["gaya3.available.physical"] == values["hardware"]["gaya3"]["mem"]["available"]["physical"]
+        assert perfvars["gaya3.available.virtual"] == values["hardware"]["gaya3"]["mem"]["available"]["virtual"]
+        assert perfvars["gaya3.total.host"] == values["hardware"]["gaya3"]["mem"]["total"]["host"]
+        assert perfvars["gaya3.total.physical"] == values["hardware"]["gaya3"]["mem"]["total"]["physical"]
+        assert perfvars["gaya3.total.virtual"] == values["hardware"]["gaya3"]["mem"]["total"]["virtual"]
+
+        file.close()
+
 
 class TestScalabilityHandler:
 

@@ -79,37 +79,43 @@ class JsonExtractor(Extractor):
             content = json.load(f)
         return content
 
+    def _recursiveExtract(self,varpath, content, fields=None, prefix=""):
+        """ Extract values from a dictionary following a path (varpath) containing multiple wildcards"""
+        if fields is None:
+            fields = {}
+
+        splitted_keys = varpath.split("*", 1)
+        left_keys = splitted_keys[0].strip(".").split(".")
+
+        j = content
+        for left_key in left_keys:
+            if left_key:
+                j = j[left_key]
+
+        if len(splitted_keys) == 1:
+            fields[left_keys[-1]] = j
+        else:
+            right_keys = splitted_keys[1].strip(".")
+            if "*" in right_keys:
+                for wildcard, subcontent in j.items():
+                    self._recursiveExtract(right_keys, subcontent, fields, prefix=f"{prefix}{wildcard}.")
+            else:
+                right_keys = right_keys.split(".")
+                for wildcard, subcontent in j.items():
+                    value = subcontent
+                    for right_key in right_keys:
+                        if right_key:
+                            value = value[right_key]
+                    fields[f"{prefix}{wildcard}"] = value
+
+        return fields
+
     def _extractVariables(self):
         items = {}
         content = self._getFileContent()
         for varpath in self.variables_path:
-            splitted_keys = varpath.split("*")
-
-            if len(splitted_keys) > 2:
-                raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
-
-            left_keys = splitted_keys[0].strip(".").split(".")
-
-            j = content.copy()
-            for left_key in left_keys:
-                if left_key:
-                    j = j[left_key]
-
-            fields = {}
-            if len(splitted_keys) == 1:
-                fields[left_keys[-1]] = j
-            else:
-                right_keys = splitted_keys[1].strip(".").split(".")
-
-                wildcards = j.keys()
-                for wildcard in wildcards:
-                    fields[wildcard] = j[wildcard]
-                    for right_key in right_keys:
-                        if right_key:
-                            fields[wildcard] = fields[wildcard][right_key]
-
+            fields = self._recursiveExtract(varpath,content)
             fields = TemplateProcessor.flattenDict(fields)
-
             items.update(fields)
         return items.keys(),sn.defer([[sn.defer(v) for v in items.values()]])
 
