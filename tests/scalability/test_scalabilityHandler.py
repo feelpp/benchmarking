@@ -36,15 +36,23 @@ class TestScalabilityHandler:
 
     @staticmethod
     def buildCsvString(columns,values):
-        """Helper function to create the content of a CSV from a list of columns and a list of values"""
-        assert len(columns) == len(values)
-        return ",".join(columns) + "\n" + ",".join([str(v) for v in values])
+        """Helper function to create the content of a CSV from a list of columns and a list of values.
+        Args:
+            columns(list[str]): List of colum values
+            values(list[list[any]]): List of lists containing the csv values
+        Returns
+            str: The built csv string
+        """
+        assert all(len(columns) == len(v) for v in values)
+        return ",".join(columns) + "\n" + "\n".join([",".join([str(r) for r in row]) for row in values])
 
 
-    def test_extractCsv(self):
+    @pytest.mark.parametrize(("values"),[
+        ([[1,2,3]]), ([[1,2,3],[4,5,6]])
+    ])
+    def test_extractCsv(self,values):
         file = tempfile.NamedTemporaryFile()
         columns = ["col1","col2","col3"]
-        values = [1,2,3]
         with open(file.name,"w") as f:
             f.write(self.buildCsvString(columns,values))
 
@@ -57,8 +65,10 @@ class TestScalabilityHandler:
 
         perfvars = outputs_handler.getPerformanceVariables()
 
-        for i,column in enumerate(columns):
-            assert perfvars[column].evaluate() == values[i]
+        for j,column in enumerate(columns):
+            for i in range(len(values)):
+                column_name = column if len(values) == 1 else f"{column}_{i}"
+                assert perfvars[column_name].evaluate() == values[i][j]
 
         file.close()
 
