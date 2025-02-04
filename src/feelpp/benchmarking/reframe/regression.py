@@ -48,6 +48,11 @@ class RegressionTest(ReframeSetup):
         self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
         self.app_setup.copyParametrizedDescriptionFile(self.report_dir_path,name=self.hashcode)
 
+    @run_before("cleanup")
+    def removeDirectories(self):
+        if self.app_setup.reader.config.scalability.clean_directory:
+            self.app_setup.cleanupDirectories()
+
     @sanity_function
     def sanityCheck(self):
         return (

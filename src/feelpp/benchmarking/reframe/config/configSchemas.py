@@ -43,6 +43,7 @@ class Scalability(BaseModel):
     directory: str
     stages: List[Stage]
     custom_variables:Optional[List[CustomVariable]] = []
+    clean_directory: Optional[bool] = False
 
 
 
