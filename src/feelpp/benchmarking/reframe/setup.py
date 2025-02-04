@@ -238,11 +238,12 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.app_setup.setupAfterInit(self)
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
 
-        self.app_setup.copyFile(
-            self.app_setup.reader.config.additional_files.description_filepath,
-            self.report_dir_path,
-            name="description"
-        )
+        if self.app_setup.reader.config.additional_files and self.app_setup.reader.config.additional_files.description_filepath:
+            self.app_setup.copyFile(
+                self.app_setup.reader.config.additional_files.description_filepath,
+                self.report_dir_path,
+                name="description"
+            )
 
     @run_after('setup')
     def setupAfterSetup(self):

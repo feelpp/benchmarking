@@ -44,11 +44,12 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def copyParametrizedFiles(self):
-        self.app_setup.copyFile(
-            self.app_setup.reader.config.additional_files.parameterized_descriptions_filepath,
-            self.report_dir_path,
-            self.hashcode
-        )
+        if self.app_setup.reader.config.additional_files and self.app_setup.reader.config.additional_files.parameterized_descriptions_filepath:
+            self.app_setup.copyFile(
+                self.app_setup.reader.config.additional_files.parameterized_descriptions_filepath,
+                self.report_dir_path,
+                self.hashcode
+            )
 
     @sanity_function
     def sanityCheck(self):
