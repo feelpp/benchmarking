@@ -23,8 +23,7 @@ class TsvExtractor(Extractor):
             content = f.readlines()
         return content
 
-    def extract(self):
-        content = self._getFileContent()
+    def _extractVariables(self,content):
         #WARNING: This assumes that index is in column 0
         columns = re.sub("\s+"," ",content[0].replace("# ","")).strip().split(" ")
 
@@ -35,6 +34,10 @@ class TsvExtractor(Extractor):
             tag=range(1,len(columns))
         )[0]
 
+        return columns,vars
+
+
+    def _getPerfVars(self,columns,vars):
         perf_variables = {}
         for i, col in enumerate(columns[1:]): #UNIT TEMPORARY HOTFIX
             perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
@@ -42,12 +45,17 @@ class TsvExtractor(Extractor):
 
         return perf_variables
 
+
+    def extract(self):
+        content = self._getFileContent()
+        columns,vars = self._extractVariables(content)
+        return self._getPerfVars(columns,vars)
+
 class CsvExtractor(Extractor):
     def __init__(self, filepath, stage_name):
         super().__init__(filepath, stage_name)
 
-    def extract(self):
-        perf_variables = {}
+    def _extractVariables(self):
         number_regex = re.compile(r'^-?\d+(\.\d+)?([eE][-+]?\d+)?$')
         rows = sn.extractall(
             r'^(?!\s*$)(.*?)[\s\r\n]*$',
@@ -59,16 +67,24 @@ class CsvExtractor(Extractor):
         rows = rows[1:]
 
         assert all ( len(header.evaluate()) == len(row) for row in rows), f"CSV File {self.filepath} is incorrectly formatted"
+        return header,rows
 
-        nb_rows = len(rows.evaluate())
+    def _getPerfVars(self,columns,vars):
+        perf_variables = {}
+        nb_rows = len(vars.evaluate())
         for line in range(nb_rows):
-            for i,col in enumerate(header):
+            for i,col in enumerate(columns):
                 perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
                 if nb_rows > 1:
                     perfvar_name = f"{perfvar_name}_{line}"
-                perf_variables[perfvar_name] = sn.make_performance_function(rows[line][i],unit=self.unit)
+                perf_variables[perfvar_name] = sn.make_performance_function(vars[line][i],unit=self.unit)
 
         return perf_variables
+
+    def extract(self):
+        header,rows = self._extractVariables()
+        return self._getPerfVars(header,rows)
+
 
 class JsonExtractor(Extractor):
     def __init__(self, filepath, stage_name, variables_path):
@@ -80,41 +96,51 @@ class JsonExtractor(Extractor):
             content = json.load(f)
         return content
 
+    def _extractVariables(self,content,varpath):
+        splitted_keys = varpath.split("*")
+
+        if len(splitted_keys) > 2:
+            raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
+
+        left_keys = splitted_keys[0].strip(".").split(".")
+
+        j = content.copy()
+        for left_key in left_keys:
+            if left_key:
+                j = j[left_key]
+
+        fields = {}
+        if len(splitted_keys) == 1:
+            fields[left_keys[-1]] = j
+        else:
+            right_keys = splitted_keys[1].strip(".").split(".")
+
+            wildcards = j.keys()
+            for wildcard in wildcards:
+                fields[wildcard] = j[wildcard]
+                for right_key in right_keys:
+                    if right_key:
+                        fields[wildcard] = fields[wildcard][right_key]
+
+        fields = TemplateProcessor.flattenDict(fields)
+
+        return fields.items()
+
+    def _getPerfVars(self,items):
+        perf_variables = {}
+        for k,v in items:
+            perfvar_name = f"{self.stage_name}_{k}" if self.stage_name else k
+            perf_variables[perfvar_name] = sn.make_performance_function(sn.defer(v),unit=self.unit)
+
+        return perf_variables
+
+
     def extract(self):
         content = self._getFileContent()
         perf_variables = {}
         for varpath in self.variables_path:
-            splitted_keys = varpath.split("*")
-
-            if len(splitted_keys) > 2:
-                raise NotImplementedError(f"More than one wildcard is not supported. Number of wildcards: {len(splitted_keys)}")
-
-            left_keys = splitted_keys[0].strip(".").split(".")
-
-            j = content.copy()
-            for left_key in left_keys:
-                if left_key:
-                    j = j[left_key]
-
-            fields = {}
-            if len(splitted_keys) == 1:
-                fields[left_keys[-1]] = j
-            else:
-                right_keys = splitted_keys[1].strip(".").split(".")
-
-                wildcards = j.keys()
-                for wildcard in wildcards:
-                    fields[wildcard] = j[wildcard]
-                    for right_key in right_keys:
-                        if right_key:
-                            fields[wildcard] = fields[wildcard][right_key]
-
-            fields = TemplateProcessor.flattenDict(fields)
-
-            for k,v in fields.items():
-                perfvar_name = f"{self.stage_name}_{k}" if self.stage_name else k
-                perf_variables[perfvar_name] = sn.make_performance_function(sn.defer(v),unit=self.unit)
-
+            items= self._extractVariables(content,varpath)
+            perf_variables.update(self._getPerfVars(items))
         return perf_variables
 
 class ScalabilityHandler:
