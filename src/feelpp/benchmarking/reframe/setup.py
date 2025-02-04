@@ -146,8 +146,6 @@ class AppSetup(Setup):
 
     def copyFile(self,dir_path,name,filepath):
         """ Copies the file from filepath to dir_path/name"""
-        if not self.reader.config.additional_files:
-            return
         if not filepath:
             return
         file_extension = filepath.split(".")[-1] if "." in filepath else None
@@ -159,12 +157,12 @@ class AppSetup(Setup):
 
     def copyDescriptionFile(self,dir_path,name):
         """ copies the file from the description_filepath field"""
-        if self.reader.config.additional_files.description_filepath:
+        if self.reader.config.additional_files and self.reader.config.additional_files.description_filepath:
             self.copyFile(dir_path,name,self.reader.config.additional_files.description_filepath)
 
     def copyParametrizedDescriptionFile(self,dir_path,name):
         """ copies the file from the parameterized_descriptions_filepath field"""
-        if self.reader.config.additional_files.parameterized_descriptions_filepath:
+        if self.reader.config.additional_files and self.reader.config.additional_files.parameterized_descriptions_filepath:
             self.copyFile(dir_path,name,self.reader.config.additional_files.parameterized_descriptions_filepath)
 
 

@@ -44,6 +44,8 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def copyParametrizedFiles(self):
+        self.app_setup.reset(self.machine_setup.reader.config)
+        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
         self.app_setup.copyParametrizedDescriptionFile(self.report_dir_path,name=self.hashcode)
 
     @sanity_function
