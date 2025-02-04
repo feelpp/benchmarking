@@ -3,7 +3,6 @@ from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
-from feelpp.benchmarking.reframe.outputs import OutputsHandler
 from feelpp.benchmarking.reframe.resources import ResourceHandler
 
 
@@ -145,6 +144,20 @@ class AppSetup(Setup):
         if os.path.exists(self.reader.config.scalability.directory):
             shutil.rmtree(self.reader.config.scalability.directory)
 
+    def copyFile(self,dir_path,name,filepath):
+        """ Copies the file from filepath to dir_path/name"""
+        if not self.reader.config.additional_files:
+            return
+        if not filepath:
+            return
+        file_extension = filepath.split(".")[-1] if "." in filepath else None
+        outdir = os.path.join(dir_path,"partials")
+        if not os.path.exists(outdir):
+            os.mkdir(outdir)
+
+        filename = f"{name}.{file_extension}" if file_extension else name
+
+        shutil.copy2( filepath, os.path.join(outdir,filename) )
 
     def setExecutable(self, rfm_test, machine_config):
         """ Sets the executable and executable_opts attrbiutes
@@ -225,9 +238,11 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.app_setup.setupAfterInit(self)
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
 
-        #Used only to copy description
-        temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.additional_files)
-        temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
+        self.app_setup.copyFile(
+            self.app_setup.reader.config.additional_files.description_filepath,
+            self.report_dir_path,
+            name="description"
+        )
 
     @run_after('setup')
     def setupAfterSetup(self):

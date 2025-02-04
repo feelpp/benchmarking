@@ -2,7 +2,6 @@ import reframe as rfm
 from feelpp.benchmarking.reframe.setup import ReframeSetup
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
-from feelpp.benchmarking.reframe.outputs import OutputsHandler
 
 
 import shutil, os
@@ -16,7 +15,6 @@ class RegressionTest(ReframeSetup):
     def initHandlers(self):
         self.validation_handler = ValidationHandler(self.app_setup.reader.config.sanity)
         self.scalability_handler = ScalabilityHandler(self.app_setup.reader.config.scalability)
-        self.outputs_handler = OutputsHandler(self.app_setup.reader.config.additional_files)
 
     @run_after('run')
     def executionGuard(self):
@@ -46,7 +44,11 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def copyParametrizedFiles(self):
-        self.outputs_handler.copyParametrizedDescriptions(self.report_dir_path,self.hashcode)
+        self.app_setup.copyFile(
+            self.app_setup.reader.config.additional_files.parameterized_descriptions_filepath,
+            self.report_dir_path,
+            self.hashcode
+        )
 
     @sanity_function
     def sanityCheck(self):
