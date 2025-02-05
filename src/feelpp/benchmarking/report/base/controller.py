@@ -11,41 +11,23 @@ class Controller:
         self.model = model
         self.view = view
 
-    def generatePlotly(self):
-        """ Creates plotly figures for each plot specified on the view config file
-        Returns a list of plotly figures.
-        """
-        return [ figure.createFigure(self.model.master_df) for figure in self.view.figures ]
+    def generateAll(self):
+        return [
+            self.generateFigure(figure,plot_config.plot_types)
+            for figure,plot_config in zip(self.view.figures,self.view.plots_config)
+        ]
 
-    def generatePlotlyHtml(self):
-        """ Creates plotly figures in html for each plot specified on the view config file
-        Returns a list of plotly HTML figures
-        """
-        return [ figure.createFigureHtml(self.model.master_df) for figure in self.view.figures ]
+    def generateFigure(self,figure,plot_types):
+        return {
+            "plot_types": plot_types,
+            "subfigures": [self.generateSubfigure(subfigure) for subfigure in figure]
+        }
 
-    def generateTikz(self):
-        """ Creates Tikz/Pgf figures for each plot specified on the view config file
-        Returns:
-            list[str] LaTeX pgf plots.
-        """
-        return [ figure.createTex(self.model.master_df) for figure in self.view.figures ]
-
-    def generateCsv(self):
-        """ Create a list containing the data for each plot specified on the view config in CSV format.
-        Returns (list[str]): List of csv data.
-        """
-        return [ figure.createCsv(self.model.master_df) for figure in self.view.figures ]
-
-
-    def generateData(self,format):
-        """ Creates a list of data depending on the desired format, using the plot configuration and the model's master dataframe"""
-        if format == "plotly":
-            return self.generatePlotly()
-        elif format == "html":
-            return self.generatePlotlyHtml()
-        elif format in ["tikz", "pgf"]:
-            return self.generateTikz()
-        elif format == "csv":
-            return self.generateCsv()
-        else:
-            raise NotImplementedError
+    def generateSubfigure(self, subfigure):
+        return {
+            "exports": [
+                { "display_text":"CSV", "filename":"data.csv", "data":subfigure.createCsv(self.model.master_df) },
+                { "display_text":"LaTeX", "filename":"figure.tex", "data":subfigure.createTex(self.model.master_df) },
+            ],
+            "html": subfigure.createFigureHtml(self.model.master_df)
+        }
