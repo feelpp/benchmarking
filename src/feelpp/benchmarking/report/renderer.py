@@ -27,12 +27,21 @@ class Renderer:
     def setFilters(self):
         """ Set environment filters """
         self.env.filters["stripquotes"] = self.stripQuotes
+        self.env.filters["inttouniquestr"] = self.intToUniqueStr
 
     @staticmethod
     def stripQuotes(value):
         if isinstance(value,str):
             return value.strip('"')
         return value
+
+    @staticmethod
+    def intToUniqueStr(n):
+        s = []
+        while n:
+            n, r = divmod(n - 1, 26)
+            s.append(chr(65 + r))
+        return "".join(reversed(s))
 
 class RendererFactory:
     @staticmethod
