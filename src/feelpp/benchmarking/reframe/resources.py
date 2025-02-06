@@ -100,7 +100,7 @@ class MemoryEnforcer:
 
         app_memory_per_node = int(np.ceil(self.memory / rfm_test.num_nodes))
         assert app_memory_per_node <= rfm_test.current_partition.extras["memory_per_node"], f"Memory per node ({app_memory_per_node}) should be less than {rfm_test.current_partition.extras['memory_per_node']}"
-        rfm_test.job.options += [f"--mem={rfm_test.current_partition.extras["memory_per_node"]}"]
+        rfm_test.job.options += [f"--mem={rfm_test.current_partition.extras['memory_per_node']}"]
 
 class ExclusiveAccessEnforcer:
     """ Plugin to enforce exclusive access value to the nodes
