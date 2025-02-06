@@ -35,17 +35,12 @@
         "--case.discretization {{parameters.discretization.value}}",
         "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json\" }'"
     ],
-    "outputs": [
-        {
-            "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
-            "format": "csv"
-        }
-    ],
     "additional_files":{
         "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc"
     },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "clean_directory":false,
         "stages": [
             {
                 "name": "Constructor",
@@ -60,7 +55,19 @@
             {
                 "name": "Solve",
                 "filepath": "heat.scalibility.HeatSolve.data",
-                "format": "tsv"
+                "format": "tsv",
+                "units":{
+                    "*":"s",
+                    "ksp-niter":"iter"
+                }
+            },
+            {
+                "name":"Outputs",
+                "filepath": "heat.measures/values.csv",
+                "format": "csv",
+                "units":{
+                    "*":"W"
+                }
             }
         ]
     },
@@ -74,7 +81,7 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence":[128,256,384,512,640,768,896,1024,1152,1280]
+                    "sequence":[64]
                 },
                 {
                     "name":"exclusive_access",
@@ -99,9 +106,9 @@
             "name":"discretization",
             "sequence":["P1","P2","P3"],
             "conditions":{
-                "P1":[{ "resources.tasks":[128,256,384,512,640,768] }],
-                "P2":[{ "resources.tasks":[768,896,1024,1152,1280] }],
-                "P3":[{ "resources.tasks":[640,768,896,1024,1152,1280] }]
+                "P1":[{ "resources.tasks":[64] }],
+                "P2":[{ "resources.tasks":[] }],
+                "P3":[{ "resources.tasks":[] }]
             }
         },
         {
