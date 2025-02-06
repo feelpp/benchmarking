@@ -21,10 +21,6 @@ site_configuration = {
                     'max_jobs': 8,
                     'access': [f"--partition=cn --account={project_id} --qos={project_id}"],
                     'environs': ['default'],
-                    'prepare_cmds': [
-                        'source /etc/profile.d/modules.sh',
-                        'export MODULEPATH=/opt/software/modulefiles'
-                    ],
                     'processor': {
                         'num_cpus': 128
                     },
@@ -50,7 +46,11 @@ site_configuration = {
         {
             'name':'default',
             'modules': ["openmpi/4/gcc/latest"],
-            'target_systems':['discoverer:cn']
+            'target_systems':['discoverer:cn'],
+            'prepare_cmds': [
+                'source /etc/profile.d/modules.sh',
+                'export MODULEPATH=/opt/software/modulefiles:$MODULEPATH'
+            ]
         }
     ]
 }
