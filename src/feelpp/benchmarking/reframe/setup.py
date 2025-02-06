@@ -41,6 +41,10 @@ class Setup:
         """
         self.reader.updateConfig(replace)
 
+    def setEnvVariables(self):
+        for env_var_name,env_var_value in self.reader.config.env_variables.items():
+            os.environ[env_var_name] = env_var_value
+
 
 class MachineSetup(Setup):
     """ Machine related setup"""
@@ -58,6 +62,7 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        self.setEnvVariables()
         self.setValidEnvironments(rfm_test)
         self.setTags(rfm_test)
         self.setPlatform(rfm_test,app_config)
@@ -136,10 +141,6 @@ class AppSetup(Setup):
 
     def setupAfterInit(self, rfm_test):
         self.setEnvVariables()
-
-    def setEnvVariables(self):
-        for env_var_name,env_var_value in self.reader.config.env_variables.items():
-            os.environ[env_var_name] = env_var_value
 
     def cleanupDirectories(self):
         if os.path.exists(self.reader.config.scalability.directory):

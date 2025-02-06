@@ -29,6 +29,7 @@ class MachineConfig(BaseModel):
     reports_base_dir:str
     input_dataset_base_dir:Optional[str] = None
     output_app_dir:str
+    env_variables:Optional[Dict] = {}
     containers:Optional[Dict[str,Container]] = {}
 
     platform:Optional[Literal["apptainer","docker","builtin"]] = "builtin"
