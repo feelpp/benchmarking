@@ -113,7 +113,7 @@ For the given example, it produces the following dataframe
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -131,7 +131,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -141,7 +141,7 @@ The relative performance strategy computes the proportion of the time that a a `
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -159,7 +159,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -172,7 +172,7 @@ For the example, this strategy will produce the following.
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -190,7 +190,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -202,7 +202,7 @@ Considering the same example axis as above, the software can generate the follow
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.figureFactory import FigureFactory
+from feelpp.benchmarking.report.figures.figureFactory import FigureFactory
 figures = FigureFactory.create(Plot(**{
     "title": "Absolute performance",
     "plot_types": [ "scatter" ],

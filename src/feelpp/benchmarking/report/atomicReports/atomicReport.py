@@ -1,5 +1,7 @@
 import json, os
 from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
+from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
+from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
 
 class AtomicReport:
     """ Class representing an atomic report. i.e. a report indexed by date, test case, application and machine.
@@ -158,6 +160,11 @@ class AtomicReport:
             renderer (Renderer): The renderer to use
         """
         hash_params_headers, flat_hash_params = self.parseHashMap()
+
+        model=AtomicReportModel( self.runs )
+        view=AtomicReportView( self.plots_config )
+        controller=AtomicReportController(model,view)
+
         renderer.render(
             f"{base_dir}/{self.filename()}.adoc",
             dict(
@@ -165,13 +172,14 @@ class AtomicReport:
                 application_display_name = self.application.display_name,
                 machine_id = self.machine.id, machine_display_name = self.machine.display_name,
                 session_info = self.session_info,
-                runs = self.runs,
                 date = self.date,
                 empty = self.empty,
-                plots_config = self.plots_config,
                 flat_hash_param_map = flat_hash_params,
                 hash_params_headers = hash_params_headers,
-                description_path = self.description_path
+                description_path = self.description_path,
+                figures = controller.generateData("html"),
+                figure_csvs = controller.generateData("csv"),
+                figure_pgfs = controller.generateData("pgf")
             )
         )
 
