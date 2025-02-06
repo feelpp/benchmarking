@@ -21,6 +21,10 @@ site_configuration = {
                     'max_jobs': 8,
                     'access': [f"--partition=cn --account={project_id} --qos={project_id}"],
                     'environs': ['default'],
+                    'prepare_cmds': [
+                        'source /etc/profile.d/modules.sh',
+                        'export MODULEPATH=/opt/software/modulefiles'
+                    ],
                     'processor': {
                         'num_cpus': 128
                     },

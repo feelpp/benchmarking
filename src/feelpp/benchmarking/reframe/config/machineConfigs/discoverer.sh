@@ -3,9 +3,6 @@
 SCRIPT_DIR=$(dirname "$0")
 source "$SCRIPT_DIR/hpc.env"
 
-source /etc/profile.d/modules.sh
-export MODULEPATH=/opt/software/modulefiles
-
 echo "================================================"
 sacctmgr show association where account=$discoverer_project_id
 
