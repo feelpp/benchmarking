@@ -87,17 +87,17 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence":[128]
+                    "sequence":[128,256,384,512,640,768,896,1024,1152,1280]
                 },
                 {
                     "name":"exclusive_access",
-                    "repeat":{"value":true,"count":1}
+                    "repeat":{"value":true,"count":10}
                 }
             ]
         },
         {
             "name":"mesh",
-            "sequence":["M1"]
+            "sequence":["M1","M2","M3"]
         },
         {
             "name":"memory",
@@ -113,8 +113,8 @@
             "sequence":["P1","P2","P3"],
             "conditions":{
                 "P1":[{ "resources.tasks":[128,256,384,512,640,768] }],
-                "P2":[{ "resources.tasks":[] }],
-                "P3":[{ "resources.tasks":[] }]
+                "P2":[{ "resources.tasks":[768,896,1024,1152,1280] }],
+                "P3":[{ "resources.tasks":[640,768,896,1024,1152,1280] }]
             }
         },
         {
