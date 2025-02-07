@@ -108,6 +108,7 @@ class ConfigFile(BaseModel):
     options: List[str]
     env_variables:Optional[Dict] = {}
     outputs: List[AppOutput]
+    input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]

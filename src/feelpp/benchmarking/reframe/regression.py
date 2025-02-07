@@ -35,6 +35,23 @@ class RegressionTest(ReframeSetup):
             self.error_log = f.read()
 
     @run_before('performance')
+    def cleanupTempInputFiles(self):
+        """ IF input_user_dir is defined, it will remove all copied files (present on input_file_dependencies).
+        This will clean up empty directories (even if not created by rfm)
+        """
+        if self.machine_setup.reader.config.input_user_dir:
+            for input_file in self.app_setup.reader.config.input_file_dependencies.values():
+                os.remove(os.path.join(self.machine_setup.reader.config.input_dataset_base_dir,input_file))
+
+            #Delete empty dirs
+            for dirpath, dirnames, _ in os.walk(self.machine_setup.reader.config.input_dataset_base_dir, topdown=False):
+                for dirname in dirnames:
+                    directory = os.path.join(dirpath,dirname)
+                    if not os.listdir(directory):
+                        os.rmdir(directory)
+                        print(f"Deleted empty directory: {directory}")
+
+    @run_before('performance')
     def setPerfVars(self):
         self.perf_variables = {}
         self.perf_variables.update(
