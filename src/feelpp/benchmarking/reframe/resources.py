@@ -156,13 +156,14 @@ class ResourceHandler:
 
         if resources.gpus_per_node: #or resources.gpus
             gpu_strategy = GpusPerNodeStrategy()
-        gpu_strategy.configure(resources, rfm_test)
+            gpu_strategy.configure(resources, rfm_test)
+            gpu_strategy.validate(rfm_test)
+
         if resources.memory:
             MemoryEnforcer(resources.memory).enforceMemory(rfm_test)
 
         ExclusiveAccessEnforcer(resources.exclusive_access).enforceExclusiveAccess(rfm_test)
 
         strategy.validate(rfm_test)
-        gpu_strategy.validate(rfm_test)
 
         return rfm_test
