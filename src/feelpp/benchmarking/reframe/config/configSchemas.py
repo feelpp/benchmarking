@@ -13,6 +13,13 @@ class Stage(BaseModel):
     filepath:str
     format:Literal["csv","tsv","json"]
     variables_path:Optional[Union[str,List[str]]] = []
+    units: Optional[Dict[str,str]] = {}
+
+    @field_validator("units",mode="before")
+    @classmethod
+    def parseUnits(cls,v):
+        v["*"] = v.get("*","s")
+        return v
 
     @model_validator(mode="after")
     def checkFormatOptions(self):
@@ -36,10 +43,8 @@ class Scalability(BaseModel):
     directory: str
     stages: List[Stage]
     custom_variables:Optional[List[CustomVariable]] = []
+    clean_directory: Optional[bool] = False
 
-class AppOutput(BaseModel):
-    filepath: str
-    format: str
 
 
 class Image(BaseModel):
@@ -107,9 +112,8 @@ class ConfigFile(BaseModel):
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
-    outputs: List[AppOutput]
-    input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
+    input_file_dependencies: Optional[Dict[str,str]] = {}
     sanity: Sanity
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = None
