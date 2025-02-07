@@ -142,9 +142,7 @@ class BaseComponent:
             data = dict(
                 parent_catalogs = "-".join([parent.id for parent in parents]),
                 parents = parents,
-                figures = controller.generateData("html"),
-                figure_csvs = controller.generateData("csv"),
-                figure_pgfs = controller.generateData("pgf")
+                figures = controller.generateAll()
             )
         )
 
