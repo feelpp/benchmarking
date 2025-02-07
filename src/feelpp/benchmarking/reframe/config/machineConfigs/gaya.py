@@ -48,6 +48,12 @@ site_configuration = {
                     'max_jobs':4,
                     'access': ['--partition=gpu'],
                     'environs': ['default'],
+                    'resources': [
+                        {
+                            'name': '_rfm_gpu',
+                            'options': ['--gres=gpu:{num_gpus_per_node}'],
+                        }
+                    ],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
                         "export PATH=/opt/apptainer/v1.3.5/apptainer/bin/:$PATH"
