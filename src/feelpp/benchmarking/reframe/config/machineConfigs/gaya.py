@@ -44,7 +44,7 @@ site_configuration = {
                 {
                     'name':'gpu',
                     'scheduler':'squeue',
-                    'launcher':'local',
+                    'launcher':'mpirun',
                     'max_jobs':4,
                     'access': ['--partition=gpu'],
                     'environs': ['default'],
