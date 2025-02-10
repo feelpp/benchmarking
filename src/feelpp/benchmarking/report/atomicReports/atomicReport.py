@@ -195,9 +195,8 @@ class AtomicReport:
         """
         hash_params_headers, flat_hash_params = self.parseHashMap()
 
-        model=AtomicReportModel( self.runs )
         view=AtomicReportView( self.plots_config )
-        controller=AtomicReportController(model,view)
+        controller=AtomicReportController(self.model,view)
 
         renderer.render(
             f"{base_dir}/{self.filename()}.adoc",
@@ -211,9 +210,7 @@ class AtomicReport:
                 flat_hash_param_map = flat_hash_params,
                 hash_params_headers = hash_params_headers,
                 description_path = self.description_path,
-                figures = controller.generateData("html"),
-                figure_csvs = controller.generateData("csv"),
-                figure_pgfs = controller.generateData("pgf")
+                figures = controller.generateAll()
             )
         )
 

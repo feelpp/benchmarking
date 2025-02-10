@@ -3,7 +3,6 @@ from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
-from feelpp.benchmarking.reframe.outputs import OutputsHandler
 from feelpp.benchmarking.reframe.resources import ResourceHandler
 
 
@@ -41,6 +40,10 @@ class Setup:
         """
         self.reader.updateConfig(replace)
 
+    def setEnvVariables(self):
+        for env_var_name,env_var_value in self.reader.config.env_variables.items():
+            os.environ[env_var_name] = env_var_value
+
 
 class MachineSetup(Setup):
     """ Machine related setup"""
@@ -58,6 +61,7 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        self.setEnvVariables()
         self.setValidEnvironments(rfm_test)
         self.setTags(rfm_test)
         self.setPlatform(rfm_test,app_config)
@@ -133,17 +137,53 @@ class AppSetup(Setup):
         """
         self.cleanupDirectories()
         self.setExecutable(rfm_test,machine_config)
+        if machine_config.input_user_dir:
+            self.copyInputFileDependencies(machine_config)
+
+    def copyInputFileDependencies(self,machine_config):
+        """ If input_user_dir exists, copies all files from input_user_dir to input_dataset_base_dir preservign the structure"""
+        if not machine_config.input_user_dir:
+            return
+        print(f"=========COPYING FILES FROM {machine_config.input_user_dir} to {machine_config.input_dataset_base_dir}============")
+        for input_file in self.reader.config.input_file_dependencies.values():
+            print(f"\t {input_file}")
+            base_dirname = os.path.dirname(os.path.join(machine_config.input_dataset_base_dir, input_file))
+            if not os.path.exists(base_dirname):
+                os.makedirs( base_dirname )
+            shutil.copy2(
+                os.path.join(machine_config.input_user_dir, input_file),
+                os.path.join(machine_config.input_dataset_base_dir, input_file)
+            )
+        print("============================================================")
 
     def setupAfterInit(self, rfm_test):
         self.setEnvVariables()
 
-    def setEnvVariables(self):
-        for env_var_name,env_var_value in self.reader.config.env_variables.items():
-            os.environ[env_var_name] = env_var_value
-
     def cleanupDirectories(self):
         if os.path.exists(self.reader.config.scalability.directory):
             shutil.rmtree(self.reader.config.scalability.directory)
+
+    def copyFile(self,dir_path,name,filepath):
+        """ Copies the file from filepath to dir_path/name"""
+        if not filepath:
+            return
+        file_extension = filepath.split(".")[-1] if "." in filepath else None
+        outdir = os.path.join(dir_path,"partials")
+        if not os.path.exists(outdir):
+            os.mkdir(outdir)
+        filename = f"{name}.{file_extension}" if file_extension else name
+        shutil.copy2( filepath, os.path.join(outdir,filename) )
+
+    def copyDescriptionFile(self,dir_path,name):
+        """ copies the file from the description_filepath field"""
+        if self.reader.config.additional_files and self.reader.config.additional_files.description_filepath:
+            self.copyFile(dir_path,name,self.reader.config.additional_files.description_filepath)
+
+    def copyParametrizedDescriptionFile(self,dir_path,name):
+        """ copies the file from the parameterized_descriptions_filepath field"""
+        if self.reader.config.additional_files and self.reader.config.additional_files.parameterized_descriptions_filepath:
+            self.copyFile(dir_path,name,self.reader.config.additional_files.parameterized_descriptions_filepath)
+
 
 
     def setExecutable(self, rfm_test, machine_config):
@@ -225,9 +265,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.app_setup.setupAfterInit(self)
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
 
-        #Used only to copy description
-        temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
-        temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
+        self.app_setup.copyDescriptionFile(self.report_dir_path,name="description")
 
     @run_after('setup')
     def setupAfterSetup(self):

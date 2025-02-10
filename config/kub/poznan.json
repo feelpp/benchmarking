@@ -37,13 +37,21 @@
                 "name":"",
                 "filepath": "instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
                 "format": "json",
-                "variables_path":["*"]
+                "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max"],
+                "units":{
+                    "*":"custom instance unit",
+                    "postprocess.exportOutputs":"exportOutputs unit special",
+                    "simulation.buildingExecuteStep":"buildingExecuteStep unit special"
+                }
             },
             {
                 "name":"",
                 "filepath": "logs/timers.json",
                 "format": "json",
-                "variables_path":["*"]
+                "variables_path":["*.timeElapsed.max","*.subtimers.updateForUse.subtimers.*.timeElapsed.max"],
+                "units":{
+                    "*":"custom unit"
+                }
             }
         ]
     },
@@ -55,10 +63,9 @@
         {
             "name": "resources",
             "sequence": [
+                {"tasks":32, "exclusive_access":true},
                 {"tasks":64, "exclusive_access":true},
-                {"tasks":128, "exclusive_access":true},
-                {"tasks":256, "exclusive_access":true},
-                {"tasks":384, "exclusive_access":true}
+                {"tasks":128, "exclusive_access":true}
             ]
         }
     ]
