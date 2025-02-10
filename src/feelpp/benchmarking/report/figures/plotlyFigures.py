@@ -63,12 +63,6 @@ class PlotlyFigure(Figure):
             fig = go.Figure()
         return fig
 
-    def renameColumns(self,df):
-        if self.config.variables and self.config.names:
-            assert len(self.config.variables) == len(self.config.names)
-            df = df.rename(columns = {var:name for var,name in zip(self.config.variables,self.config.names)})
-
-        return df
 
     def createMultiindexFigure(self,df):
         """ Creates a plotly figure from a multiIndex dataframe
@@ -95,9 +89,6 @@ class PlotlyFigure(Figure):
         Returns:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
-        df = self.transformation_strategy.calculate(df)
-        df = self.renameColumns(df)
-
         figure = super().createFigure(df)
         figure.update_layout(self.config.layout_modifiers)
         figure = self.updateLayout(figure)

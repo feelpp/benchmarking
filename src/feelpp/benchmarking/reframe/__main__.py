@@ -50,9 +50,7 @@ def main_cli():
                     continue
 
                 if platform_name == "apptainer":
-                    print("Pulling apptainer image...")
                     subprocess.run(f"apptainer pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
-                    print(f"Apptainer images pulled in: {platform_field.name}")
                 elif platform_name == "docker":
                     raise NotImplementedError("Pulling docker image is not yet implemented")
 

@@ -21,7 +21,9 @@ class Figure:
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
     def createCsv(self,df):
-        return self.transformation_strategy.calculate(df).to_csv()
+        df = self.transformation_strategy.calculate(df)
+        df = self.renameColumns(df)
+        return df.to_csv()
 
     def createFigure(self,df, **args):
         """ Creates a figure from the master dataframe
@@ -31,7 +33,7 @@ class Figure:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
         df = self.transformation_strategy.calculate(df)
-
+        df = self.renameColumns(df)
         if isinstance(df.index,MultiIndex):
             figure = self.createMultiindexFigure(df, **args)
         else:
@@ -39,6 +41,12 @@ class Figure:
 
         return figure
 
+    def renameColumns(self,df):
+        if self.config.variables and self.config.names:
+            assert len(self.config.variables) == len(self.config.names)
+            df = df.rename(columns = {var:name for var,name in zip(self.config.variables,self.config.names)})
+
+        return df
 
 class CompositeFigure:
     def createFigure(self, df):
