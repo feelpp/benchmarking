@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ReFrame logs :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/logs/discoverer/feelpp_toolbox_heat/ThermalBridgesENISO10211/2025_01_22T12_14_50Z0200/68fa4e3d.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../../../_/css/site.css">
+<link rel="icon" href="../../../../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../../../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../../../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../../../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../../../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="68fa4e3d.html">ReFrame logs</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/logs/discoverer/feelpp_toolbox_heat/ThermalBridgesENISO10211/2025_01_22T12_14_50Z0200/68fa4e3d.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">ReFrame logs</h1>
+<div class="sect1">
+<h2 id="_reframe_scheduler_script"><a class="anchor" href="#_reframe_scheduler_script"></a>1. ReFrame scheduler script</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#!/bin/bash
+#SBATCH --job-name="rfm_RegressionTest_68fa4e3d"
+#SBATCH --ntasks=1280
+#SBATCH --ntasks-per-node=128
+#SBATCH --cpus-per-task=1
+#SBATCH --output=rfm_job.out
+#SBATCH --error=rfm_job.err
+#SBATCH --exclusive
+#SBATCH --partition=cn --account=ehpc-dev-2024d05-047 --qos=ehpc-dev-2024d05-047
+#SBATCH --mem=60G
+#SBATCH --threads-per-core=1
+#SBATCH --time=0-00:10:00
+srun singularity exec -B"/home/vchabannes/actions-runner/_work/benchmarking/benchmarking/build/reframe/stage/discoverer/cn/default/RegressionTest_68fa4e3d:/rfm_workdir" --home /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home --bind /discofs/ehpc-dev-2024d05-047/vchabannes/inputdataset/ThermalBridgesENISO10211/:/input_data --env OMP_NUM_THREADS=1 /home/vchabannes/feelpp-noble.sif feelpp_toolbox_heat --config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg /input_data/gamg.cfg --directory /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d --repository.case ThermalBridgesENISO10211 --heat.scalability-save=1 --repository.append.np 0 --case.discretization P3 --heat.json.patch='{"op": "replace","path": "/Meshes/heat/Import/filename","value": "/input_data/partitioning/case3/M3/case3_p1280.json" }'</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reframe_error_log"><a class="anchor" href="#_reframe_error_log"></a>2. ReFrame error log</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory
+slurmstepd: error: Unable to get current working directory: No such file or directory</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reframe_output_log"><a class="anchor" href="#_reframe_output_log"></a>3. ReFrame output log</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Reading /input_data/gamg.cfg...
+Reading /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg...
+[ Starting Feel++ ] application toolboxes_heat version 0.111.0-preview.100 date 2025-Jan-22
+[feelpp] create Feel++ root repository: /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211
+
+[feelpp] create Feel++ geo repository: /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/geo
+
+[feelpp] create Feel++ expressions directory: /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/exprs
+
+[feelpp] create Feel++ logs directory: /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/logs
+
+ . toolboxes_heat files are stored in /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/
+ .. logfiles :/disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/logs
+[modelProperties] Loading Model Properties : "/usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.json"
+[loadMesh] Loading mesh in format json+h5: "/input_data/partitioning/case3/M3/case3_p1280.json"
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Toolbox::heat - Use Case Study                                                                                                                                                    |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| +-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ |
+| | Environment                                                                                                                                                                   | |
+| +-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ |
+| |  prefix              : heat                                                                                                                                                   | |
+| |  keyword             : heat                                                                                                                                                   | |
+| |  root repository     : /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/  | |
+| |  number of processus : 1280                                                                                                                                                   | |
+| +-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ |
+| +-----------------------------------------------+                                                                                                                                 |
+| | Physics                                       |                                                                                                                                 |
+| +-----------------------------------------------+                                                                                                                                 |
+| | +-------------------------------------------+ |                                                                                                                                 |
+| | | heat                                      | |                                                                                                                                 |
+| | +-------------------------------------------+ |                                                                                                                                 |
+| | | +---------------------------------------+ | |                                                                                                                                 |
+| | | | default                               | | |                                                                                                                                 |
+| | | +---------------------------------------+ | |                                                                                                                                 |
+| | | |  modeling : heat                      | | |                                                                                                                                 |
+| | | |  type     : heat                      | | |                                                                                                                                 |
+| | | |  name     : default                   | | |                                                                                                                                 |
+| | | | +----------+------------------------+ | | |                                                                                                                                 |
+| | | | | Equation |  - div( k grad T ) = 0 | | | |                                                                                                                                 |
+| | | | +----------+------------------------+ | | |                                                                                                                                 |
+| | | +---------------------------------------+ | |                                                                                                                                 |
+| | +-------------------------------------------+ |                                                                                                                                 |
+| +-----------------------------------------------+                                                                                                                                 |
+| +----------------------------+                                                                                                                                                    |
+| | Physics2                   |                                                                                                                                                    |
+| +----------------------------+                                                                                                                                                    |
+| | +-----------+------------+ |                                                                                                                                                    |
+| | | time mode | Stationary | |                                                                                                                                                    |
+| | +-----------+------------+ |                                                                                                                                                    |
+| +----------------------------+                                                                                                                                                    |
+| +--------------------------------------------------------------------------------------------------------+                                                                        |
+| | Materials Properties                                                                                   |                                                                        |
+| +--------------------------------------------------------------------------------------------------------+                                                                        |
+| |  number of materials : 5                                                                               |                                                                        |
+| | +---------------------------------------------------------------------------------------------+        |                                                                        |
+| | | Material : External_wall                                                                    |        |                                                                        |
+| | +---------------------------------------------------------------------------------------------+        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | | | Name                   | Expression | Symbol                      | Shape  | Components | |        |                                                                        |
+| | | +========================+============+=============================+========+============+ |        |                                                                        |
+| | | | density                | 2000       | materials_External_wall_rho | scalar |            | |        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | | | specific-heat-capacity | 1000       | materials_External_wall_Cp  | scalar |            | |        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | | | thermal-conductivity   | 1          | materials_External_wall_k   | scalar |            | |        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | +---------------------------------------------------------------------------------------------+        |                                                                        |
+| | +-------------------------------------------------------------------------------------+                |                                                                        |
+| | | Material : Floor                                                                    |                |                                                                        |
+| | +-------------------------------------------------------------------------------------+                |                                                                        |
+| | | +------------------------+------------+---------------------+--------+------------+ |                |                                                                        |
+| | | | Name                   | Expression | Symbol              | Shape  | Components | |                |                                                                        |
+| | | +========================+============+=====================+========+============+ |                |                                                                        |
+| | | | density                | 1000       | materials_Floor_rho | scalar |            | |                |                                                                        |
+| | | +------------------------+------------+---------------------+--------+------------+ |                |                                                                        |
+| | | | specific-heat-capacity | 800        | materials_Floor_Cp  | scalar |            | |                |                                                                        |
+| | | +------------------------+------------+---------------------+--------+------------+ |                |                                                                        |
+| | | | thermal-conductivity   | 1          | materials_Floor_k   | scalar |            | |                |                                                                        |
+| | | +------------------------+------------+---------------------+--------+------------+ |                |                                                                        |
+| | +-------------------------------------------------------------------------------------+                |                                                                        |
+| | +----------------------------------------------------------------------------------------------------+ |                                                                        |
+| | | Material : Horizontal_structure                                                                    | |                                                                        |
+| | +----------------------------------------------------------------------------------------------------+ |                                                                        |
+| | | +------------------------+------------+------------------------------------+--------+------------+ | |                                                                        |
+| | | | Name                   | Expression | Symbol                             | Shape  | Components | | |                                                                        |
+| | | +========================+============+====================================+========+============+ | |                                                                        |
+| | | | density                | 5000       | materials_Horizontal_structure_rho | scalar |            | | |                                                                        |
+| | | +------------------------+------------+------------------------------------+--------+------------+ | |                                                                        |
+| | | | specific-heat-capacity | 600        | materials_Horizontal_structure_Cp  | scalar |            | | |                                                                        |
+| | | +------------------------+------------+------------------------------------+--------+------------+ | |                                                                        |
+| | | | thermal-conductivity   | 2.5        | materials_Horizontal_structure_k   | scalar |            | | |                                                                        |
+| | | +------------------------+------------+------------------------------------+--------+------------+ | |                                                                        |
+| | +----------------------------------------------------------------------------------------------------+ |                                                                        |
+| | +------------------------------------------------------------------------------------------+           |                                                                        |
+| | | Material : Insulation                                                                    |           |                                                                        |
+| | +------------------------------------------------------------------------------------------+           |                                                                        |
+| | | +------------------------+------------+--------------------------+--------+------------+ |           |                                                                        |
+| | | | Name                   | Expression | Symbol                   | Shape  | Components | |           |                                                                        |
+| | | +========================+============+==========================+========+============+ |           |                                                                        |
+| | | | density                | 200        | materials_Insulation_rho | scalar |            | |           |                                                                        |
+| | | +------------------------+------------+--------------------------+--------+------------+ |           |                                                                        |
+| | | | specific-heat-capacity | 1000       | materials_Insulation_Cp  | scalar |            | |           |                                                                        |
+| | | +------------------------+------------+--------------------------+--------+------------+ |           |                                                                        |
+| | | | thermal-conductivity   | 0.04       | materials_Insulation_k   | scalar |            | |           |                                                                        |
+| | | +------------------------+------------+--------------------------+--------+------------+ |           |                                                                        |
+| | +------------------------------------------------------------------------------------------+           |                                                                        |
+| | +---------------------------------------------------------------------------------------------+        |                                                                        |
+| | | Material : Internal_wall                                                                    |        |                                                                        |
+| | +---------------------------------------------------------------------------------------------+        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | | | Name                   | Expression | Symbol                      | Shape  | Components | |        |                                                                        |
+| | | +========================+============+=============================+========+============+ |        |                                                                        |
+| | | | density                | 1700       | materials_Internal_wall_rho | scalar |            | |        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | | | specific-heat-capacity | 800        | materials_Internal_wall_Cp  | scalar |            | |        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | | | thermal-conductivity   | 0.7        | materials_Internal_wall_k   | scalar |            | |        |                                                                        |
+| | | +------------------------+------------+-----------------------------+--------+------------+ |        |                                                                        |
+| | +---------------------------------------------------------------------------------------------+        |                                                                        |
+| +--------------------------------------------------------------------------------------------------------+                                                                        |
+| +--------------------------------+                                                                                                                                                |
+| | Boundary Conditions            |                                                                                                                                                |
+| +--------------------------------+                                                                                                                                                |
+| | +----------------------------+ |                                                                                                                                                |
+| | | Convective Heat Flux       | |                                                                                                                                                |
+| | +----------------------------+ |                                                                                                                                                |
+| | | +------------------------+ | |                                                                                                                                                |
+| | | | alpha                  | | |                                                                                                                                                |
+| | | +------------------------+ | |                                                                                                                                                |
+| | | |  expr_h    : h_alpha   | | |                                                                                                                                                |
+| | | |  expr_Text : T0_alpha  | | |                                                                                                                                                |
+| | | |  markers   :  alpha    | | |                                                                                                                                                |
+| | | +------------------------+ | |                                                                                                                                                |
+| | | +-----------------------+  | |                                                                                                                                                |
+| | | | beta                  |  | |                                                                                                                                                |
+| | | +-----------------------+  | |                                                                                                                                                |
+| | | |  expr_h    : h_beta   |  | |                                                                                                                                                |
+| | | |  expr_Text : T0_beta  |  | |                                                                                                                                                |
+| | | |  markers   :  beta    |  | |                                                                                                                                                |
+| | | +-----------------------+  | |                                                                                                                                                |
+| | | +------------------------+ | |                                                                                                                                                |
+| | | | gamma                  | | |                                                                                                                                                |
+| | | +------------------------+ | |                                                                                                                                                |
+| | | |  expr_h    : h_gamma   | | |                                                                                                                                                |
+| | | |  expr_Text : T0_gamma  | | |                                                                                                                                                |
+| | | |  markers   :  gamma    | | |                                                                                                                                                |
+| | | +------------------------+ | |                                                                                                                                                |
+| | +----------------------------+ |                                                                                                                                                |
+| +--------------------------------+                                                                                                                                                |
+| +--------------------------------------------------------------------------------------+                                                                                          |
+| | Meshes                                                                               |                                                                                          |
+| +--------------------------------------------------------------------------------------+                                                                                          |
+| | +----------------------------------------------------------------------------------+ |                                                                                          |
+| | | Mesh : heat                                                                      | |                                                                                          |
+| | +----------------------------------------------------------------------------------+ |                                                                                          |
+| | |  Discretization : /Mesh/heat                                                     | |                                                                                          |
+| | |  filename       : /input_data/partitioning/case3/M3/case3_p1280.json             | |                                                                                          |
+| | | +------------------------------------------------------------------------------+ | |                                                                                          |
+| | | | Import configuration                                                         | | |                                                                                          |
+| | | +------------------------------------------------------------------------------+ | |                                                                                          |
+| | | |  mesh-filename         : /input_data/partitioning/case3/M3/case3_p1280.json  | | |                                                                                          |
+| | | |  generate-partitioning : 0                                                   | | |                                                                                          |
+| | | +------------------------------------------------------------------------------+ | |                                                                                          |
+| | | +-------------------------------+                                                | |                                                                                          |
+| | | | Discretization                |                                                | |                                                                                          |
+| | | +-------------------------------+                                                | |                                                                                          |
+| | | |  dim         : 3              |                                                | |                                                                                          |
+| | | |  h_average   : 8.183349e-03   |                                                | |                                                                                          |
+| | | |  h_max       : 1.161483e-02   |                                                | |                                                                                          |
+| | | |  h_min       : 4.779459e-03   |                                                | |                                                                                          |
+| | | |  n_edges     : 75307308       |                                                | |                                                                                          |
+| | | |  n_elements  : 63987199       |                                                | |                                                                                          |
+| | | |  n_faces     : 128722252      |                                                | |                                                                                          |
+| | | |  n_partition : 1280           |                                                | |                                                                                          |
+| | | |  n_points    : 10572256       |                                                | |                                                                                          |
+| | | |  order       : 1              |                                                | |                                                                                          |
+| | | |  real_dim    : 3              |                                                | |                                                                                          |
+| | | |  shape       : Simplex_3_1_3  |                                                | |                                                                                          |
+| | | +-------------------------------+                                                | |                                                                                          |
+| | +----------------------------------------------------------------------------------+ |                                                                                          |
+| +--------------------------------------------------------------------------------------+                                                                                          |
+| +-----------------------------------------+                                                                                                                                       |
+| | Function Spaces                         |                                                                                                                                       |
+| +-----------------------------------------+                                                                                                                                       |
+| | +-------------------------------------+ |                                                                                                                                       |
+| | | Temperature                         | |                                                                                                                                       |
+| | +-------------------------------------+ |                                                                                                                                       |
+| | |  mesh   : /Mesh/heat                | |                                                                                                                                       |
+| | |  nSpace : 1                         | |                                                                                                                                       |
+| | | +----------------------------+      | |                                                                                                                                       |
+| | | | Basis                      |      | |                                                                                                                                       |
+| | | +----------------------------+      | |                                                                                                                                       |
+| | | |  is_continuous : 1         |      | |                                                                                                                                       |
+| | | |  nComponents   : 1         |      | |                                                                                                                                       |
+| | | |  nComponents1  : 1         |      | |                                                                                                                                       |
+| | | |  nComponents2  : 1         |      | |                                                                                                                                       |
+| | | |  nLocalDof     : 20        |      | |                                                                                                                                       |
+| | | |  name          : lagrange  |      | |                                                                                                                                       |
+| | | |  order         : 3         |      | |                                                                                                                                       |
+| | | |  shape         : scalar    |      | |                                                                                                                                       |
+| | | +----------------------------+      | |                                                                                                                                       |
+| | | +---------------------------------+ | |                                                                                                                                       |
+| | | | Dof Table                       | | |                                                                                                                                       |
+| | | +---------------------------------+ | |                                                                                                                                       |
+| | | |  extended-doftable : 0          | | |                                                                                                                                       |
+| | | |  nDof              : 289909124  | | |                                                                                                                                       |
+| | | +---------------------------------+ | |                                                                                                                                       |
+| | +-------------------------------------+ |                                                                                                                                       |
+| +-----------------------------------------+                                                                                                                                       |
+| +------------------------------------------------+                                                                                                                                |
+| | Fields                                         |                                                                                                                                |
+| +------------------------------------------------+                                                                                                                                |
+| | +--------------------------------------------+ |                                                                                                                                |
+| | | temperature                                | |                                                                                                                                |
+| | +--------------------------------------------+ |                                                                                                                                |
+| | |  base symbol    : T                        | |                                                                                                                                |
+| | |  function space : /FunctionSpace/object-0  | |                                                                                                                                |
+| | |  name           : temperature              | |                                                                                                                                |
+| | |  prefix symbol  : heat                     | |                                                                                                                                |
+| | +--------------------------------------------+ |                                                                                                                                |
+| +------------------------------------------------+                                                                                                                                |
+| +---------------------------------+                                                                                                                                               |
+| | Algebraic Solver                |                                                                                                                                               |
+| +---------------------------------+                                                                                                                                               |
+| | +------------------+            |                                                                                                                                               |
+| | | Backend          |            |                                                                                                                                               |
+| | +------------------+            |                                                                                                                                               |
+| | |  prefix : heat   |            |                                                                                                                                               |
+| | |  type   : petsc  |            |                                                                                                                                               |
+| | +------------------+            |                                                                                                                                               |
+| | +-----------------------------+ |                                                                                                                                               |
+| | | KSP                         | |                                                                                                                                               |
+| | +-----------------------------+ |                                                                                                                                               |
+| | |  atol       : 1.000000e-50  | |                                                                                                                                               |
+| | |  dtol       : 1.000000e+05  | |                                                                                                                                               |
+| | |  maxit      : 1000          | |                                                                                                                                               |
+| | |  reuse-prec : 0             | |                                                                                                                                               |
+| | |  rtol       : 1.000000e-08  | |                                                                                                                                               |
+| | |  type       : gmres         | |                                                                                                                                               |
+| | +-----------------------------+ |                                                                                                                                               |
+| | +----------------------------+  |                                                                                                                                               |
+| | | SNES                       |  |                                                                                                                                               |
+| | +----------------------------+  |                                                                                                                                               |
+| | |  atol      : 1.000000e-50  |  |                                                                                                                                               |
+| | |  maxit     : 50            |  |                                                                                                                                               |
+| | |  reuse-jac : 0             |  |                                                                                                                                               |
+| | |  rtol      : 1.000000e-08  |  |                                                                                                                                               |
+| | |  stol      : 1.000000e-08  |  |                                                                                                                                               |
+| | +----------------------------+  |                                                                                                                                               |
+| | +-----------------------------+ |                                                                                                                                               |
+| | | KSP in SNES                 | |                                                                                                                                               |
+| | +-----------------------------+ |                                                                                                                                               |
+| | |  maxit      : 1000          | |                                                                                                                                               |
+| | |  reuse-prec : 0             | |                                                                                                                                               |
+| | |  rtol       : 1.000000e-05  | |                                                                                                                                               |
+| | +-----------------------------+ |                                                                                                                                               |
+| | +---------------+               |                                                                                                                                               |
+| | | PC            |               |                                                                                                                                               |
+| | +---------------+               |                                                                                                                                               |
+| | |  type : gamg  |               |                                                                                                                                               |
+| | +---------------+               |                                                                                                                                               |
+| +---------------------------------+                                                                                                                                               |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+[2025-01-22 12:16:51 - [heat] ] #0 KSP Residual norm 6.7748e+04
+[2025-01-22 12:16:52 - [heat] ] #1 KSP Residual norm 1.2439e+04
+[2025-01-22 12:16:53 - [heat] ] #2 KSP Residual norm 3.9038e+03
+[2025-01-22 12:16:54 - [heat] ] #3 KSP Residual norm 2.8749e+03
+[2025-01-22 12:16:55 - [heat] ] #4 KSP Residual norm 1.4191e+03
+[2025-01-22 12:16:56 - [heat] ] #5 KSP Residual norm 6.5815e+02
+[2025-01-22 12:16:57 - [heat] ] #6 KSP Residual norm 5.0200e+02
+[2025-01-22 12:16:58 - [heat] ] #7 KSP Residual norm 3.6308e+02
+[2025-01-22 12:17:00 - [heat] ] #8 KSP Residual norm 2.7360e+02
+[2025-01-22 12:17:01 - [heat] ] #9 KSP Residual norm 1.7388e+02
+[2025-01-22 12:17:02 - [heat] ] #10 KSP Residual norm 1.2597e+02
+[2025-01-22 12:17:03 - [heat] ] #11 KSP Residual norm 8.5527e+01
+[2025-01-22 12:17:04 - [heat] ] #12 KSP Residual norm 6.3698e+01
+[2025-01-22 12:17:05 - [heat] ] #13 KSP Residual norm 4.9087e+01
+[2025-01-22 12:17:06 - [heat] ] #14 KSP Residual norm 3.7372e+01
+[2025-01-22 12:17:07 - [heat] ] #15 KSP Residual norm 2.8310e+01
+[2025-01-22 12:17:08 - [heat] ] #16 KSP Residual norm 1.8767e+01
+[2025-01-22 12:17:09 - [heat] ] #17 KSP Residual norm 1.3445e+01
+[2025-01-22 12:17:10 - [heat] ] #18 KSP Residual norm 9.5525e+00
+[2025-01-22 12:17:11 - [heat] ] #19 KSP Residual norm 7.0194e+00
+[2025-01-22 12:17:12 - [heat] ] #20 KSP Residual norm 5.1768e+00
+[2025-01-22 12:17:13 - [heat] ] #21 KSP Residual norm 3.6820e+00
+[2025-01-22 12:17:14 - [heat] ] #22 KSP Residual norm 2.6870e+00
+[2025-01-22 12:17:15 - [heat] ] #23 KSP Residual norm 1.9771e+00
+[2025-01-22 12:17:16 - [heat] ] #24 KSP Residual norm 1.4613e+00
+[2025-01-22 12:17:18 - [heat] ] #25 KSP Residual norm 1.0608e+00
+[2025-01-22 12:17:19 - [heat] ] #26 KSP Residual norm 7.8714e-01
+[2025-01-22 12:17:20 - [heat] ] #27 KSP Residual norm 5.8430e-01
+[2025-01-22 12:17:21 - [heat] ] #28 KSP Residual norm 4.3689e-01
+[2025-01-22 12:17:22 - [heat] ] #29 KSP Residual norm 3.2241e-01
+[2025-01-22 12:17:24 - [heat] ] #30 KSP Residual norm 2.4094e-01
+[2025-01-22 12:17:25 - [heat] ] #31 KSP Residual norm 2.1686e-01
+[2025-01-22 12:17:26 - [heat] ] #32 KSP Residual norm 1.9468e-01
+[2025-01-22 12:17:27 - [heat] ] #33 KSP Residual norm 1.5730e-01
+[2025-01-22 12:17:28 - [heat] ] #34 KSP Residual norm 1.2179e-01
+[2025-01-22 12:17:29 - [heat] ] #35 KSP Residual norm 8.7506e-02
+[2025-01-22 12:17:30 - [heat] ] #36 KSP Residual norm 6.8558e-02
+[2025-01-22 12:17:32 - [heat] ] #37 KSP Residual norm 5.0660e-02
+[2025-01-22 12:17:33 - [heat] ] #38 KSP Residual norm 3.7591e-02
+[2025-01-22 12:17:34 - [heat] ] #39 KSP Residual norm 2.9754e-02
+[2025-01-22 12:17:35 - [heat] ] #40 KSP Residual norm 2.2452e-02
+[2025-01-22 12:17:36 - [heat] ] #41 KSP Residual norm 1.5035e-02
+[2025-01-22 12:17:37 - [heat] ] #42 KSP Residual norm 1.1032e-02
+[2025-01-22 12:17:38 - [heat] ] #43 KSP Residual norm 9.0947e-03
+[2025-01-22 12:17:39 - [heat] ] #44 KSP Residual norm 6.8055e-03
+[2025-01-22 12:17:40 - [heat] ] #45 KSP Residual norm 5.3448e-03
+[2025-01-22 12:17:41 - [heat] ] #46 KSP Residual norm 4.2992e-03
+[2025-01-22 12:17:43 - [heat] ] #47 KSP Residual norm 2.9104e-03
+[2025-01-22 12:17:43 - [heat] ] #48 KSP Residual norm 2.1890e-03
+[2025-01-22 12:17:45 - [heat] ] #49 KSP Residual norm 1.5983e-03
+[2025-01-22 12:17:46 - [heat] ] #50 KSP Residual norm 1.3325e-03
+[2025-01-22 12:17:47 - [heat] ] #51 KSP Residual norm 1.0815e-03
+[2025-01-22 12:17:48 - [heat] ] #52 KSP Residual norm 7.8924e-04
+[2025-01-22 12:17:49 - [heat] ] #53 KSP Residual norm 6.4112e-04
++------------------------------------------------------------------------------------------------------------------+
+| Checkers : heat                                                                                                  |
++------------------------------------------------------------------------------------------------------------------+
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | check     | name                               | measure       | reference     | error        | tolerance    | |
+| +===========+====================================+===============+===============+==============+==============+ |
+| | [success] | Normal_Heat_Flux_alpha             | 4.609071e+01  | 4.609000e+01  | 1.530734e-05 | 1.000000e-01 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Normal_Heat_Flux_beta              | 1.389381e+01  | 1.389000e+01  | 2.740748e-04 | 1.000000e-01 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Normal_Heat_Flux_gamma             | -5.998107e+01 | -5.998000e+01 | 1.788098e-05 | 1.000000e-01 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Points_alpha_min_field_temperature | 1.132132e+01  | 1.134048e+01  | 1.692552e-03 | 1.000000e-02 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Points_alpha_max_field_temperature | 1.790194e+01  | 1.790194e+01  | 2.377736e-08 | 1.000000e-02 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Points_beta_min_field_temperature  | 1.111494e+01  | 1.112171e+01  | 6.093971e-04 | 1.000000e-02 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Points_beta_max_field_temperature  | 1.684252e+01  | 1.684252e+01  | 1.854086e-08 | 1.000000e-02 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Statistics_temperature_alpha_min   | 1.134048e+01  | 1.132000e+01  | 1.809284e-03 | 1.000000e-02 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
+| | [success] | Statistics_temperature_beta_min    | 1.112171e+01  | 1.111000e+01  | 1.054153e-03 | 1.000000e-02 | |
+| +-----------+------------------------------------+---------------+---------------+--------------+--------------+ |
++------------------------------------------------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                   toolboxes_heat                                                                                    |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| +-------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+ |
+| | logs        | /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/logs         | |
+| +-------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+ |
+| | journal     | /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/journal.json | |
+| +-------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+ |
+| | directories | +-------------------------------------------------------------------------------------------------------------------------------------------------------+         | |
+| |             | | /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3/68fa4e3d/ThermalBridgesENISO10211/ |         | |
+| |             | +-------------------------------------------------------------------------------------------------------------------------------------------------------+         | |
+| |             | | /disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home                                                                                              |         | |
+| |             | +-------------------------------------------------------------------------------------------------------------------------------------------------------+         | |
+| +-------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+ |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+[ Stopping Feel++ ] application toolboxes_heat execution time 188.14s</code></pre>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../../../../_/js/site.js" data-ui-root-path="../../../../../../_"></script>
+
+
+<script async src="../../../../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>
