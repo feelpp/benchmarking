@@ -32,6 +32,7 @@ class TikzFigure(Figure):
             str: latex file content where containing multiple pgfplots figures, for each value of secondary axis
         """
         secondary_axis = self.transformation_strategy.dimensions["secondary_axis"]
+        anim_dim_values = df.index.get_level_values(secondary_axis).unique().values
         return self.parseSpecialCharacters(self.renderer.template.render(
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
@@ -39,8 +40,8 @@ class TikzFigure(Figure):
             variables = df.columns.to_list(),
             names = self.config.names or df.columns.to_list(),
             secondary_axis = self.config.secondary_axis,
-            anim_dimension_values = [str(dim) for dim in df.index.get_level_values(secondary_axis).unique().values],
-            csv_datasets = [df.xs(dim,level=secondary_axis,axis=0).to_csv(sep="\t") for dim in df.index.get_level_values(secondary_axis).unique().values],
+            anim_dimension_values = [str(dim) for dim in anim_dim_values],
+            csv_datasets = [df.xs(dim,level=secondary_axis,axis=0).to_csv(sep="\t") for dim in anim_dim_values],
             **args
         ))
 
