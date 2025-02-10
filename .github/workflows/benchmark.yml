@@ -22,6 +22,10 @@ on:
                 description: 'ID to upload the website to'
                 required: False
                 default: ""
+            input_data_path:
+                description: 'Pattern of input files to upload from Gaya to supercomputers'
+                required: False
+                default: ""
 
 jobs:
 
@@ -110,7 +114,15 @@ jobs:
                     ./tmp/benchmark_config.json
                     ./tmp/plots.json
                     ./tmp/machines/
-
+        -   name: Upload input data
+            uses: actions/upload-artifact@v4
+            if: github.event.client_payload.input_data_path != '' || github.event.inputs.input_data_path != ''
+            with:
+                name: extra-input-data
+                if-no-files-found: error
+                path: |
+                    ${{github.event.client_payload.input_data_path}}
+                    ${{github.event.inputs.input_data_path}}
     benchmark:
         needs: factory
         strategy:
@@ -131,6 +143,12 @@ jobs:
             with:
                 name: config-artifacts
                 path: ./tmp/
+        -   name: Download input data
+            uses: actions/download-artifact@v4
+            if: github.event.client_payload.input_data_path != '' || github.event.inputs.input_data_path != ''
+            with:
+                name: extra-input-data
+                path: $(jq -r '.input_dataset_base_dir' ./tmp/machines/${{matrix.machine}}.json)
         -   name: Setup machine and env
             run: ${{matrix.submit_command}}
         -   name: Execute benchmarks
