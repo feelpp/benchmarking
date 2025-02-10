@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator, RootModel
+from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
@@ -112,11 +112,19 @@ class ConfigFile(BaseModel):
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
+    input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = None
     plots: Optional[List[Plot]] = []
+
+    model_config = ConfigDict( extra='allow' )
+    def __getattr__(self, item):
+        if item in self.model_extra:
+            return self.model_extra[item]
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
+
 
     @field_validator("timeout",mode="before")
     @classmethod

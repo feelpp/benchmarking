@@ -40,6 +40,10 @@ class Setup:
         """
         self.reader.updateConfig(replace)
 
+    def setEnvVariables(self):
+        for env_var_name,env_var_value in self.reader.config.env_variables.items():
+            os.environ[env_var_name] = env_var_value
+
 
 class MachineSetup(Setup):
     """ Machine related setup"""
@@ -57,6 +61,7 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        self.setEnvVariables()
         self.setValidEnvironments(rfm_test)
         self.setTags(rfm_test)
         self.setPlatform(rfm_test,app_config)
@@ -132,13 +137,27 @@ class AppSetup(Setup):
         """
         self.cleanupDirectories()
         self.setExecutable(rfm_test,machine_config)
+        if machine_config.input_user_dir:
+            self.copyInputFileDependencies(machine_config)
+
+    def copyInputFileDependencies(self,machine_config):
+        """ If input_user_dir exists, copies all files from input_user_dir to input_dataset_base_dir preservign the structure"""
+        if not machine_config.input_user_dir:
+            return
+        print(f"=========COPYING FILES FROM {machine_config.input_user_dir} to {machine_config.input_dataset_base_dir}============")
+        for input_file in self.reader.config.input_file_dependencies.values():
+            print(f"\t {input_file}")
+            base_dirname = os.path.dirname(os.path.join(machine_config.input_dataset_base_dir, input_file))
+            if not os.path.exists(base_dirname):
+                os.makedirs( base_dirname )
+            shutil.copy2(
+                os.path.join(machine_config.input_user_dir, input_file),
+                os.path.join(machine_config.input_dataset_base_dir, input_file)
+            )
+        print("============================================================")
 
     def setupAfterInit(self, rfm_test):
         self.setEnvVariables()
-
-    def setEnvVariables(self):
-        for env_var_name,env_var_value in self.reader.config.env_variables.items():
-            os.environ[env_var_name] = env_var_value
 
     def cleanupDirectories(self):
         if os.path.exists(self.reader.config.scalability.directory):
