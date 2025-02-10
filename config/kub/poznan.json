@@ -13,48 +13,41 @@
                 "remote":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
                 "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
             },
-            "input_dir":"/input_data/",
+            "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/kub/cfg/:{{platforms.apptainer.input_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/kub/cfg/",
+            "input_dir":"{{machine.input_dataset_base_dir}}",
             "append_app_option":[]
         }
     },
     "input_file_dependencies":{
-        "case_cfg":"Poznan.cfg"
+        "case_cfg":"kub/cfg/Poznan.cfg"
     },
     "options": [
         "--config-file {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.case_cfg}}",
-        "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
+        "--cem.database.directory {{output_directory}}/{{instance}}/{{use_case_name}}",
+        "--directory {{output_directory}}/{{instance}}/{{use_case_name}}"
     ],
     "scalability": {
-        "directory": "{{output_directory}}/{{use_case_name}}/{{instance}}/cem/",
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}/cem/",
         "stages": [
             {
                 "name":"",
                 "filepath": "instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
                 "format": "json",
-                "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max"],
-                "units":{
-                    "*":"custom instance unit",
-                    "postprocess.exportOutputs":"exportOutputs unit special",
-                    "simulation.buildingExecuteStep":"buildingExecuteStep unit special"
-                }
+                "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max","execute.subtimers.*.timeElapsed.max"]
             },
             {
                 "name":"",
                 "filepath": "logs/timers.json",
                 "format": "json",
-                "variables_path":["*.timeElapsed.max","*.subtimers.updateForUse.subtimers.*.timeElapsed.max"],
-                "units":{
-                    "*":"custom unit"
-                }
+                "variables_path":["*.timeElapsed.max","*.subtimers.*.subtimers.*.timeElapsed.max"]
             }
         ]
     },
@@ -68,7 +61,10 @@
             "sequence": [
                 {"tasks":32, "exclusive_access":true},
                 {"tasks":64, "exclusive_access":true},
-                {"tasks":128, "exclusive_access":true}
+                {"tasks":128, "exclusive_access":true},
+                {"tasks":256, "exclusive_access":true},
+                {"tasks":384, "exclusive_access":true},
+                {"tasks":512, "exclusive_access":true}
             ]
         }
     ]

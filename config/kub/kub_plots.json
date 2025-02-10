@@ -2,13 +2,55 @@
 
     "plots": [
         {
+            "title": "General Relative performance",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "relative_performance",
+            "variables": [ "constructor", "simulation", "postprocess" ],
+            "names": ["Constructor", "Simulation", "PostProcess"],
+            "xaxis": {
+                "parameter": "resources.tasks",
+                "label": "Number of tasks"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "General Absolute performance",
+            "plot_types": [ "grouped_bar","stacked_bar"],
+            "transformation": "performance",
+            "variables": [ "constructor", "simulation", "postprocess" ],
+            "names": ["Constructor", "Simulation", "PostProcess"],
+            "xaxis": {
+                "parameter": "resources.tasks",
+                "label": "Number of tasks"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
+            "title": "General Speedup",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [ "constructor", "simulation","postprocess" ],
+            "names": ["Constructor", "Simulation", "PostProcess"],
+            "xaxis": {
+                "parameter": "resources.tasks",
+                "label": "Number of tasks"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            }
+        },
+        {
             "title": "Constructor UpdateForUse Absolute performance",
             "plot_types": [ "grouped_bar" ],
             "transformation": "performance",
             "variables": [
-                "constructor.subtimers.updateForUse.subtimers.SunModel.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.updateMeshBuilding.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.weather.timeElapsed.max",
-                "constructor.subtimers.updateForUse.subtimers.buildingMap.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisMeshInit.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisPartition.timeElapsed.max",
-                "constructor.subtimers.updateForUse.subtimers.initBuildingModels.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.scenarios.timeElapsed.max"
+                "constructor.updateForUse.SunModel", "constructor.updateForUse.updateMeshBuilding", "constructor.updateForUse.weather",
+                "constructor.updateForUse.buildingMap", "constructor.updateForUse.gisMeshInit", "constructor.updateForUse.gisPartition",
+                "constructor.updateForUse.initBuildingModels", "constructor.updateForUse.scenarios"
             ],
             "names": [
                 "SunModel", "updateMeshBuilding", "weather",
@@ -28,9 +70,9 @@
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
             "variables": [
-                "constructor.subtimers.updateForUse.subtimers.SunModel.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.updateMeshBuilding.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.weather.timeElapsed.max",
-                "constructor.subtimers.updateForUse.subtimers.buildingMap.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisMeshInit.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.gisPartition.timeElapsed.max",
-                "constructor.subtimers.updateForUse.subtimers.initBuildingModels.timeElapsed.max", "constructor.subtimers.updateForUse.subtimers.scenarios.timeElapsed.max"
+                "constructor.updateForUse.SunModel", "constructor.updateForUse.updateMeshBuilding", "constructor.updateForUse.weather",
+                "constructor.updateForUse.buildingMap", "constructor.updateForUse.gisMeshInit", "constructor.updateForUse.gisPartition",
+                "constructor.updateForUse.initBuildingModels", "constructor.updateForUse.scenarios"
             ],
             "names": [
                 "SunModel", "updateMeshBuilding", "weather",
@@ -49,10 +91,7 @@
             "title": "Simulation Absolute performance",
             "plot_types": [ "grouped_bar" ],
             "transformation": "performance",
-            "variables": [
-                "execute.subtimers.simulation.subtimers.solarMasks.timeElapsed.max",
-                "execute.subtimers.simulation.subtimers.buildingExecuteStep.timeElapsed.max"
-            ],
+            "variables": [ "simulation.solarMasks", "simulation.buildingExecuteStep" ],
             "names": ["Solar Masks","Building Execute Step"],
             "xaxis": {
                 "parameter": "resources.tasks",
@@ -66,91 +105,8 @@
             "title": "Simulation Speedup",
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
-            "variables": [
-                "execute.subtimers.simulation.subtimers.solarMasks.timeElapsed.max",
-                "execute.subtimers.simulation.subtimers.buildingExecuteStep.timeElapsed.max"
-            ],
-             "names": ["Solar Masks","Building Execute Step"],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Postprocess Absolute performance",
-            "plot_types": [ "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "execute.subtimers.postprocess.timeElapsed.max"
-            ],
-            "names": ["PostProcess"],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "Postprocess Speedup",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "variables": [
-                "execute.subtimers.postprocess.timeElapsed.max"
-            ],
-            "names": ["PostProcess"],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "General Absolute performance",
-            "plot_types": [ "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "constructor.timeElapsed.max", "execute.subtimers.simulation.timeElapsed.max","execute.subtimers.postprocess.timeElapsed.max"
-            ],
-            "names": ["Constructor", "Simulation", "PostProcess"],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "General Relative performance",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "relative_performance",
-            "variables": [
-                "constructor.timeElapsed.max", "execute.subtimers.simulation.timeElapsed.max","execute.subtimers.postprocess.timeElapsed.max"
-            ],
-            "names": ["Constructor", "Simulation", "PostProcess"],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            }
-        },
-        {
-            "title": "General Speedup",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "variables": [
-                "constructor.timeElapsed.max", "execute.subtimers.simulation.timeElapsed.max","execute.subtimers.postprocess.timeElapsed.max"
-            ],
-            "names": ["Constructor", "Simulation", "PostProcess"],
+            "variables": [ "simulation.solarMasks", "simulation.buildingExecuteStep" ],
+            "names": ["Solar Masks","Building Execute Step"],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
