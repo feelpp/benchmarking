@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator, RootModel
+from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
@@ -81,21 +81,46 @@ class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
     parameterized_descriptions_filepath: Optional[str] = None
 
+
+class Resources(BaseModel):
+    tasks: Optional[Union[str,int]] = None
+    tasks_per_node: Optional[Union[str,int]] = None
+    nodes: Optional[Union[str,int]] = None
+    memory: Optional[Union[str,int]] = 0
+    exclusive_access: Optional[Union[str,bool]] = True
+
+    @model_validator(mode="after")
+    def validateResources(self):
+        assert (
+            self.tasks and self.tasks_per_node and not self.nodes or
+            self.tasks_per_node and self.nodes and not self.tasks or
+            self.tasks and not self.tasks_per_node and not self.nodes
+        ), "Tasks - tasks_per_node - nodes combination is not supported"
+        return self
+
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
-    memory: Optional[str] = None
+    resources: Resources
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     output_directory:Optional[str] = ""
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
     outputs: List[AppOutput]
+    input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = None
     plots: Optional[List[Plot]] = []
+
+    model_config = ConfigDict( extra='allow' )
+    def __getattr__(self, item):
+        if item in self.model_extra:
+            return self.model_extra[item]
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
+
 
     @field_validator("timeout",mode="before")
     @classmethod

@@ -105,6 +105,21 @@ class TestSimpleStrategies:
         ignore_columns = ["optimal","half-optimal"]
         assert np.isclose(calculated_df.loc[:,[col for col in calculated_df.columns if col not in ignore_columns]],pivot.loc[pivot.index.min(),:] / pivot).all()
 
+
+    @pytest.mark.parametrize(("param_names","expected"),[
+        ("param1","param1"),
+        ("param1|non_existent","param1"),
+        ("non_existent|param2","param2"),
+        ("non_existent|param2|param3","param2"),
+        ("non_existent",None),
+        (0,None), (None,None), (False,None),
+    ])
+    def test_chooseColumn(self,param_names,expected):
+        df = pd.DataFrame(columns=["param1","param2","param3","param4"])
+        assert PerformanceStrategy.chooseColumn(param_names,df) == expected
+
+
+
 class TestComplexStrategies:
     plot_config = PlotConfigMocker(
         xaxis=AxisMocker(parameter="xaxis",label="x"),

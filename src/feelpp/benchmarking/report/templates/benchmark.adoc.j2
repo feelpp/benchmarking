@@ -21,18 +21,19 @@ include::ROOT:{{description_path}}[leveloffset=+1]
 * Total Tests: {{ session_info.num_cases }}
 * Failures: {{ session_info.num_failures }}
 
-{% if not empty %}
 
 |===
-{% for header in hash_params_headers %} | {% if header == 'partial_filepath' %} {% else %} {{ header }} {% endif %} {% endfor %}
+{% for header in hash_params_headers %} | {% if header == 'partial_filepath' or header == 'logs_filepath' %} {% else %} {{ header }} {% endif %} {% endfor %}
 
 {% for entry in flat_hash_param_map.values() %}
 {% for header in hash_params_headers %}
-  {% if header == 'partial_filepath' %} | xref:{{ entry.get(header, '') }}[Description] {% else %} | {{ entry.get(header, '') }} {% endif %}
+  {% if header == 'partial_filepath' %} | xref:{{ entry.get(header, '') }}[Description] {% elif header == 'logs_filepath' %} | xref:{{ entry.get(header, '') }}[Logs] {% else %} | {{ entry.get(header, '') }} {% endif %}
 {% endfor %}
 
 {% endfor %}
 |===
+
+{% if not empty %}
 
 {%include "figures.html.j2" %}
 

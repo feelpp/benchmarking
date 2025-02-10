@@ -35,7 +35,9 @@ site_configuration = {
                             'type': 'Singularity'
                         }
                     ],
-                    'sched_options': { 'use_nodes_option': True },
+                    'extras':{
+                        'memory_per_node':256
+                    }
                 }
             ]
         }
@@ -44,7 +46,11 @@ site_configuration = {
         {
             'name':'default',
             'modules': ["openmpi/4/gcc/latest"],
-            'target_systems':['discoverer:cn']
+            'target_systems':['discoverer:cn'],
+            'prepare_cmds': [
+                'source /etc/profile.d/modules.sh',
+                'export MODULEPATH=/opt/software/modulefiles:$MODULEPATH'
+            ]
         }
     ]
 }

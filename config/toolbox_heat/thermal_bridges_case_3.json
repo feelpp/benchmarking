@@ -1,39 +1,53 @@
 {
     "executable": "feelpp_toolbox_heat",
-    "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/ThermalBridgesENISO10211/Case3",
+    "output_directory": "{{machine.output_app_dir}}/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3",
     "use_case_name": "ThermalBridgesENISO10211",
     "timeout":"0-00:10:00",
-    "memory":"250G",
+    "resources":{
+        "tasks":"{{parameters.resources.tasks.value}}",
+        "exclusive_access":"{{parameters.resources.exclusive_access.value}}",
+        "memory":"{{parameters.memory.value}}"
+    },
+    //if input_user_dir exists
+    //  copy from input_user_dir to input_dataset_base_dir (for each test)
+    // Else:
+    //  pass
+    //  It assumes that input_dataset_base_dir is not empty. No copy is done, nor cleanup
+    //PATHS ARE RELATIVE TO input_user_dir it it exists, else relative to input_dataset_base_dir
+    //Copy is done before run (after setup)
+    // IF INPUT_USER_DIR, EXECUTE SERIAL
+    "input_file_dependencies":{
+        "solver_cfg":"{{use_case_name}}/{{parameters.solver.value}}.cfg",
+        "mesh_json":"{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json",
+        "mesh_hdf5":"{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.h5"
+    },
     "platforms": {
         "apptainer":{
             "image": {
                 "name":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
             },
-            "input_dir":"/input_data/",
+            "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
+            "input_dir":"{{machine.input_dataset_base_dir}}/",
             "append_app_option":[]
         }
     },
     "options": [
-        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg {{platforms.{{machine.platform}}.input_dir}}/{{parameters.solver.value}}.cfg",
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solver_cfg}}",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--heat.scalability-save=1",
         "--repository.append.np 0",
         "--case.discretization {{parameters.discretization.value}}",
-        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/partitioning/case3/{{parameters.meshes.value}}/case3_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh_json}}\" }'"
     ],
-    "env_variables":{
-        "OMP_NUM_THREADS":"1"
-    },
     "outputs": [
         {
             "filepath": "{{output_directory}}/{{instance}}/{{use_case_name}}/heat.measures/values.csv",
@@ -69,18 +83,39 @@
     },
     "parameters": [
         {
-            "name": "nb_tasks",
-            "sequence": [
-                {"tasks":128,"tasks_per_node":128,"exclusive_access":true}
+            "name": "resources",
+            "zip":[
+                {
+                    "name":"tasks",
+                    "sequence":[128,256,384,512,640,768,896,1024,1152,1280]
+                },
+                {
+                    "name":"exclusive_access",
+                    "repeat":{"value":true,"count":10}
+                }
             ]
         },
         {
-            "name": "meshes",
-            "sequence": ["M1"]
+            "name":"mesh",
+            "sequence":["M1","M2","M3"]
         },
         {
-            "name": "discretization",
-            "sequence": ["P1"]
+            "name":"memory",
+            "sequence":[200, 300, 3000],
+            "conditions":{
+                "200": [ { "discretization": ["P1","P2"], "mesh": ["M1","M2"] }, { "discretization": ["P2"], "mesh": ["M3"] } ],
+                "300": [ { "discretization": ["P1"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M1","M2"] } ],
+                "3000": [ { "discretization": ["P3"], "mesh": ["M3"] } ]
+            }
+        },
+        {
+            "name":"discretization",
+            "sequence":["P1","P2","P3"],
+            "conditions":{
+                "P1":[{ "resources.tasks":[128,256,384,512,640,768] }],
+                "P2":[{ "resources.tasks":[768,896,1024,1152,1280] }],
+                "P3":[{ "resources.tasks":[640,768,896,1024,1152,1280] }]
+            }
         },
         {
             "name": "solver",
