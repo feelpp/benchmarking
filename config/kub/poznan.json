@@ -10,6 +10,7 @@
     "platforms": {
         "apptainer":{
             "image": {
+                "remote":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
                 "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
             },
             "input_dir":"/input_data/",
@@ -25,11 +26,13 @@
             "append_app_option":[]
         }
     },
+    "input_file_dependencies":{
+        "case_cfg":"Poznan.cfg"
+    },
     "options": [
-        "--config-file {{platforms.{{machine.platform}}.input_dir}}/Poznan.cfg",
+        "--config-file {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.case_cfg}}",
         "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
     ],
-    "outputs": [],
     "scalability": {
         "directory": "{{output_directory}}/{{use_case_name}}/{{instance}}/cem/",
         "stages": [
