@@ -143,12 +143,15 @@ jobs:
             with:
                 name: config-artifacts
                 path: ./tmp/
+        -   name: Set input data path
+            id: extract_input_data_base_dir
+            run: echo "input_dataset_base_dir=$(jq -r '.input_dataset_base_dir' ./tmp/machines/${{matrix.machine}}.json)" >> $GITHUB_OUTPUT
         -   name: Download input data
             uses: actions/download-artifact@v4
             if: github.event.client_payload.input_data_path != '' || github.event.inputs.input_data_path != ''
             with:
                 name: extra-input-data
-                path: $(jq -r '.input_dataset_base_dir' ./tmp/machines/${{matrix.machine}}.json)
+                path: ${{ steps.extract_input_data_base_dir.outputs.input_dataset_base_dir }}
         -   name: Setup machine and env
             run: ${{matrix.submit_command}}
         -   name: Execute benchmarks
