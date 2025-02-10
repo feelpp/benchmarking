@@ -50,6 +50,7 @@ class Scalability(BaseModel):
 class Image(BaseModel):
     remote: Optional[str] = None
     name:str
+    pull_command: Optional[str] = None
 
     @field_validator("name", mode="after")
     @classmethod

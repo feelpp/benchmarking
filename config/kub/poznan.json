@@ -11,7 +11,8 @@
         "apptainer":{
             "image": {
                 "remote":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
-                "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
+                "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif",
+                "pull_command": "{{machine.containers.apptainer.executable}} pull -F {{platforms.apptainer.image.name}} {{platforms.apptainer.image.remote}}"
             },
             "input_dir":"/input_data",
             "options": [

@@ -46,13 +46,10 @@ def main_cli():
         #PULL IMAGES
         if not parser.args.dry_run:
             for platform_name, platform_field in app_reader.config.platforms.items():
-                if not platform_field.image or not platform_field.image.remote:
+                if not platform_field.image or not platform_field.image.remote or not platform_field.image.pull_command:
                     continue
 
-                if platform_name == "apptainer":
-                    subprocess.run(f"apptainer pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
-                elif platform_name == "docker":
-                    raise NotImplementedError("Pulling docker image is not yet implemented")
+                subprocess.run(platform_field.image.pull_command, shell=True)
 
 
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
