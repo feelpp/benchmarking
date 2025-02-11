@@ -40,7 +40,7 @@ def main_cli():
         repository.printHierarchy()
         repository.initModules(parser.args.modules_path, index_renderer, parent_id="catalog-index")
         repository.initOverviewModels(overview_config)
-        repository.createOverviews(parser.args.modules_path,overview_renderer)
+        # repository.createOverviews(parser.args.modules_path,overview_renderer)
 
 
     report_renderer = RendererFactory.create("benchmark")
