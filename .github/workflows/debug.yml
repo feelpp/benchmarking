@@ -1,0 +1,32 @@
+name: "Debug workflow"
+
+on:
+    push:
+        branches:
+        - '**'
+
+jobs:
+    local:
+        name: Gaya
+        runs-on: self-gaya
+        steps:
+        -   name: Upload Input Data
+            uses: actions/upload-artifact@v4
+            with:
+                name: input-data
+                path: /home/u2/cladellash/largedataexample/input_data/kub/
+
+
+    machine:
+        name: Discoverer
+        runs-on: self-discoverer
+        steps:
+        -   name: Download Input Data
+            uses: actions/download-artifact@v4
+            with:
+                name: input-data
+                path: /disco2fs/ehpc-dev-2024d05-047/vchabannes/inputdataset
+        -   name: Check input data
+            run: |
+                ls /disco2fs/ehpc-dev-2024d05-047/vchabannes/inputdataset/
+                ls /disco2fs/ehpc-dev-2024d05-047/vchabannes/inputdataset/kub/
