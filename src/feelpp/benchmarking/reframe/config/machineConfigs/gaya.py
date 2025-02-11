@@ -44,7 +44,7 @@ site_configuration = {
                 {
                     'name':'gpu',
                     'scheduler':'squeue',
-                    'launcher':'mpirun',
+                    'launcher':'mpiexec',
                     'max_jobs':4,
                     'access': ['--partition=gpu'],
                     'environs': ['default'],
@@ -52,6 +52,10 @@ site_configuration = {
                         {
                             'name': '_rfm_gpu',
                             'options': ['--gres=gpu:{num_gpus_per_node}'],
+                        },
+                        {
+                            'name':'launcher_options',
+                            'options':['-bind-to','none']
                         }
                     ],
                     'prepare_cmds': [
