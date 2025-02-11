@@ -1,4 +1,4 @@
-import os, json, subprocess
+import os, json, subprocess, shutil
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
@@ -74,6 +74,14 @@ def main_cli():
 
         website_config.save()
         #======================================================#
+
+        #============== CLEANUP TEMPORARY DIRS ===============#
+        if machine_reader.config.input_user_dir and app_reader.config.input_file_dependencies:
+            temp_input_path = os.path.join(machine_reader.config.input_dataset_base_dir,"tmp")
+            if not os.path.exists(temp_input_path):
+                raise FileNotFoundError("input_user_dir is defined on machine config but did not create any temporary directory")
+            shutil.rmtree(temp_input_path,ignore_errors = False)
+        #=========================================================#
 
     if parser.args.website:
         subprocess.run(["render-benchmarks","--config-file", website_config.config_filepath])
