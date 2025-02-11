@@ -96,7 +96,9 @@ class ConfigReader:
             config_paths if type(config_paths) == list else [config_paths],
             schema
         )
+        self.original_config = self.config.model_copy()
         self.processor = TemplateProcessor()
+        self.updateConfig()
 
     def load(self,config_paths, schema):
         """ Loads the JSON file and checks if the file exists.
@@ -129,3 +131,9 @@ class ConfigReader:
 
     def __repr__(self):
         return json.dumps(self.config.dict(), indent=4)
+
+    def resetConfig(self, other_cfg = None, other_cfg_prefix = ""):
+        self.config = self.original_config
+        if other_cfg:
+            self.updateConfig(self.processor.flattenDict(other_cfg,other_cfg_prefix))
+        self.updateConfig()

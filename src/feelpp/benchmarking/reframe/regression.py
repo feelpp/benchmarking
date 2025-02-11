@@ -1,5 +1,5 @@
 import reframe as rfm
-from feelpp.benchmarking.reframe.setup import ReframeSetup
+from feelpp.benchmarking.reframe.setup import ReframeSetup, FileHandler
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
 
@@ -13,8 +13,8 @@ class RegressionTest(ReframeSetup):
 
     @run_before('run')
     def initHandlers(self):
-        self.validation_handler = ValidationHandler(self.app_setup.reader.config.sanity)
-        self.scalability_handler = ScalabilityHandler(self.app_setup.reader.config.scalability)
+        self.validation_handler = ValidationHandler(self.app_reader.config.sanity)
+        self.scalability_handler = ScalabilityHandler(self.app_reader.config.scalability)
 
     @run_after('run')
     def executionGuard(self):
@@ -44,14 +44,15 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def copyParametrizedFiles(self):
-        self.app_setup.reset(self.machine_setup.reader.config)
-        self.app_setup.updateConfig({ "instance" : str(self.hashcode) })
-        self.app_setup.copyParametrizedDescriptionFile(self.report_dir_path,name=self.hashcode)
+        self.app_reader.resetConfig(self.machine_reader.config,"machine")
+        self.app_reader.updateConfig({ "instance" : str(self.hashcode) })
+
+        FileHandler.copyPartialFile(self.report_dir_path,self.hashcode,self.app_reader.config.additional_files.parameterized_descriptions_filepath)
 
     @run_before("cleanup")
     def removeDirectories(self):
-        if self.app_setup.reader.config.scalability.clean_directory:
-            self.app_setup.cleanupDirectories()
+        if self.app_reader.config.scalability.clean_directory:
+            FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
 
     @sanity_function
     def sanityCheck(self):
