@@ -43,6 +43,17 @@ def main_cli():
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
+        #PULL IMAGES
+        if not parser.args.dry_run:
+            for platform_name, platform_field in app_reader.config.platforms.items():
+                if not platform_field.image or not platform_field.image.remote or not machine_reader.config.containers[platform_name].executable:
+                    continue
+                if platform_name == "apptainer":
+                    subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
+                else:
+                    raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
+
+
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
 
         exit_code = subprocess.run(reframe_cmd, shell=True)
