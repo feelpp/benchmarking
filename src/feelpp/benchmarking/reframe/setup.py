@@ -13,16 +13,15 @@ import numpy as np
 
 class FileHandler:
     @staticmethod
-    def copyPartialFile(dir_path,name,filepath):
-        """ Copies the file from filepath to dir_path/name"""
-        if not filepath:
+    def copyPartialFile(dest_dirpath,name,src):
+        """ Copies the file from src to dest_dirpath/name"""
+        if not src:
             return
-        file_extension = filepath.split(".")[-1] if "." in filepath else None
-        outdir = os.path.join(dir_path,"partials")
-        if not os.path.exists(outdir):
-            os.mkdir(outdir)
+        if not os.path.exists(dest_dirpath):
+            os.mkdir(dest_dirpath)
+        file_extension = src.split(".")[-1] if "." in src else None
         filename = f"{name}.{file_extension}" if file_extension else name
-        shutil.copy2( filepath, os.path.join(outdir,filename) )
+        shutil.copy2( src, os.path.join(dest_dirpath,filename) )
 
     @staticmethod
     def cleanupDirectory(directory):
@@ -45,12 +44,18 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     #TODO: Find a way to avoid env variables
 
     #====================== INIT READERS ==================#
-    machine_reader = ConfigReader(str(os.environ.get("MACHINE_CONFIG_FILEPATH")),MachineConfig, dry_run = "--dry-run" in sys.argv)
-    machine_reader.updateConfig()
+    machine_reader = ConfigReader(
+        str(os.environ.get("MACHINE_CONFIG_FILEPATH")),
+        MachineConfig, "machine",
+        "--dry-run" in sys.argv
+    )
 
-    app_reader = ConfigReader(str(os.environ.get("APP_CONFIG_FILEPATH")),ConfigFile, dry_run = "--dry-run" in sys.argv)
-    app_reader.updateConfig(TemplateProcessor.flattenDict(machine_reader.config,"machine"))
-    app_reader.updateConfig()
+    app_reader = ConfigReader(
+        str(os.environ.get("APP_CONFIG_FILEPATH")),
+        ConfigFile, "app",
+        "--dry-run" in sys.argv,
+        [machine_reader]
+    )
     #======================================================#
 
     use_case = variable(str,value=app_reader.config.use_case_name)
@@ -84,7 +89,11 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_after('init')
     def copyStaticDescriptions(self):
-        FileHandler.copyPartialFile(self.report_dir_path,"description",self.app_reader.config.additional_files.description_filepath)
+        FileHandler.copyPartialFile(
+            os.path.join(self.report_dir_path,"partials"),
+            "description",
+            self.app_reader.config.additional_files.description_filepath
+        )
 
 
     @run_after('init')
@@ -107,7 +116,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_before('run')
     def updateSetups(self):
         """Updates the setup with testcase related values"""
-        self.app_reader.resetConfig(self.machine_reader.config,"machine")
+        self.app_reader.resetConfig([self.machine_reader])
         self.app_reader.updateConfig({ "instance" : str(self.hashcode) })
 
     @run_before('run')

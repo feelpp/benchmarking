@@ -83,7 +83,7 @@ class JSONWithCommentsDecoder(json.JSONDecoder):
 
 class ConfigReader:
     """ Class to load config files"""
-    def __init__(self, config_paths, schema, dry_run=False):
+    def __init__(self, config_paths, schema, name, dry_run=False, additional_readers = []):
         """
         Args:
             config_paths (str | list[str]) : Path to the config JSON file. If a list is provided, files will be merged.
@@ -96,8 +96,11 @@ class ConfigReader:
             config_paths if type(config_paths) == list else [config_paths],
             schema
         )
+        self.name = name
         self.original_config = self.config.model_copy()
         self.processor = TemplateProcessor()
+        for additional_reader in additional_readers:
+            self.updateConfig(TemplateProcessor.flattenDict(additional_reader.config,additional_reader.name))
         self.updateConfig()
 
     def load(self,config_paths, schema):
@@ -126,14 +129,14 @@ class ConfigReader:
                 If not provided, placeholders will be changed with own confing
         """
         if not flattened_replace:
-            flattened_replace = self.processor.flattenDict(self.config.model_dump())
+            flattened_replace = TemplateProcessor.flattenDict(self.config.model_dump())
         self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context)
 
     def __repr__(self):
         return json.dumps(self.config.dict(), indent=4)
 
-    def resetConfig(self, other_cfg = None, other_cfg_prefix = ""):
-        self.config = self.original_config
-        if other_cfg:
-            self.updateConfig(self.processor.flattenDict(other_cfg,other_cfg_prefix))
+    def resetConfig(self, additional_readers = []):
+        self.config = self.original_config.model_copy()
+        for additional_reader in additional_readers:
+            self.updateConfig(TemplateProcessor.flattenDict(additional_reader.config,additional_reader.name))
         self.updateConfig()

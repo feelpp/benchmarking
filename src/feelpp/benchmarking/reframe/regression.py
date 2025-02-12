@@ -44,10 +44,14 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def copyParametrizedFiles(self):
-        self.app_reader.resetConfig(self.machine_reader.config,"machine")
+        self.app_reader.resetConfig([self.machine_reader])
         self.app_reader.updateConfig({ "instance" : str(self.hashcode) })
 
-        FileHandler.copyPartialFile(self.report_dir_path,self.hashcode,self.app_reader.config.additional_files.parameterized_descriptions_filepath)
+        FileHandler.copyPartialFile(
+            os.path.join(self.report_dir_path,"partials"),
+            self.hashcode,
+            self.app_reader.config.additional_files.parameterized_descriptions_filepath
+        )
 
     @run_before("cleanup")
     def removeDirectories(self):
