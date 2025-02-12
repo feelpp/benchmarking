@@ -1,5 +1,6 @@
 import reframe as rfm
-from feelpp.benchmarking.reframe.setup import ReframeSetup, FileHandler
+from feelpp.benchmarking.reframe.setup import ReframeSetup
+from feelpp.benchmarking.reframe.config.configReader import FileHandler
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
 
@@ -44,10 +45,7 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def copyParametrizedFiles(self):
-        self.app_reader.resetConfig([self.machine_reader])
-        self.app_reader.updateConfig({ "instance" : str(self.hashcode) })
-
-        FileHandler.copyPartialFile(
+        FileHandler.copyFile(
             os.path.join(self.report_dir_path,"partials"),
             self.hashcode,
             self.app_reader.config.additional_files.parameterized_descriptions_filepath
@@ -57,6 +55,23 @@ class RegressionTest(ReframeSetup):
     def removeDirectories(self):
         if self.app_reader.config.scalability.clean_directory:
             FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
+        if self.machine_reader.config.input_user_dir and self.app_reader.config.input_file_dependencies:
+            print("REMOVING INPUT FILE DEPENDENCIES...")
+            for input_file in self.app_reader.config.input_file_dependencies.values():
+                os.remove(os.path.join(self.machine_reader.config.input_dataset_base_dir,input_file))
+                print(f"\t DELETED {input_file}")
+
+            #Delete empty dirs
+            for dirpath, dirnames, _ in os.walk(self.machine_reader.config.input_dataset_base_dir, topdown=False):
+                for dirname in dirnames:
+                    directory = os.path.join(dirpath,dirname)
+                    if not os.listdir(directory):
+                        os.rmdir(directory)
+                        print(f"Deleted empty directory: {directory}")
+
+            if not os.listdir(self.machine_reader.config.input_dataset_base_dir):
+                os.rmdir(self.machine_reader.config.input_dataset_base_dir)
+                print(f"Deleted empty directory: {self.machine_reader.config.input_dataset_base_dir}")
 
     @sanity_function
     def sanityCheck(self):

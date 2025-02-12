@@ -1,6 +1,6 @@
 import os, json, subprocess, shutil
 from feelpp.benchmarking.reframe.parser import Parser
-from feelpp.benchmarking.reframe.config.configReader import ConfigReader
+from feelpp.benchmarking.reframe.config.configReader import ConfigReader, FileHandler
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.reporting import WebsiteConfig
@@ -49,6 +49,13 @@ def main_cli():
         with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
             f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
 
+        #Copy use case description if existant
+        print("Copygin")
+        FileHandler.copyFile(
+            os.path.join(report_folder_path,"partials"),
+            "description",
+            app_reader.config.additional_files.description_filepath
+        )
 
         if parser.args.move_results:
             if not os.path.exists(parser.args.move_results):
@@ -72,14 +79,6 @@ def main_cli():
 
         website_config.save()
         #======================================================#
-
-        #============== CLEANUP TEMPORARY DIRS ===============#
-        if machine_reader.config.input_user_dir and app_reader.config.input_file_dependencies:
-            temp_input_path = os.path.join(machine_reader.config.input_dataset_base_dir,"tmp")
-            if not os.path.exists(temp_input_path):
-                raise FileNotFoundError("input_user_dir is defined on machine config but did not create any temporary directory")
-            shutil.rmtree(temp_input_path,ignore_errors = False)
-        #=========================================================#
 
     if parser.args.website:
         subprocess.run(["render-benchmarks","--config-file", website_config.config_filepath])

@@ -1,6 +1,6 @@
 
 from feelpp.benchmarking.reframe.parameters import ParameterHandler
-from feelpp.benchmarking.reframe.config.configReader import ConfigReader, TemplateProcessor
+from feelpp.benchmarking.reframe.config.configReader import ConfigReader, TemplateProcessor, FileHandler
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.resources import ResourceHandler
@@ -9,24 +9,7 @@ from feelpp.benchmarking.reframe.resources import ResourceHandler
 import reframe as rfm
 import os, re, shutil, sys
 import numpy as np
-
-
-class FileHandler:
-    @staticmethod
-    def copyPartialFile(dest_dirpath,name,src):
-        """ Copies the file from src to dest_dirpath/name"""
-        if not src:
-            return
-        if not os.path.exists(dest_dirpath):
-            os.mkdir(dest_dirpath)
-        file_extension = src.split(".")[-1] if "." in src else None
-        filename = f"{name}.{file_extension}" if file_extension else name
-        shutil.copy2( src, os.path.join(dest_dirpath,filename) )
-
-    @staticmethod
-    def cleanupDirectory(directory):
-        if os.path.exists(directory):
-            shutil.rmtree(directory)
+from copy import deepcopy
 
 
 @rfm.simple_test
@@ -74,32 +57,37 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             for env_var_name,env_var_value in cfg.env_variables.items():
                 os.environ[env_var_name] = env_var_value
 
+
     @run_after('init')
     def setValidEnvironments(self):
         self.valid_systems = [f"{self.machine_reader.config.machine}:{part}" for part in self.machine_reader.config.partitions]
         self.valid_prog_environs = self.machine_reader.config.prog_environments
-
-    @run_after('init')
-    def setPlatform(self):
-        platform = self.app_reader.config.platforms[self.machine_reader.config.platform]
-        if self.machine_reader.config.platform != "builtin":
-            self.container_platform.image = platform.image.name
-            self.container_platform.options = platform.options + self.machine_reader.config.containers[self.machine_reader.config.platform].options
-            self.container_platform.workdir = None
-
-    @run_after('init')
-    def copyStaticDescriptions(self):
-        FileHandler.copyPartialFile(
-            os.path.join(self.report_dir_path,"partials"),
-            "description",
-            self.app_reader.config.additional_files.description_filepath
-        )
 
 
     @run_after('init')
     def pruneParameterSpace(self):
         self.parameter_handler.pruneParameterSpace(self)
 
+
+    @run_after('setup')
+    def dispatchReaders(self):
+        """Creates independent readers for each test"""
+        self.machine_reader = deepcopy(self.machine_reader)
+        self.app_reader = deepcopy(self.app_reader)
+
+    @run_after('setup')
+    def setInstanceHash(self):
+        """Updates the setup with testcase related values"""
+        self.app_reader.updateConfig({ "instance" : str(self.hashcode) })
+        self.machine_reader.updateConfig({ "instance" : str(self.hashcode) })
+
+    @run_after('setup')
+    def setPlatform(self):
+        platform = self.app_reader.config.platforms[self.machine_reader.config.platform]
+        if self.machine_reader.config.platform != "builtin":
+            self.container_platform.image = platform.image.name
+            self.container_platform.options = platform.options + self.machine_reader.config.containers[self.machine_reader.config.platform].options
+            self.container_platform.workdir = None
 
     @run_after('setup')
     def pruneEnvironments(self):
@@ -112,26 +100,35 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             self.skip(f"Skiping: {self.current_environ.name } is not specified for partition {current_partition_shortname} : {self.machine_reader.config.environment_map[current_partition_shortname]}")
 
 
-
-    @run_before('run')
-    def updateSetups(self):
-        """Updates the setup with testcase related values"""
-        self.app_reader.resetConfig([self.machine_reader])
-        self.app_reader.updateConfig({ "instance" : str(self.hashcode) })
-
     @run_before('run')
     def setupParameters(self):
         for param_name,subparameters in self.parameter_handler.nested_parameter_keys.items():
             value = getattr(self,param_name)
             self.app_reader.updateConfig({ f"parameters.{param_name}.value":str(value) })
+            self.machine_reader.updateConfig({ f"parameters.{param_name}.value":str(value) })
             for subparameter in subparameters:
                 self.app_reader.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
+                self.machine_reader.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
+
+    @run_before('run')
+    def copyInputFileDependencies(self):
+        """ If input_user_dir exists, copies all files from input_user_dir to input_dataset_base_dir preservign the structure"""
+        if not self.machine_reader.config.input_user_dir or not self.app_reader.config.input_file_dependencies:
+            return
+
+        print(f"==========================================================")
+        print(f"     COPYING FILES FROM {self.machine_reader.config.input_user_dir} to {self.machine_reader.config.input_dataset_base_dir}   ")
+        for input_file in self.app_reader.config.input_file_dependencies.values():
+            print(f"\t {input_file}")
+            source = os.path.join(self.machine_reader.config.input_user_dir, input_file)
+            destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_file)
+            FileHandler.copyFile(os.path.dirname(destination),os.path.basename(destination),source)
+        print("============================================================")
+
 
     @run_before('run')
     def setResources(self):
         ResourceHandler.setResources(self.app_reader.config.resources, self)
-
-        self.job.options += ['--threads-per-core=1']
         self.num_cpus_per_task = 1
 
     @run_before('run')
@@ -139,9 +136,10 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
 
     @run_before('run')
-    def setupBeforeRun(self):
+    def setSchedOptions(self):
         """ Sets the necessary pre-run configurations"""
         self.job.launcher.options += self.current_partition.get_resource('launcher_options')
+        self.job.options += ['--threads-per-core=1']
 
     @run_before('run')
     def setExecutable(self):
@@ -151,28 +149,4 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         else:
             self.container_platform.command = f"{self.app_reader.config.executable} {' '.join(self.app_reader.config.options)}"
 
-
-
-    # @run_after('init')
-    # def copyInputFileDependencies(self):
-    #     """ If input_user_dir exists, copies all files from input_user_dir to input_dataset_base_dir preservign the structure"""
-    #     if not self.machine_reader.config.input_user_dir:
-    #         return
-    #     original_input_dataset_base_dir = self.machine_reader.config.input_dataset_base_dir
-    #     self.machine_reader.config.input_dataset_base_dir = os.path.join(original_input_dataset_base_dir,"tmp")
-    #     print(f"=========COPYING FILES FROM {self.machine_reader.config.input_user_dir} to {self.machine_reader.config.input_dataset_base_dir}============")
-    #     for input_file in self.app_reader.config.input_file_dependencies.values():
-    #         print(f"\t {input_file}")
-    #         source = os.path.join(self.machine_reader.config.input_user_dir, input_file)
-    #         destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_file)
-    #         if os.path.exists(destination):
-    #             print(f"{destination} exists, {input_file} will not be copied...")
-    #             continue
-
-    #         base_dirname = os.path.dirname(destination)
-    #         if not os.path.exists(base_dirname):
-    #             os.makedirs( base_dirname )
-
-    #         shutil.copy2(source,destination)
-    #     print("============================================================")
 

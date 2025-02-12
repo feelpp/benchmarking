@@ -1,4 +1,4 @@
-import json, os, re
+import json, os, re, shutil
 from pydantic import BaseModel
 
 class TemplateProcessor:
@@ -81,6 +81,26 @@ class JSONWithCommentsDecoder(json.JSONDecoder):
         s = '\n'.join(l if not l.lstrip().startswith('//') else '' for l in s.split('\n'))
         return super().decode(s)
 
+class FileHandler:
+    @staticmethod
+    def copyFile(dest_dirpath,name,src):
+        """ Copies the file from src to dest_dirpath/name"""
+        if not src:
+            return
+        if not os.path.exists(dest_dirpath):
+            os.makedirs(dest_dirpath)
+        file_extension = src.split(".")[-1] if "." in src else None
+        filename = f"{name}.{file_extension}" if file_extension else name
+        shutil.copy2( src, os.path.join(dest_dirpath,filename) )
+
+    @staticmethod
+    def cleanupDirectory(directory):
+        if os.path.exists(directory):
+            shutil.rmtree(directory)
+        else:
+            print(f"{directory} does not exist")
+
+
 class ConfigReader:
     """ Class to load config files"""
     def __init__(self, config_paths, schema, name, dry_run=False, additional_readers = []):
@@ -92,10 +112,11 @@ class ConfigReader:
         self.context = {
             "dry_run":dry_run
         }
-        self.config = self.load(
-            config_paths if type(config_paths) == list else [config_paths],
-            schema
-        )
+        if config_paths:
+            self.config = self.load(
+                config_paths if type(config_paths) == list else [config_paths],
+                schema
+            )
         self.name = name
         self.original_config = self.config.model_copy()
         self.processor = TemplateProcessor()
@@ -111,7 +132,6 @@ class ConfigReader:
         Returns:
             Schema : parsed and validated configuration
         """
-
         self.config = {}
         for config in config_paths:
             assert os.path.exists(os.path.abspath(config)), f"Cannot find config file {config}"
