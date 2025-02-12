@@ -101,6 +101,8 @@ class MachineConfig(BaseModel):
         if self.input_user_dir:
             assert self.input_dataset_base_dir, "input_dataset_base_dir must be provided with input_user_dir"
             assert os.path.exists(self.input_user_dir) and os.path.isdir(self.input_user_dir), "Input User dir does not exist"
+            if self.execution_policy == "async":
+                assert "{{instance}}" in self.input_dataset_base_dir, "When in async mode, the input_dataset_base_dir must contain the {{instance}} keyword for differentiating data between tests."
         return self
 
 class ExecutionConfigFile(RootModel):
