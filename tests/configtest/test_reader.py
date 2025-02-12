@@ -194,7 +194,7 @@ class TestConfigReader:
                 f.write(config)
             files.append(temp)
 
-        config_reader = ConfigReader([f.name for f in files], MockConfigFile, dry_run)
+        config_reader = ConfigReader([f.name for f in files], MockConfigFile, "mock",dry_run)
         for f in files:
             f.close()
 

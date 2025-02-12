@@ -1,4 +1,4 @@
-import reframe.core.runtime as rt
+import reframe as rfm
 import numpy as np
 
 class Parameter:
@@ -113,3 +113,54 @@ class ParameterFactory:
             return ZipParameter(param_config)
         else:
             raise ValueError(f"Unkown parameter type {param_config.range.mode}")
+
+
+
+class ParameterHandler:
+    def __init__(self,parameters_config):
+        self.parameters_config = parameters_config
+        self.parameters = {}
+        self.nested_parameter_keys = {}
+
+        for param_config in parameters_config:
+            if not param_config.active:
+                continue
+
+            if param_config.mode=="zip":
+                self.nested_parameter_keys[param_config.name] = [subparam.name for subparam in param_config.zip]
+            elif param_config.mode=="sequence" and all(type(s)==dict and s.keys() for s in param_config.sequence):
+                self.nested_parameter_keys[param_config.name] = list(param_config.sequence[0].keys())
+            else:
+                self.nested_parameter_keys[param_config.name] = []
+            param_values = list(ParameterFactory.create(param_config).parametrize())
+            self.parameters[param_config.name] = param_values
+
+    def pruneParameterSpace(self,rfm_test):
+        for param_config in self.parameters_config:
+            if not param_config.conditions:
+                continue
+
+            active_parameter_value = str(getattr(rfm_test,param_config.name))
+            filters_list = param_config.conditions.get(active_parameter_value)
+            if not filters_list:
+                continue
+
+            active_filter_values = {}
+            for filters in filters_list:
+                for filter_name in filters.keys():
+                    param_path = filter_name.split(".")
+                    active_filter_values[filter_name] = getattr(rfm_test,param_path[0])
+                    if len(param_path) > 1:
+                        for p in param_path[1:]:
+                            active_filter_values[filter_name] = active_filter_values[filter_name].get(p)
+
+            is_valid = any(
+                all(
+                    active_filter_values[filter_key] in filter_values
+                    for filter_key, filter_values in filters.items()
+                )
+                for filters in filters_list
+            )
+
+            rfm_test.skip_if(not is_valid , f"Invalid parameter combination ({active_filter_values}) for condition list {param_config.name}={active_parameter_value} condition list ({filters_list})", )
+
