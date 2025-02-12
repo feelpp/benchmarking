@@ -77,7 +77,20 @@ class AtomicReport:
         for run in data["runs"]:
             for testcase in run["testcases"]:
                 hash = testcase["hash"]
-                hash_param_map[hash] = {"check_params":testcase["check_params"]}
+                #Hotfix for adding actual resources:
+                check_params = testcase["check_params"]
+                check_vars = testcase["check_vars"]
+                #add test status
+                check_params["result"] = testcase.get("result")
+                #Add test total run time
+                check_params["time_total"] = testcase.get("time_total")
+                for resource in ["num_nodes","num_tasks_per_node","num_tasks"]:
+                    if resource not in check_params:
+                        check_params[resource] = check_vars.get(resource)
+
+                hash_param_map[hash] = {"check_params":check_params}
+
+
 
         return hash_param_map
 
@@ -112,13 +125,32 @@ class AtomicReport:
                 os.rename(os.path.join(self.partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
                 self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),description_file_basename)
 
-
-    def findUseCase(self,data):
-        """ Find the test case of the report
+    def createLogReports(self,base_dir, renderer):
+        """ Render the reframe logs (output, error, script) for each testcase
+        Args:
+            base_dir (str): The base directory where the logs will be created
+            renderer (Renderer): The renderer to use
         """
-        use_case = data["runs"][0]["testcases"][0]["check_vars"]["use_case"]
-        assert all( testcase["check_vars"]["use_case"] == use_case for run in data["runs"] for testcase in run["testcases"]), "useCase differ from one testcase to another"
-        return use_case
+        for run in self.runs:
+            for testcase in run["testcases"]:
+                check_vars = testcase["check_vars"]
+                if all(var not in check_vars for var in ["script","output_log","error_log"]):
+                    continue
+
+                logs_filepath = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase['hash']}.adoc").replace("-","_").replace(":","_").replace("+","Z")
+                if not os.path.exists(os.path.dirname(logs_filepath)):
+                    os.makedirs(os.path.dirname(logs_filepath))
+
+                self.hash_param_map[testcase["hash"]]["logs_filepath"] = os.path.relpath(logs_filepath,start="./docs/modules/ROOT/pages")
+                renderer.render(
+                    logs_filepath,
+                    dict(
+                        script = check_vars.get("script"),
+                        output_log = check_vars.get("output_log"),
+                        error_log = check_vars.get("error_log")
+                    )
+                )
+
 
     def filename(self):
         """ Build the filename for the report
@@ -144,6 +176,8 @@ class AtomicReport:
             parsed_hashmap[hash] = self.flatten(v["check_params"])
             if "partial_filepath" in v:
                 parsed_hashmap[hash]["partial_filepath"] = v["partial_filepath"]
+            if "logs_filepath" in v:
+                parsed_hashmap[hash]["logs_filepath"] = v["logs_filepath"]
 
         headers = []
         for entry in parsed_hashmap.values():
@@ -161,9 +195,8 @@ class AtomicReport:
         """
         hash_params_headers, flat_hash_params = self.parseHashMap()
 
-        model=AtomicReportModel( self.runs )
         view=AtomicReportView( self.plots_config )
-        controller=AtomicReportController(model,view)
+        controller=AtomicReportController(self.model,view)
 
         renderer.render(
             f"{base_dir}/{self.filename()}.adoc",
@@ -177,9 +210,7 @@ class AtomicReport:
                 flat_hash_param_map = flat_hash_params,
                 hash_params_headers = hash_params_headers,
                 description_path = self.description_path,
-                figures = controller.generateData("html"),
-                figure_csvs = controller.generateData("csv"),
-                figure_pgfs = controller.generateData("pgf")
+                figures = controller.generateAll()
             )
         )
 

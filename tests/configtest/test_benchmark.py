@@ -1,6 +1,6 @@
 """ Tests for the configSchemas module """
 import pytest
-from feelpp.benchmarking.reframe.config.configSchemas import Sanity,CustomVariable,Scalability,Image,Platform,AdditionalFiles,ConfigFile
+from feelpp.benchmarking.reframe.config.configSchemas import Sanity,CustomVariable,Scalability,Resources,Image,Platform,AdditionalFiles,ConfigFile
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 from pydantic import ValidationError
@@ -56,7 +56,8 @@ class TestConfigFile:
         sanity=Sanity(error=[],success=[]),
         parameters=[],
         platforms = {},
-        plots= []
+        plots= [],
+        resources = Resources(tasks=1)
     ):
         return ConfigFile(
             executable=executable,
@@ -68,7 +69,8 @@ class TestConfigFile:
             sanity=sanity,
             parameters=parameters,
             platforms=platforms,
-            plots=plots
+            plots=plots,
+            resources=resources
         )
 
     @pytest.mark.parametrize(("timeout","raises"),[

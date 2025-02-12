@@ -43,7 +43,7 @@ def main_cli():
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
-        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout, app_reader.config.memory)
+        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
 
         exit_code = subprocess.run(reframe_cmd, shell=True)
 

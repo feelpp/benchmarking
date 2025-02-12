@@ -13,6 +13,41 @@ class TransformationStrategy:
         """ abstract method for transforming a dataframe depending on the strategy"""
         raise NotImplementedError("Not to be called directly.")
 
+    @staticmethod
+    def chooseColumn(value,df):
+        """ Chooses a column from a list of possible columns splitted by '|' from a dataframe, returns the first occurence in the dataframe.
+            IF the value is null (0, False, None, ...) or not found, returns None
+        Args:
+            value (str): The string containing the possible columns, splitted by '|'. e.g. "column1|column2|column3"
+            df (pd.DataFrame): The dataframe where the columns are searched
+        Returns:
+            str: The first column found in the dataframe, or None
+        """
+        if not value:
+            return None
+
+        possible_columns = value.split("|")
+        for column in possible_columns:
+            if column in df.columns:
+                return column
+
+        return None
+
+    def updateDimensions(self,df):
+        dimensions = {}
+        for k,v in self.dimensions.items():
+            if v:
+                dimensions[k] = self.chooseColumn(v,df)
+            else:
+                dimensions[k] = v
+        self.dimensions = dimensions
+        return self.dimensions
+
+    def updateAggregations(self,df):
+        for aggregation in self.aggregations:
+            aggregation.column = self.chooseColumn(aggregation.column,df)
+        return self.aggregations
+
 
 class PerformanceStrategy(TransformationStrategy):
     """ Strategy that pivots a dataframe on given dimensions"""
@@ -28,6 +63,8 @@ class PerformanceStrategy(TransformationStrategy):
         Returns:
             pd.DataFrame: The pivoted and filtered dataframe (can be multiindex)
         """
+        self.updateDimensions(df)
+
         index = []
         if self.dimensions["secondary_axis"] and self.dimensions["secondary_axis"] in df.columns:
             index.append(self.dimensions["secondary_axis"])
@@ -37,6 +74,7 @@ class PerformanceStrategy(TransformationStrategy):
         pivot = df[df["performance_variable"].isin(self.variables or df["performance_variable"].unique())]
 
         if self.aggregations:
+            self.updateAggregations(df)
             agg_columns = index + [self.dimensions["color_axis"]] + [a.column for a in self.aggregations if a.column in df.columns]
 
             for aggregation in self.aggregations:

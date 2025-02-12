@@ -50,7 +50,8 @@ class RendererFactory:
         templates = {
             "index" : "index.adoc.j2",
             "benchmark" : "benchmark.adoc.j2",
-            "atomic_overview" : "atomicOverview.adoc.j2"
+            "atomic_overview" : "atomicOverview.adoc.j2",
+            "logs" : "logs.adoc.j2"
         }
         try:
             return Renderer(base, templates[renderer_type])

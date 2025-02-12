@@ -3,20 +3,20 @@
 == Installation
 
 1. Clone the Repository
-[source,cmd]
+[source,bash]
 ----
 git clone https://github.com/feelpp/benchmarking.git
 ----
 
 2. Use a python virtual environment [Optional]
-[source,cmd]
+[source,bash]
 ----
 python3 -m venv .venv
 source .venv/bin/activate
 ----
 
 3. Build the project
-[source,cmd]
+[source,bash]
 ----
 pip3 wheel --no-deps --wheel-dir dist .
 ----
@@ -24,7 +24,7 @@ pip3 wheel --no-deps --wheel-dir dist .
 4. Install requirements
 
 This will install necessary dependencies as well as the built project from the previous step.
-[source,cmd]
+[source,bash]
 ----
 python3 -m pip install -r requirements.txt
 ----
@@ -38,7 +38,7 @@ This Feel++ Benchmarking "Hello World" application will compute the sum of an ar
 Additionally, the app will measure the time taken to perform the partial sum, and will save it under a _scalability.json_ file.
 
 The executable is already provided as _tests/data/parallelSum_. You can update it and recompile it for a specific config as needed.
-[source,cmd]
+[source,bash]
 ----
 mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
 ----
@@ -51,7 +51,7 @@ mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
 Configuration files might require some changes for specific configurations depending on the system you are running the framework.
 
 Finally, to benchmark the test application, generate the reports and plot the figures, run
-[source,cmd]
+[source,bash]
 ----
 execute-benchmark --machine-config config/machines/local.json \
                     --benchmark-config config/test_parallelSum/parallelSum.json \
