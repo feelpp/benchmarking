@@ -1,11 +1,12 @@
-from feelpp.benchmarking.report.renderer import Renderer
+from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
 from feelpp.benchmarking.dashboardRenderer.repository import ComponentRepository
 from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
 
+import os
 
-class DashboardRenderer:
+class DashboardOrchestrator:
     """ Serves as a repository orchestrator"""
-    def __init__(self,components_config,export_base_path):
+    def __init__(self,components_config):
 
         self.component_repositories = [
             ComponentRepository(repository_id, components)
@@ -13,7 +14,6 @@ class DashboardRenderer:
         ]
 
         self.initRepositoryViews(components_config.views,components_config.component_map)
-        self.export_base_path = export_base_path
 
     def initRepositoryViews(self,views,component_map):
         tree_order = component_map.component_order

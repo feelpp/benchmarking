@@ -1,5 +1,5 @@
 import pytest
-from feelpp.benchmarking.dashboardRenderer.dashboardRenderer import DashboardRenderer
+from feelpp.benchmarking.dashboardRenderer.dashboardOrchestrator import DashboardOrchestrator
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema
 
 class TestDashboardRenderer:
@@ -61,7 +61,7 @@ class TestDashboardRenderer:
 
 
     def test_init(self):
-        dashboard = DashboardRenderer(DashboardSchema(**self.components_config), export_base_path="")
+        dashboard = DashboardOrchestrator(DashboardSchema(**self.components_config))
 
         for repo_id in ["a","b","c","d"]:
             assert all(self.components_config["views"].get(repo_id,{}).keys() == dashboard.getComponent(comp.id).views.keys() for comp in dashboard.getRepository(repo_id).data)

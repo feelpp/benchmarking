@@ -1,7 +1,8 @@
 from jinja2 import Environment, FileSystemLoader
 import os
+from pathlib import Path
 
-class Renderer:
+class TemplateRenderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
 
     def __init__(self, template_path, template_filename):
@@ -43,19 +44,17 @@ class Renderer:
             s.append(chr(65 + r))
         return "".join(reversed(s))
 
-class RendererFactory:
-    @staticmethod
-    def create(renderer_type):
-        base = "./src/feelpp/benchmarking/report/templates/"
-        templates = {
-            "index" : "index.adoc.j2",
-            "benchmark" : "benchmark.adoc.j2",
-            "atomic_overview" : "atomicOverview.adoc.j2",
-            "logs" : "logs.adoc.j2"
-        }
-        try:
-            return Renderer(base, templates[renderer_type])
-        except KeyError:
-            raise NotImplementedError(
-                f"'{renderer_type}' not recognized. Valid options are: {', '.join(templates.keys())}."
+class TemplateRendererFactory:
+    TEMPLATES = {
+        "home": "home.adoc.j2",
+        "index": "index.adoc.j2"
+    }
+
+    @classmethod
+    def create(cls, renderer_type: str) -> TemplateRenderer:
+        if renderer_type not in cls.TEMPLATES:
+            raise ValueError(
+                f"Renderer type '{renderer_type}' not recognized. Valid options are: {', '.join(cls.TEMPLATES.keys())}."
             )
+        template_dir = str(Path(__file__).resolve().parent)
+        return TemplateRenderer(template_dir, cls.TEMPLATES[renderer_type])

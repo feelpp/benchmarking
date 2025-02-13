@@ -34,6 +34,7 @@ class Repository:
         return id in [x.id for x in self.data]
 
     def __getitem__(self,index):
+        """ [] overload returning the item in data in position 'index' """
         return self.data[index]
 
 
