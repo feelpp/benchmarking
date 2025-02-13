@@ -1,5 +1,6 @@
 import os
 from feelpp.benchmarking.dashboardRenderer.component import Component
+from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
 
 class Repository:
     """ Base class for repositories.
@@ -28,6 +29,10 @@ class Repository:
         """ Get an item by its id """
         return next(filter(lambda x: x.id == id, self.data))
 
+    def has(self, id):
+        """ Return true if the component with id exists in data """
+        return id in [x.id for x in self.data]
+
     def __getitem__(self,index):
         return self.data[index]
 
@@ -39,25 +44,34 @@ class ComponentRepository(Repository):
         for component_id, component_metadata in components.items():
             self.add(Component(component_id, component_metadata))
 
-    def initViews(self,view_order,tree, other_repositories):
-        repo_lookup = {rep.id : rep for rep in other_repositories}
+    def initViews(self, view_order, tree, other_repositories):
+        repo_lookup = {rep.id: rep for rep in other_repositories}
 
-        def processViewTree(subtree, level_index):
+        def processViewTree(subtree, level_index, unwrap_first=False):
             if level_index >= len(view_order) or not subtree:
                 return {}
 
             current_repo = repo_lookup[view_order[level_index]]
-            view_structure = {}
 
+            grouped_subtree = {}
             for view_component_id, sub_tree in subtree.items():
-                view_component = current_repo.get(view_component_id)
-                view_structure[view_component] = processViewTree(sub_tree, level_index + 1)
+                grouped_subtree.setdefault(view_order[level_index], {})[view_component_id] = sub_tree
 
-            return view_structure
+            result = {}
+            for component_type, components in grouped_subtree.items():
+                level_result = {
+                    current_repo.get(comp_id): processViewTree(sub_tree, level_index + 1)
+                    for comp_id, sub_tree in components.items()
+                }
+                if unwrap_first:
+                    result.update(level_result)
+                else:
+                    result.update({component_type:level_result})
+            return result
 
         for component in self.data:
             component_subtree = tree.get(component.id, {})
-            component.views[view_order[1]] = processViewTree(component_subtree, 1)
+            component.views = TreeUtils.mergeDicts(component.views,{view_order[1]:processViewTree(component_subtree, 1, unwrap_first=True)})
 
     # def renderSelf(self, base_dir, renderer, self_tag_id, parent_id = "catalog-index"):
     #     """ Initialize the module for repository.
