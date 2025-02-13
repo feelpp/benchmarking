@@ -1,0 +1,59 @@
+\documentclass[12pt]{article}
+
+\usepackage{pgf-pie}  % For pie charts
+\usepackage{currfile} % Required for getting the current file name
+\usepackage{tikz}     % Required for drawing graphics
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+
+\makeatletter
+\newcommand\resetstackedplots{
+\makeatletter
+\pgfplots@stacked@isfirstplottrue
+\makeatother
+}
+
+\begin{document}
+
+{% for df in csv_datasets %}
+\pgfplotstableread{
+{{df}}
+}\data{{loop.index | inttouniquestr }}
+{% endfor %}
+
+
+\begin{figure}
+
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=\textwidth, height=0.6172\textwidth,
+      xlabel={ {{xaxis.label}} }, ylabel={ {{yaxis.label}} },
+      xticklabels from table={\dataA}{{'{'}}{{xaxis.parameter}}{{'}'}},
+      xtick=data, xtick align=outside,
+      ymajorgrids=true, yminorgrids=true,
+      bar width=7pt,
+      ybar stacked,
+      legend style={at={(0.5,-0.1)},anchor=north}
+    ]
+
+    {% for df in csv_datasets %}
+      {% set i = loop.index %}
+      {% if i > 1 %}
+      \resetstackedplots
+      {% endif %}
+      {% for var,name,color in zip(variables,names, colors) %}
+      \addplot+[ybar, bar width=0.2,point meta=y,draw=black,fill={{color}}{% if i > 1 %}, forget plot{% endif %} ] table [x expr=\coordindex+0.25*{{i}}, y={{ var }}] {\data{{i | inttouniquestr}}} ;
+      {% if i == 1%}
+      \addlegendentry{ {{name}} }
+      {% endif %}
+      {% endfor %}
+    {% endfor %}
+
+    \end{axis}
+  \end{tikzpicture}
+
+  \caption{ {{caption}} }
+\end{figure}
+
+\end{document}

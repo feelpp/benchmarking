@@ -43,6 +43,18 @@ def main_cli():
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
 
+        #PULL IMAGES
+        if not parser.args.dry_run:
+            for platform_name, platform_field in app_reader.config.platforms.items():
+                if not platform_field.image or not platform_field.image.remote:
+                    continue
+
+                if platform_name == "apptainer":
+                    subprocess.run(f"apptainer pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
+                elif platform_name == "docker":
+                    raise NotImplementedError("Pulling docker image is not yet implemented")
+
+
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
 
         exit_code = subprocess.run(reframe_cmd, shell=True)

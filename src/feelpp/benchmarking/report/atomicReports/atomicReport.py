@@ -82,6 +82,8 @@ class AtomicReport:
                 check_vars = testcase["check_vars"]
                 #add test status
                 check_params["result"] = testcase.get("result")
+                #Add test total run time
+                check_params["time_total"] = testcase.get("time_total")
                 for resource in ["num_nodes","num_tasks_per_node","num_tasks"]:
                     if resource not in check_params:
                         check_params[resource] = check_vars.get(resource)
@@ -193,9 +195,8 @@ class AtomicReport:
         """
         hash_params_headers, flat_hash_params = self.parseHashMap()
 
-        model=AtomicReportModel( self.runs )
         view=AtomicReportView( self.plots_config )
-        controller=AtomicReportController(model,view)
+        controller=AtomicReportController(self.model,view)
 
         renderer.render(
             f"{base_dir}/{self.filename()}.adoc",
@@ -209,9 +210,7 @@ class AtomicReport:
                 flat_hash_param_map = flat_hash_params,
                 hash_params_headers = hash_params_headers,
                 description_path = self.description_path,
-                figures = controller.generateData("html"),
-                figure_csvs = controller.generateData("csv"),
-                figure_pgfs = controller.generateData("pgf")
+                figures = controller.generateAll()
             )
         )
 

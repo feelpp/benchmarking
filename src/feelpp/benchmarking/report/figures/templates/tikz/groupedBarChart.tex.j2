@@ -1,0 +1,55 @@
+\documentclass[12pt]{article}
+
+\usepackage{pgf-pie}  % For pie charts
+\usepackage{currfile} % Required for getting the current file name
+\usepackage{tikz}     % Required for drawing graphics
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+\newcommand{\plot}[2][]{
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=\textwidth, height=0.6172\textwidth,
+      xlabel={ {{xaxis.label}} }, ylabel={ {{yaxis.label}} },
+      xtick=data, xtick align=outside,
+      xticklabels from table={{'{#2}'}}{{'{'}}{{xaxis.parameter}}{{'}'}},
+      ymajorgrids=true, yminorgrids=true,
+      bar width=7pt,
+      cycle list name=color list,
+      ybar,
+      legend style={at={(0.5,-0.1)},anchor=north}
+    ]
+    {% for var,name in zip(variables,names) %}
+      \addplot table [x expr=\coordindex, y={{ var }}] {{'{#2}'}} ;
+      \addlegendentry{ {{name}} }
+    {% endfor %}
+
+    \end{axis}
+  \end{tikzpicture}
+}
+
+
+{% for df in csv_datasets %}
+\pgfplotstableread{
+{{df}}
+}\data{{loop.index | inttouniquestr }}
+{% endfor %}
+
+
+\begin{figure}
+
+{% if anim_dimension_values %}
+  {% for dim in anim_dimension_values %}
+  \plot{\data{{ loop.index | inttouniquestr }}}
+  \caption{ {{secondary_axis.label}}={{dim}} }
+  {% endfor %}
+{% else %}
+  \plot{\data{{1 | inttouniquestr }}}
+{% endif %}
+\caption{ {{caption}} }
+\end{figure}
+
+\end{document}

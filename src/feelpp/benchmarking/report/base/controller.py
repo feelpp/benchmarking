@@ -1,4 +1,5 @@
-from feelpp.benchmarking.report.dataGenerationFactory import DataGeneratorFactory
+
+
 class Controller:
     """ Controller component , it orchestrates the model with the view"""
     def __init__(self, model, view):
@@ -10,6 +11,23 @@ class Controller:
         self.model = model
         self.view = view
 
-    def generateData(self,format):
-        """ Creates a list of data depending on the desired format, using the plot configuration and the model's master dataframe"""
-        return DataGeneratorFactory.create(format).generate(self.view.plots_config,self.model.master_df)
+    def generateAll(self):
+        return [
+            self.generateFigure(figure,plot_config.plot_types)
+            for figure,plot_config in zip(self.view.figures,self.view.plots_config)
+        ]
+
+    def generateFigure(self,figure,plot_types):
+        return {
+            "plot_types": plot_types,
+            "subfigures": [self.generateSubfigure(subfigure) for subfigure in figure]
+        }
+
+    def generateSubfigure(self, subfigure):
+        return {
+            "exports": [
+                { "display_text":"CSV", "filename":"data.csv", "data":subfigure.createCsv(self.model.master_df) },
+                { "display_text":"LaTeX", "filename":"figure.tex", "data":subfigure.createTex(self.model.master_df) },
+            ],
+            "html": subfigure.createFigureHtml(self.model.master_df)
+        }

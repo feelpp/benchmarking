@@ -30,7 +30,7 @@ jobs:
         CXX: clang++
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: wheel-artifacts
         path: dist/*.whl
@@ -43,7 +43,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Download packages
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: wheel-artifacts
         path: dist/
@@ -95,7 +95,7 @@ jobs:
     - name: Install NPM dependencies
       run: npm install
     - name: Download
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: wheel-artifacts
         path: dist/
@@ -151,7 +151,7 @@ jobs:
       run: |
         cmake --build --preset default -t package
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: benchmarking-artifacts
         path: build/default/assets/benchmarking-*
@@ -163,7 +163,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Download
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         # Artifact name
         name: benchmarking-artifacts
@@ -206,12 +206,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download Deb Packages
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: benchmarking-artifacts
           path: artifacts/
       - name: Download Wheel Packages
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: wheel-artifacts
           path: dist/

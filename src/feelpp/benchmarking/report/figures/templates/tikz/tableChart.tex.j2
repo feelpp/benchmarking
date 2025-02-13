@@ -1,0 +1,32 @@
+\documentclass[12pt]{article}
+
+\usepackage{pgf-pie}  % For pie charts
+\usepackage{currfile} % Required for getting the current file name
+\usepackage{tikz}     % Required for drawing graphics
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+{% for df in csv_datasets %}
+\pgfplotstableread{
+{{df}}
+}\data{{loop.index | inttouniquestr }}
+{% endfor %}
+
+
+\begin{table}
+
+{% if anim_dimension_values %}
+  {% for dim in anim_dimension_values %}
+  \pgfplotstabletypeset[]{\data{{ loop.index | inttouniquestr }}}
+  \caption{ {{secondary_axis.label}}={{dim}} }
+  {% endfor %}
+{% else %}
+  \pgfplotstabletypeset[]{\data{{1 | inttouniquestr }}}
+{% endif %}
+\caption{ {{caption}} }
+\end{table}
+
+\end{document}
