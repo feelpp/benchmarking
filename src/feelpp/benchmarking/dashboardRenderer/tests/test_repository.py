@@ -89,17 +89,31 @@ class TestComponentRepository:
         # Expected structure after `initViews`
         expected_structure_A1 = {
             component_B1: {
-                component_C1: {component_D1: {}},
-                component_C2: {component_D2: {}}
+                "Repo3":{
+                    component_C1: {
+                        "Repo4":{ component_D1: {}}
+                    },
+                    component_C2: {
+                        "Repo4":{ component_D2: {} }
+                    }
+                }
             },
             component_B2: {
-                component_C1: {component_D2: {}}
+                "Repo3": {
+                    component_C1: {
+                        "Repo4":{component_D2: {}}
+                    }
+                }
             }
         }
 
         expected_structure_A2 = {
             component_B1: {
-                component_C2: {component_D1: {}}
+                "Repo3":{
+                    component_C2: {
+                        "Repo4":{component_D1: {}}
+                    }
+                }
             }
         }
 
