@@ -1,4 +1,4 @@
-from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
+from feelpp.benchmarking.dashboardRenderer.controller import DefaultControllerFactory
 from feelpp.benchmarking.dashboardRenderer.repository import ComponentRepository
 from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
 
@@ -8,12 +8,11 @@ class DashboardOrchestrator:
     """ Serves as a repository orchestrator"""
     def __init__(self,components_config):
 
-        self.component_repositories = [
-            ComponentRepository(repository_id, components)
-            for repository_id, components in components_config.components.items()
-        ]
+        self.component_repositories = [ ComponentRepository(repository_id, components) for repository_id, components in components_config.components.items() ]
 
         self.initRepositoryViews(components_config.views,components_config.component_map)
+
+        self.home_page_controller = DefaultControllerFactory.create("home")
 
     def initRepositoryViews(self,views,component_map):
         tree_order = component_map.component_order
@@ -34,3 +33,7 @@ class DashboardOrchestrator:
 
     def getRepository(self,id):
         return next(filter(lambda x: x.id ==id, self.component_repositories))
+
+    def render(self,pages_dir):
+        #Render Home page
+        self.home_page_controller.render(pages_dir)

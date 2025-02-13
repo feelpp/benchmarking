@@ -1,6 +1,5 @@
 from jinja2 import Environment, FileSystemLoader
 import os
-from pathlib import Path
 
 class TemplateRenderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
@@ -43,18 +42,3 @@ class TemplateRenderer:
             n, r = divmod(n - 1, 26)
             s.append(chr(65 + r))
         return "".join(reversed(s))
-
-class TemplateRendererFactory:
-    TEMPLATES = {
-        "home": "home.adoc.j2",
-        "index": "index.adoc.j2"
-    }
-
-    @classmethod
-    def create(cls, renderer_type: str) -> TemplateRenderer:
-        if renderer_type not in cls.TEMPLATES:
-            raise ValueError(
-                f"Renderer type '{renderer_type}' not recognized. Valid options are: {', '.join(cls.TEMPLATES.keys())}."
-            )
-        template_dir = str(Path(__file__).resolve().parent)
-        return TemplateRenderer(template_dir, cls.TEMPLATES[renderer_type])
