@@ -5,11 +5,12 @@ class ComponentMap(BaseModel):
     component_order: List[str]
     mapping: Dict[str,Dict]
 
-class ComponentMetadata(BaseModel):
+class Metadata(BaseModel):
     display_name: str
     description: Optional[str] = ""
 
 class DashboardSchema(BaseModel):
     component_map: ComponentMap
-    components: Dict[str,Dict[str, ComponentMetadata]]
+    components: Dict[str,Dict[str, Metadata]]
     views : Dict[str,Dict]
+    repositories : Dict[str,Metadata]

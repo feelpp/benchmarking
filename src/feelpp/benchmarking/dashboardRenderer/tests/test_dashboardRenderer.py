@@ -56,6 +56,12 @@ class TestDashboardRenderer:
             "d":{
                 "d1": { "display_name":"D1 Component" }
             }
+        },
+        "repositories":{
+            "a":{ "display_name":"A" },
+            "b":{ "display_name":"B" },
+            "c":{ "display_name":"C" },
+            "d":{ "display_name":"D" }
         }
     }
 
@@ -64,7 +70,7 @@ class TestDashboardRenderer:
         dashboard = DashboardOrchestrator(DashboardSchema(**self.components_config))
 
         for repo_id in ["a","b","c","d"]:
-            assert all(self.components_config["views"].get(repo_id,{}).keys() == dashboard.getComponent(comp.id).views.keys() for comp in dashboard.getRepository(repo_id).data)
+            assert all(self.components_config["views"].get(repo_id,{}).keys() == dashboard.getComponent(comp.id).views.keys() for comp in dashboard.getRepository(repo_id))
 
 
         # CHECK A1
@@ -136,7 +142,7 @@ class TestDashboardRenderer:
         assert dashboard.getComponent("b4").views == expected
 
         #CHECK C (empty)
-        assert all(comp.views == {} for comp in dashboard.getRepository("c").data)
+        assert all(comp.views == {} for comp in dashboard.getRepository("c"))
 
         #CHECK D1
         expected = { "a" : {

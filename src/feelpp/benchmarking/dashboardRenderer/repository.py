@@ -1,6 +1,8 @@
 import os
 from feelpp.benchmarking.dashboardRenderer.component import Component
 from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
+from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata
 
 class Repository:
     """ Base class for repositories.
@@ -37,13 +39,29 @@ class Repository:
         """ [] overload returning the item in data in position 'index' """
         return self.data[index]
 
+    def __len__(self):
+        return len(self.data)
 
 class ComponentRepository(Repository):
-    """Class representing a collection of components (machines, applications, useCases) """
-    def __init__(self, id, components):
+    """Class representing a collection of components"""
+    def __init__( self, id:str, components:dict[str,dict], metadata: Metadata ):
         super().__init__(id)
+        self.data: list[Component]
+
+        self.initBaseController(metadata)
+
         for component_id, component_metadata in components.items():
-            self.add(Component(component_id, component_metadata))
+            self.add(Component(component_id, component_metadata, self.id))
+
+    def initBaseController(self,metadata:Metadata):
+        self.index_page_controller:Controller = BaseControllerFactory.create("index")
+        self.index_page_controller.updateData(dict(
+            title = metadata.display_name,
+            self_id = self.id,
+            parent_ids = "dashboard-index",
+            description = metadata.description,
+            card_image = ""
+        ))
 
     def initViews(self, view_order, tree, other_repositories):
         repo_lookup = {rep.id: rep for rep in other_repositories}
@@ -73,6 +91,17 @@ class ComponentRepository(Repository):
         for component in self.data:
             component_subtree = tree.get(component.id, {})
             component.views = TreeUtils.mergeDicts(component.views,{view_order[1]:processViewTree(component_subtree, 1, unwrap_first=True)})
+
+    def render(self,base_dir:str) -> None:
+        repository_dir = os.path.join(base_dir,self.id)
+        if not os.path.isdir(repository_dir):
+            os.mkdir(repository_dir)
+
+        self.index_page_controller.render(repository_dir)
+        for component in self.data:
+            component.render(base_dir = repository_dir)
+            pass
+
 
     # def renderSelf(self, base_dir, renderer, self_tag_id, parent_id = "catalog-index"):
     #     """ Initialize the module for repository.

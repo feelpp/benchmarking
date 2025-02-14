@@ -18,7 +18,7 @@ class Controller:
 
 
 
-class DefaultControllerFactory:
+class BaseControllerFactory:
     DEFAULT_MV = {
         "home": {
             "template":"home.adoc.j2",
@@ -31,7 +31,13 @@ class DefaultControllerFactory:
         "index":{
             "template": "index.adoc.j2",
             "filename":"index.adoc",
-            "data":"",
+            "data":dict(
+                title = "Default Repository",
+                self_id = "default-repository",
+                parent_ids = "dashboard-index",
+                description = "Default Description",
+                card_image = "ROOT:default-image.jpg"
+            ),
         }
     }
 
@@ -44,4 +50,4 @@ class DefaultControllerFactory:
         template_dir = os.path.join(Path(__file__).resolve().parent,"templates")
         renderer = TemplateRenderer(template_dir, cls.DEFAULT_MV[renderer_type]["template"])
 
-        return Controller(renderer,cls.DEFAULT_MV[renderer_type]["data"],cls.DEFAULT_MV[renderer_type]["filename"])
+        return Controller(renderer,cls.DEFAULT_MV[renderer_type]["data"].copy(),cls.DEFAULT_MV[renderer_type]["filename"])

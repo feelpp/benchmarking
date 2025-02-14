@@ -1,5 +1,5 @@
 import pytest
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import ComponentMetadata
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata
 from feelpp.benchmarking.dashboardRenderer.repository import ComponentRepository
 from feelpp.benchmarking.dashboardRenderer.component import Component
 from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
@@ -12,34 +12,34 @@ class TestComponentRepository:
 
     def test_uniqueness(self):
         components_config = {
-            "a": ComponentMetadata(display_name = "A"),
-            "b": ComponentMetadata(display_name = "B"),
-            "c": ComponentMetadata(display_name = "C"),
-            "a": ComponentMetadata(display_name = "A"),
+            "a": Metadata(display_name = "A"),
+            "b": Metadata(display_name = "B"),
+            "c": Metadata(display_name = "C"),
+            "a": Metadata(display_name = "A"),
         }
-        component_repository = ComponentRepository("test",components_config)
-        self.checkForDuplicates(component_repository.data)
-        assert len([c for c in component_repository.data if c.id == "a"]) == 1
+        component_repository = ComponentRepository("test",components_config, Metadata(display_name="Test"))
+        self.checkForDuplicates(component_repository)
+        assert len([c for c in component_repository if c.id == "a"]) == 1
 
-        component_repository.add(Component(id = "b",component_metadata=ComponentMetadata(display_name="Other")))
-        self.checkForDuplicates(component_repository.data)
-        assert len([c for c in component_repository.data if c.id == "b"]) == 1
+        component_repository.add(Component(id = "b",metadata=Metadata(display_name="Other"),parent_id=component_repository.id))
+        self.checkForDuplicates(component_repository)
+        assert len([c for c in component_repository if c.id == "b"]) == 1
 
 
     def test_initViews(self):
         """Test the initViews method with different view order permutations."""
 
         # --- Create Components in each repository ---
-        components_config_1 = {"A1": ComponentMetadata(display_name="A1"), "A2": ComponentMetadata(display_name="A2")}
-        components_config_2 = {"B1": ComponentMetadata(display_name="B1"), "B2": ComponentMetadata(display_name="B2")}
-        components_config_3 = {"C1": ComponentMetadata(display_name="C1"), "C2": ComponentMetadata(display_name="C2")}
-        components_config_4 = {"D1": ComponentMetadata(display_name="D1"), "D2": ComponentMetadata(display_name="D2")}
+        components_config_1 = {"A1": Metadata(display_name="A1"), "A2": Metadata(display_name="A2")}
+        components_config_2 = {"B1": Metadata(display_name="B1"), "B2": Metadata(display_name="B2")}
+        components_config_3 = {"C1": Metadata(display_name="C1"), "C2": Metadata(display_name="C2")}
+        components_config_4 = {"D1": Metadata(display_name="D1"), "D2": Metadata(display_name="D2")}
 
         # --- Create Repositories ---
-        repo1 = ComponentRepository("Repo1", components_config_1)
-        repo2 = ComponentRepository("Repo2", components_config_2)
-        repo3 = ComponentRepository("Repo3", components_config_3)
-        repo4 = ComponentRepository("Repo4", components_config_4)
+        repo1 = ComponentRepository("Repo1", components_config_1,Metadata(display_name="Repo 1"))
+        repo2 = ComponentRepository("Repo2", components_config_2,Metadata(display_name="Repo 2"))
+        repo3 = ComponentRepository("Repo3", components_config_3,Metadata(display_name="Repo 3"))
+        repo4 = ComponentRepository("Repo4", components_config_4, Metadata(display_name="Repo 4"))
 
         # Get the actual components from repositories
         component_A1 = repo1.get("A1")
