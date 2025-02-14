@@ -10,8 +10,13 @@ class Controller:
 
         self.output_filename = output_filename
 
-    def render(self,output_dirpath):
-        self.renderer.render(os.path.join(output_dirpath,self.output_filename),self.template_data)
+    def render(self,output_dirpath, **extra_data):
+        data = self.template_data.copy()
+        data.update(extra_data)
+        self.renderer.render(
+            os.path.join(output_dirpath,self.output_filename),
+            data
+        )
 
     def updateData(self,new_data):
         self.template_data.update(new_data)
@@ -34,7 +39,7 @@ class BaseControllerFactory:
             "data":dict(
                 title = "Default Repository",
                 self_id = "default-repository",
-                parent_ids = "dashboard-index",
+                parent_ids = "dashboard_index",
                 description = "Default Description",
                 card_image = "ROOT:default-image.jpg"
             ),

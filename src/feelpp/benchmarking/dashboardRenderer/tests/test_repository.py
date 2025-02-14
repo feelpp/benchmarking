@@ -21,7 +21,7 @@ class TestComponentRepository:
         self.checkForDuplicates(component_repository)
         assert len([c for c in component_repository if c.id == "a"]) == 1
 
-        component_repository.add(Component(id = "b",metadata=Metadata(display_name="Other"),parent_id=component_repository.id))
+        component_repository.add(Component(id = "b",metadata=Metadata(display_name="Other")))
         self.checkForDuplicates(component_repository)
         assert len([c for c in component_repository if c.id == "b"]) == 1
 

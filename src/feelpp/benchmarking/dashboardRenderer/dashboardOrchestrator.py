@@ -11,12 +11,14 @@ class DashboardOrchestrator:
         self.home_page_controller:Controller = BaseControllerFactory.create("home")
         self.home_page_controller.updateData({"title":title})
 
+        self.components_config = components_config.model_copy()
+
         self.component_repositories:list[ComponentRepository] = [
-            ComponentRepository(repository_id, components_config.components[repository_id], metadata = repository_metadata)
-            for repository_id, repository_metadata in components_config.repositories.items()
+            ComponentRepository(repository_id, self.components_config.components[repository_id], metadata = repository_metadata)
+            for repository_id, repository_metadata in self.components_config.repositories.items()
         ]
 
-        self.initRepositoryViews(components_config.views,components_config.component_map)
+        self.initRepositoryViews(self.components_config.views,self.components_config.component_map)
 
 
     def initRepositoryViews(self,views: dict[str,dict] ,component_map: ComponentMap) -> None:
@@ -40,9 +42,11 @@ class DashboardOrchestrator:
         return next(filter(lambda x: x.id ==id, self.component_repositories))
 
     def render(self,base_dir:str) -> None:
-        pages_dir = os.path.join(base_dir)
+        pages_dir = os.path.join(base_dir,"pages")
         if not os.path.isdir(pages_dir):
             os.mkdir(pages_dir)
+
         self.home_page_controller.render(pages_dir)
-        for component_repository in self.component_repositories:
-            component_repository.render(base_dir = pages_dir)
+
+        for view in self.components_config.views:
+            self.getRepository(view).render(base_dir = pages_dir)

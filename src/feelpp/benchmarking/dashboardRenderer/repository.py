@@ -51,16 +51,16 @@ class ComponentRepository(Repository):
         self.initBaseController(metadata)
 
         for component_id, component_metadata in components.items():
-            self.add(Component(component_id, component_metadata, self.id))
+            self.add(Component(component_id, component_metadata))
 
     def initBaseController(self,metadata:Metadata):
         self.index_page_controller:Controller = BaseControllerFactory.create("index")
         self.index_page_controller.updateData(dict(
             title = metadata.display_name,
             self_id = self.id,
-            parent_ids = "dashboard-index",
+            parent_ids = "dashboard_index",
             description = metadata.description,
-            card_image = ""
+            card_image = f"ROOT:{self.id}.jpg"
         ))
 
     def initViews(self, view_order, tree, other_repositories):
@@ -92,16 +92,17 @@ class ComponentRepository(Repository):
             component_subtree = tree.get(component.id, {})
             component.views = TreeUtils.mergeDicts(component.views,{view_order[1]:processViewTree(component_subtree, 1, unwrap_first=True)})
 
+
     def render(self,base_dir:str) -> None:
         repository_dir = os.path.join(base_dir,self.id)
+
         if not os.path.isdir(repository_dir):
             os.mkdir(repository_dir)
 
         self.index_page_controller.render(repository_dir)
-        for component in self.data:
-            component.render(base_dir = repository_dir)
-            pass
 
+        for component in self.data:
+            component.render(base_dir = repository_dir, parent_id= self.id)
 
     # def renderSelf(self, base_dir, renderer, self_tag_id, parent_id = "catalog-index"):
     #     """ Initialize the module for repository.

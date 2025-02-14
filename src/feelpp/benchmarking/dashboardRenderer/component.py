@@ -3,9 +3,8 @@ from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metada
 import os
 
 class Component:
-    def __init__(self, id:str, metadata: Metadata, parent_id) -> None:
+    def __init__(self, id:str, metadata: Metadata) -> None:
         self.id = id
-        self.parent_id = parent_id
         self.initBaseController(metadata)
 
         self.views = {}
@@ -15,17 +14,26 @@ class Component:
         self.index_page_controller:Controller = BaseControllerFactory.create("index")
         self.index_page_controller.updateData(dict(
             title = metadata.display_name,
-            self_id = self.id,
-            parent_ids = self.parent_id,
             description = metadata.description,
-            card_image = ""
+            card_image = f"ROOT:{self.id}.jpg"
         ))
 
     def __repr__(self):
         return f"<{self.id}>"
 
-    def render(self,base_dir:str) -> None:
+    def render(self,base_dir:str, parent_id, views = None) -> None:
+        views = self.views if views is None else views
+
         component_dir = os.path.join(base_dir,self.id)
         if not os.path.isdir(component_dir):
             os.mkdir(component_dir)
-        self.index_page_controller.render(component_dir)
+
+        self.index_page_controller.render(component_dir, parent_ids = parent_id, self_id = f"{parent_id}-{self.id}")
+
+        for _, children_views in views.items():
+            for children_component,children_view in children_views.items():
+                children_component.render(
+                    component_dir,
+                    parent_id = f"{parent_id}-{self.id}",
+                    views = children_view
+                )
