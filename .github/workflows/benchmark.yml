@@ -60,8 +60,8 @@ jobs:
                 machine_config=$(jq --compact-output '' <<< $machine_config)
                 echo "machine_config=$machine_config" >> $GITHUB_OUTPUT
 
-        -   name: Filter systems
-            id: filter-systems
+        -   name: Filter systems and set matrix
+            id: hpc-systems
             run: |
                 valid_systems=${{ github.event.inputs.hpc-systems || github.event.client_payload.hpc-systems }}
                 machine_config='${{ steps.download_systems_config.outputs.machine_config }}'
@@ -70,14 +70,11 @@ jobs:
                     ($valid_systems | split(",")) as $systems |
                     [with_entries(select([.key] | inside($systems))) ]
                 ')
-                echo "filtered_systems_config=$filtered_systems_config" >> $GITHUB_OUTPUT
+                echo "matrix={ include : "$filtered_systems_config" }" >> $GITHUB_OUTPUT
 
-        -   name: Set Matrix
-            id: hpc-systems
-            env:
-                CONFIGS: ${{steps.filter-systems.outputs.filtered_systems_config}}
+        -   name: Debug
             run: |
-                echo "matrix={ include : "$CONFIGS" }" >> $GITHUB_OUTPUT
+                echo ${{steps.hpc-systems.outputs.matrix}}
 
         -   uses: actions/checkout@v4
 
