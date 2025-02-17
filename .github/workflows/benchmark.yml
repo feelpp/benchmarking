@@ -57,7 +57,10 @@ jobs:
         -   name: Get machines configuration
             id: download_systems_config
             run: |
-                echo "machine_config=$(curl -H 'Authorization: token ${{ secrets.CR_PAT }}' https://raw.githubusercontent.com/feelpp/hpc-systems/refs/heads/main/systems.json)" >> $GITHUB_OUTPUT
+                machine_config=$(curl -H 'Authorization: token ${{ secrets.CR_PAT }}' https://raw.githubusercontent.com/feelpp/hpc-systems/refs/heads/main/systems.json)
+                echo "machine_config<<EOF" >> $GITHUB_OUTPUT
+                echo "$machine_config" >> $GITHUB_OUTPUT
+                echo "EOF" >> $GITHUB_OUTPUT
 
         -   name: Filter systems and set matrix
             id: hpc-systems
@@ -73,10 +76,6 @@ jobs:
                     ]
                 ')
                 echo "matrix={ include : $filtered_systems_config }" >> $GITHUB_OUTPUT
-
-        -   name: Debug
-            run: |
-                echo ${{steps.hpc-systems.outputs.matrix}}
 
         -   uses: actions/checkout@v4
 
