@@ -70,7 +70,7 @@ jobs:
                     ($valid_systems | split(",")) as $systems |
                     [with_entries(select([.key] | inside($systems))) ]
                 ')
-                echo "matrix={ include : "$filtered_systems_config" }" >> $GITHUB_OUTPUT
+                echo "matrix=$(jq -c --null-input --argjson config "$filtered_systems_config" '{include: $config}')" >> "$GITHUB_OUTPUT"
 
         -   name: Debug
             run: |
