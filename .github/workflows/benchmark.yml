@@ -60,14 +60,11 @@ jobs:
                 machine_config=$(jq --compact-output '' <<< $machine_config)
                 echo "machine_config=$machine_config" >> $GITHUB_OUTPUT
 
-        -   name: Debug
-            run: echo "${{ steps.download_systems_config.outputs.machine_config }}"
-
         -   name: Filter systems and set matrix
             id: hpc-systems
             run: |
                 valid_systems=${{ github.event.inputs.hpc-systems || github.event.client_payload.hpc-systems }}
-                machine_config="${{ steps.download_systems_config.outputs.machine_config }}"
+                machine_config='${{ steps.download_systems_config.outputs.machine_config }}'
 
                 filtered_systems_config=$(echo "$machine_config" | jq --arg valid_systems "$valid_systems" '
                     . as $data |
