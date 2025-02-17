@@ -8,14 +8,6 @@
         "exclusive_access":"{{parameters.resources.exclusive_access.value}}",
         "memory":"{{parameters.memory.value}}"
     },
-    //if input_user_dir exists
-    //  copy from input_user_dir to input_dataset_base_dir (for each test)
-    // Else:
-    //  pass
-    //  It assumes that input_dataset_base_dir is not empty. No copy is done, nor cleanup
-    //PATHS ARE RELATIVE TO input_user_dir it it exists, else relative to input_dataset_base_dir
-    //Copy is done before run (after setup)
-    // IF INPUT_USER_DIR, EXECUTE SERIAL
     "input_file_dependencies":{
         "solver_cfg":"{{use_case_name}}/{{parameters.solver.value}}.cfg",
         "mesh_json":"{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json",
@@ -94,7 +86,7 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence":[64]
+                    "sequence":[64,128]
                 },
                 {
                     "name":"exclusive_access",
@@ -119,7 +111,7 @@
             "name":"discretization",
             "sequence":["P1","P2","P3"],
             "conditions":{
-                "P1":[{ "resources.tasks":[64] }],
+                "P1":[{ "resources.tasks":[64,128] }],
                 "P2":[{ "resources.tasks":[] }],
                 "P3":[{ "resources.tasks":[] }]
             }
