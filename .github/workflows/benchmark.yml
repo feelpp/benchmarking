@@ -70,11 +70,11 @@ jobs:
                     ($valid_systems | split(",")) as $systems |
                     [with_entries(select([.key] | inside($systems))) ]
                 ')
-                echo "matrix={ include : '$filtered_systems_config' }" >> $GITHUB_OUTPUT
+                echo "matrix={\"include\":"$filtered_systems_config}"" >> $GITHUB_OUTPUT
 
         -   name: Debug
             run: |
-                echo ${{steps.hpc-systems.outputs.matrix}}
+                echo ${{fromJSON(steps.hpc-systems.outputs.matrix)}}
 
         -   uses: actions/checkout@v4
 
