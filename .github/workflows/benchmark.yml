@@ -57,7 +57,7 @@ jobs:
         -   name: Get machines configuration
             id: download_systems_config
             run: |
-                machine_config=$(curl -H "Authorization: token ${{ secrets.CR_PAT }}" https://raw.githubusercontent.com/feelpp/hpc-systems/refs/heads/main/systems.json) >> $GITHUB_OUTPUT
+                echo "machine_config=$(curl -H 'Authorization: token ${{ secrets.CR_PAT }}' https://raw.githubusercontent.com/feelpp/hpc-systems/refs/heads/main/systems.json)" >> $GITHUB_OUTPUT
 
         -   name: Filter systems and set matrix
             id: hpc-systems
