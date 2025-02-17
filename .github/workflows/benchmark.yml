@@ -74,7 +74,7 @@ jobs:
                         | map(select(. != null))
                     ]
                 ')
-                echo "matrix={ include : $filtered_systems_config }" >> $GITHUB_OUTPUT
+                echo "matrix={ include : "$filtered_systems_config" }" >> $GITHUB_OUTPUT
 
         -   uses: actions/checkout@v4
 
