@@ -70,6 +70,7 @@ jobs:
                     ($valid_systems | split(",")) as $systems |
                     [with_entries(select([.key] | inside($systems))) ]
                 ')
+                echo "filtered_systems_config=$filtered_systems_config" >> $GITHUB_OUTPUT
 
         -   name: Set Matrix
             id: hpc-systems
