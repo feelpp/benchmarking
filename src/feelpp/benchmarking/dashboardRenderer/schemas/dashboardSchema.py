@@ -1,5 +1,10 @@
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
+
+
+class LeafMetadata(BaseModel):
+    path: str
+    platform: Optional[str] = "local"
 
 class ComponentMap(BaseModel):
     component_order: List[str]

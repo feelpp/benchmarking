@@ -38,11 +38,22 @@ class BaseControllerFactory:
             "filename":"index.adoc",
             "data":dict(
                 title = "Default Repository",
-                self_id = "default-repository",
+                self_id = "default_repository",
                 parent_ids = "dashboard_index",
                 description = "Default Description",
                 card_image = "ROOT:default-image.jpg"
             ),
+        },
+        "leaf":{
+            "template":"leaf.adoc.j2",
+            "filename":"leaf.adoc",
+            "data":dict(
+                title = "Default Leaf",
+                self_id = "default_leaf",
+                parent_ids = "dashboard_index",
+                description = "Default Leaf Description",
+                card_image = "ROOT:default-image.jpg"
+            )
         }
     }
 

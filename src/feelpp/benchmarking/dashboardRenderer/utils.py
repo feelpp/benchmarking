@@ -14,7 +14,7 @@ class TreeUtils:
 
     @staticmethod
     def permuteTreeLevels(tree, permutation):
-        """Permute the levels of an N-level nested dictionary tree."""
+        """Permute the levels of an N-level nested dictionary tree"""
         branches = []
 
         def traverse(subtree, path):

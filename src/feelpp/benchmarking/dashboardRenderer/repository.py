@@ -1,8 +1,8 @@
 import os
-from feelpp.benchmarking.dashboardRenderer.component import Component
+from feelpp.benchmarking.dashboardRenderer.component import NodeComponent, LeafComponent
 from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
 from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata, ComponentMap, LeafMetadata
 
 class Repository:
     """ Base class for repositories.
@@ -42,16 +42,16 @@ class Repository:
     def __len__(self):
         return len(self.data)
 
-class ComponentRepository(Repository):
+class NodeComponentRepository(Repository):
     """Class representing a collection of components"""
     def __init__( self, id:str, components:dict[str,dict], metadata: Metadata ):
         super().__init__(id)
-        self.data: list[Component]
+        self.data: list[NodeComponent]
 
         self.initBaseController(metadata)
 
         for component_id, component_metadata in components.items():
-            self.add(Component(component_id, component_metadata))
+            self.add(NodeComponent(component_id, component_metadata,self.id))
 
     def initBaseController(self,metadata:Metadata):
         self.index_page_controller:Controller = BaseControllerFactory.create("index")
@@ -63,7 +63,7 @@ class ComponentRepository(Repository):
             card_image = f"ROOT:{self.id}.jpg"
         ))
 
-    def initViews(self, view_order, tree, other_repositories):
+    def initViews(self, view_order, tree, other_repositories, leaf_repository):
         repo_lookup = {rep.id: rep for rep in other_repositories}
 
         def processViewTree(subtree, level_index, unwrap_first=False):
@@ -71,7 +71,6 @@ class ComponentRepository(Repository):
                 return {}
 
             current_repo = repo_lookup[view_order[level_index]]
-
             grouped_subtree = {}
             for view_component_id, sub_tree in subtree.items():
                 grouped_subtree.setdefault(view_order[level_index], {})[view_component_id] = sub_tree
@@ -91,7 +90,7 @@ class ComponentRepository(Repository):
         for component in self.data:
             component_subtree = tree.get(component.id, {})
             component.views = TreeUtils.mergeDicts(component.views,{view_order[1]:processViewTree(component_subtree, 1, unwrap_first=True)})
-
+            component.updateViewsWithLeaves(leaf_repository)
 
     def render(self,base_dir:str) -> None:
         repository_dir = os.path.join(base_dir,self.id)
@@ -104,41 +103,51 @@ class ComponentRepository(Repository):
         for component in self.data:
             component.render(base_dir = repository_dir, parent_id= self.id)
 
-    # def renderSelf(self, base_dir, renderer, self_tag_id, parent_id = "catalog-index"):
-    #     """ Initialize the module for repository.
-    #     Creates the directory for the repository and renders the index.adoc file
-    #     Args:
-    #         base_dir (str): The base directory for the modules
-    #         renderer (Renderer): The renderer to use
-    #         self_tag_id (str): The catalog id of the current reposirory, to be used by their children as parent
-    #         parent_id (str): The catalog id of the parent component
-    #     """
-    #     module_path = os.path.join(base_dir, self.id)
 
-    #     if not os.path.exists(module_path):
-    #         os.mkdir(module_path)
+class LeafComponentRepository(Repository):
+    def __init__(self, id, component_map:ComponentMap,other_repositories:list[Repository]):
+        super().__init__(id)
+        self.data: list[LeafComponent]
 
-    #     renderer.render(
-    #         os.path.join(module_path,"index.adoc"),
-    #         self.indexData(parent_id,self_tag_id)
-    #     )
+        self.initLeaves(other_repositories,component_map.mapping)
 
-    # def renderChildren(self, base_dir, renderer):
-    #     """ Inits the repository module and calls the initModules method of each item in the repository.
-    #     Args:
-    #         base_dir (str): The base directory for the modules
-    #         renderer (Renderer): The renderer to use
-    #         parent_id (str,optional): The catalog id of the parent component. Defaults to "supercomputers".
-    #     """
-    #     for item in self.data:
-    #         item.render(os.path.join(base_dir,self.id), renderer, self.id)
+    def initLeaves(self,other_repositories:list[Repository], d, path=[]):
 
-    # def render(self, base_dir, renderer, parent_id = "catalog-index"):
-    #     """ Inits the repository module and calls the initModules method of each item in the repository.
-    #     Args:
-    #         base_dir (str): The base directory for the modules
-    #         renderer (Renderer): The renderer to use
-    #         parent_id (str,optional): The catalog id of the parent component. Defaults to "supercomputers".
-    #     """
-    #     self.renderSelf(base_dir,renderer,self_tag_id=self.id, parent_id=parent_id)
-    #     self.renderChildren(base_dir, renderer)
+        if not isinstance(d, dict):
+            return
+
+        if all(not isinstance(v, dict) for v in d.values()):
+            self.addLeaves(LeafMetadata(**d),path,other_repositories)
+        else:
+            for key, value in d.items():
+                self.initLeaves(other_repositories,value, path + [key])
+
+    def getParentComponent(self,id, other_repositories:list[Repository]):
+        for repo in other_repositories:
+            if repo.has(id):
+                return repo.get(id)
+
+
+    def addLeaves(self,leaf_config: LeafMetadata, parent_path:list[str], other_repositories:list[Repository]):
+        if leaf_config.platform != "local":
+            #Download files and then pass location
+            raise NotImplementedError("Remote locations not yet implemented")
+
+        if not os.path.exists(leaf_config.path):
+            raise FileNotFoundError(f"{leaf_config.path} does not contain any files")
+
+        for leaf_component_dir in os.listdir(leaf_config.path):
+            self.add(LeafComponent(
+                f"{leaf_component_dir}",
+                os.path.join(leaf_config.path,leaf_component_dir),
+                [self.getParentComponent(parent_id,other_repositories) for parent_id in parent_path]
+            ))
+
+    def render(self,base_dir:str) -> None:
+        leaves_dir = os.path.join(base_dir,self.id)
+        if not os.path.isdir(leaves_dir):
+            os.mkdir(leaves_dir)
+
+        for component in self.data:
+            component.render( base_dir = leaves_dir )
+
