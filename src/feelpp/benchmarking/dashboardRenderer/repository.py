@@ -105,11 +105,11 @@ class NodeComponentRepository(Repository):
 
 
 class LeafComponentRepository(Repository):
-    def __init__(self, id, component_map:ComponentMap,other_repositories:list[Repository]):
+    def __init__(self, id, component_mapping:ComponentMap,other_repositories:list[Repository]):
         super().__init__(id)
         self.data: list[LeafComponent]
 
-        self.initLeaves(other_repositories,component_map.mapping)
+        self.initLeaves(other_repositories,component_mapping)
 
     def initLeaves(self,other_repositories:list[Repository], d, path=[]):
 
@@ -129,6 +129,9 @@ class LeafComponentRepository(Repository):
 
 
     def addLeaves(self,leaf_config: LeafMetadata, parent_path:list[str], other_repositories:list[Repository]):
+        if leaf_config.path is None:
+            return
+
         if leaf_config.platform != "local":
             #Download files and then pass location
             raise NotImplementedError("Remote locations not yet implemented")

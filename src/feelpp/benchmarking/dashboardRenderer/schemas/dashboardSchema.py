@@ -3,7 +3,7 @@ from typing import List, Dict, Optional, Union
 
 
 class LeafMetadata(BaseModel):
-    path: str
+    path: Optional[str] = None
     platform: Optional[str] = "local"
 
 class ComponentMap(BaseModel):

@@ -18,7 +18,7 @@ class DashboardOrchestrator:
             for repository_id, repository_metadata in self.components_config.repositories.items()
         ]
 
-        self.leaf_component_repository:LeafComponentRepository = LeafComponentRepository("leaves", self.components_config.component_map,self.component_repositories)
+        self.leaf_component_repository:LeafComponentRepository = LeafComponentRepository("leaves", self.components_config.component_map.mapping,self.component_repositories)
 
         self.initRepositoryViews(self.components_config.views,self.components_config.component_map)
 
