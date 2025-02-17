@@ -73,7 +73,10 @@ jobs:
                     ]
                 ')
                 echo "matrix={ include : $machine_config }" >> $GITHUB_OUTPUT
-                echo $matrix
+
+        -   name: Debug
+            run: |
+                echo ${{steps.hpc-systems.outputs.matrix}}
 
         -   uses: actions/checkout@v4
 
