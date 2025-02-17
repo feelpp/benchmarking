@@ -67,12 +67,8 @@ jobs:
                 machine_config='${{ steps.download_systems_config.outputs.machine_config }}'
 
                 filtered_systems_config=$(echo "$machine_config" | jq --arg valid_systems "$valid_systems" '
-                    . as $data |
-                    [$valid_systems
-                        | split(",")
-                        | map($data[.])
-                        | map(select(. != null))
-                    ]
+                    ($valid_systems | split(",")) as $systems |
+                    [with_entries(select([.key] | inside($systems))) ]
                 ')
                 echo "matrix={ include : "$filtered_systems_config" }" >> $GITHUB_OUTPUT
 
