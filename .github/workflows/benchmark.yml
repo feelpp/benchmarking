@@ -64,7 +64,7 @@ jobs:
             run: |
                 valid_systems=${{ github.event.inputs.hpc-systems || github.event.client_payload.hpc-systems }}
 
-                machine_config=$(echo "${{ steps.download_systems_config.outputs.machine_config }}" | jq --arg valid_systems "$valid_systems" '
+                filtered_systems_config=$(echo "${{ steps.download_systems_config.outputs.machine_config }}" | jq --arg valid_systems "$valid_systems" '
                     . as $data |
                     [$valid_systems
                         | split(",")
@@ -72,7 +72,7 @@ jobs:
                         | map(select(. != null))
                     ]
                 ')
-                echo "matrix={ include : $machine_config }" >> $GITHUB_OUTPUT
+                echo "matrix={ include : $filtered_systems_config }" >> $GITHUB_OUTPUT
 
         -   name: Debug
             run: |
