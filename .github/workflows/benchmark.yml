@@ -108,13 +108,16 @@ jobs:
             with:
                 name: config-artifacts
                 path: ./tmp/
+        -   name: Create machine config
+            run: |
+                echo "${{matrix.system_config}}" >> ./tmp/machine_config.json
         -   name: Setup machine and env
             run: ${{matrix.submit_command}}
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
                 execute-benchmark \
-                    -mc ${{matrix.machine_cfg}} \
+                    -mc ./tmp/machine_config.json \
                     -bc ./tmp/benchmark_config.json \
                     -pc ./tmp/plots.json \
                     -v
@@ -122,7 +125,7 @@ jobs:
             uses: actions/upload-artifact@v4
             with:
                 name: benchmark-results-${{matrix.machine}}
-                path: ${{matrix.reports_path}}
+                path: ${{matrix.reports_base_dir}}
 
     deploy:
         runs-on: self-ubuntu-22.04
