@@ -46,7 +46,6 @@ jobs:
 
     factory:
         name: HPC Systems Factory
-        needs: build_wheel
         runs-on: self-ubuntu-22.04
         outputs:
             matrix: ${{ steps.hpc-systems.outputs.matrix }}
@@ -58,6 +57,7 @@ jobs:
             id: download_systems_config
             run: |
                 machine_config=$(curl -H 'Authorization: token ${{ secrets.CR_PAT }}' https://raw.githubusercontent.com/feelpp/hpc-systems/refs/heads/main/systems.json)
+                machine_config=$(jq --compact-output '' <<< $machine_config)
                 echo "machine_config=$machine_config" >> $GITHUB_OUTPUT
 
         -   name: Debug
@@ -95,7 +95,7 @@ jobs:
                     ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}}
 
     benchmark:
-        needs: factory
+        needs: [build_wheel,factory]
         strategy:
             fail-fast: false
             matrix: ${{ fromJson(needs.factory.outputs.matrix) }}
