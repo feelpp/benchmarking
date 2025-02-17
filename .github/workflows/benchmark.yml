@@ -74,6 +74,8 @@ jobs:
                 ')
                 echo "matrix={ include : $machine_config }" >> $GITHUB_OUTPUT
 
+        -   uses: actions/checkout@v4
+
         -   name: Gather arguments
             id: gather_arguments
             run: |
