@@ -104,7 +104,7 @@ jobs:
             run: |
                 echo "${{ toJson(matrix.system_config) }}" >> ./tmp/machine_config.json
         -   name: Setup machine and env
-            run: sh ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}.sh
+            run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}.sh
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
