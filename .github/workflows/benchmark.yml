@@ -70,16 +70,6 @@ jobs:
                 ')
                 echo "matrix=$(jq -c --null-input --argjson config "$filtered_systems_config" '{include: $config}')" >> $GITHUB_OUTPUT
 
-        -   uses: actions/checkout@v4
-
-        -   name: Upload configs
-            uses: actions/upload-artifact@v4
-            with:
-                name: config-artifacts
-                path: |
-                    ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }}
-                    ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}}
-
     benchmark:
         needs: [build_wheel,factory]
         strategy:
@@ -90,30 +80,30 @@ jobs:
         name: ${{matrix.machine}}
         steps:
         -   uses: actions/checkout@v4
+
         -   name: Download wheel
             uses: actions/download-artifact@v4
             with:
                 name: wheel-artifacts
                 path: dist
-        -   name: Download configs
-            uses: actions/download-artifact@v4
-            with:
-                name: config-artifacts
-                path: ./tmp/
+
         -   name: Create machine config
             run: |
                 json_machine_config='${{ toJson(matrix.system_config) }}'
                 echo "$json_machine_config" > ./tmp/machine_config.json
+
         -   name: Setup machine and env
             run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}.sh
+
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
                 execute-benchmark \
                     -mc ./tmp/machine_config.json \
-                    -bc ./tmp/benchmark_config.json \
-                    -pc ./tmp/plots.json \
+                    -bc ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
+                    -pc ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
                     -v
+
         -   name: Upload reframe report
             uses: actions/upload-artifact@v4
             with:
