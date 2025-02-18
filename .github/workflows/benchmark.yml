@@ -25,25 +25,6 @@ on:
 
 jobs:
 
-    build_wheel: #Should be removed upon pypi release
-        runs-on: self-ubuntu-22.04
-        name: Build wheel package
-        if: "!contains(github.event.head_commit.message, 'code skip')"
-        steps:
-        -   uses: actions/checkout@v4
-        -   name: Build wheel
-            run: |
-                npm install
-                npx downdoc README.adoc
-                pip3 wheel --no-deps --wheel-dir dist .
-            env:
-                CXX: clang++
-        -   name: Upload Artifact
-            uses: actions/upload-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist/*.whl
-
     factory:
         name: HPC Systems Factory
         runs-on: self-ubuntu-22.04
@@ -71,7 +52,7 @@ jobs:
                 echo "matrix=$(jq -c --null-input --argjson config "$filtered_systems_config" '{include: $config}')" >> $GITHUB_OUTPUT
 
     benchmark:
-        needs: [build_wheel,factory]
+        needs: [factory]
         strategy:
             fail-fast: false
             matrix: ${{ fromJson(needs.factory.outputs.matrix) }}
@@ -80,12 +61,6 @@ jobs:
         name: ${{matrix.machine}}
         steps:
         -   uses: actions/checkout@v4
-
-        -   name: Download wheel
-            uses: actions/download-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist
 
         -   name: Create machine config
             run: |
