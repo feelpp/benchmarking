@@ -78,6 +78,8 @@ jobs:
                     -bc ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
                     -pc ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
                     -v
+            env:
+                GIRDER_API_KEY: ${{ secrets.GIRDER }}
 
         -   name: Upload reframe report
             uses: actions/upload-artifact@v4
