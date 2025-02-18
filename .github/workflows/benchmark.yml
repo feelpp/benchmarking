@@ -125,7 +125,7 @@ jobs:
             uses: actions/upload-artifact@v4
             with:
                 name: benchmark-results-${{matrix.machine}}
-                path: ${{matrix.reports_base_dir}}
+                path: ${{matrix.system_config.reports_base_dir}}
 
     deploy:
         runs-on: self-ubuntu-22.04
