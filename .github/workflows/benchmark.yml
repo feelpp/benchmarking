@@ -74,7 +74,7 @@ jobs:
 
         -   name: Debug
             run: |
-                echo ${{fromJSON(steps.hpc-systems.outputs.matrix).include}}
+                echo ${{fromJSON(steps.hpc-systems.outputs.matrix).include[0].runner_tag}}
 
         -   uses: actions/checkout@v4
 
