@@ -72,10 +72,6 @@ jobs:
                 ')
                 echo "matrix=$(jq -c --null-input --argjson config "$filtered_systems_config" '{include: $config}')" >> $GITHUB_OUTPUT
 
-        -   name: Debug
-            run: |
-                echo ${{fromJSON(steps.hpc-systems.outputs.matrix).include[0].runner_tag}}
-
         -   uses: actions/checkout@v4
 
         -   name: Gather arguments
@@ -114,9 +110,9 @@ jobs:
                 path: ./tmp/
         -   name: Create machine config
             run: |
-                echo "${{matrix.system_config}}" >> ./tmp/machine_config.json
+                echo "${{ toJson(matrix.system_config) }}" >> ./tmp/machine_config.json
         -   name: Setup machine and env
-            run: ${{matrix.submit_command}}
+            run: sh ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}.sh
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
