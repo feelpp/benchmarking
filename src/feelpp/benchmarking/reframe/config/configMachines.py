@@ -13,7 +13,7 @@ class Container(BaseModel):
     @classmethod
     def checkDirectories(cls,v, info):
         """Checks that the directories exists"""
-        if v and not os.path.exists(v):
+        if v and not os.path.exists(os.path.expandvars(v)):
             if info.context.get("dry_run", False):
                 print(f"Dry Run: Skipping directory check for {v}")
             else:
