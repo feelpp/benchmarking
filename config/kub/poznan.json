@@ -1,6 +1,6 @@
 {
     "executable": "feelpp_kub_cem",
-    "output_directory": "{{machine.output_app_dir}}/kub",
+    "output_directory": "{{machine.output_app_dir}}/javier_test/kub",
     "use_case_name": "poznan",
     "timeout":"0-0:15:0",
     "resources":{
@@ -10,47 +10,120 @@
     "platforms": {
         "apptainer":{
             "image": {
+                "remote":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
                 "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
             },
-            "input_dir":"/input_data/",
+            "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/kub/cfg/:{{platforms.apptainer.input_dir}}"
+                "--bind {{machine.input_dataset_base_dir}}/kub:{{platforms.apptainer.input_dir}}",
+                "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/kub/cfg/",
+            "input_dir":"{{machine.input_dataset_base_dir}}/kub",
             "append_app_option":[]
         }
     },
+    "remote_input_dependencies":{
+        "simulators" : {
+            "platform":"girder",
+            "destination":"kub/",
+            "type":"item",
+            "remote_location":"675051994c9ccbdde21a4707"
+        },
+        "gis":{
+            "platform":"girder",
+            "destination":"kub/gis.json",
+            "type":"file",
+            "remote_location":"66267bd3b0e95728eb00f6e9"
+        },
+        "mesh":{
+            "platform":"girder",
+            "destination":"kub/mesh.msh",
+            "type":"file",
+            "remote_location":"66267bd3b0e95728eb00f6ec"
+        },
+        "weather":{
+            "platform":"girder",
+            "destination":"kub/weather.csv",
+            "type":"file",
+            "remote_location":"662f9434b0e95728eb00f7ad"
+        },
+        "scenarios":{
+            "platform":"girder",
+            "destination":"kub/",
+            "type":"item",
+            "remote_location":"67b496894c9ccbdde21a5769"
+        },
+        "config":{
+            "platform":"girder",
+            "destination":"kub/kub.cfg",
+            "type":"file",
+            "remote_location":"67b4a9904c9ccbdde21a5775"
+        }
+    },
     "options": [
-        "--config-file {{platforms.{{machine.platform}}.input_dir}}/Poznan.cfg",
-        "--cem.database.directory {{output_directory}}/{{use_case_name}}/{{instance}}"
+        "--config-file {{platforms.{{machine.platform}}.input_dir}}/kub.cfg",
+        "--cem.simulator.lod0.modelisation.maxfloors=10",
+
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding1Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding2Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding3Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding4Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding5Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding6Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding7Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding8Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding9Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding10Floors.fmu",
+
+        "--cem.simulator.sun.filename={{platforms.{{machine.platform}}.input_dir}}/simulators/Sun.fmu",
+
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc1.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc2.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc3.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc4.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc5.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc6.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc7.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc8.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc9.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc10.json",
+
+        "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/gis.json",
+        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/mesh.msh",
+        "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/weather.csv",
+        "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/scenarios_local/scenarios.json",
+
+        "--cem.instance.time.start=0",
+        "--cem.instance.time.stop=86400",
+        "--cem.instance.time.step=3600",
+
+        "--cem.instance.postprocess.export.visualization.enabled=false",
+        "--cem.instance.postprocess.export.report.enabled=false",
+        "--cem.instance.postprocess.export.outputs.csv.enabled=false",
+        "--cem.instance.solar_shading.enabled=true",
+        "--cem.instance.idealflows.enabled=true",
+
+        "--cem.database.directory {{output_directory}}/{{instance}}/{{use_case_name}}",
+        "--directory {{output_directory}}/{{instance}}/{{use_case_name}}"
     ],
-    "outputs": [],
     "scalability": {
-        "directory": "{{output_directory}}/{{use_case_name}}/{{instance}}/cem/",
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}/cem/",
         "stages": [
             {
                 "name":"",
                 "filepath": "instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
                 "format": "json",
-                "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max"],
-                "units":{
-                    "*":"custom instance unit",
-                    "postprocess.exportOutputs":"exportOutputs unit special",
-                    "simulation.buildingExecuteStep":"buildingExecuteStep unit special"
-                }
+                "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max","execute.subtimers.*.timeElapsed.max"]
             },
             {
                 "name":"",
                 "filepath": "logs/timers.json",
                 "format": "json",
-                "variables_path":["*.timeElapsed.max","*.subtimers.updateForUse.subtimers.*.timeElapsed.max"],
-                "units":{
-                    "*":"custom unit"
-                }
+                "variables_path":["*.timeElapsed.max","*.subtimers.*.subtimers.*.timeElapsed.max"]
             }
         ]
     },
@@ -63,8 +136,11 @@
             "name": "resources",
             "sequence": [
                 {"tasks":32, "exclusive_access":true},
-                {"tasks":64, "exclusive_access":true},
-                {"tasks":128, "exclusive_access":true}
+                {"tasks":64, "exclusive_access":true}
+                // {"tasks":128, "exclusive_access":true},
+                // {"tasks":256, "exclusive_access":true},
+                // {"tasks":384, "exclusive_access":true},
+                // {"tasks":512, "exclusive_access":true}
             ]
         }
     ]

@@ -48,25 +48,13 @@ class Scalability(BaseModel):
 
 
 class Image(BaseModel):
-    protocol:Optional[Literal["oras","docker","library","local"]] = None
+    remote: Optional[str] = None
     name:str
-
-    @model_validator(mode="before")
-    def extractProtocol(self):
-        """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
-        If local, checks if the image exists """
-
-        self["protocol"] = self["name"].split("://")[0] if "://" in self["name"] else "local"
-
-        if self["protocol"] not in ["oras","docker","library","local"]:
-            raise ValueError("Unkown Protocol")
-
-        return self
 
     @field_validator("name", mode="after")
     @classmethod
     def checkImage(cls,v,info):
-        if info.data["protocol"] == "local" and not ("{{"  in v  or "}}" in v) :
+        if not info.data["remote"] and not ("{{"  in v  or "}}" in v) :
             if not os.path.exists(v):
                 if info.context and info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")
@@ -103,6 +91,12 @@ class Resources(BaseModel):
         ), "Tasks - tasks_per_node - nodes combination is not supported"
         return self
 
+class RemoteData(BaseModel):
+    platform: Literal["girder"]
+    destination: str
+    type: Literal["folder","item","file"]
+    remote_location:str
+
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
@@ -112,6 +106,7 @@ class ConfigFile(BaseModel):
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
+    remote_input_dependencies: Optional[Dict[str,RemoteData]] = {}
     input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
     sanity: Sanity

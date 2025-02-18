@@ -5,7 +5,7 @@ from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.reporting import WebsiteConfig
 from feelpp.benchmarking.reframe.commandBuilder import CommandBuilder
-
+from feelpp.benchmarking.report.config.handlers import GirderHandler
 
 def main_cli():
     parser = Parser()
@@ -42,6 +42,40 @@ def main_cli():
         report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
         app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
         app_reader.updateConfig() #Update with own field
+
+        #===============PULL IMAGES==================#
+        if not parser.args.dry_run:
+            for platform_name, platform_field in app_reader.config.platforms.items():
+                if not platform_field.image or not platform_field.image.remote or not machine_reader.config.containers[platform_name].executable:
+                    continue
+                if platform_name == "apptainer":
+                    subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
+                else:
+                    raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
+        #=============================================#
+
+        #===== Download remote dependencies ============#
+        if app_reader.config.remote_input_dependencies:
+            if any(v.platform for v in app_reader.config.remote_input_dependencies.values()):
+                girder_handler = GirderHandler(machine_reader.config.input_dataset_base_dir)
+        for dependency_name,remote_dependency in app_reader.config.remote_input_dependencies.items():
+            print(f"Donwloading remote file dependency : {dependency_name} ...")
+            if remote_dependency.platform == "girder":
+                if remote_dependency.type == "file":
+                    girder_handler.downloadFile(
+                        remote_dependency.remote_location,
+                        os.path.dirname(remote_dependency.destination),
+                        name=os.path.basename(remote_dependency.destination)
+                    )
+                elif remote_dependency.type == "folder":
+                    girder_handler.downloadFolder(remote_dependency.remote_location,remote_dependency.destination)
+                elif remote_dependency.type == "item":
+                    girder_handler.downloadItem(remote_dependency.remote_location,remote_dependency.destination)
+                else:
+                    raise NotImplementedError(f"Type {remote_dependency.type} is not implemented for {dependency_name}")
+            else:
+                raise NotImplementedError(f"Platform {remote_dependency.platform} is not implemented for {dependency_name}")
+        #================================================#
 
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
 
