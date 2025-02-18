@@ -91,6 +91,12 @@ class Resources(BaseModel):
         ), "Tasks - tasks_per_node - nodes combination is not supported"
         return self
 
+class RemoteData(BaseModel):
+    platform: Literal["girder"]
+    destination: str
+    type: Literal["folder","item","file"]
+    remote_location:str
+
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
@@ -100,6 +106,7 @@ class ConfigFile(BaseModel):
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
+    remote_input_dependencies: Optional[Dict[str,RemoteData]] = {}
     input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
     sanity: Sanity
