@@ -116,7 +116,7 @@ class ConfigFile(BaseModel):
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
-    additional_files: Optional[AdditionalFiles] = None
+    additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     plots: Optional[List[Plot]] = []
 
     model_config = ConfigDict( extra='allow' )

@@ -32,10 +32,15 @@ class CommandBuilder:
         """Write the ReFrame execution flag depending on the parser arguments.
             Examples are --dry-run or -r
         """
-        if self.parser.args.dry_run:
-            return "--dry-run --exec-policy serial"
+        opts = []
+        if self.parser.args.dry_run or self.parser.args.list:
+            if self.parser.args.dry_run:
+                opts += ["--dry-run","--exec-policy serial"]
+            if self.parser.args.list:
+                opts += ["--list"]
         else:
-            return "-r"
+            opts += ["-r"]
+        return " ".join(opts)
 
     def buildJobOptions(self,timeout):
         #TODO: Generalize (only workf for slurm ?)
