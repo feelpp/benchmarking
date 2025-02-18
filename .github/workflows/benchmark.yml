@@ -102,7 +102,8 @@ jobs:
                 path: ./tmp/
         -   name: Create machine config
             run: |
-                printf "${{ toJson(matrix.system_config) }}" >> ./tmp/machine_config.json
+                json_machine_config=${{ toJson(matrix.system_config) }}
+                echo "$json_machine_config" | jq . > ./tmp/machine_config.json
         -   name: Setup machine and env
             run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}.sh
         -   name: Execute benchmarks
