@@ -68,7 +68,7 @@ jobs:
 
                 filtered_systems_config=$(echo "$machine_config" | jq --arg valid_systems "$valid_systems" '
                     ($valid_systems | split(",")) as $systems |
-                    [with_entries(select([.key] | inside($systems))) ]
+                    with_entries(select([.key] | inside($systems))) | [.[]]
                 ')
                 echo "matrix=$(jq -c --null-input --argjson config "$filtered_systems_config" '{include: $config}')" >> $GITHUB_OUTPUT
 
