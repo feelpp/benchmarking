@@ -117,17 +117,20 @@ jobs:
         if: ${{ github.event.inputs.upload_id == '' && github.event.client_payload.upload_id == '' }}
         steps:
         -   uses: actions/checkout@v4
+
         -   name: Download results
             uses: actions/download-artifact@v4
             with:
                 pattern: benchmark-results-*
                 path: ./tmp/results/
                 merge-multiple: false
+
         -   name: Create Virtual Environment
             run: |
                 python3 -m venv .venv
                 source .venv/bin/activate
-                pip3 install -r requirements.txt
+                pip3 install .
+
         -   name: Upload to girder
             run: |
                 source .venv/bin/activate
@@ -135,6 +138,7 @@ jobs:
                 girder-upload --item "./tmp/results/*" --girder_id $staging_folder_id
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
         -   name: Update Index Date
             run: |
                 sed -i "s/^:docdatetime: .*/:docdatetime: $(date +'%Y-%m-%dT%H:%M:%S')/" "docs/modules/ROOT/pages/index.adoc"
