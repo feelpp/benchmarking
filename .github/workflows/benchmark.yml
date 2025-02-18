@@ -62,8 +62,7 @@ jobs:
             id: hpc-systems
             run: |
                 valid_systems=${{ github.event.inputs.hpc-systems || github.event.client_payload.hpc-systems }}
-                echo "::add-mask::'${{ steps.download_systems_config.outputs.machine_config }}'"
-                machine_config=${{ steps.download_systems_config.outputs.machine_config }}'
+                machine_config='${{ steps.download_systems_config.outputs.machine_config }}'
 
                 filtered_systems_config=$(echo "$machine_config" | jq --arg valid_systems "$valid_systems" '
                     ($valid_systems | split(",")) as $systems |
@@ -90,7 +89,6 @@ jobs:
 
         -   name: Create machine config
             run: |
-                echo "::add-mask::'${{ toJson(matrix.system_config) }}'"
                 json_machine_config='${{ toJson(matrix.system_config) }}'
                 echo "$json_machine_config" > machine_config.json
 
