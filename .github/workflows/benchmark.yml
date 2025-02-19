@@ -80,7 +80,7 @@ jobs:
                     else
                         echo "No online runners for $tag ..."
                     fi
-                done < <(echo $(echo "$filtered_systems_config" | jq -r '.[]'))
+                done < <(echo $(echo "${{steps.filter-systems.outputs.filtered_systems_config}}" | jq -r '.[]'))
 
                 echo "available_systems=$available_systems" >> GITHUB_OUTPUT
 
