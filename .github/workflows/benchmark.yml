@@ -60,28 +60,27 @@ jobs:
                                     -H "X-GitHub-Api-Version: 2022-11-28" \
                                     https://api.github.com/orgs/feelpp/actions/runners
                             )
-                echo $all_runners
-                check()
-                {
-                    runners_data="$1"
-                    label_name="$2"
-                    if echo "$runners_data" | grep -q "$label_name"; then
-                        echo "true"
-                    else
-                        echo "false"
-                    fi
-                }
+                all_runners=$(echo $all_runners | jq -r '.runners')
 
                 available_systems="[]"
 
-                for system in $(echo "${{steps.filter-systems.outputs.filtered_systems_config}}" | jq -c '.[]'); do
-                    runner_tag=$(echo "$system" | jq -r '.runner_tag')
-                    if [[ $(check "$all_runners" "$runner_tag") == "true" ]]; then
-                        available_systems=$(echo "$available_systems" | jq --argjson system "$system" '. + [$system]')
-                    else
-                        echo "$runner_tag is unavailable for machine $machine..."
+                while read -r system; do
+                    tag=$(echo "$system" | jq -r .runner_tag);
+                    runner=$(echo "$all_runners" | jq --arg tag "$tag" '
+                        map(select(.labels[].name | contains($tag)))
+                    ')
+
+                    if [ "$(echo "$runner" | jq 'length')" -eq 0 ]; then
+                        echo "No runner found for $tag ..."
+                        continue
                     fi
-                done
+
+                    if echo "$runner" | jq -e 'map(select(.status == "online")) | length > 0' >/dev/null; then
+                        available_systems=$(echo "$available_systems" | jq --argjson sys "$system" '. + [$sys]')
+                    else
+                        echo "No online runners for $tag ..."
+                    fi
+                done < <(echo $(echo "$filtered_systems_config" | jq -r '.[]'))
 
                 echo "available_systems=$available_systems" >> GITHUB_OUTPUT
 
