@@ -110,7 +110,8 @@ jobs:
             run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/setup.sh
             env:
                 PROJECT_ID: ${{matrix.project_id || ''}}
-        -   name: Execute benchmarks
+        -   name: Execute benchmarks (CLI)
+            if: ${{ matrix.submit == 'cli' }}
             run: |
                 source .venv/bin/activate
                 execute-benchmark \
@@ -120,6 +121,18 @@ jobs:
                     -v
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
+        -   name: Execute benchmarks (slurm)
+            if: ${{ matrix.submit == 'slurm' }}
+            run: |
+                sbatch ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/launchBenchmark.sh \
+                    -m machine_config.json \
+                    -b ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
+                    -p ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
+            env:
+                ACCOUNT: ${{matrix.project_id || ''}}
+                QOS: ${{matrix.qos || ''}}
+                SUBMIT_PARTITION: ${{matrix.submit_partition || ''}}
 
         -   name: Parse reports path
             id: parse_reports_path
