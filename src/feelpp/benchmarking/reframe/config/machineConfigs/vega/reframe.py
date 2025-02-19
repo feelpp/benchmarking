@@ -15,7 +15,7 @@ site_configuration = {
                     'name': 'cpu',
                     'scheduler': 'slurm',
                     'launcher': 'srun',
-                    # 'max_jobs': 8,
+                    'max_jobs': 8,
                     'access': [f"--partition=cpu"],
                     'environs': ['default'],
                     'processor': {
