@@ -84,8 +84,6 @@ jobs:
                 done
 
                 echo "available_systems=$available_systems" >> GITHUB_OUTPUT
-            env:
-                GH_TOKEN: ${{ secrets.TOKEN_RUNNER }}
 
         -   name: Set matrix
             id: hpc-systems
