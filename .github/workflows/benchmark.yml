@@ -55,7 +55,10 @@ jobs:
         -   name: Filter Available Runners
             id: filter-available-systems
             run: |
-                all_runners=$(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /orgs/feelpp/actions/runners)
+                all_runners=$(curl -H "Accept: application/vnd.github+json" \
+                                    -H "Authorization: Bearer ${{ secrets.CR_PAT }}" \
+                                    https://api.github.com/orgs/your-org/actions/runners
+                            )
                 echo $all_runners
                 check()
                 {
