@@ -32,6 +32,7 @@ class MachineConfig(BaseModel):
     input_dataset_base_dir:Optional[str] = None
     input_user_dir:Optional[str] = None
     output_app_dir:str
+    access:Optional[list[str]] = []
     env_variables:Optional[Dict] = {}
     containers:Optional[Dict[str,Container]] = {}
 
