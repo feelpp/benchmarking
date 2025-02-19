@@ -1,0 +1,21 @@
+{
+    "machine": "discoverer",
+    "targets":["cn:apptainer:default"],
+    "execution_policy": "async",
+    "reframe_base_dir":"./build/reframe",
+    "reports_base_dir":"./reports/",
+    "project_id":"ehpc-dev-2024d05-047",
+    "input_dataset_base_dir":"/disco2fs/ehpc-dev-2024d05-047/vchabannes/inputdataset",
+    "output_app_dir":"/disco2fs/ehpc-dev-2024d05-047/vchabannes/apptainer_home",
+    "access":["--account=ehpc-dev-2024d05-047","--qos=ehpc-dev-2024d05-047"],
+    "env_variables":{
+        "MODULEPATH":"/opt/software/modulefiles"
+    },
+    "containers":{
+        "apptainer":{
+            "image_base_dir":"/home/vchabannes",
+            "options":[],
+            "executable": "singularity"
+        }
+    }
+}

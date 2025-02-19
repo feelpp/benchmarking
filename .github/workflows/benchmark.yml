@@ -69,7 +69,8 @@ jobs:
 
         -   name: Setup machine and env
             run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}.sh
-
+            env:
+                PROJECT_ID: ${{matrix.project_id || ''}}
         -   name: Execute benchmarks
             run: |
                 source .venv/bin/activate
