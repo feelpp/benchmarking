@@ -83,13 +83,12 @@ jobs:
                 done < <(echo '${{steps.filter-systems.outputs.filtered_systems_config}}' | jq -c '.[]')
 
                 available_systems=$(jq --compact-output '.' <<< $available_systems)
-                echo "available_systems=$available_systems" >> GITHUB_OUTPUT
+                echo "available_systems=$available_systems" >> $GITHUB_OUTPUT
 
         -   name: Set matrix
             id: hpc-systems
             run: |
-                available_systems='${{steps.filter-available-systems.outputs.available_systems}}'
-                echo "matrix=$(jq -c --null-input --argjson config ${available_systems:-[]} '{include: $config}')" >> $GITHUB_OUTPUT
+                echo "matrix=$(jq -c --null-input --argjson config '${{steps.filter-available-systems.outputs.available_systems}}' '{include: $config}')" >> $GITHUB_OUTPUT
 
     benchmark:
         needs: [factory]
