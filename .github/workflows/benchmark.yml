@@ -88,7 +88,7 @@ jobs:
         -   name: Set matrix
             id: hpc-systems
             run: |
-                echo "matrix=$(jq -c --null-input --argjson config "${{steps.filter-available-systems.outputs.available_systems}}" '{include: $config}')" >> $GITHUB_OUTPUT
+                echo "matrix=$(jq -c --null-input --argjson config '${{steps.filter-available-systems.outputs.available_systems}}' '{include: $config}')" >> $GITHUB_OUTPUT
 
     benchmark:
         needs: [factory]
