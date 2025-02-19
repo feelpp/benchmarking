@@ -57,7 +57,7 @@ jobs:
             run: |
                 all_runners=$(curl -H "Accept: application/vnd.github+json" \
                                     -H "Authorization: Bearer ${{ secrets.CR_PAT }}" \
-                                    https://api.github.com/orgs/your-org/actions/runners
+                                    https://api.github.com/orgs/feelpp/actions/runners
                             )
                 echo $all_runners
                 check()
