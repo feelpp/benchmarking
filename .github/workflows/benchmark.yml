@@ -49,6 +49,7 @@ jobs:
                     ($valid_systems | split(",")) as $systems |
                     with_entries(select([.key] | inside($systems))) | [.[]]
                 ')
+                filtered_systems_config=$(jq --compact-output '' <<< $filtered_systems_config)
                 echo "filtered_systems_config=$filtered_systems_config" >> $GITHUB_OUTPUT
 
         -   name: Filter Available Runners
@@ -67,14 +68,14 @@ jobs:
                     fi
                 }
 
-                available_systems="{}"
+                available_systems="[]"
 
-                for key in $(echo "${{steps.filter-systems.outputs.filtered_systems_config}}" | jq -r 'keys[]'); do
-                    runner_tag=$(echo "$filtered_systems_config" | jq -r --arg key "$key" '.[$key].runner_tag')
+                for system in $(echo "${{steps.filter-systems.outputs.filtered_systems_config}}" | jq -c '.[]'); do
+                    runner_tag=$(echo "$system" | jq -r '.runner_tag')
                     if [[ $(check "$all_runners" "$runner_tag") == "true" ]]; then
-                        available_systems=$(echo "$available_systems" | jq --arg key "$key" --argjson value "$(echo "$filtered_systems_config" | jq --arg key "$key" '.[$key]')" '. + {($key): $value}')
+                        available_systems=$(echo "$available_systems" | jq --argjson system "$system" '. + [$system]')
                     else
-                        echo "$runner_tag is unavailable..."
+                        echo "$runner_tag is unavailable for machine $machine..."
                     fi
                 done
 
