@@ -68,7 +68,7 @@ jobs:
                 echo "$json_machine_config" > machine_config.json
 
         -   name: Setup machine and env
-            run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}.sh
+            run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/setup.sh
             env:
                 PROJECT_ID: ${{matrix.project_id || ''}}
         -   name: Execute benchmarks

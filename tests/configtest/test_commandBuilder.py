@@ -75,7 +75,8 @@ class TestCommandBuilder:
         """Tests the buildConfigFilePath method of the CommandBuilder"""
         cfg_filepath = cmd_builder.buildConfigFilePath()
         assert cfg_filepath.endswith(".py")
-        assert os.path.basename(cfg_filepath) == f"{machine_config.machine}.py"
+        assert os.path.basename(cfg_filepath) == f"reframe.py"
+        assert os.path.dirname(cfg_filepath).split("/")[-1] == machine_config.machine
 
 
     def test_createReportFolder(self,cmd_builder,machine_config):
@@ -120,7 +121,7 @@ class TestCommandBuilder:
 
         expected_command = (
             "reframe "
-            f"-C {cmd_builder.getScriptRootDir()}/config/machineConfigs/{machine_config.machine}.py "
+            f"-C {cmd_builder.getScriptRootDir()}/config/machineConfigs/{machine_config.machine}/reframe.py "
             f"-c {cmd_builder.getScriptRootDir()}/regression.py "
             f"-S report_dir_path={machine_config.reports_base_dir}/{executable}/{use_case}/{machine_config.machine}/{cmd_builder.current_date} "
             f"--system={machine_config.machine} "
