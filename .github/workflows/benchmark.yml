@@ -80,8 +80,9 @@ jobs:
                     else
                         echo "No online runners for $tag ..."
                     fi
-                done < <(echo "${{steps.filter-systems.outputs.filtered_systems_config}}" | jq -c '.[]')
+                done < <(echo '${{steps.filter-systems.outputs.filtered_systems_config}}' | jq -c '.[]')
 
+                available_systems=$(jq --compact-output '' <<< $available_systems)
                 echo "available_systems=$available_systems" >> GITHUB_OUTPUT
 
         -   name: Set matrix
