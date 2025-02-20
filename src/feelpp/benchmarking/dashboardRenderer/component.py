@@ -73,6 +73,9 @@ class LeafComponent(Component):
 
     def initBaseController(self):
         self.leaf_page_controller:Controller = BaseControllerFactory.create("leaf")
+        self.leaf_page_controller.updateData(dict(
+            title = self.id
+        ))
 
     def buildFilename(self):
         extension = self.leaf_page_controller.output_filename.split(".")[-1]
