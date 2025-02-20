@@ -1,6 +1,6 @@
 from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata
-import os
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata, LeafTemplateData
+import os, json
 from itertools import permutations
 
 class Component:
@@ -12,7 +12,7 @@ class NodeComponent(Component):
         self.id = id
         self.initBaseController(metadata)
         self.parent_repository_id = parent_repository_id
-
+        self.metadata = metadata
         self.views = {}
 
     def initBaseController(self,metadata:Metadata):
@@ -46,14 +46,19 @@ class NodeComponent(Component):
                     )
 
 
-    def render(self,base_dir:str, parent_id, views = None) -> None:
+    def render(self,base_dir:str, parent, parent_id, views = None ) -> None:
         views = self.views if views is None else views
 
         component_dir = os.path.join(base_dir,self.id)
         if not os.path.isdir(component_dir):
             os.mkdir(component_dir)
 
-        self.index_page_controller.render(component_dir, parent_ids = parent_id, self_id = f"{parent_id}-{self.id}")
+        self.index_page_controller.render(
+            component_dir,
+            parent_ids = parent_id,
+            breadcrumbs = parent.metadata.display_name + " > " + self.metadata.display_name,
+            self_id = f"{parent_id}-{self.id}"
+        )
 
         if not isinstance(views,dict):
             return
@@ -61,15 +66,29 @@ class NodeComponent(Component):
             for children_component,children_view in children_views.items():
                 children_component.render(
                     component_dir,
+                    parent = self,
                     parent_id = f"{parent_id}-{self.id}",
                     views = children_view
                 )
 
 class LeafComponent(Component):
-    def __init__(self, id:str , data_path: str, parents: list[str]):
+    def __init__(self, id:str , data_path: str, template_data:dict[str,str], parents: list[str]):
         self.id = id
         self.parents = parents
+
         self.initBaseController()
+        for data in template_data:
+            if data.action == "input":
+                with open(os.path.join(data_path,data.filename),"r") as f:
+                    if data.format == "json":
+                        data_dict = json.load(f)
+                        self.leaf_page_controller.updateData({data.prefix:data_dict} if data.prefix else data_dict)
+                    else:
+                        raise NotImplementedError(f"Format {data.format} is supported")
+            else:
+                raise NotImplementedError(f"Action {data.action} is supported")
+
+
 
     def initBaseController(self):
         self.leaf_page_controller:Controller = BaseControllerFactory.create("leaf")

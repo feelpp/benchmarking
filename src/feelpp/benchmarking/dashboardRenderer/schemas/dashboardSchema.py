@@ -2,9 +2,16 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional, Union
 
 
+class LeafTemplateData(BaseModel):
+    filename: str
+    prefix: Optional[str] = ""
+    format: str
+    action: Optional[str] = "input"
+
 class LeafMetadata(BaseModel):
     path: Optional[str] = None
     platform: Optional[str] = "local"
+    template_data:Optional[List[LeafTemplateData]] = []
 
 class ComponentMap(BaseModel):
     component_order: List[str]

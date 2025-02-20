@@ -47,6 +47,7 @@ class NodeComponentRepository(Repository):
     def __init__( self, id:str, components:dict[str,dict], metadata: Metadata ):
         super().__init__(id)
         self.data: list[NodeComponent]
+        self.metadata = metadata
 
         self.initBaseController(metadata)
 
@@ -101,7 +102,7 @@ class NodeComponentRepository(Repository):
         self.index_page_controller.render(repository_dir)
 
         for component in self.data:
-            component.render(base_dir = repository_dir, parent_id= self.id)
+            component.render(base_dir = repository_dir, parent= self, parent_id=self.id)
 
 
 class LeafComponentRepository(Repository):
@@ -116,7 +117,7 @@ class LeafComponentRepository(Repository):
         if not isinstance(d, dict):
             return
 
-        if all(not isinstance(v, dict) for v in d.values()):
+        if any(not isinstance(v, dict) for v in d.values()):
             self.addLeaves(LeafMetadata(**d),path,other_repositories)
         else:
             for key, value in d.items():
@@ -143,6 +144,7 @@ class LeafComponentRepository(Repository):
             self.add(LeafComponent(
                 f"{leaf_component_dir}",
                 os.path.join(leaf_config.path,leaf_component_dir),
+                leaf_config.template_data,
                 [self.getParentComponent(parent_id,other_repositories) for parent_id in parent_path]
             ))
 
