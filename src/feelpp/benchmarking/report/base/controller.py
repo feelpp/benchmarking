@@ -26,8 +26,14 @@ class Controller:
     def generateSubfigure(self, subfigure):
         return {
             "exports": [
-                { "display_text":"CSV", "filename":"data.csv", "data":subfigure.createCsv(self.model.master_df) },
-                { "display_text":"LaTeX", "filename":"figure.tex", "data":subfigure.createTex(self.model.master_df) },
+                { "display_text":"CSV", "data":[
+                    { "format":"csv", "prefix":"data","content":subfigure.createCsvs(self.model.master_df)}
+                ]},
+                { "display_text":"LaTeX", "data":[
+                    {"format":"tex","content":[{ "data":subfigure.createTex(self.model.master_df), "title":"figures" }]},
+                    {"format":"csv","content":subfigure.createCsvs(self.model.master_df)}
+
+                ]},
             ],
             "html": subfigure.createFigureHtml(self.model.master_df)
         }

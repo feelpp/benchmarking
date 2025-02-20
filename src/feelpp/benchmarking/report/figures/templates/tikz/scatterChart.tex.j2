@@ -7,6 +7,7 @@
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=newest}
 \usepgfplotslibrary{fillbetween}
+\usepackage{underscore}
 
 \begin{document}
 
@@ -40,10 +41,8 @@
 }
 
 
-{% for df in csv_datasets %}
-\pgfplotstableread{
-{{df}}
-}\data{{loop.index | inttouniquestr }}
+{% for fn in csv_filenames %}
+\pgfplotstableread[col sep=comma]{{'{'}}{{fn}}{{'}'}}\data{{loop.index | inttouniquestr }}
 {% endfor %}
 
 

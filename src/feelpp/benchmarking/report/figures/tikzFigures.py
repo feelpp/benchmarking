@@ -11,18 +11,6 @@ class TikzFigure(Figure):
         self.renderer = Renderer(self.template_dirpath,renderer_filename)
         self.xcolors = ["red","green","blue","magenta","yellow","black","gray","white","darkgray","lightgray","olive","orange","pink","purple","teal","violet","cyan","brown","lime"]
 
-    def parseSpecialCharacters(self, value, replace_map = {"_":"-"}):
-        """ Replaces certain characters with other ones depending on the replace_map
-        Args:
-            value (str): String to parse
-            replace_map (dict[str,str]): Characters to replace and their respective replace values
-        Returns:
-            str: Parsed string with characters replaced
-        """
-        parsed_value = str(value)
-        for char,replace_char in replace_map.items():
-            parsed_value = parsed_value.replace(char,replace_char)
-        return parsed_value
 
     def createMultiindexFigure(self, df, **args):
         """ Creates a latex tikz (pgfplots) figure from a multiIndex dataframe
@@ -33,7 +21,7 @@ class TikzFigure(Figure):
         """
         secondary_axis = self.transformation_strategy.dimensions["secondary_axis"]
         anim_dim_values = df.index.get_level_values(secondary_axis).unique().values
-        return self.parseSpecialCharacters(self.renderer.template.render(
+        return self.renderer.template.render(
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
             caption = self.config.title,
@@ -41,9 +29,9 @@ class TikzFigure(Figure):
             names = self.config.names or df.columns.to_list(),
             secondary_axis = self.config.secondary_axis,
             anim_dimension_values = [str(dim) for dim in anim_dim_values],
-            csv_datasets = [df.xs(dim,level=secondary_axis,axis=0).to_csv(sep="\t") for dim in anim_dim_values],
+            csv_filenames = [f"{dim}.csv" for dim in anim_dim_values],
             **args
-        ))
+        )
 
     def createSimpleFigure(self, df, **args):
         """ Creates a latex tikz (pgfplots) figure from a given dataframe
@@ -52,15 +40,15 @@ class TikzFigure(Figure):
         Returns:
             str: latex file content containing the pgfplots figure
         """
-        return self.parseSpecialCharacters(self.renderer.template.render(
+        return self.renderer.template.render(
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
             caption = self.config.title,
             variables = df.columns.to_list(),
             names = self.config.names or df.columns.to_list(),
-            csv_datasets = [df.to_csv(sep="\t")],
+            csv_filenames = [f"{self.config.title}.csv"],
             **args
-        ))
+        )
 
 
 class TikzScatterFigure(TikzFigure):
