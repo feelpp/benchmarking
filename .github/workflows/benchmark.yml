@@ -129,7 +129,7 @@ jobs:
                     --time 02:00:00 \
                     --account ${{matrix.project_id}} \
                     --qos ${{matrix.qos}} \
-                    --nodes 1 --ntasks 1 --cpus-per-task 1 --ntasts-per-node 1 \
+                    --nodes 1 --ntasks 1 --cpus-per-task 1 --ntasks-per-node 1 \
                     ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/launchBenchmark.sh \
                         -m machine_config.json \
                         -b ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
