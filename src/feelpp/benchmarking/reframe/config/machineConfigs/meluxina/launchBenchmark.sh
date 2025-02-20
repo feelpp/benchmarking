@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --qos=${QOS}
-#SBATCH --ntasks-per-node=8         #reframe can submit 8 jobs at the time, async.
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --time=02:00:00
 #SBATCH --partition=${SUBMIT_PARTITION}
