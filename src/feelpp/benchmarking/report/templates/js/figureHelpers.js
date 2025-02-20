@@ -1,15 +1,25 @@
+function downloadFilesAsZip(data, zipFilename) {
+    const zip = new JSZip();
 
-function downloadString(data, filename, mimeType ) {
-    const blob = new Blob([data], { type: `${mimeType};charset=utf-8` });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    data.forEach((d) => {
+        d.content.forEach((c) => {
+        const filename = `${c.title}.${d.format}`;
+        zip.file(filename, c.data);
+        });
+    });
+
+    zip.generateAsync({ type: "blob" }).then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = zipFilename || "download.zip";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
 }
+
 
 function switchTab(figureIndex, tabIndex) {
     let subfigures = document.querySelectorAll(`[id^="subfig_${figureIndex}_"]`);

@@ -15,7 +15,7 @@
       <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" id="subfig_{{ figure_i }}_{{ loop.index }}">
         <div class='export-container'>
         {% for export in subfigure.exports %}
-            <button onclick='downloadString(`{{export.data | tojson | stripquotes}}`,"{{export.filename}}","plain/text")' >
+            <button onclick='downloadFilesAsZip({{export.data | tojson | stripquotes}},"download.zip")' >
                 {{export.display_text}}
             </button>
         {% endfor %}
