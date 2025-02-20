@@ -1,12 +1,4 @@
 #!/bin/bash -l
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --qos=${QOS}
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
-#SBATCH --time=02:00:00
-#SBATCH --partition=${SUBMIT_PARTITION}
-#SBATCH --account=${ACCOUNT}
 
 module load Apptainer/1.2.4-GCCcore-12.3.0
 
