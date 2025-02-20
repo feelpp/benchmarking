@@ -125,7 +125,7 @@ jobs:
         -   name: Execute benchmarks (slurm)
             if: ${{ matrix.submit == 'slurm' }}
             run: |
-                sbatch ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/launchBenchmark.sh \
+                srun ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/launchBenchmark.sh \
                     -m machine_config.json \
                     -b ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
                     -p ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
