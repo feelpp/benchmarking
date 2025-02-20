@@ -8,6 +8,7 @@
 #SBATCH --partition=${SUBMIT_PARTITION}
 #SBATCH --account=${ACCOUNT}
 
+module load Apptainer/1.2.4-GCCcore-12.3.0
 
 export GIRDER_API_KEY=$GIRDER_API_KEY
 
