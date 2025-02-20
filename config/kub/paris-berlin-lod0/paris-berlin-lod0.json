@@ -4,7 +4,7 @@
     "use_case_name": "Paris_Berlin",
     "timeout":"0-2:00:0",
     "resources":{
-        "nodes":"{{parameters.nodes.value}}",
+        "nodes":"{{parameters.resources.nodes.value}}",
         "tasks_per_node":128,
         "exclusive_access":true
     },
@@ -34,23 +34,17 @@
             "type":"item",
             "remote_location":"675051994c9ccbdde21a4707"
         },
-        "gis":{
+        "berlin":{
             "platform":"girder",
-            "destination":"kub/",
-            "type":"item",
-            "remote_location":""
+            "destination":"kub/Berlin/",
+            "type":"folder",
+            "remote_location":"67b7532f4c9ccbdde21a5800"
         },
-        "mesh":{
+        "paris":{
             "platform":"girder",
-            "destination":"kub/",
-            "type":"item",
-            "remote_location":""
-        },
-        "weather":{
-            "platform":"girder",
-            "destination":"kub/",
-            "type":"item",
-            "remote_location":""
+            "destination":"kub/Paris/",
+            "type":"folder",
+            "remote_location":"67b7533f4c9ccbdde21a5802"
         },
         "scenarios":{
             "platform":"girder",
@@ -93,9 +87,10 @@
         "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc9.json",
         "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc10.json",
 
-        "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/gis/{{parameters.city.value}}/{{parameters.mesh_detail.value}}.json",
-        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/meshes/{{parameters.city.value}}/{{parameters.mesh_detail.value}}.msh",
-        "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/weather/{{parameters.city.value}}.csv",
+        "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/{{parameters.city.value}}/{{parameters.mesh_detail.value}}/gis.json",
+        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/{{parameters.city.value}}/{{parameters.mesh_detail.value}}/mesh_0_Lod0.msh",
+        "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/{{parameters.city.value}}/{{parameters.mesh_detail.value}}/weather-data-0.hourly-variables.csv",
+
         "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/scenarios_local/scenarios.json",
 
         "--cem.instance.time.start=0",
@@ -134,16 +129,25 @@
     },
     "parameters": [
         {
-            "name": "nodes",
-            "geometric": { "start":1, "ratio":2, "n_steps":7 }
+            "name": "resources",
+            "zip":[
+                {
+                    "name":"nodes",
+                    "geometric": { "start":1, "ratio":2, "n_steps":2 }
+                },
+                {
+                    "name":"tasks",
+                    "geometric":{"start":128,"ratio":2,"n_steps":2}
+                }
+            ]
         },
         {
             "name": "city",
-            "sequence": ["paris","berlin"]
+            "sequence": ["Paris","Berlin"]
         },
         {
             "name":"mesh_detail",
-            "sequence":["500k","1000k"]
+            "sequence":["1000m","2000m"]
         }
     ]
 }
