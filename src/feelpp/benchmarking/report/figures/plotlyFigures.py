@@ -244,7 +244,7 @@ class PlotlyGroupedBarFigure(PlotlyFigure):
             for col in df.columns
         ]
 
-class PlotlyHeatmapFigure(Figure):
+class PlotlyHeatmapFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
 
