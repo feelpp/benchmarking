@@ -298,6 +298,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def setupBeforeRun(self):
         """ Sets the necessary pre-run configurations"""
         self.job.launcher.options += self.current_partition.get_resource('launcher_options')
+        self.job.options += self.machine_setup.reader.config.access
 
         self.machine_setup.setupBeforeRun(self)
         self.app_setup.setupBeforeRun(self,self.machine_setup.reader.config)
