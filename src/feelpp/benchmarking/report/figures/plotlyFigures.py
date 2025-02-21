@@ -313,9 +313,20 @@ class PlotlySunburstFigure(PlotlyFigure):
 class Plotly3DFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
+        if len(self.transformation_strategy.dimensions["extra_axes"])>0:
+            self.y_axis = self.transformation_strategy.dimensions["extra_axes"][0]
+            self.y_axis_label = self.config.extra_axes[0].label
+        else:
+            self.y_axis = self.transformation_strategy.dimensions["secondary_axis"]
+            self.y_axis_label = self.config.secondary_axis.label if self.y_axis else self.config.color_axis.label if self.config.color_axis else ""
 
     def createMultiindexFigure(self, df):
-        return go.Figure(self.createTraces(df))
+        if len(df.index.names) == 2:
+            return super().createSimpleFigure(df) #3D simple figure is equivalent to a multiindex 2D figure
+        elif len(df.index.names) == 3:
+            return super().createMultiindexFigure(df)
+        else:
+            raise ValueError("3D figures can only be created from 2 or 3 level multiindex dataframes")
 
     def createSimpleFigure(self, df):
         raise ValueError("Secondary axis must be specified for 3d Figures")
@@ -328,7 +339,7 @@ class Plotly3DFigure(PlotlyFigure):
         )
         fig.update_scenes(
             xaxis_title=self.config.xaxis.label,
-            yaxis_title=self.config.secondary_axis.label if self.config.secondary_axis else self.config.color_axis.label if self.config.color_axis else "",
+            yaxis_title=self.y_axis_label,
             zaxis_title=self.config.yaxis.label
         )
         return fig
@@ -346,7 +357,9 @@ class PlotlyScatter3DFigure(Plotly3DFigure):
         """
         return [
             go.Scatter3d(
-                x=df.index.get_level_values(0), y=df.index.get_level_values(1), z=df[col],
+                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"]),
+                y=df.index.get_level_values(self.y_axis),
+                z=df[col],
                 mode='markers', name=col
             )
             for col in df.columns
@@ -366,7 +379,9 @@ class PlotlySurface3DFigure(Plotly3DFigure):
         """
         return [
             go.Mesh3d(
-                x=df.index.get_level_values(0), y=df.index.get_level_values(1), z=df[col],
+                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"]),
+                y=df.index.get_level_values(self.y_axis),
+                z=df[col],
                 opacity=0.5, name=col
             )
             for col in df.columns

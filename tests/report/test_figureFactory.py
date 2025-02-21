@@ -24,8 +24,8 @@ def test_figureFactory(types,expected_classes):
         assert len(types) == len(figures)
         for figure,expected_class in zip(figures,expected_classes):
             assert isinstance(figure,expected_class)
-            assert hasattr(figure,"createFigure") and callable(figure.createFigure)
-            assert hasattr(figure,"createTex") and callable(figure.createTex)
+            assert hasattr(figure,"createFigure") and callable(figure.createFigure), "Figure has no createFigure method"
+            assert hasattr(figure,"createTex") and callable(figure.createTex), "Figure has no createTex method"
     else:
         with pytest.raises(NotImplementedError):
             figures = FigureFactory.create(plot_config)

@@ -27,6 +27,7 @@ class Plot(BaseModel):
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
     color_axis:Optional[PlotAxis] = None
+    extra_axes:Optional[List[PlotAxis]] = []
     layout_modifiers: Optional[Dict] = {}
 
 
