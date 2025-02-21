@@ -331,8 +331,8 @@ class PlotlyParallelcoordinatesFigure(PlotlyFigure):
                 line=dict(color=melted_factorized["value"], colorscale='Electric', showscale=True),
                 dimensions = list(
                     [
-                        dict( label = df.index.name, values = melted_factorized[df.index.name], tickvals = melted_factorized[df.index.name], ticktext = melted[df.index.name] ),
-                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name], ticktext = melted[df.columns.name] )
+                        dict( label = df.index.name, values = melted_factorized[df.index.name], tickvals = melted_factorized[df.index.name].unique(), ticktext = melted[df.index.name].unique() ),
+                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name].unique(), ticktext = melted[df.columns.name].unique() )
                     ]
                 )
             )
@@ -347,10 +347,10 @@ class PlotlyParallelcoordinatesFigure(PlotlyFigure):
                 line=dict(color=melted_factorized["value"], colorscale='Electric', showscale=True),
                 dimensions = list(
                     [
-                        dict( label = ind, values = melted_factorized[ind], tickvals = melted_factorized[ind], ticktext = melted[ind] )
+                        dict( label = ind, values = melted_factorized[ind], tickvals = melted_factorized[ind].unique(), ticktext = melted[ind].unique() )
                         for ind in df.index.names
                     ] + [
-                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name], ticktext = melted[df.columns.name] )
+                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name].unique(), ticktext = melted[df.columns.name].unique() )
                     ]
                 )
             )
