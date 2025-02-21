@@ -2,7 +2,7 @@ from feelpp.benchmarking.report.transformationFactory import TransformationStrat
 
 from feelpp.benchmarking.report.figures.base import CompositeFigure
 from feelpp.benchmarking.report.figures.tikzFigures import TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
-from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure
+from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure
 
 
 
@@ -30,6 +30,11 @@ class GroupedBarFigure(CompositeFigure):
         self.plotly_figure = PlotlyGroupedBarFigure(plot_config,transformation_strategy)
         self.tikz_figure = TikzGroupedBarFigure(plot_config,transformation_strategy)
 
+class HeatmapFigure(CompositeFigure):
+    """ Composite figure class for heatmap figures"""
+    def __init__(self, plot_config, transformation_strategy):
+        self.plotly_figure = PlotlyHeatmapFigure(plot_config,transformation_strategy)
+        self.tikz_figure = None
 
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
@@ -53,6 +58,8 @@ class FigureFactory:
                 figures.append(StackedBarFigure(plot_config,strategy))
             elif plot_type == "grouped_bar":
                 figures.append(GroupedBarFigure(plot_config,strategy))
+            elif plot_type == "heatmap":
+                figures.append(HeatmapFigure(plot_config,strategy))
             else:
                 raise NotImplementedError
 
