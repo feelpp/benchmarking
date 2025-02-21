@@ -3,6 +3,7 @@ import plotly.express as px
 
 from feelpp.benchmarking.report.figures.base import Figure
 from numpy import float64 as float64
+from pandas import factorize as pd_factorize
 
 
 class PlotlyFigure(Figure):
@@ -241,5 +242,200 @@ class PlotlyGroupedBarFigure(PlotlyFigure):
         """
         return [
             go.Bar(x = df.index.astype(str), y = df.loc[:,col],name=col)
+            for col in df.columns
+        ]
+
+class PlotlyHeatmapFigure(PlotlyFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createTraces(self, df):
+        """ Creates the Heatmap traces for a given dataframe. Useful for animation creation.
+        Args:
+            - df (pd.DataFrame): The dataframe containing the figure data.
+        Returns: (go.Trace) The Heatmap traces to display in the scatter figure.
+        """
+        return go.Heatmap(
+                x=df.index.astype(str),
+                y=df.columns.astype(str),
+                z=df.T.values,
+                colorbar = dict(
+                    title = self.config.yaxis.label
+                )
+            )
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(
+            title=self.config.title,
+            xaxis=dict(title=self.config.xaxis.label),
+            yaxis=dict(title=self.config.color_axis.label)
+        )
+        return fig
+
+
+class PlotlySunburstFigure(PlotlyFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createMultiindexFigure(self, df):
+        """ Creates the Sunburst traces for a given dataframe. Useful for animation creation.
+        Args:
+            - df (pd.DataFrame): The dataframe containing the figure data.
+        Returns: (go.Trace) The Sunburst traces to display in the scatter figure.
+        """
+        return px.sunburst(
+            df.reset_index().melt(value_vars=df.columns,id_vars=df.index.names),
+            path=df.index.names+[df.columns.name],
+            values = "value"
+        )
+
+    def createSimpleFigure(self, df):
+        """ Creates a Plotly Sunburst figure from a given dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            go.Figure: Plotly Sunburst figure
+        """
+        return px.sunburst(
+            df.reset_index().melt(value_vars=df.columns,id_vars=df.index.name),
+            path = [df.index.name,df.columns.name],
+            values = "value",
+        )
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(
+            title=self.config.title,
+        )
+        return fig
+
+class PlotlyParallelcoordinatesFigure(PlotlyFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    @staticmethod
+    def encodeFactorize(df):
+        melted_factorized = df.copy()
+        for column in df.columns:
+            if df[column].dtype == "object":
+                melted_factorized[column],_ = pd_factorize(df[column])
+        return melted_factorized
+
+    def createSimpleFigure(self, df):
+        melted = df.reset_index().melt(value_vars=df.columns, id_vars=df.index.name)
+        melted_factorized = self.encodeFactorize(melted)
+
+        return go.Figure(
+            go.Parcoords(
+                line=dict(color=melted_factorized["value"], colorscale='Electric', showscale=True),
+                dimensions = list(
+                    [
+                        dict( label = df.index.name, values = melted_factorized[df.index.name], tickvals = melted_factorized[df.index.name].unique(), ticktext = melted[df.index.name].unique() ),
+                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name].unique(), ticktext = melted[df.columns.name].unique() )
+                    ]
+                )
+            )
+        )
+
+    def createMultiindexFigure(self, df):
+        melted = df.reset_index().melt(value_vars=df.columns,id_vars=df.index.names)
+        melted_factorized = self.encodeFactorize(melted)
+
+        return go.Figure(
+            go.Parcoords(
+                line=dict(color=melted_factorized["value"], colorscale='Electric', showscale=True),
+                dimensions = list(
+                    [
+                        dict( label = ind, values = melted_factorized[ind], tickvals = melted_factorized[ind].unique(), ticktext = melted[ind].unique() )
+                        for ind in df.index.names
+                    ] + [
+                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name].unique(), ticktext = melted[df.columns.name].unique() )
+                    ]
+                )
+            )
+        )
+
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(title=self.config.title, legend=dict(title=self.config.yaxis.label))
+        return fig
+
+
+class Plotly3DFigure(PlotlyFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+        if len(self.transformation_strategy.dimensions["extra_axes"])>0:
+            self.y_axis = self.transformation_strategy.dimensions["extra_axes"][0]
+            self.y_axis_label = self.config.extra_axes[0].label
+        else:
+            self.y_axis = self.transformation_strategy.dimensions["secondary_axis"]
+            self.y_axis_label = self.config.secondary_axis.label if self.y_axis else self.config.color_axis.label if self.config.color_axis else ""
+
+    def createMultiindexFigure(self, df):
+        if len(df.index.names) == 2:
+            return super().createSimpleFigure(df) #3D simple figure is equivalent to a multiindex 2D figure
+        elif len(df.index.names) == 3:
+            return super().createMultiindexFigure(df)
+        else:
+            raise ValueError("3D figures can only be created from 2 or 3 level multiindex dataframes")
+
+    def createSimpleFigure(self, df):
+        raise ValueError("Secondary axis must be specified for 3d Figures")
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(
+            title=self.config.title,
+            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+        )
+        fig.update_scenes(
+            xaxis_title=self.config.xaxis.label,
+            yaxis_title=self.y_axis_label,
+            zaxis_title=self.config.yaxis.label
+        )
+        return fig
+
+class PlotlyScatter3DFigure(Plotly3DFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createTraces(self, df):
+        """ Creates a 3D scatter plot traces
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: 3D scatter plot
+        """
+        return [
+            go.Scatter3d(
+                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"]),
+                y=df.index.get_level_values(self.y_axis),
+                z=df[col],
+                mode='markers', name=col
+            )
+            for col in df.columns
+        ]
+
+
+class PlotlySurface3DFigure(Plotly3DFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createTraces(self, df):
+        """ Creates a 3D surface plot traces
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: 3D surface plot
+        """
+        return [
+            go.Mesh3d(
+                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"]),
+                y=df.index.get_level_values(self.y_axis),
+                z=df[col],
+                opacity=0.5, name=col
+            )
             for col in df.columns
         ]
