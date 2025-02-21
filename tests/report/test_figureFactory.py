@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.figures.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure, HeatmapFigure, SunburstFigure, Scatter3DFigure
+from feelpp.benchmarking.report.figures.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure, HeatmapFigure, SunburstFigure, Scatter3DFigure, PlotlySurface3DFigure
 from test_transformationFactory import PlotConfigMocker
 import pytest
 
@@ -13,6 +13,7 @@ import pytest
     (["heatmap"],[HeatmapFigure]),
     (["sunburst"],[SunburstFigure]),
     (["scatter3d"],[Scatter3DFigure]),
+    (["surface3d"],[PlotlySurface3DFigure]),
     (["unkown"],[])
 ])
 def test_figureFactory(types,expected_classes):

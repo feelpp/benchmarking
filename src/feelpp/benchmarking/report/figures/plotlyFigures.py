@@ -310,49 +310,15 @@ class PlotlySunburstFigure(PlotlyFigure):
         return fig
 
 
-class PlotlyScatter3DFigure(PlotlyFigure):
+class Plotly3DFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
 
     def createMultiindexFigure(self, df):
-        """ Creates a 3D scatter plot from a multiindex dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe (must be multiindex)
-        Returns:
-            go.Figure: 3D scatter plot
-        """
-        return go.Figure(
-            data = [
-                go.Scatter3d(
-                    x=df.index.get_level_values(0),
-                    y=df.index.get_level_values(1),
-                    z=df[col],
-                    mode='markers',
-                    name=col
-                )
-                for col in df.columns
-            ]
-        )
+        return go.Figure(self.createTraces(df))
 
     def createSimpleFigure(self, df):
-        """ Creates a 3D scatter plot from a given dataframe (Useless, but for consistency)
-        Args:
-            df (pd.DataFrame). The transformed dataframe
-        Returns:
-            go.Figure: 3D scatter plot
-        """
-        return go.Figure(
-            data = [
-                go.Scatter3d(
-                    x=df.index,
-                    y=[col]*len(df.index),
-                    z=df[col],
-                    mode='lines+markers',
-                    name=col
-                )
-                for col in df.columns
-            ]
-        )
+        raise ValueError("Secondary axis must be specified for 3d Figures")
 
     def updateLayout(self, fig):
         """ Sets the title, yaxis and legend attributes of the layout"""
@@ -366,3 +332,42 @@ class PlotlyScatter3DFigure(PlotlyFigure):
             zaxis_title=self.config.yaxis.label
         )
         return fig
+
+class PlotlyScatter3DFigure(Plotly3DFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createTraces(self, df):
+        """ Creates a 3D scatter plot traces
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: 3D scatter plot
+        """
+        return [
+            go.Scatter3d(
+                x=df.index.get_level_values(0), y=df.index.get_level_values(1), z=df[col],
+                mode='markers', name=col
+            )
+            for col in df.columns
+        ]
+
+
+class PlotlySurface3DFigure(Plotly3DFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createTraces(self, df):
+        """ Creates a 3D surface plot traces
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: 3D surface plot
+        """
+        return [
+            go.Mesh3d(
+                x=df.index.get_level_values(0), y=df.index.get_level_values(1), z=df[col],
+                opacity=0.5, name=col
+            )
+            for col in df.columns
+        ]
