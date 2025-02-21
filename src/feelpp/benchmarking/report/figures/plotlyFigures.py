@@ -285,7 +285,7 @@ class PlotlySunburstFigure(PlotlyFigure):
         Returns: (go.Trace) The Sunburst traces to display in the scatter figure.
         """
         return px.sunburst(
-            df.reset_index(level=[0,1]).melt(value_vars=df.columns,id_vars=df.index.names),
+            df.reset_index().melt(value_vars=df.columns,id_vars=df.index.names),
             path=df.index.names+[df.columns.name],
             values = "value"
         )
