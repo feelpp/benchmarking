@@ -1,22 +1,14 @@
 import plotly.graph_objects as go
 import plotly.express as px
-from pandas import MultiIndex
+
+from feelpp.benchmarking.report.figures.base import Figure
 from numpy import float64 as float64
 
-from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 
-
-class Figure:
-    """ Abstract class for a figure """
-    def __init__(self,plot_config,transformation_strategy):
-        self.config = plot_config
-        self.transformation_strategy = transformation_strategy
-
-    def createMultiindexFigure(self,df):
-        raise NotImplementedError("Pure virtual function. Not to be called from the base class")
-
-    def createSimpleFigure(self,df):
-        raise NotImplementedError("Pure virtual function. Not to be called from the base class")
+class PlotlyFigure(Figure):
+    """ Base class for a Plotly figure """
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
 
     def createTraces(self,df):
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
@@ -34,15 +26,6 @@ class Figure:
             legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
         return fig
-
-    def getIdealRange(self,df):
-        """ Computes the [(min - eps), (max+eps)] interval for optimal y-axis display
-        Args:
-            - df (pd.DataFrame): The dataframe for which the interval should be computed
-        Returns list[float, float]: The  [(min - eps), (max+eps)] interval
-        """
-        range_epsilon= 0.01
-        return [ df.min().min() - df.min().min()*range_epsilon, df.max().max() + df.min().min()*range_epsilon ]
 
     def createSliderAnimation(self,df):
         """ Creates a plotly slider animation figure from a pandas dataframe. Depending on the provided config parameters.
@@ -80,6 +63,24 @@ class Figure:
             fig = go.Figure()
         return fig
 
+    def createMultiindexFigure(self,df):
+        """ Creates a plotly figure from a multiIndex dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: animation where the secondary_ axis corresponds to a specified parameter
+        """
+        return self.createSliderAnimation(df)
+
+    def createSimpleFigure(self,df):
+        """ Creates a plotly figure from a given dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            go.Figure: plot
+        """
+        return go.Figure(self.createTraces(df))
+
     def createFigure(self,df):
         """ Creates a figure from the master dataframe
         Args:
@@ -87,19 +88,16 @@ class Figure:
         Returns:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
-        df = self.transformation_strategy.calculate(df)
-
-        if isinstance(df.index,MultiIndex):
-            figure = self.createMultiindexFigure(df)
-        else:
-            figure = self.createSimpleFigure(df)
-
+        figure = super().createFigure(df)
         figure.update_layout(self.config.layout_modifiers)
         figure = self.updateLayout(figure)
         return figure
 
+    def createHtml(self,df):
+        return self.createFigure(df).to_html()
 
-class ScatterFigure(Figure):
+
+class PlotlyScatterFigure(PlotlyFigure):
     """ Concrete Figure class for scatter figures """
     def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
         super().__init__(plot_config,transformation_strategy)
@@ -119,26 +117,8 @@ class ScatterFigure(Figure):
             for col in [c for c in df.columns if c not in self.fill_lines]
         ]
 
-    def createMultiindexFigure(self,df):
-        """ Creates a plotly figure from a multiIndex dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe (must be multiindex)
-        Returns:
-            go.Figure: Scatter animation where the secondary_ axis corresponds to a specified parameter
-        """
-        return self.createSliderAnimation(df)
 
-    def createSimpleFigure(self,df):
-        """ Creates a plotly figure from a given dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe
-        Returns:
-            go.Figure: Scatter plot
-        """
-        return go.Figure(data = self.createTraces(df))
-
-
-class TableFigure(Figure):
+class PlotlyTableFigure(PlotlyFigure):
     """ Concrete Figure class for scatter figures """
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
@@ -193,8 +173,7 @@ class TableFigure(Figure):
         return fig
 
 
-
-class StackedBarFigure(Figure):
+class PlotlyStackedBarFigure(PlotlyFigure):
     """ Concrete Figure class for stacked bar charts"""
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
@@ -249,7 +228,8 @@ class StackedBarFigure(Figure):
         )
         return fig
 
-class GroupedBarFigure(Figure):
+
+class PlotlyGroupedBarFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
 
@@ -264,25 +244,7 @@ class GroupedBarFigure(Figure):
             for col in df.columns
         ]
 
-    def createMultiindexFigure(self,df):
-        """ Creates a plotly figure from a multiIndex dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe (must be multiindex)
-        Returns:
-            go.Figure: Bar animation where the secondary_ axis corresponds to a specified parameter
-        """
-        return self.createSliderAnimation(df)
-
-    def createSimpleFigure(self,df):
-        """ Creates a plotly figure from a given dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe
-        Returns:
-            go.Figure: Bar plot
-        """
-        return go.Figure(self.createTraces(df))
-
-class HeatmapFigure(Figure):
+class PlotlyHeatmapFigure(Figure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
 
@@ -301,24 +263,6 @@ class HeatmapFigure(Figure):
                 )
             )
 
-    def createMultiindexFigure(self, df):
-        """ Creates a plotly figure from a multiIndex dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe (must be multiindex)
-        Returns:
-            go.Figure: Heatmap animation where the secondary_ axis corresponds to a specified parameter
-        """
-        return self.createSliderAnimation(df)
-
-    def createSimpleFigure(self, df):
-        """ Creates a plotly figure from a given dataframe
-        Args:
-            df (pd.DataFrame). The transformed dataframe
-        Returns:
-            go.Figure: Heatmap plot
-        """
-        return go.Figure(self.createTraces(df))
-
     def updateLayout(self, fig):
         """ Sets the title, yaxis and legend attributes of the layout"""
         fig.update_layout(
@@ -327,32 +271,3 @@ class HeatmapFigure(Figure):
             yaxis=dict(title=self.config.color_axis.label)
         )
         return fig
-
-class FigureFactory:
-    """ Factory class to dispatch concrete figure elements"""
-    @staticmethod
-    def create(plot_config):
-        """ Creates a concrete figure element
-        Args:
-            plot_config (Plot). Pydantic object with the plot configuration information
-        """
-        strategy = TransformationStrategyFactory.create(plot_config)
-        figures = []
-        for plot_type in plot_config.plot_types:
-            if plot_type ==  "scatter":
-                fill_lines = []
-                if plot_config.transformation=="speedup":
-                    fill_lines = ["optimal","half-optimal"]
-                figures.append(ScatterFigure(plot_config,strategy, fill_lines))
-            elif plot_type == "table":
-                figures.append(TableFigure(plot_config,strategy))
-            elif plot_type == "stacked_bar":
-                figures.append(StackedBarFigure(plot_config,strategy))
-            elif plot_type == "grouped_bar":
-                figures.append(GroupedBarFigure(plot_config,strategy))
-            elif plot_type == "heatmap":
-                figures.append(HeatmapFigure(plot_config,strategy))
-            else:
-                raise NotImplementedError
-
-        return figures

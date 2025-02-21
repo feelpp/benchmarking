@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure, HeatmapFigure
+from feelpp.benchmarking.report.figures.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure, HeatmapFigure
 from test_transformationFactory import PlotConfigMocker
 import pytest
 
@@ -22,6 +22,7 @@ def test_figureFactory(types,expected_classes):
         for figure,expected_class in zip(figures,expected_classes):
             assert isinstance(figure,expected_class)
             assert hasattr(figure,"createFigure") and callable(figure.createFigure)
+            assert hasattr(figure,"createTex") and callable(figure.createTex)
     else:
         with pytest.raises(NotImplementedError):
             figures = FigureFactory.create(plot_config)

@@ -21,8 +21,15 @@ include::ROOT:{{description_path}}[leveloffset=+1]
 * Total Tests: {{ session_info.num_cases }}
 * Failures: {{ session_info.num_failures }}
 
-{% if not empty %}
-
+++++
+<style>
+.scrollable {
+  overflow-x: auto;
+}
+</style>
+++++
+[.scrollable]
+--
 |===
 {% for header in hash_params_headers %} | {% if header == 'partial_filepath' or header == 'logs_filepath' %} {% else %} {{ header }} {% endif %} {% endfor %}
 
@@ -33,7 +40,18 @@ include::ROOT:{{description_path}}[leveloffset=+1]
 
 {% endfor %}
 |===
+--
+
+{% if not empty %}
+++++
+<style>
+{%include "css/figures.css" %}
+</style>
 
 {%include "figures.html.j2" %}
 
+<script type="text/javascript">
+{%include "js/figureHelpers.js"%}
+</script>
+++++
 {% endif %}

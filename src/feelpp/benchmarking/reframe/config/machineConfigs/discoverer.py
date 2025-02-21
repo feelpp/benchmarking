@@ -45,8 +45,12 @@ site_configuration = {
     'environments': [
         {
             'name':'default',
-            'modules': [],
-            'target_systems':['discoverer:cn']
+            'modules': ["openmpi/4/gcc/latest"],
+            'target_systems':['discoverer:cn'],
+            'prepare_cmds': [
+                'source /etc/profile.d/modules.sh',
+                'export MODULEPATH=/opt/software/modulefiles:$MODULEPATH'
+            ]
         }
     ]
 }
