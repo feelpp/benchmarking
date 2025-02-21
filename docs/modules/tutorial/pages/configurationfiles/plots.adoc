@@ -342,6 +342,146 @@ fig = figures[0].createFigure(model.master_df)
 fig.show()
 ----
 
+- `sunburst`
+
+This figure considers the `color_axis` parameter as the outer-most ring.
+Users can supply an `extra_axes` field, containing a list of additional parameters. Values for these parameters whill be shown on the rings that follow the `color_axis` ring, in the order they are provided.
+The `secondary_axis` and `xaxis` parameter are present respectively on the inner-most and second inner-most rings.
+
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "sunburst" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
+
+
+- `parallelcoordinates`
+
+Axes will be shown on the following order: `secondary_axis`, `xaxis`, all additional `extra_axes`, `color_axis`. The `yaxis` will be shown in the line color.
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "parallelcoordinates" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "extra_axes":[
+        {
+            "parameter":"dim3",
+            "label":"Dim3"
+        }
+    ]
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
+----
+
+
+=== 3D Plots
+
+3D plots are also supported, and then can show up to 4 dimensions. At least 3 parameters must be provided (`xaxis`,`color_axis` and `secondary_axis` ).
+Axes correspondance is as follows:
+- x-axis of the 3D plot: `xaxis`
+- y-axis of the 3D plot: `secondary_axis` if no extra axes are provided, else, the first element of the `extra_axes` list.
+- z-axis of the 3D plot: `yaxis` (contains the measured values)
+- color of the 3D traces: `color_axis`
+- Slider: `secondary_axis` if extra axes are provided.
+
+- `scatter3d`
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "scatter3d" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
+----
+
+- `surface3d`
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "surface3d" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
+----
+
 
 == Aggregations
 
