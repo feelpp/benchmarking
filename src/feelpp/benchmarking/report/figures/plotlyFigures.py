@@ -3,6 +3,7 @@ import plotly.express as px
 
 from feelpp.benchmarking.report.figures.base import Figure
 from numpy import float64 as float64
+from pandas import factorize as pd_factorize
 
 
 class PlotlyFigure(Figure):
@@ -309,6 +310,58 @@ class PlotlySunburstFigure(PlotlyFigure):
         )
         return fig
 
+class PlotlyParallelcoordinatesFigure(PlotlyFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    @staticmethod
+    def encodeFactorize(df):
+        melted_factorized = df.copy()
+        for column in df.columns:
+            if df[column].dtype == "object":
+                melted_factorized[column],_ = pd_factorize(df[column])
+        return melted_factorized
+
+    def createSimpleFigure(self, df):
+        melted = df.reset_index().melt(value_vars=df.columns, id_vars=df.index.name)
+        melted_factorized = self.encodeFactorize(melted)
+
+        return go.Figure(
+            go.Parcoords(
+                line=dict(color=melted_factorized["value"], colorscale='Electric', showscale=True),
+                dimensions = list(
+                    [
+                        dict( label = df.index.name, values = melted_factorized[df.index.name], tickvals = melted_factorized[df.index.name], ticktext = melted[df.index.name] ),
+                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name], ticktext = melted[df.columns.name] )
+                    ]
+                )
+            )
+        )
+
+    def createMultiindexFigure(self, df):
+        melted = df.reset_index().melt(value_vars=df.columns,id_vars=df.index.names)
+        melted_factorized = self.encodeFactorize(melted)
+
+        return go.Figure(
+            go.Parcoords(
+                line=dict(color=melted_factorized["value"], colorscale='Electric', showscale=True),
+                dimensions = list(
+                    [
+                        dict( label = ind, values = melted_factorized[ind], tickvals = melted_factorized[ind], ticktext = melted[ind] )
+                        for ind in df.index.names
+                    ] + [
+                        dict( label = df.columns.name, values = melted_factorized[df.columns.name], tickvals = melted_factorized[df.columns.name], ticktext = melted[df.columns.name] )
+                    ]
+                )
+            )
+        )
+
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(title=self.config.title, legend=dict(title=self.config.yaxis.label))
+        return fig
+
 
 class Plotly3DFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
@@ -386,3 +439,7 @@ class PlotlySurface3DFigure(Plotly3DFigure):
             )
             for col in df.columns
         ]
+
+
+class PlotlyRadarFigure(PlotlyFigure):
+    pass

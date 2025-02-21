@@ -2,7 +2,7 @@ from feelpp.benchmarking.report.transformationFactory import TransformationStrat
 
 from feelpp.benchmarking.report.figures.base import CompositeFigure
 from feelpp.benchmarking.report.figures.tikzFigures import TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
-from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure, PlotlyScatter3DFigure, PlotlySurface3DFigure
+from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure, PlotlyScatter3DFigure, PlotlySurface3DFigure, PlotlyParallelcoordinatesFigure
 
 
 
@@ -78,6 +78,8 @@ class FigureFactory:
                 figures.append(Scatter3DFigure(plot_config,strategy))
             elif plot_type == "surface3d":
                 figures.append(PlotlySurface3DFigure(plot_config,strategy))
+            elif plot_type == "parallelcoordinates":
+                figures.append(PlotlyParallelcoordinatesFigure(plot_config,strategy))
             else:
                 raise NotImplementedError
 
