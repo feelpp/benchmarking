@@ -2,7 +2,7 @@ from feelpp.benchmarking.report.transformationFactory import TransformationStrat
 
 from feelpp.benchmarking.report.figures.base import CompositeFigure
 from feelpp.benchmarking.report.figures.tikzFigures import TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
-from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure
+from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure
 
 
 
@@ -36,6 +36,12 @@ class HeatmapFigure(CompositeFigure):
         self.plotly_figure = PlotlyHeatmapFigure(plot_config,transformation_strategy)
         self.tikz_figure = None
 
+class SunburstFigure(CompositeFigure):
+    """ Composite figure class for sunburst figures"""
+    def __init__(self, plot_config, transformation_strategy):
+        self.plotly_figure = PlotlySunburstFigure(plot_config,transformation_strategy)
+        self.tikz_figure = None
+
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
     @staticmethod
@@ -60,6 +66,8 @@ class FigureFactory:
                 figures.append(GroupedBarFigure(plot_config,strategy))
             elif plot_type == "heatmap":
                 figures.append(HeatmapFigure(plot_config,strategy))
+            elif plot_type == "sunburst":
+                figures.append(SunburstFigure(plot_config,strategy))
             else:
                 raise NotImplementedError
 

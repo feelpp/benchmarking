@@ -271,3 +271,40 @@ class PlotlyHeatmapFigure(PlotlyFigure):
             yaxis=dict(title=self.config.color_axis.label)
         )
         return fig
+
+
+class PlotlySunburstFigure(PlotlyFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createMultiindexFigure(self, df):
+        """ Creates the Sunburst traces for a given dataframe. Useful for animation creation.
+        Args:
+            - df (pd.DataFrame): The dataframe containing the figure data.
+        Returns: (go.Trace) The Sunburst traces to display in the scatter figure.
+        """
+        return px.sunburst(
+            df.reset_index(level=[0,1]).melt(value_vars=df.columns,id_vars=df.index.names),
+            path=df.index.names+[df.columns.name],
+            values = "value"
+        )
+
+    def createSimpleFigure(self, df):
+        """ Creates a Plotly Sunburst figure from a given dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            go.Figure: Plotly Sunburst figure
+        """
+        return px.sunburst(
+            df.reset_index().melt(value_vars=df.columns,id_vars=df.index.name),
+            path = [df.index.name,df.columns.name],
+            values = "value",
+        )
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(
+            title=self.config.title,
+        )
+        return fig
