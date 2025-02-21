@@ -28,7 +28,7 @@
                 "label": "Measures"
             },
             "aggregations":[
-                {"column":"resources.tasks","agg":"filter:640"}
+                {"column":"resources.tasks","agg":"filter:768"}
             ]
         },
         {
@@ -57,6 +57,7 @@
                 "label":"Performance variable"
             },
             "aggregations":[
+                {"column":"repeat", "agg":"min"},
                 {"column":"discretization","agg":"filter:P1"}
             ]
         },
@@ -203,6 +204,58 @@
             },
             "aggregations":[
                 {"column":"discretization","agg":"filter:P3"}
+            ]
+        },
+        {
+            "title": "Algebraic-solve execution time",
+            "plot_types": [ "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [
+                "Solve_algebraic-solve"
+            ],
+            "names": [ ],
+            "xaxis": {
+                "parameter": "resources.tasks",
+                "label": "Number of tasks"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "color_axis":{
+                "parameter":"mesh",
+                "label":"Mesh"
+            },
+            "secondary_axis":{
+                "parameter":"discretization",
+                "label":"Discretization"
+            },
+            "aggregations":[
+                {"column":"performance_variable","agg":"filter:Solve_algebraic-solve"}
+            ]
+        },
+        {
+            "title":"Number of iterations of GMRES",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "variables":["Solve_ksp-niter"],
+            "names":[],
+            "xaxis":{
+                "parameter":"resources.tasks",
+                "label":"Number of tasks"
+            },
+            "yaxis":{
+                "label":"Number of iterations"
+            },
+            "color_axis":{
+                "parameter":"mesh",
+                "label":"Mesh"
+            },
+            "secondary_axis":{
+                "parameter":"discretization",
+                "label":"Discretization"
+            },
+            "aggregations":[
+                {"column":"performance_variable","agg":"filter:Solve_ksp-niter"}
             ]
         }
     ]

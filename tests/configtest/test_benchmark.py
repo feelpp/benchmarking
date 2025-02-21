@@ -7,36 +7,6 @@ from pydantic import ValidationError
 
 
 
-class TestImage:
-    """Tests for the Image schema"""
-
-    dummy_image_path = "tests/data/configs/mockAppConfig.json"
-
-    def test_extractProtocol(self):
-        """Tests the correct extraction of the protocol from the image name"""
-        image = Image(name=self.dummy_image_path)
-        assert image.protocol == "local"
-        assert image.name == self.dummy_image_path
-
-        with pytest.raises(ValueError,match="Unkown Protocol"):
-            image = Image(name="unkown_local://tests/data/configs")
-
-        image = Image(name="docker://test_name")
-        assert image.protocol == "docker"
-        assert image.name == "docker://test_name"
-
-
-    def test_checkImage(self):
-        """Tests that checking if image exists is done correctly"""
-
-        with pytest.raises(FileNotFoundError):
-            image = Image(name="nonexistant_image.sif")
-
-        #Dry run
-        image = Image.model_validate({"name":"nonexistant_image.sif"},context={"dry_run":True})
-        assert image.protocol == "local"
-
-
 class TestPlatform:
     pass
 

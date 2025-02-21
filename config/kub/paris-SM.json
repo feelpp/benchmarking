@@ -1,11 +1,12 @@
 {
     "executable": "feelpp_kub_cem",
-    "output_directory": "{{machine.output_app_dir}}/javier_test/kub",
-    "use_case_name": "poznan",
-    "timeout":"0-0:15:0",
+    "output_directory": "{{machine.output_app_dir}}/kub",
+    "use_case_name": "paris_SolarMasks",
+    "timeout":"0-2:00:0",
     "resources":{
-        "tasks":"{{parameters.resources.tasks.value}}",
-        "exclusive_access":"{{parameters.resources.exclusive_access.value}}"
+        "nodes":"{{parameters.nodes.value}}",
+        "tasks_per_node":128,
+        "exclusive_access":true
     },
     "platforms": {
         "apptainer":{
@@ -35,21 +36,21 @@
         },
         "gis":{
             "platform":"girder",
-            "destination":"kub/gis.json",
-            "type":"file",
-            "remote_location":"66267bd3b0e95728eb00f6e9"
+            "destination":"kub/",
+            "type":"item",
+            "remote_location":""
         },
         "mesh":{
             "platform":"girder",
-            "destination":"kub/mesh.msh",
-            "type":"file",
-            "remote_location":"66267bd3b0e95728eb00f6ec"
+            "destination":"kub/",
+            "type":"item",
+            "remote_location":""
         },
         "weather":{
             "platform":"girder",
-            "destination":"kub/weather.csv",
-            "type":"file",
-            "remote_location":"662f9434b0e95728eb00f7ad"
+            "destination":"kub/",
+            "type":"item",
+            "remote_location":""
         },
         "scenarios":{
             "platform":"girder",
@@ -93,7 +94,7 @@
         "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc10.json",
 
         "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/gis.json",
-        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/mesh.msh",
+        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/meshes/{{parameters.level_of_detail.value}}_{{parameters.vegetation.value}}.msh",
         "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/weather.csv",
         "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/scenarios_local/scenarios.json",
 
@@ -133,15 +134,16 @@
     },
     "parameters": [
         {
-            "name": "resources",
-            "sequence": [
-                {"tasks":32, "exclusive_access":true},
-                {"tasks":64, "exclusive_access":true}
-                // {"tasks":128, "exclusive_access":true},
-                // {"tasks":256, "exclusive_access":true},
-                // {"tasks":384, "exclusive_access":true},
-                // {"tasks":512, "exclusive_access":true}
-            ]
+            "name": "nodes",
+            "geometric": { "start":1, "ratio":2, "n_steps":7 }
+        },
+        {
+            "name":"level_of_detail",
+            "sequence":["lod0","lod1"]
+        },
+        {
+            "name":"vegetation",
+            "sequence":["vegetation","no_vegetation"]
         }
     ]
 }

@@ -63,6 +63,7 @@ class PlotlyFigure(Figure):
             fig = go.Figure()
         return fig
 
+
     def createMultiindexFigure(self,df):
         """ Creates a plotly figure from a multiIndex dataframe
         Args:

@@ -1,0 +1,70 @@
+{
+    "plots": [
+        {
+            "title": "Application performance",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [ "constructor", "simulation", "postprocess" ],
+            "xaxis": {
+                "parameter": "resources.nodes",
+                "label": "Number of nodes"
+            },
+            "secondary_axis": {
+                "parameter": "mesh_detail",
+                "label": "Radius"
+            },
+            "color_axis":{
+                "parameter":"city",
+                "label":"City"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "aggregations":[
+                {"column":"performance_variable","agg":"sum"}
+            ]
+        },
+        {
+            "title": "General performance (Paris)",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "relative_performance",
+            "variables": [ "constructor", "simulation", "postprocess" ],
+            "names": ["Constructor", "Simulation", "PostProcess"],
+            "xaxis": {
+                "parameter": "resources.nodes",
+                "label": "Number of nodes"
+            },
+            "secondary_axis": {
+                "parameter": "mesh_detail",
+                "label": "Radius"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "aggregations":[
+                {"column":"city","agg":"filter:Paris"}
+            ]
+        },
+        {
+            "title": "General performance (Berlin)",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "relative_performance",
+            "variables": [ "constructor", "simulation", "postprocess" ],
+            "names": ["Constructor", "Simulation", "PostProcess"],
+            "xaxis": {
+                "parameter": "resources.nodes",
+                "label": "Number of nodes"
+            },
+            "secondary_axis": {
+                "parameter": "mesh_detail",
+                "label": "Radius"
+            },
+            "yaxis": {
+                "label": "execution time (s)"
+            },
+            "aggregations":[
+                {"column":"city","agg":"filter:Berlin"}
+            ]
+        }
+    ]
+}
