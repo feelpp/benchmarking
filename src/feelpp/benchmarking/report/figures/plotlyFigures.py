@@ -308,3 +308,61 @@ class PlotlySunburstFigure(PlotlyFigure):
             title=self.config.title,
         )
         return fig
+
+
+class PlotlyScatter3DFigure(PlotlyFigure):
+    def __init__(self, plot_config, transformation_strategy):
+        super().__init__(plot_config, transformation_strategy)
+
+    def createMultiindexFigure(self, df):
+        """ Creates a 3D scatter plot from a multiindex dataframe
+        Args:
+            df (pd.DataFrame). The transformed dataframe (must be multiindex)
+        Returns:
+            go.Figure: 3D scatter plot
+        """
+        return go.Figure(
+            data = [
+                go.Scatter3d(
+                    x=df.index.get_level_values(0),
+                    y=df.index.get_level_values(1),
+                    z=df[col],
+                    mode='markers',
+                    name=col
+                )
+                for col in df.columns
+            ]
+        )
+
+    def createSimpleFigure(self, df):
+        """ Creates a 3D scatter plot from a given dataframe (Useless, but for consistency)
+        Args:
+            df (pd.DataFrame). The transformed dataframe
+        Returns:
+            go.Figure: 3D scatter plot
+        """
+        return go.Figure(
+            data = [
+                go.Scatter3d(
+                    x=df.index,
+                    y=[col]*len(df.index),
+                    z=df[col],
+                    mode='lines+markers',
+                    name=col
+                )
+                for col in df.columns
+            ]
+        )
+
+    def updateLayout(self, fig):
+        """ Sets the title, yaxis and legend attributes of the layout"""
+        fig.update_layout(
+            title=self.config.title,
+            legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
+        )
+        fig.update_scenes(
+            xaxis_title=self.config.xaxis.label,
+            yaxis_title=self.config.secondary_axis.label if self.config.secondary_axis else self.config.color_axis.label if self.config.color_axis else "",
+            zaxis_title=self.config.yaxis.label
+        )
+        return fig

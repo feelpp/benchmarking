@@ -2,7 +2,7 @@ from feelpp.benchmarking.report.transformationFactory import TransformationStrat
 
 from feelpp.benchmarking.report.figures.base import CompositeFigure
 from feelpp.benchmarking.report.figures.tikzFigures import TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
-from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure
+from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure, PlotlyScatter3DFigure
 
 
 
@@ -42,6 +42,12 @@ class SunburstFigure(CompositeFigure):
         self.plotly_figure = PlotlySunburstFigure(plot_config,transformation_strategy)
         self.tikz_figure = None
 
+class Scatter3DFigure(CompositeFigure):
+    """ Composite figure class for 3D scatter figures"""
+    def __init__(self, plot_config, transformation_strategy):
+        self.plotly_figure = PlotlyScatter3DFigure(plot_config,transformation_strategy)
+        self.tikz_figure = None
+
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
     @staticmethod
@@ -68,6 +74,8 @@ class FigureFactory:
                 figures.append(HeatmapFigure(plot_config,strategy))
             elif plot_type == "sunburst":
                 figures.append(SunburstFigure(plot_config,strategy))
+            elif plot_type == "scatter3d":
+                figures.append(Scatter3DFigure(plot_config,strategy))
             else:
                 raise NotImplementedError
 
