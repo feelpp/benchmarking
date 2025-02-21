@@ -439,7 +439,3 @@ class PlotlySurface3DFigure(Plotly3DFigure):
             )
             for col in df.columns
         ]
-
-
-class PlotlyRadarFigure(PlotlyFigure):
-    pass
