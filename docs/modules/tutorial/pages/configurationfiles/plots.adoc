@@ -231,6 +231,7 @@ fig.show()
 
 The marked scatter plot type supports from 2 to 4 dimensions. The symbol/marks axis will correspond to the `secondary_axis` parameter.
 This plot type will behave as follows:
+
 * If 1 or 2 dimensions are specified (x-axis and optionally color-axis), then this plot type will be equivalent to `scatter`.
 * If 3 dimensions are specified (x-axis, color-axis and secondary-axis), then the `secondary_axis` will correspond to the symbol/marks axis.
 * If 4 dimensions are specified (x-axis, color-axis, secondary-axis and one extra-axis), then the first element of the `extra_axes` list will correspond to the symbol/marks axis, and the `secondary_axis` will correspond to the slider of the returned animation.
@@ -454,6 +455,7 @@ for f in figures:
 
 3D plots are also supported, and then can show up to 4 dimensions. At least 3 parameters must be provided (`xaxis`,`color_axis` and `secondary_axis` ).
 Axes correspondance is as follows:
+
 - x-axis of the 3D plot: `xaxis`
 - y-axis of the 3D plot: `secondary_axis` if no extra axes are provided, else, the first element of the `extra_axes` list.
 - z-axis of the 3D plot: `yaxis` (contains the measured values)
@@ -539,11 +541,12 @@ The previous example will first get only the latest benchmarks (by getting the m
 Users must provide a column and an aggregation function as a string.
 
 Available aggregations are:
+
 - `mean` : Computes the mean of the column
 - `mean` : Computes the sum of the column
 - `max` : Computes the maximum of the column
 - `min` : Computes the minimum of the column
-- `filter:value`: : Filters the column by `value`.
+- `filter:value`: Filters the column by `value`.
 
 
 [NOTE]
