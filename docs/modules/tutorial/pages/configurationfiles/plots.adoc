@@ -227,6 +227,42 @@ fig = figures[0].createFigure(model.master_df)
 fig.show()
 ----
 
+- `marked_scatter`
+
+The marked scatter plot type supports from 2 to 4 dimensions. The symbol/marks axis will correspond to the `secondary_axis` parameter.
+This plot type will behave as follows:
+* If 1 or 2 dimensions are specified (x-axis and optionally color-axis), then this plot type will be equivalent to `scatter`.
+* If 3 dimensions are specified (x-axis, color-axis and secondary-axis), then the `secondary_axis` will correspond to the symbol/marks axis.
+* If 4 dimensions are specified (x-axis, color-axis, secondary-axis and one extra-axis), then the first element of the `extra_axes` list will correspond to the symbol/marks axis, and the `secondary_axis` will correspond to the slider of the returned animation.
+
+[%dynamic%open%hide_code,python]
+----
+
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "marked_scatter" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
+----
+
 - `stacked_bar`
 
 [%dynamic%open%hide_code,python]

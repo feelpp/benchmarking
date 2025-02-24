@@ -118,6 +118,73 @@ class PlotlyScatterFigure(PlotlyFigure):
             for col in [c for c in df.columns if c not in self.fill_lines]
         ]
 
+class PlotlyMarkedScatter(PlotlyFigure):
+    """ Concrete Figure class for marked scatter figures """
+    def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
+        super().__init__(plot_config,transformation_strategy)
+        self.fill_lines = fill_lines
+        self.marks = ["circle","square","diamond","cross","x","triangle-up","triangle-down","triangle-left","triangle-right","pentagon","hexagon","octagon","star","hexagram","star-triangle-up","star-triangle-down","star-square","star-diamond","diamond-tall","diamond-wide","hourglass","bowtie"]
+        self.colors = ["red","blue","green","orange","purple","brown","pink","gray","cyan","magenta","yellow","darkblue","darkred","darkgreen","darkorange","darkpurple","darkbrown","darkpink","darkgray","darkcyan","darkmagenta","darkyellow","lightblue","lightred","lightgreen","lightorange","lightpurple","lightbrown","lightpink","lightgray","lightcyan","lightmagenta","lightyellow","black"]
+
+        if len(self.transformation_strategy.dimensions["extra_axes"])>0:
+            self.mark_axis = self.transformation_strategy.dimensions["extra_axes"][0]
+            self.mark_axis_label = self.config.extra_axes[0].label
+        else:
+            self.mark_axis = self.transformation_strategy.dimensions["secondary_axis"]
+            self.mark_axis_label = self.config.secondary_axis.label if self.mark_axis else self.config.color_axis.label if self.config.color_axis else ""
+
+    def createMultiindexFigure(self, df):
+        if len(df.index.names) == 2:
+            return super().createSimpleFigure(df)
+        elif len(df.index.names) == 3:
+            return super().createMultiindexFigure(df)
+        else:
+            raise ValueError("Marked scatter figures can only be created from 2 or 3 level multiindex dataframes")
+
+    def createSimpleFigure(self, df):
+        return go.Figure(self.createMarkTraces(df))
+
+    def createTraces(self,df):
+        anim_dimension_values = df.index.get_level_values(self.mark_axis).unique().values
+
+        traces = []
+        for mark_i,dim in enumerate(anim_dimension_values):
+            mark_df = df.xs(dim,level=self.mark_axis,axis=0)
+            traces += self.createMarkTraces(mark_df,mark_i,dim)
+            traces += [go.Scatter(
+                x = [None], y = [None], mode = 'markers', name = f"{dim}",
+                marker = dict( symbol = self.marks[mark_i%len(self.marks)], color='black', size = 10 ),
+                legend="legend", showlegend = True, legendgroup=mark_i
+            )]
+
+        return traces
+
+    def createMarkTraces(self,df,mark_i=0, dim=None):
+        return [
+            go.Scatter(
+                x = df.index, y = df[col],
+                mode = 'lines+markers',
+                name = f"{col} - {self.mark_axis_label} : {dim}" if dim else col,
+                marker = dict( symbol = self.marks[mark_i%len(self.marks)], color = self.colors[col_i%len(self.colors)], size = 10 ),
+                showlegend=False, legendgroup=mark_i
+            )
+            for col_i,col in enumerate(df.columns)
+        ] + [
+        go.Scatter(
+            x = [None], y = [None], mode = 'lines', name = f"{col}",
+            line = dict( color = self.colors[col_i%len(self.colors)] ),
+            showlegend = mark_i == 0,legend="legend2",
+        )
+        for col_i,col in enumerate(df.columns)
+    ]
+
+    def updateLayout(self, fig):
+        fig = super().updateLayout(fig)
+        fig.update_layout(
+            legend=dict( title=self.mark_axis_label, xref="container", yref="container", y=0 ),
+            legend2=dict( title=self.config.color_axis.label, xref="container", yref="container", y=0.65 )
+        )
+        return fig
 
 class PlotlyTableFigure(PlotlyFigure):
     """ Concrete Figure class for scatter figures """

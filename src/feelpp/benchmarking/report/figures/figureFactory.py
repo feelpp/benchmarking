@@ -2,7 +2,7 @@ from feelpp.benchmarking.report.transformationFactory import TransformationStrat
 
 from feelpp.benchmarking.report.figures.base import CompositeFigure
 from feelpp.benchmarking.report.figures.tikzFigures import TikzFigure, TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
-from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyFigure, PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure, PlotlyScatter3DFigure, PlotlySurface3DFigure, PlotlyParallelcoordinatesFigure
+from feelpp.benchmarking.report.figures.plotlyFigures import PlotlyFigure, PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure, PlotlyScatter3DFigure, PlotlySurface3DFigure, PlotlyParallelcoordinatesFigure, PlotlyMarkedScatter
 
 
 
@@ -60,6 +60,12 @@ class ParallelcoordinatesFigure(CompositeFigure):
         self.plotly_figure = PlotlyParallelcoordinatesFigure(plot_config,transformation_strategy)
         self.tikz_figure = None
 
+class MarkedScatterFigure(CompositeFigure):
+    def __init__(self, plot_config, transformation_strategy,fill_lines):
+        self.plotly_figure = PlotlyMarkedScatter(plot_config,transformation_strategy,fill_lines)
+        self.tikz_figure = None
+
+
 class FigureFactory:
     """ Factory class to dispatch concrete figure elements"""
     @staticmethod
@@ -71,11 +77,14 @@ class FigureFactory:
         strategy = TransformationStrategyFactory.create(plot_config)
         figures = []
         for plot_type in plot_config.plot_types:
-            if plot_type ==  "scatter":
+            if plot_type in ["scatter","marked_scatter"]:
                 fill_lines = []
                 if plot_config.transformation=="speedup":
                     fill_lines = ["optimal","half-optimal"]
+            if plot_type ==  "scatter":
                 figures.append(ScatterFigure(plot_config,strategy, fill_lines))
+            elif plot_type ==  "marked_scatter":
+                figures.append(MarkedScatterFigure(plot_config,strategy, fill_lines))
             elif plot_type == "table":
                 figures.append(TableFigure(plot_config,strategy))
             elif plot_type == "stacked_bar":
