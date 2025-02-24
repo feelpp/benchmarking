@@ -50,7 +50,6 @@ def main_cli():
             f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
 
         #Copy use case description if existant
-        print("Copygin")
         FileHandler.copyFile(
             os.path.join(report_folder_path,"partials"),
             "description",
