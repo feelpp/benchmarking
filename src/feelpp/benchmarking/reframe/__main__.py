@@ -49,6 +49,7 @@ def main_cli():
                 if not platform_field.image or not platform_field.image.remote or not machine_reader.config.containers[platform_name].executable:
                     continue
                 if platform_name == "apptainer":
+                    #TODO: Check exit code
                     subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
                 else:
                     raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
