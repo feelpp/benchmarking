@@ -54,26 +54,23 @@ def main_cli():
         #=============================================#
 
         #===== Download remote dependencies ============#
-        if app_reader.config.remote_input_dependencies:
-            if any(v.platform for v in app_reader.config.remote_input_dependencies.values()):
-                girder_handler = GirderHandler(machine_reader.config.input_dataset_base_dir)
-        for dependency_name,remote_dependency in app_reader.config.remote_input_dependencies.items():
-            print(f"Donwloading remote file dependency : {dependency_name} ...")
-            if remote_dependency.platform == "girder":
-                if remote_dependency.type == "file":
-                    girder_handler.downloadFile(
-                        remote_dependency.remote_location,
-                        os.path.dirname(remote_dependency.destination),
-                        name=os.path.basename(remote_dependency.destination)
-                    )
-                elif remote_dependency.type == "folder":
-                    girder_handler.downloadFolder(remote_dependency.remote_location,remote_dependency.destination)
-                elif remote_dependency.type == "item":
-                    girder_handler.downloadItem(remote_dependency.remote_location,remote_dependency.destination)
+        if not parser.args.dry_run:
+            if app_reader.config.remote_input_dependencies:
+                if any(v.girder for v in app_reader.config.remote_input_dependencies.values()):
+                    girder_handler = GirderHandler(machine_reader.config.input_user_dir or machine_reader.config.input_dataset_base_dir  )
+            for dependency_name,remote_dependency in app_reader.config.remote_input_dependencies.items():
+                print(f"Donwloading remote file dependency : {dependency_name} ...")
+                if remote_dependency.girder:
+                    if remote_dependency.girder.file:
+                        girder_handler.downloadFile( remote_dependency.girder.file, os.path.dirname(remote_dependency.girder.destination), name=os.path.basename(remote_dependency.girder.destination) )
+                    elif remote_dependency.girder.folder:
+                        girder_handler.downloadFolder(remote_dependency.girder.folder,remote_dependency.girder.destination)
+                    elif remote_dependency.girder.item:
+                        girder_handler.downloadItem(remote_dependency.girder.item,remote_dependency.girder.destination)
+                    else:
+                        raise NotImplementedError(f"Remote dependency resource type is not implemented for {dependency_name}")
                 else:
-                    raise NotImplementedError(f"Type {remote_dependency.type} is not implemented for {dependency_name}")
-            else:
-                raise NotImplementedError(f"Platform {remote_dependency.platform} is not implemented for {dependency_name}")
+                    raise NotImplementedError(f"Platform {remote_dependency} is not implemented for {dependency_name}")
         #================================================#
 
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)

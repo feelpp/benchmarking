@@ -93,11 +93,28 @@ class Resources(BaseModel):
         ), "Tasks - tasks_per_node - nodes combination is not supported"
         return self
 
-class RemoteData(BaseModel):
-    platform: Literal["girder"]
+class BaseRemoteData(BaseModel):
     destination: str
-    type: Literal["folder","item","file"]
-    remote_location:str
+
+class RemoteGirderData(BaseRemoteData):
+    item: Optional[str] = None
+    file: Optional[str] = None
+    folder: Optional[str] = None
+
+    @model_validator(mode="after")
+    def checkValidResource(self):
+        if all(res is None for res in [self.item, self.file, self.folder]):
+            raise ValueError("A valid resource needs to be specified, either 'file', 'folder' or 'item'")
+        return self
+
+class RemoteData(BaseModel):
+    girder: Optional[RemoteGirderData] = None
+
+    @model_validator(mode="after")
+    def checkRemoteDataPlatform(self):
+        if all(plat is None for plat in [self.girder]):
+            raise ValueError("A remote data platform should be specified, valid options are ['girder'] ")
+        return self
 
 class ConfigFile(BaseModel):
     executable: str
