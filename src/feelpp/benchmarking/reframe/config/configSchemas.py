@@ -91,6 +91,7 @@ class AdditionalFiles(BaseModel):
 class Resources(BaseModel):
     tasks: Optional[Union[str,int]] = None
     tasks_per_node: Optional[Union[str,int]] = None
+    gpus_per_node: Optional[Union[str,int]] = None
     nodes: Optional[Union[str,int]] = None
     memory: Optional[Union[str,int]] = 0
     exclusive_access: Optional[Union[str,bool]] = True
