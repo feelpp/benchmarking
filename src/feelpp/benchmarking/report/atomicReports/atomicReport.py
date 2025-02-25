@@ -147,7 +147,8 @@ class AtomicReport:
                     dict(
                         script = check_vars.get("script"),
                         output_log = check_vars.get("output_log"),
-                        error_log = check_vars.get("error_log")
+                        error_log = check_vars.get("error_log"),
+                        custom_logs = check_vars.get("custom_logs",[])
                     )
                 )
 

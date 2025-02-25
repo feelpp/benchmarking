@@ -73,11 +73,13 @@ class Platform(BaseModel):
 class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
     parameterized_descriptions_filepath: Optional[str] = None
+    custom_logs: Optional[List[str]] = []
 
 
 class Resources(BaseModel):
     tasks: Optional[Union[str,int]] = None
     tasks_per_node: Optional[Union[str,int]] = None
+    gpus_per_node: Optional[Union[str,int]] = None
     nodes: Optional[Union[str,int]] = None
     memory: Optional[Union[str,int]] = 0
     exclusive_access: Optional[Union[str,bool]] = True
@@ -111,7 +113,7 @@ class ConfigFile(BaseModel):
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
-    additional_files: Optional[AdditionalFiles] = None
+    additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     plots: Optional[List[Plot]] = []
 
     model_config = ConfigDict( extra='allow' )

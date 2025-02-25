@@ -112,7 +112,6 @@ class MachineConfig(BaseModel):
         if self.input_user_dir:
             assert self.input_dataset_base_dir, "input_dataset_base_dir must be provided with input_user_dir"
             assert os.path.exists(self.input_user_dir) and os.path.isdir(self.input_user_dir), "Input User dir does not exist"
-            assert self.execution_policy == "serial", "input_user_dir must have serial execution policy"
         return self
 
 class ExecutionConfigFile(RootModel):
