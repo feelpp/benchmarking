@@ -23,6 +23,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     script = variable(str)
     error_log = variable(str)
     output_log = variable(str)
+    custom_logs = variable(list, value=[])
 
     #TODO: Find a way to avoid env variables
 

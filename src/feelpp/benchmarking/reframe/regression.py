@@ -51,6 +51,18 @@ class RegressionTest(ReframeSetup):
             self.app_reader.config.additional_files.parameterized_descriptions_filepath
         )
 
+    @run_before('performance')
+    def loadCustomLogs(self):
+        for custom_log_file in self.app_reader.config.additional_files.custom_logs:
+            if not os.path.exists(custom_log_file):
+                print(f"{custom_log_file} does not exist, continuing...")
+                continue
+            with open(custom_log_file,"r") as f:
+                self.custom_logs.append({
+                    "filename":os.path.basename(custom_log_file),
+                    "content":f.read()
+                })
+
     @run_before("cleanup")
     def removeDirectories(self):
         if self.app_reader.config.scalability.clean_directory:
