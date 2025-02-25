@@ -48,13 +48,13 @@ class Scalability(BaseModel):
 
 
 class Image(BaseModel):
-    remote: Optional[str] = None
+    url: Optional[str] = None
     name:str
 
     @field_validator("name", mode="after")
     @classmethod
     def checkImage(cls,v,info):
-        if not info.data["remote"] and not ("{{"  in v  or "}}" in v) :
+        if not info.data["url"] and not ("{{"  in v  or "}}" in v) :
             if not os.path.exists(v):
                 if info.context and info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")

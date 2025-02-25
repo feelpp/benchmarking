@@ -44,10 +44,10 @@ def main_cli():
         #===============PULL IMAGES==================#
         if not parser.args.dry_run:
             for platform_name, platform_field in app_reader.config.platforms.items():
-                if not platform_field.image or not platform_field.image.remote or not machine_reader.config.containers[platform_name].executable:
+                if not platform_field.image or not platform_field.image.url or not machine_reader.config.containers[platform_name].executable:
                     continue
                 if platform_name == "apptainer":
-                    completed_pull = subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
+                    completed_pull = subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.name} {platform_field.image.url}", shell=True)
                     completed_pull.check_returncode()
                 else:
                     raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
