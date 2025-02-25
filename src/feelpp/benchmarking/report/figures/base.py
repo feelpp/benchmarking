@@ -56,7 +56,11 @@ class CompositeFigure:
         return self.plotly_figure.createFigure(df)
 
     def createTex(self, df):
-        return self.tikz_figure.createFigure(df)
+        if self.tikz_figure is not None:
+            return self.tikz_figure.createFigure(df)
+        else:
+            print("Warning: Tikz figure not implemented for this plot type")
+            return None
 
     def createCsvs(self,df):
         return self.plotly_figure.createCsvs(df)
