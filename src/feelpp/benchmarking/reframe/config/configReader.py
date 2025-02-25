@@ -87,10 +87,16 @@ class FileHandler:
         """ Copies the file from src to dest_dirpath/name"""
         if not src:
             return
+        if not os.path.exists(src):
+            print(f"File {src} does not exist. Skipping copy.")
+            return
         if not os.path.exists(dest_dirpath):
             os.makedirs(dest_dirpath)
-        file_extension = src.split(".")[-1] if "." in src else None
-        filename = f"{name}.{file_extension}" if file_extension else name
+        if "." not in name:
+            file_extension = src.split(".")[-1]
+            filename = f"{name}.{file_extension}"
+        else:
+            filename = name
         shutil.copy2( src, os.path.join(dest_dirpath,filename) )
 
     @staticmethod
