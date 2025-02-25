@@ -119,16 +119,15 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
         print(f"==========================================================")
         print(f"     COPYING FILES FROM {self.machine_reader.config.input_user_dir} to {self.machine_reader.config.input_dataset_base_dir}   ")
-        for input_file in self.app_reader.config.input_file_dependencies.values():
-            print(f"\t {input_file}")
-            source = os.path.join(self.machine_reader.config.input_user_dir, input_file)
-            destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_file)
+        for input_dep in self.app_reader.config.input_file_dependencies.values():
+            print(f"\t {input_dep}")
+            source = os.path.join(self.machine_reader.config.input_user_dir, input_dep)
+            destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_dep)
 
             if os.path.exists(destination):
-                print(f"{destination} exists, {input_file} will not be copied...")
+                print(f"{destination} exists, {input_dep} will not be copied...")
                 continue
-
-            FileHandler.copyFile(os.path.dirname(destination),os.path.basename(destination),source)
+            FileHandler.copyResource(source,os.path.dirname(destination) if os.path.isfile(source) else destination)
         print("============================================================")
 
 
