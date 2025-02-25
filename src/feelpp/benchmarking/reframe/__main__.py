@@ -82,10 +82,10 @@ def main_cli():
             f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
 
         #Copy use case description if existant
-        FileHandler.copyFile(
+        FileHandler.copyResource(
+            app_reader.config.additional_files.description_filepath,
             os.path.join(report_folder_path,"partials"),
-            "description",
-            app_reader.config.additional_files.description_filepath
+            "description"
         )
 
         if parser.args.move_results:
