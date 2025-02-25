@@ -85,6 +85,7 @@ class Platform(BaseModel):
 class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
     parameterized_descriptions_filepath: Optional[str] = None
+    custom_logs: Optional[List[str]] = []
 
 
 class Resources(BaseModel):
@@ -117,7 +118,7 @@ class ConfigFile(BaseModel):
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
-    additional_files: Optional[AdditionalFiles] = None
+    additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     plots: Optional[List[Plot]] = []
 
     model_config = ConfigDict( extra='allow' )
