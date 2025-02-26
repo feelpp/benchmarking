@@ -1,6 +1,6 @@
-import os, json, subprocess
+import os, json, subprocess, shutil
 from feelpp.benchmarking.reframe.parser import Parser
-from feelpp.benchmarking.reframe.config.configReader import ConfigReader
+from feelpp.benchmarking.reframe.config.configReader import ConfigReader, FileHandler
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.reporting import WebsiteConfig
@@ -11,8 +11,7 @@ def main_cli():
     parser = Parser()
     parser.printArgs()
 
-    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,dry_run=parser.args.dry_run)
-    machine_reader.updateConfig()
+    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
 
     #Sets the cachedir and tmpdir directories for containers
     for platform, dirs in machine_reader.config.containers.items():
@@ -37,45 +36,42 @@ def main_cli():
         configs = [config_filepath]
         if parser.args.plots_config:
             configs += [parser.args.plots_config]
-        app_reader = ConfigReader(configs,ConfigFile,dry_run=parser.args.dry_run)
+        app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
+
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
         report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
-        app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
-        app_reader.updateConfig() #Update with own field
 
         if not parser.args.dry_run:
             #===============PULL IMAGES==================#
             for platform_name, platform_field in app_reader.config.platforms.items():
-                if not platform_field.image or not platform_field.image.remote or not machine_reader.config.containers[platform_name].executable:
+                if not platform_field.image or not platform_field.image.url or not machine_reader.config.containers[platform_name].executable:
                     continue
                 if platform_name == "apptainer":
-                    subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.name} {platform_field.image.remote}", shell=True)
+                    completed_pull = subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.name} {platform_field.image.url}", shell=True)
+                    completed_pull.check_returncode()
                 else:
                     raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
             #=============================================#
 
-            #===== Download remote dependencies ============#
+        #===== Download remote dependencies ============#
+        if not parser.args.dry_run:
             if app_reader.config.remote_input_dependencies:
-                if any(v.platform for v in app_reader.config.remote_input_dependencies.values()):
-                    girder_handler = GirderHandler(machine_reader.config.input_dataset_base_dir)
+                if any(v.girder for v in app_reader.config.remote_input_dependencies.values()):
+                    girder_handler = GirderHandler(machine_reader.config.input_user_dir or machine_reader.config.input_dataset_base_dir  )
             for dependency_name,remote_dependency in app_reader.config.remote_input_dependencies.items():
                 print(f"Donwloading remote file dependency : {dependency_name} ...")
-                if remote_dependency.platform == "girder":
-                    if remote_dependency.type == "file":
-                        girder_handler.downloadFile(
-                            remote_dependency.remote_location,
-                            os.path.dirname(remote_dependency.destination),
-                            name=os.path.basename(remote_dependency.destination)
-                        )
-                    elif remote_dependency.type == "folder":
-                        girder_handler.downloadFolder(remote_dependency.remote_location,remote_dependency.destination)
-                    elif remote_dependency.type == "item":
-                        girder_handler.downloadItem(remote_dependency.remote_location,remote_dependency.destination)
+                if remote_dependency.girder:
+                    if remote_dependency.girder.file:
+                        girder_handler.downloadFile( remote_dependency.girder.file, os.path.dirname(remote_dependency.girder.destination), name=os.path.basename(remote_dependency.girder.destination) )
+                    elif remote_dependency.girder.folder:
+                        girder_handler.downloadFolder(remote_dependency.girder.folder,remote_dependency.girder.destination)
+                    elif remote_dependency.girder.item:
+                        girder_handler.downloadItem(remote_dependency.girder.item,remote_dependency.girder.destination)
                     else:
-                        raise NotImplementedError(f"Type {remote_dependency.type} is not implemented for {dependency_name}")
+                        raise NotImplementedError(f"Remote dependency resource type is not implemented for {dependency_name}")
                 else:
-                    raise NotImplementedError(f"Platform {remote_dependency.platform} is not implemented for {dependency_name}")
-            #================================================#
+                    raise NotImplementedError(f"Platform {remote_dependency} is not implemented for {dependency_name}")
+        #================================================#
 
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
 
@@ -85,6 +81,12 @@ def main_cli():
         with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
             f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
 
+        #Copy use case description if existant
+        FileHandler.copyResource(
+            app_reader.config.additional_files.description_filepath,
+            os.path.join(report_folder_path,"partials"),
+            "description"
+        )
 
         if parser.args.move_results:
             if not os.path.exists(parser.args.move_results):

@@ -48,13 +48,13 @@ class Scalability(BaseModel):
 
 
 class Image(BaseModel):
-    remote: Optional[str] = None
+    url: Optional[str] = None
     name:str
 
     @field_validator("name", mode="after")
     @classmethod
     def checkImage(cls,v,info):
-        if not info.data["remote"] and not ("{{"  in v  or "}}" in v) :
+        if not info.data["url"] and not ("{{"  in v  or "}}" in v) :
             if not os.path.exists(v):
                 if info.context and info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")
@@ -73,11 +73,13 @@ class Platform(BaseModel):
 class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
     parameterized_descriptions_filepath: Optional[str] = None
+    custom_logs: Optional[List[str]] = []
 
 
 class Resources(BaseModel):
     tasks: Optional[Union[str,int]] = None
     tasks_per_node: Optional[Union[str,int]] = None
+    gpus_per_node: Optional[Union[str,int]] = None
     nodes: Optional[Union[str,int]] = None
     memory: Optional[Union[str,int]] = 0
     exclusive_access: Optional[Union[str,bool]] = True
@@ -91,11 +93,28 @@ class Resources(BaseModel):
         ), "Tasks - tasks_per_node - nodes combination is not supported"
         return self
 
-class RemoteData(BaseModel):
-    platform: Literal["girder"]
+class BaseRemoteData(BaseModel):
     destination: str
-    type: Literal["folder","item","file"]
-    remote_location:str
+
+class RemoteGirderData(BaseRemoteData):
+    item: Optional[str] = None
+    file: Optional[str] = None
+    folder: Optional[str] = None
+
+    @model_validator(mode="after")
+    def checkValidResource(self):
+        if all(res is None for res in [self.item, self.file, self.folder]):
+            raise ValueError("A valid resource needs to be specified, either 'file', 'folder' or 'item'")
+        return self
+
+class RemoteData(BaseModel):
+    girder: Optional[RemoteGirderData] = None
+
+    @model_validator(mode="after")
+    def checkRemoteDataPlatform(self):
+        if all(plat is None for plat in [self.girder]):
+            raise ValueError("A remote data platform should be specified, valid options are ['girder'] ")
+        return self
 
 class ConfigFile(BaseModel):
     executable: str
@@ -111,7 +130,7 @@ class ConfigFile(BaseModel):
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
-    additional_files: Optional[AdditionalFiles] = None
+    additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     plots: Optional[List[Plot]] = []
 
     model_config = ConfigDict( extra='allow' )

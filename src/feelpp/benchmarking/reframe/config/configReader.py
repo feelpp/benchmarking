@@ -1,4 +1,4 @@
-import json, os, re
+import json, os, re, shutil
 from pydantic import BaseModel
 
 class TemplateProcessor:
@@ -81,9 +81,42 @@ class JSONWithCommentsDecoder(json.JSONDecoder):
         s = '\n'.join(l if not l.lstrip().startswith('//') else '' for l in s.split('\n'))
         return super().decode(s)
 
+class FileHandler:
+    @staticmethod
+    def copyResource(src,dest_dirpath,rename=None):
+        """ Copies the file from src to dest_dirpath/name"""
+        if not src:
+            return
+        if not os.path.exists(src):
+            print(f"File {src} does not exist. Skipping copy.")
+            return
+
+        if not os.path.exists(dest_dirpath):
+            os.makedirs(dest_dirpath)
+
+        if os.path.isfile(src):
+            filename = os.path.basename(src)
+            if rename:
+                filename = rename
+                if "." not in rename and len(src.split('.'))>1:
+                    filename = f"{rename}.{'.'.join(src.split('.')[-1])}"
+
+            shutil.copy2( src, os.path.join(dest_dirpath,filename) )
+        elif os.path.isdir(src):
+            shutil.copytree(src,dest_dirpath,dirs_exist_ok=True)
+
+
+    @staticmethod
+    def cleanupDirectory(directory):
+        if os.path.exists(directory):
+            shutil.rmtree(directory)
+        else:
+            print(f"{directory} does not exist")
+
+
 class ConfigReader:
     """ Class to load config files"""
-    def __init__(self, config_paths, schema, dry_run=False):
+    def __init__(self, config_paths, schema, name, dry_run=False, additional_readers = []):
         """
         Args:
             config_paths (str | list[str]) : Path to the config JSON file. If a list is provided, files will be merged.
@@ -92,11 +125,17 @@ class ConfigReader:
         self.context = {
             "dry_run":dry_run
         }
-        self.config = self.load(
-            config_paths if type(config_paths) == list else [config_paths],
-            schema
-        )
+        if config_paths:
+            self.config = self.load(
+                config_paths if type(config_paths) == list else [config_paths],
+                schema
+            )
+        self.name = name
+        self.original_config = self.config.model_copy()
         self.processor = TemplateProcessor()
+        for additional_reader in additional_readers:
+            self.updateConfig(TemplateProcessor.flattenDict(additional_reader.config,additional_reader.name))
+        self.updateConfig()
 
     def load(self,config_paths, schema):
         """ Loads the JSON file and checks if the file exists.
@@ -106,7 +145,6 @@ class ConfigReader:
         Returns:
             Schema : parsed and validated configuration
         """
-
         self.config = {}
         for config in config_paths:
             assert os.path.exists(os.path.abspath(config)), f"Cannot find config file {config}"
@@ -124,8 +162,14 @@ class ConfigReader:
                 If not provided, placeholders will be changed with own confing
         """
         if not flattened_replace:
-            flattened_replace = self.processor.flattenDict(self.config.model_dump())
+            flattened_replace = TemplateProcessor.flattenDict(self.config.model_dump())
         self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context)
 
     def __repr__(self):
         return json.dumps(self.config.dict(), indent=4)
+
+    def resetConfig(self, additional_readers = []):
+        self.config = self.original_config.model_copy()
+        for additional_reader in additional_readers:
+            self.updateConfig(TemplateProcessor.flattenDict(additional_reader.config,additional_reader.name))
+        self.updateConfig()

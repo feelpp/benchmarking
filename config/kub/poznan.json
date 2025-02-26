@@ -10,92 +10,70 @@
     "platforms": {
         "apptainer":{
             "image": {
-                "remote":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
+                "url":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
                 "name":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
             },
             "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/kub:{{platforms.apptainer.input_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/kub",
+            "input_dir":"{{machine.input_dataset_base_dir}}",
             "append_app_option":[]
         }
     },
     "remote_input_dependencies":{
-        "simulators" : {
-            "platform":"girder",
-            "destination":"kub/",
-            "type":"item",
-            "remote_location":"675051994c9ccbdde21a4707"
-        },
-        "gis":{
-            "platform":"girder",
-            "destination":"kub/gis.json",
-            "type":"file",
-            "remote_location":"66267bd3b0e95728eb00f6e9"
-        },
-        "mesh":{
-            "platform":"girder",
-            "destination":"kub/mesh.msh",
-            "type":"file",
-            "remote_location":"66267bd3b0e95728eb00f6ec"
-        },
-        "weather":{
-            "platform":"girder",
-            "destination":"kub/weather.csv",
-            "type":"file",
-            "remote_location":"662f9434b0e95728eb00f7ad"
-        },
-        "scenarios":{
-            "platform":"girder",
-            "destination":"kub/",
-            "type":"item",
-            "remote_location":"67b496894c9ccbdde21a5769"
-        },
-        "config":{
-            "platform":"girder",
-            "destination":"kub/kub.cfg",
-            "type":"file",
-            "remote_location":"67b4a9904c9ccbdde21a5775"
-        }
+        "simulators":{"girder":{"item":"675051994c9ccbdde21a4707","destination":"kub/"}},
+        "gis":{"girder":{"file":"66267bd3b0e95728eb00f6e9","destination":"kub/gis.json"}},
+        "mesh":{"girder":{"file":"66267bd3b0e95728eb00f6ec","destination":"kub/mesh.msh"}},
+        "weather":{"girder":{"file":"662f9434b0e95728eb00f7ad","destination":"kub/weather.csv"}},
+        "scenarios":{"girder":{"item":"67b496894c9ccbdde21a5769","destination":"kub/"}},
+        "config":{"girder":{"file":"67b4a9904c9ccbdde21a5775","destination":"kub/kub.cfg"}}
+    },
+    "input_file_dependencies":{
+        "simulators":"kub/simulators",
+        "gis":"kub/gis.json",
+        "mesh":"kub/mesh.msh",
+        "weather":"kub/weather.csv",
+        "scenarios":"kub/scenarios_local",
+        "cfg":"kub/kub.cfg"
     },
     "options": [
-        "--config-file {{platforms.{{machine.platform}}.input_dir}}/kub.cfg",
+        "--config-file {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.cfg}}",
         "--cem.simulator.lod0.modelisation.maxfloors=10",
 
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding1Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding2Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding3Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding4Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding5Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding6Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding7Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding8Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding9Floors.fmu",
-        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/ApplicationFlatRoofBuilding10Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding1Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding2Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding3Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding4Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding5Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding6Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding7Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding8Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding9Floors.fmu",
+        "--cem.simulator.lod0.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/ApplicationFlatRoofBuilding10Floors.fmu",
 
-        "--cem.simulator.sun.filename={{platforms.{{machine.platform}}.input_dir}}/simulators/Sun.fmu",
+        "--cem.simulator.sun.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/Sun.fmu",
 
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc1.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc2.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc3.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc4.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc5.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc6.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc7.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc8.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc9.json",
-        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/simulators/simulatordesc10.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc1.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc2.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc3.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc4.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc5.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc6.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc7.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc8.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc9.json",
+        "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc10.json",
 
-        "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/gis.json",
-        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/mesh.msh",
-        "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/weather.csv",
-        "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/scenarios_local/scenarios.json",
+        "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.gis}}",
+        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh}}",
+        "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.weather}}",
+        "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.scenarios}}/scenarios.json",
 
         "--cem.instance.time.start=0",
         "--cem.instance.time.stop=86400",

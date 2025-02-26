@@ -6,6 +6,7 @@
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=newest}
+\usepackage{underscore}
 
 \makeatletter
 \newcommand\resetstackedplots{
@@ -16,10 +17,8 @@
 
 \begin{document}
 
-{% for df in csv_datasets %}
-\pgfplotstableread{
-{{df}}
-}\data{{loop.index | inttouniquestr }}
+{% for fn in csv_filenames %}
+\pgfplotstableread[col sep=comma]{{'{'}}{{fn}}{{'}'}}\data{{loop.index | inttouniquestr }}
 {% endfor %}
 
 
@@ -37,7 +36,7 @@
       legend style={at={(0.5,-0.1)},anchor=north}
     ]
 
-    {% for df in csv_datasets %}
+    {% for fn in csv_filenames %}
       {% set i = loop.index %}
       {% if i > 1 %}
       \resetstackedplots
