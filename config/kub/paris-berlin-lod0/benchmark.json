@@ -2,7 +2,7 @@
     "executable": "feelpp_kub_cem",
     "output_directory": "{{machine.output_app_dir}}/kub",
     "use_case_name": "Paris_Berlin",
-    "timeout":"0-2:00:0",
+    "timeout":"0-00:15:0",
     "resources":{
         "nodes":"{{parameters.resources.nodes.value}}",
         "tasks_per_node":128,
@@ -89,19 +89,25 @@
         "--cem.database.directory {{output_directory}}/{{instance}}/{{use_case_name}}",
         "--directory {{output_directory}}/{{instance}}/{{use_case_name}}"
     ],
+    "additional_files":{
+        "custom_logs":[
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/np_{{parameters.resources.tasks.value}}/logs/0-199/{{executable}}.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/np_{{parameters.resources.tasks.value}}/logs/0-199/{{executable}}.WARNING"
+        ]
+    },
     "scalability": {
-        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}/cem/",
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "clean_directory":true,
         "stages": [
             {
                 "name":"",
-                "filepath": "instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
+                "filepath": "cem/instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
                 "format": "json",
                 "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max","execute.subtimers.*.timeElapsed.max"]
             },
             {
                 "name":"",
-                "filepath": "logs/timers.json",
+                "filepath": "cem/logs/timers.json",
                 "format": "json",
                 "variables_path":["*.timeElapsed.max","*.subtimers.*.subtimers.*.timeElapsed.max"]
             }
