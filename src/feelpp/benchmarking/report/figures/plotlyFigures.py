@@ -164,20 +164,29 @@ class PlotlyMarkedScatter(PlotlyFigure):
         return [
             go.Scatter(
                 x = df.index, y = df[col],
+                mode = 'lines',
+                name = col,
+                fill='tonexty' if col_i > 0 else None, line=dict(color="black",dash="dash"),
+                showlegend=mark_i == 0, legend="legend2"
+            )
+            for col_i,col in enumerate(self.fill_lines)
+        ] + [
+            go.Scatter(
+                x = df.index, y = df[col],
                 mode = 'lines+markers',
                 name = f"{col} - {self.mark_axis_label} : {dim}" if dim else col,
                 marker = dict( symbol = self.marks[mark_i%len(self.marks)], color = self.colors[col_i%len(self.colors)], size = 10 ),
                 showlegend=False, legendgroup=mark_i
             )
-            for col_i,col in enumerate(df.columns)
+            for col_i,col in enumerate([c for c in df.columns if c not in self.fill_lines])
         ] + [
-        go.Scatter(
-            x = [None], y = [None], mode = 'lines', name = f"{col}",
-            line = dict( color = self.colors[col_i%len(self.colors)] ),
-            showlegend = mark_i == 0,legend="legend2",
-        )
-        for col_i,col in enumerate(df.columns)
-    ]
+            go.Scatter(
+                x = [None], y = [None], mode = 'lines', name = f"{col}",
+                line = dict( color = self.colors[col_i%len(self.colors)] ),
+                showlegend = mark_i == 0,legend="legend2",
+            )
+            for col_i,col in enumerate([c for c in df.columns if c not in self.fill_lines])
+        ]
 
     def updateLayout(self, fig):
         fig = super().updateLayout(fig)
