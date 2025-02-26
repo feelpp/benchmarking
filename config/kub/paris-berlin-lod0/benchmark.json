@@ -96,18 +96,18 @@
         ]
     },
     "scalability": {
-        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}/cem/",
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "clean_directory":true,
         "stages": [
             {
                 "name":"",
-                "filepath": "instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
+                "filepath": "cem/instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
                 "format": "json",
                 "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max","execute.subtimers.*.timeElapsed.max"]
             },
             {
                 "name":"",
-                "filepath": "logs/timers.json",
+                "filepath": "cem/logs/timers.json",
                 "format": "json",
                 "variables_path":["*.timeElapsed.max","*.subtimers.*.subtimers.*.timeElapsed.max"]
             }
