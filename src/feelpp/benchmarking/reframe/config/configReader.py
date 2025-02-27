@@ -83,21 +83,28 @@ class JSONWithCommentsDecoder(json.JSONDecoder):
 
 class FileHandler:
     @staticmethod
-    def copyFile(dest_dirpath,name,src):
+    def copyResource(src,dest_dirpath,rename=None):
         """ Copies the file from src to dest_dirpath/name"""
         if not src:
             return
         if not os.path.exists(src):
             print(f"File {src} does not exist. Skipping copy.")
             return
+
         if not os.path.exists(dest_dirpath):
             os.makedirs(dest_dirpath)
-        if "." not in name:
-            file_extension = src.split(".")[-1]
-            filename = f"{name}.{file_extension}"
-        else:
-            filename = name
-        shutil.copy2( src, os.path.join(dest_dirpath,filename) )
+
+        if os.path.isfile(src):
+            filename = os.path.basename(src)
+            if rename:
+                filename = rename
+                if "." not in rename and len(src.split('.'))>1:
+                    filename = f"{rename}.{'.'.join(src.split('.')[-1])}"
+
+            shutil.copy2( src, os.path.join(dest_dirpath,filename) )
+        elif os.path.isdir(src):
+            shutil.copytree(src,dest_dirpath,dirs_exist_ok=True)
+
 
     @staticmethod
     def cleanupDirectory(directory):

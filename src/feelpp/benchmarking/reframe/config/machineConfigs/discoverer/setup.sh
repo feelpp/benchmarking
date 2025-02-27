@@ -1,15 +1,12 @@
 #!/bin/bash -l
 
-SCRIPT_DIR=$(dirname "$0")
-source "$SCRIPT_DIR/hpc.env"
-
 echo "================================================"
-sacctmgr show association where account=$discoverer_project_id
+sacctmgr show association where account=$PROJECT_ID
 
-sshare -A $discoverer_project_id -u " " -o account,user,GrpTRESRaw%80,GrpTRESMins,RawUsage
+sshare -A $PROJECT_ID -u " " -o account,user,GrpTRESRaw%80,GrpTRESMins,RawUsage
 
-lfs quota -g $discoverer_project_id /discofs
-lfs quota -g $discoverer_project_id /disco2fs
+lfs quota -g $PROJECT_ID /discofs
+lfs quota -g $PROJECT_ID /disco2fs
 echo "==============================================="
 
 
