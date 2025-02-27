@@ -230,6 +230,7 @@ If you installed the framework via PyPi, you need to directly download all 5 qui
 In order to execute a benchmark, you can make use of the `execute-benchmark` command after all configuration files have been set ( xref:tutorial:configuration.adoc[Configuration Reference]).
 
 The script accepts the following options :
+
   `--machine-config`, (`-mc`)
                         Path to JSON reframe machine configuration file, specific to a system.
   `--plots-config`, (`-pc`)   Path to JSON plots configuration file, used to generate figures. 
@@ -271,10 +272,6 @@ The script takes the following arguments:
 - `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
 - `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
 - `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
-
-== CI/CD integration
-
-TODO
 
 == Notable Features
 
