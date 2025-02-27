@@ -1,15 +1,16 @@
 import pytest
-from feelpp.benchmarking.reframe.resources import TaskAndTaskPerNodeStrategy, NodesAndTasksPerNodeStrategy, TasksAndNodesStrategy, TasksStrategy, MemoryEnforcer, ExclusiveAccessEnforcer, ResourceHandler
+from feelpp.benchmarking.reframe.resources import TaskAndTaskPerNodeStrategy, NodesAndTasksPerNodeStrategy, TasksAndNodesStrategy, TasksStrategy, MemoryEnforcer, ExclusiveAccessEnforcer, ResourceHandler, GpusPerNodeStrategy
 
 
 class ResourcesMocker:
     """ Mocks the resources object """
-    def __init__(self, tasks = None, tasks_per_node = None, nodes = None, memory = None, exclusive_access = None ):
+    def __init__(self, tasks = None, tasks_per_node = None, nodes = None, memory = None, exclusive_access = None, gpus_per_node = None):
         self.tasks = tasks
         self.tasks_per_node = tasks_per_node
         self.nodes = nodes
         self.memory = memory
         self.exclusive_access = exclusive_access
+        self.gpus_per_node = gpus_per_node
 
 
 class RfmTestMocker:
@@ -129,6 +130,21 @@ class TestResourcesStrategies:
             assert rfm_test.num_nodes == nodes
             assert rfm_test.num_tasks == expected_tasks
 
+    @pytest.mark.parametrize(("gpus_per_node","fails"),[
+        (1,False), (22,False),
+        (0, True), (-1, True)
+    ])
+    def test_GpusPerNodeStrategy(self,gpus_per_node,fails):
+        """ Tests the GpusPerNodeStrategy
+        Checks if the number of gpus_per_node is set
+        Args:
+            gpus_per_node (int): Number of gpus per node
+        """
+        rfm_test = RfmTestMocker(num_cpus=128, memory_per_node=1000)
+        rfm_test.num_tasks = 1
+        self.strategyTest(GpusPerNodeStrategy(),ResourcesMocker(gpus_per_node=gpus_per_node),rfm_test, fails)
+        if not fails:
+            assert rfm_test.num_gpus_per_node == gpus_per_node
 
     @pytest.mark.parametrize(("tasks","memory","expected_nodes","expected_tasks_per_node"), [
         (128, 900, 1, 128), (128, 1000, 1, 128), (128, 1100, 2, 64), (128, 2100, 4, 42),
@@ -198,6 +214,7 @@ class TestResourceHandler:
         ({"tasks_per_node": 128, "nodes": 1, "exclusive_access":True} , False),
         ({"tasks": 128, "exclusive_access":False}, False),
         ({"tasks": 128, "memory":100,"exclusive_access":False}, False),
+        ({"tasks":64,"gpus_per_node": 2, "memory":100,"exclusive_access":False}, False),
     ])
     def test_setResources(self, args, fails):
         """ Tests the ResourceHandler setResources method

@@ -38,8 +38,8 @@ class TestReframeParameters:
         from feelpp.benchmarking.reframe.setup import ReframeSetup
 
         rfm_setup = ReframeSetup
-        input_parameters = rfm_setup.app_setup.reader.config.parameters
-        subparameter_map = rfm_setup.parameters
+        input_parameters = rfm_setup.app_reader.config.parameters
+        subparameter_map = rfm_setup.parameter_handler.nested_parameter_keys
 
         for parameter in input_parameters:
             assert parameter.name in subparameter_map
@@ -59,7 +59,7 @@ class TestReframeParameters:
         from feelpp.benchmarking.reframe.setup import ReframeSetup
 
         rfm_setup = ReframeSetup()
-        input_parameters = rfm_setup.app_setup.reader.config.parameters
+        input_parameters = rfm_setup.app_reader.config.parameters
 
         for param_name, rfm_param in rfm_setup._rfm_param_space.params.items():
             param_values = list(
