@@ -70,9 +70,11 @@ python3 -m pip install .
 
 == Quickstart
 
+For detailed documentation, refer to our link:https://bench.feelpp.org/benchmarking/tutorial/index.html[docs].
+
 === The benchmarked application
 
-The framwork includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _tests/data/parallelSum.cpp_, or you can download it here : [parallelSum.cpp](https://github.com/feelpp/benchmarking/blob/master/tests/data/parallelSum.cpp)
+The framwork includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _tests/data/parallelSum.cpp_, or you can download it here : link:https://github.com/feelpp/benchmarking/blob/master/tests/data/parallelSum.cpp[parallelSum.cpp]
 
 This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.
 
@@ -113,15 +115,17 @@ The framework also contains a default system configuration, located under _confi
    "output_app_dir":"$PWD"
 }
 ----
-You can download this configuration file here [default.json](https://github.com/feelpp/benchmarking/blob/master/config/machines/default.json).
+You can download this configuration file here link:https://github.com/feelpp/benchmarking/blob/master/config/machines/default.json[default.json].
 
-The framework also contains a very basic sample ReFrame configuration file, under _config/machines/default.py_. [default.py](https://github.com/feelpp/benchmarking/blob/master/config/machines/default.py)
+The framework also contains a very basic sample ReFrame configuration file, under _config/machines/default.py_. link:https://github.com/feelpp/benchmarking/blob/master/config/machines/default.py[default.py]
 
-This file will cause the tool to use a local scheduler and the `mpiexec` launcher with no options. For more advanced configurations, refer to [ReFrame's configuration reference](https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#)
+This file will cause the tool to use a local scheduler and the `mpiexec` launcher with no options. For more advanced configurations, refer to link:https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#[ReFrame's configuration reference]
+
+More information on _feelpp.benchmarking_ machine configuration files can be found on the documentation link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_machine_configuration[Machine configuration]
 
 === Benchmark configuration files
 
-Along with machine configuration files, users must provide the specifications of the benchmark. A sample file is provided under _config/tests_parallelSum/parallelSum.json_. [parallelSum.json](https://github.com/feelpp/benchmarking/blob/master/config/tests_parallelSum/parallelSum.json)
+Along with machine configuration files, users must provide the specifications of the benchmark. A sample file is provided under _config/tests_parallelSum/parallelSum.json_. link:https://github.com/feelpp/benchmarking/blob/master/config/tests_parallelSum/parallelSum.json[parallelSum.json]
 
 [source, json]
 ----
@@ -178,6 +182,8 @@ Along with machine configuration files, users must provide the specifications of
 }
 ----
 
+More information about _feelpp.benchmarking_ benchmark specifications can be found link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_benchmark_configuration[here]
+
 === Plots configuration
 
 Along with the benchmark configuration, a figure configuration file is provided _config/test\_parallelSum/plots.json_ (plots.json)[https://github.com/feelpp/benchmarking/blob/master/config/test\_parallelSum/plots.json].
@@ -196,6 +202,8 @@ An example of one figure specification is shown below. Users can add as many fig
    "secondary_axis":{ "parameter":"elements", "label":"N" }
 }
 ----
+
+More information about _feelpp.benchmarking_ figure configuration can be found link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_figures[here]
 
 === Running a benchmark
 Finally, to benchmark the test application, generate the reports and plot the figures, run (changing the file paths as needed)
@@ -280,7 +288,7 @@ TODO
 
 . HPC system integration
 
-   At the moment, the Discover supercomputer is supported, and many more machines are planned to be integrated into the framework. Integrating a new HPC system can be done easily by describing the hardware, following [ReFrame’s configuration reference](https://reframe-hpc.readthedocs.io/en/stable/config_reference.html) , and configuring access through the CI runners.
+   At the moment, the Discover supercomputer is supported, and many more machines are planned to be integrated into the framework. Integrating a new HPC system can be done easily by describing the hardware, following link:https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame’s configuration reference] , and configuring access through the CI runners.
 
 . A Continuous Benchmarking (CB) workflow
 
