@@ -28,7 +28,9 @@ class MachineConfig(BaseModel):
     reframe_base_dir:str
     reports_base_dir:str
     input_dataset_base_dir:Optional[str] = None
+    input_user_dir:Optional[str] = None
     output_app_dir:str
+    env_variables:Optional[Dict] = {}
     containers:Optional[Dict[str,Container]] = {}
 
     platform:Optional[Literal["apptainer","docker","builtin"]] = "builtin"
@@ -93,5 +95,13 @@ class MachineConfig(BaseModel):
         for container_type in v.keys():
             assert container_type in accepted_types, f"{container_type} not implemented"
         return v
+
+    @model_validator(mode="after")
+    def checkInputUserDir(self):
+        if self.input_user_dir:
+            assert self.input_dataset_base_dir, "input_dataset_base_dir must be provided with input_user_dir"
+            assert os.path.exists(self.input_user_dir) and os.path.isdir(self.input_user_dir), "Input User dir does not exist"
+        return self
+
 class ExecutionConfigFile(RootModel):
     List[MachineConfig]

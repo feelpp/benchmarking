@@ -35,19 +35,22 @@ site_configuration = {
                             'type': 'Singularity'
                         }
                     ],
-                    'sched_options': { 'use_nodes_option': True },
+                    'extras':{
+                        'memory_per_node':256
+                    }
                 }
-            ],
-            'env_vars':[
-                ["OMP_NUM_THREADS",1]
             ]
         }
     ],
     'environments': [
         {
             'name':'default',
-            'modules': [],
-            'target_systems':['discoverer:cn']
+            'modules': ["openmpi/4/gcc/latest"],
+            'target_systems':['discoverer:cn'],
+            'prepare_cmds': [
+                'source /etc/profile.d/modules.sh',
+                'export MODULEPATH=/opt/software/modulefiles:$MODULEPATH'
+            ]
         }
     ]
 }

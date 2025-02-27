@@ -19,12 +19,13 @@ class MockMachineConfig:
 
 class MockParser:
     class MockArgs:
-        def __init__(self,dry_run,verbose):
+        def __init__(self,dry_run,verbose,list):
             self.dry_run = dry_run
             self.verbose = verbose
+            self.list = list
 
-    def __init__(self,dry_run= False,verbose=1):
-        self.args = self.MockArgs(dry_run= dry_run,verbose=verbose)
+    def __init__(self,dry_run= False,verbose=1, list=False):
+        self.args = self.MockArgs(dry_run= dry_run,verbose=verbose, list=list)
 
 
 
@@ -112,7 +113,6 @@ class TestCommandBuilder:
     def test_buildCommand(self,cmd_builder,machine_config,parser):
         """Tests the buildCommand method of the CommandBuilder"""
         timeout = "0-00:01:00"
-        memory = "250G"
         executable ="test_executable"
         use_case ="test_use_case"
 
@@ -129,10 +129,9 @@ class TestCommandBuilder:
             f"--prefix={machine_config.reframe_base_dir} "
             f"--report-file={str(os.path.join(report_folder_path,'reframe_report.json'))} "
             f"-J time={timeout} "
-            f"-J mem={memory} "
             f"--perflogdir={os.path.join(machine_config.reframe_base_dir,'logs')} "
         )
         expected_command += "-" + "v"*parser.args.verbose if parser.args.verbose else ""
-        expected_command += " --dry-run" if parser.args.dry_run else " -r"
+        expected_command += " --dry-run --exec-policy serial" if parser.args.dry_run else " -r"
 
-        assert expected_command == cmd_builder.buildCommand(timeout,memory)
+        assert expected_command == cmd_builder.buildCommand(timeout)

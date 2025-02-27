@@ -1,6 +1,6 @@
-import os, json, subprocess
+import os, json, subprocess, shutil
 from feelpp.benchmarking.reframe.parser import Parser
-from feelpp.benchmarking.reframe.config.configReader import ConfigReader
+from feelpp.benchmarking.reframe.config.configReader import ConfigReader, FileHandler
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.reporting import WebsiteConfig
@@ -11,8 +11,7 @@ def main_cli():
     parser = Parser()
     parser.printArgs()
 
-    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,dry_run=parser.args.dry_run)
-    machine_reader.updateConfig()
+    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
 
     #Sets the cachedir and tmpdir directories for containers
     for platform, dirs in machine_reader.config.containers.items():
@@ -37,13 +36,12 @@ def main_cli():
         configs = [config_filepath]
         if parser.args.plots_config:
             configs += [parser.args.plots_config]
-        app_reader = ConfigReader(configs,ConfigFile,dry_run=parser.args.dry_run)
+        app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
+
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
         report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
-        app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
-        app_reader.updateConfig() #Update with own field
 
-        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout, app_reader.config.memory)
+        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
 
         exit_code = subprocess.run(reframe_cmd, shell=True)
 
@@ -51,6 +49,12 @@ def main_cli():
         with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
             f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
 
+        #Copy use case description if existant
+        FileHandler.copyFile(
+            os.path.join(report_folder_path,"partials"),
+            "description",
+            app_reader.config.additional_files.description_filepath
+        )
 
         if parser.args.move_results:
             if not os.path.exists(parser.args.move_results):

@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.figureFactory import FigureFactory
+
 
 class Controller:
     """ Controller component , it orchestrates the model with the view"""
@@ -12,9 +12,28 @@ class Controller:
         self.view = view
 
     def generateAll(self):
-        """ Creates plotly figures for each plot specified on the view config file
-        Returns a list of plotly figures.
-        """
-        for plot_config in self.view.plots_config:
-            for plot in FigureFactory.create(plot_config):
-                yield plot.createFigure(self.model.master_df)
+        return [
+            self.generateFigure(figure,plot_config.plot_types)
+            for figure,plot_config in zip(self.view.figures,self.view.plots_config)
+        ]
+
+    def generateFigure(self,figure,plot_types):
+        return {
+            "plot_types": plot_types,
+            "subfigures": [self.generateSubfigure(subfigure) for subfigure in figure]
+        }
+
+    def generateSubfigure(self, subfigure):
+        return {
+            "exports": [
+                { "display_text":"CSV", "data":[
+                    { "format":"csv", "prefix":"data","content":subfigure.createCsvs(self.model.master_df)}
+                ]},
+                { "display_text":"LaTeX", "data":[
+                    {"format":"tex","content":[{ "data":subfigure.createTex(self.model.master_df), "title":"figures" }]},
+                    {"format":"csv","content":subfigure.createCsvs(self.model.master_df)}
+
+                ]},
+            ],
+            "html": subfigure.createFigureHtml(self.model.master_df)
+        }

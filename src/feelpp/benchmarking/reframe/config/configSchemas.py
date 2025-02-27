@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator, RootModel
+from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
@@ -13,6 +13,13 @@ class Stage(BaseModel):
     filepath:str
     format:Literal["csv","tsv","json"]
     variables_path:Optional[Union[str,List[str]]] = []
+    units: Optional[Dict[str,str]] = {}
+
+    @field_validator("units",mode="before")
+    @classmethod
+    def parseUnits(cls,v):
+        v["*"] = v.get("*","s")
+        return v
 
     @model_validator(mode="after")
     def checkFormatOptions(self):
@@ -36,10 +43,8 @@ class Scalability(BaseModel):
     directory: str
     stages: List[Stage]
     custom_variables:Optional[List[CustomVariable]] = []
+    clean_directory: Optional[bool] = False
 
-class AppOutput(BaseModel):
-    filepath: str
-    format: str
 
 
 class Image(BaseModel):
@@ -61,7 +66,7 @@ class Image(BaseModel):
     @field_validator("name", mode="after")
     @classmethod
     def checkImage(cls,v,info):
-        if info.data["protocol"] == "local":
+        if info.data["protocol"] == "local" and not ("{{"  in v  or "}}" in v) :
             if not os.path.exists(v):
                 if info.context and info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")
@@ -80,22 +85,48 @@ class Platform(BaseModel):
 class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
     parameterized_descriptions_filepath: Optional[str] = None
+    custom_logs: Optional[List[str]] = []
+
+
+class Resources(BaseModel):
+    tasks: Optional[Union[str,int]] = None
+    tasks_per_node: Optional[Union[str,int]] = None
+    gpus_per_node: Optional[Union[str,int]] = None
+    nodes: Optional[Union[str,int]] = None
+    memory: Optional[Union[str,int]] = 0
+    exclusive_access: Optional[Union[str,bool]] = True
+
+    @model_validator(mode="after")
+    def validateResources(self):
+        assert (
+            self.tasks and self.tasks_per_node and not self.nodes or
+            self.tasks_per_node and self.nodes and not self.tasks or
+            self.tasks and not self.tasks_per_node and not self.nodes
+        ), "Tasks - tasks_per_node - nodes combination is not supported"
+        return self
 
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
-    memory: Optional[str] = None
+    resources: Resources
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     output_directory:Optional[str] = ""
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
-    outputs: List[AppOutput]
+    input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
     sanity: Sanity
     parameters: List[Parameter]
-    additional_files: Optional[AdditionalFiles] = None
+    additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     plots: Optional[List[Plot]] = []
+
+    model_config = ConfigDict( extra='allow' )
+    def __getattr__(self, item):
+        if item in self.model_extra:
+            return self.model_extra[item]
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
+
 
     @field_validator("timeout",mode="before")
     @classmethod

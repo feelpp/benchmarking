@@ -113,7 +113,7 @@ For the given example, it produces the following dataframe
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -131,7 +131,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -141,7 +141,7 @@ The relative performance strategy computes the proportion of the time that a a `
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -159,7 +159,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -172,7 +172,7 @@ For the example, this strategy will produce the following.
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.strategies import StrategyFactory
+from feelpp.benchmarking.report.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -190,7 +190,7 @@ plot_config = Plot(**{
         "label":"N"
     }
 })
-strategy = StrategyFactory.create(plot_config)
+strategy = TransformationStrategyFactory.create(plot_config)
 strategy.calculate(model.master_df)
 ----
 
@@ -202,7 +202,7 @@ Considering the same example axis as above, the software can generate the follow
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.report.figureFactory import FigureFactory
+from feelpp.benchmarking.report.figures.figureFactory import FigureFactory
 figures = FigureFactory.create(Plot(**{
     "title": "Absolute performance",
     "plot_types": [ "scatter" ],
@@ -225,6 +225,43 @@ figures = FigureFactory.create(Plot(**{
 }))
 fig = figures[0].createFigure(model.master_df)
 fig.show()
+----
+
+- `marked_scatter`
+
+The marked scatter plot type supports from 2 to 4 dimensions. The symbol/marks axis will correspond to the `secondary_axis` parameter.
+This plot type will behave as follows:
+
+* If 1 or 2 dimensions are specified (x-axis and optionally color-axis), then this plot type will be equivalent to `scatter`.
+* If 3 dimensions are specified (x-axis, color-axis and secondary-axis), then the `secondary_axis` will correspond to the symbol/marks axis.
+* If 4 dimensions are specified (x-axis, color-axis, secondary-axis and one extra-axis), then the first element of the `extra_axes` list will correspond to the symbol/marks axis, and the `secondary_axis` will correspond to the slider of the returned animation.
+
+[%dynamic%open%hide_code,python]
+----
+
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "marked_scatter" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
 ----
 
 - `stacked_bar`
@@ -284,6 +321,36 @@ fig = figures[0].createFigure(model.master_df)
 fig.show()
 ----
 
+- `heatmap`
+
+For this case, we will consider the `elements` (N) as `color_axis` and `performance_variable` for secondary axis (slider).
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "heatmap" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
+
 - `table`
 
 [%dynamic%open%hide_code,python]
@@ -312,6 +379,148 @@ fig = figures[0].createFigure(model.master_df)
 fig.show()
 ----
 
+- `sunburst`
+
+This figure considers the `color_axis` parameter as the outer-most ring.
+Users can supply an `extra_axes` field, containing a list of additional parameters. Values for these parameters whill be shown on the rings that follow the `color_axis` ring, in the order they are provided.
+The `secondary_axis` and `xaxis` parameter are present respectively on the inner-most and second inner-most rings.
+
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "sunburst" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+fig = figures[0].createFigure(model.master_df)
+fig.show()
+----
+
+
+- `parallelcoordinates`
+
+Axes will be shown on the following order: `secondary_axis`, `xaxis`, all additional `extra_axes`, `color_axis`. The `yaxis` will be shown in the line color.
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "parallelcoordinates" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    },
+    "extra_axes":[
+        {
+            "parameter":"dim3",
+            "label":"Dim3"
+        }
+    ]
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
+----
+
+
+=== 3D Plots
+
+3D plots are also supported, and then can show up to 4 dimensions. At least 3 parameters must be provided (`xaxis`,`color_axis` and `secondary_axis` ).
+Axes correspondance is as follows:
+
+- x-axis of the 3D plot: `xaxis`
+- y-axis of the 3D plot: `secondary_axis` if no extra axes are provided, else, the first element of the `extra_axes` list.
+- z-axis of the 3D plot: `yaxis` (contains the measured values)
+- color of the 3D traces: `color_axis`
+- Slider: `secondary_axis` if extra axes are provided.
+
+- `scatter3d`
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "scatter3d" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
+----
+
+- `surface3d`
+
+[%dynamic%open%hide_code,python]
+----
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "surface3d" ],
+    "transformation": "performance",
+    "variables": [ "computation_time","communication_time" ],
+    "names": ["Time"],
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "yaxis":{"label":"Execution time (s)"},
+    "secondary_axis":{
+        "parameter":"elements",
+        "label":"N"
+    },
+    "xaxis":{
+        "parameter":"nb_tasks.tasks",
+        "label":"Number of tasks"
+    }
+}))
+for f in figures:
+    fig = f.createFigure(model.master_df)
+    fig.show()
+----
+
+
 == Aggregations
 
 Depending on the dashboard level that we are located at, it might be necessary to aggregate the data on the master dataframe.
@@ -332,11 +541,12 @@ The previous example will first get only the latest benchmarks (by getting the m
 Users must provide a column and an aggregation function as a string.
 
 Available aggregations are:
+
 - `mean` : Computes the mean of the column
 - `mean` : Computes the sum of the column
 - `max` : Computes the maximum of the column
 - `min` : Computes the minimum of the column
-- `filter:value`: : Filters the column by `value`.
+- `filter:value`: Filters the column by `value`.
 
 
 [NOTE]

@@ -32,22 +32,25 @@ class CommandBuilder:
         """Write the ReFrame execution flag depending on the parser arguments.
             Examples are --dry-run or -r
         """
-        if self.parser.args.dry_run:
-            return "--dry-run"
+        opts = []
+        if self.parser.args.dry_run or self.parser.args.list:
+            if self.parser.args.dry_run:
+                opts += ["--dry-run","--exec-policy serial"]
+            if self.parser.args.list:
+                opts += ["--list"]
         else:
-            return "-r"
+            opts += ["-r"]
+        return " ".join(opts)
 
-    def buildJobOptions(self,timeout,memory):
+    def buildJobOptions(self,timeout):
         #TODO: Generalize (only workf for slurm ?)
         options = []
         if timeout:
             options.append(f"-J time={timeout}")
-        if memory:
-            options.append(f"-J mem={memory}")
         return " ".join(options)
 
 
-    def buildCommand(self,timeout,memory):
+    def buildCommand(self,timeout):
         assert self.report_folder_path is not None, "Report folder path not set"
         cmd = [
             'reframe',
@@ -58,7 +61,7 @@ class CommandBuilder:
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
             f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
-            f"{self.buildJobOptions(timeout,memory)}",
+            f"{self.buildJobOptions(timeout)}",
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             f'{self.buildExecutionMode()}'

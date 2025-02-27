@@ -20,6 +20,11 @@
             }
         ]
     },
+    // Resources for the test
+    "resources":{
+        "tasks":"{{parameters.resources.tasks.value}}",
+        "exclusive_access":"{{parameters.resources.exclusive_access.value}}"
+    },
     // Files containing app outputs
     "outputs": [
         {
@@ -35,7 +40,7 @@
     // Test parameters
     "parameters": [
         {
-            "name": "nb_tasks",
+            "name": "resources",
             "sequence": [
                 {"tasks" : 1, "exclusive_access":true},
                 {"tasks" : 2, "exclusive_access":true},
