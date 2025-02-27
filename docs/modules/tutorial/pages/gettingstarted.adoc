@@ -2,86 +2,234 @@
 
 == Installation
 
-1. Clone the Repository
-[source,bash]
-----
-git clone https://github.com/feelpp/benchmarking.git
-----
+=== Using PyPi
 
-2. Use a python virtual environment [Optional]
+- Use a python virtual environment (Optional)
+
 [source,bash]
 ----
 python3 -m venv .venv
 source .venv/bin/activate
 ----
 
-3. Build the project
+- Install the package
+
 [source,bash]
 ----
-pip3 wheel --no-deps --wheel-dir dist .
+pip install feelpp-benchmarking
 ----
 
-4. Install requirements
+=== Using Git
 
-This will install necessary dependencies as well as the built project from the previous step.
+- Clone the repository
+
 [source,bash]
 ----
-python3 -m pip install -r requirements.txt
+git clone https://github.com/feelpp/benchmarking.git
+----
+
+- Use a python virtual environment (Optional)
+
+[source,bash]
+----
+python3 -m venv .venv
+source .venv/bin/activate
+----
+
+- Install the project and dependencies
+
+[source,bash]
+----
+python3 -m pip install .
 ----
 
 == Quickstart
 
-The framwork includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _tests/data/parallelSum.cpp_.
+For detailed documentation, refer to our link:https://bench.feelpp.org/benchmarking/tutorial/index.html[docs].
+
+=== The benchmarked application
+
+The framwork includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _tests/data/parallelSum.cpp_, or you can download it here : link:https://github.com/feelpp/benchmarking/blob/master/tests/data/parallelSum.cpp[parallelSum.cpp]
 
 This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.
 
 Additionally, the app will measure the time taken to perform the partial sum, and will save it under a _scalability.json_ file.
 
-The executable is already provided as _tests/data/parallelSum_. You can update it and recompile it for a specific config as needed.
+You can update the sample application and recompile it for a specific config as needed.
 [source,bash]
 ----
 mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
 ----
 
-// Local configuration files can be found under _config/test_parallelSum/_. They are explained more in detail in the following configuration section.
-// This folder cantins a _parallelSum.json_ file holding are benchmark related configurations. That is, instructions on what the benchmark should be. It also contains a `plots.json` file holding descriptions on the figures that should be generated for this benchmark.
-// Additionally, machine specific configurations are found under _config/machines/_. These files contain general information on the environments to run the tests on, including containers, special options and base directories for inputs and outputs of the applications.
-// It is important to know that these configuration files are user dependent, and will most certainly vary depending on the resource you will execute benchmarks on. For a simple example, the _local.json_ file can be used for running the application on a personal Linux or MacOS computer.
+=== Machine configuration files
 
-Configuration files might require some changes for specific configurations depending on the system you are running the framework.
+The framework also contains a default system configuration, located under _config/machines/default.json_ corresponding to the file _src/feelpp/benchmarking/reframe/config/machineConfigs/default/reframe.py, that looks like this :
 
-Finally, to benchmark the test application, generate the reports and plot the figures, run
+[source,json]
+----
+{
+   //will use the `default` ReFrame configuration file
+   "machine": "default",
+
+   //will run on the default partition, using the built-in (or local) platform and the default env
+   "targets":["default:builtin:default"],
+
+   //Tests will run asynchronously (up to 4 jobs at a time)
+   "execution_policy": "async",
+
+   // ReFrame's stage and output directories will be located under _./build/reframe/_
+   "reframe_base_dir":"./build/reframe",
+
+   // The generated JSON report will be created under _./reports/_
+   "reports_base_dir":"./reports/",
+
+   // The base directory where the executable is located
+   "input_dataset_base_dir":"$PWD",
+
+   //The C++ app outputs will be stored under the current working directory (./)
+   "output_app_dir":"$PWD"
+}
+----
+You can download this configuration file here link:https://github.com/feelpp/benchmarking/blob/master/config/machines/default.json[default.json].
+
+The framework also contains a very basic sample ReFrame configuration file, under _config/machines/default.py_. link:https://github.com/feelpp/benchmarking/blob/master/config/machines/default.py[default.py]
+
+This file will cause the tool to use a local scheduler and the `mpiexec` launcher with no options. For more advanced configurations, refer to link:https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#[ReFrame's configuration reference]
+
+More information on _feelpp.benchmarking_ machine configuration files can be found on the documentation link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_machine_configuration[Machine configuration]
+
+=== Benchmark configuration files
+
+Along with machine configuration files, users must provide the specifications of the benchmark. A sample file is provided under _config/tests_parallelSum/parallelSum.json_. link:https://github.com/feelpp/benchmarking/blob/master/config/tests_parallelSum/parallelSum.json[parallelSum.json]
+
+[source, json]
+----
+{
+   //Executable path (Change the location to the actual executable)
+   "executable": "{{machine.input_dataset_base_dir}}/tests/data/parallelSum",
+   "use_case_name": "parallel_sum",
+   "timeout":"0-0:5:0",
+   "output_directory": "{{machine.output_app_dir}}/tests/data/outputs/parallelSum",
+
+   //Application options
+   "options": [ "{{parameters.elements.value}}", "{{output_directory}}/{{instance}}" ],
+
+   //Files containing execution times
+   "scalability": {
+      "directory": "{{output_directory}}/{{instance}}/",
+      "stages": [
+         {
+            "name":"",
+            "filepath": "scalability.json",
+            "format": "json",
+            "variables_path":"*"
+         }
+      ]
+   },
+
+   // Resources for the test
+   "resources":{
+      "tasks":"{{parameters.tasks.value}}"
+   },
+
+   // Files containing app outputs
+   "outputs": [
+      {
+         "filepath":"{{output_directory}}/{{instance}}/outputs.csv",
+         "format":"csv"
+      }
+   ],
+
+   // Test validation (Only stdout supported at the moment)
+   "sanity": { "success": ["[SUCCESS]"], "error": ["[OOPSIE]","Error"] },
+
+   // Test parameters
+   "parameters": [
+      {
+         "name": "tasks",
+         "sequence": [1,2,4]
+      },
+      {
+         "name":"elements",
+         "linspace":{ "min":100000000, "max":1000000000, "n_steps":4 }
+      }
+   ]
+}
+----
+
+More information about _feelpp.benchmarking_ benchmark specifications can be found link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_benchmark_configuration[here]
+
+=== Plots configuration
+
+Along with the benchmark configuration, a figure configuration file is provided _config/test\_parallelSum/plots.json_ (plots.json)[https://github.com/feelpp/benchmarking/blob/master/config/test\_parallelSum/plots.json].
+
+An example of one figure specification is shown below. Users can add as many figures as they wish, corresponding the figure axis with the parameters used on the benchmark.
+[source,json]
+----
+{
+   "title": "Absolute performance",
+   "plot_types": [ "stacked_bar", "grouped_bar" ],
+   "transformation": "performance",
+   "variables": [ "computation_time" ],
+   "names": ["Time"],
+   "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
+   "yaxis":{"label":"Execution time (s)"},
+   "secondary_axis":{ "parameter":"elements", "label":"N" }
+}
+----
+
+More information about _feelpp.benchmarking_ figure configuration can be found link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_figures[here]
+
+=== Running a benchmark
+Finally, to benchmark the test application, generate the reports and plot the figures, run (changing the file paths as needed)
 [source,bash]
 ----
-execute-benchmark --machine-config config/machines/local.json \
-                    --benchmark-config config/test_parallelSum/parallelSum.json \
-                    --plots-config config/test_parallelSum/plots.json \
-                    --website
+execute-benchmark --machine-config config/machines/default.json \
+                  --custom-rfm-config config/machines/default.py \
+                  --benchmark-config config/test_parallelSum/parallelSum.json \
+                  --plots-config config/test_parallelSum/plots.json \
+                  --website
 ----
 
-The `--website` option will start an http-server on localhost, so the website can be visualized, check the console for more information.
+The `--website` option will start an http-server on localhost, so the website can be visualized. Check the console for more information.
+
+[NOTE]
+If you installed the framework via PyPi, you need to directly download all 5 quickstart files.
 
 
-== Executing a benchmark
+== Usage
+
+=== Executing a benchmark
+
 
 In order to execute a benchmark, you can make use of the `execute-benchmark` command after all configuration files have been set ( xref:tutorial:configuration.adoc[Configuration Reference]).
 
 The script accepts the following options :
 
-- `--machine-config` (`-mc`) : The path to the machine configuration JSON file
-- `--benchmark-config` (`-bc`) : The path to the benchmark configuration JSON file
-- `--plots-config` (`-pc`) : The path to the plots configuration JSON file. If not provided, it will be assumed that the plots section is included in the benchmark config. Otherwise, no plots will be considered.
-- `--dir` (`-d`) : [Optional] Directory path where benchmark configuration files can be found. If provided, the application will consider all benchmark configuration files inside the provided directory.
-- `--exclude` (`-e`) : [Optional] To use in combination with `--dir`, mentioned files will not be launched. Only provide basenames to exclude.
-- `--move-results` (`-mv`) : [Optional] Directory to move the resulting files to.  If not provided, result files will be located under the directory specified by the machine configuration.
-- `--list-files` (`-lf`) : [Optional] List all benchmarking configuration file found. If this option is provided, the application will not run. Use it for validation.
-- `--verbose` (`-v`) : [Optional] Select Reframe\'s verbose level by specifying multiple v\'s.
-- `--website` (`-w`) : [Optional] Render reports, compile them, create the website and start an http server.
-- `--help` (`-h`) : Display help and quit program
+  `--machine-config`, (`-mc`)
+                        Path to JSON reframe machine configuration file, specific to a system.
+  `--plots-config`, (`-pc`)   Path to JSON plots configuration file, used to generate figures. 
+                        If not provided, no plots will be generated. The plots configuration can also be included in the benchmark configuration file, under the "plots" field.
+  `--benchmark-config`, (`-bc`)
+                        Paths to JSON benchmark configuration files 
+                        In combination with `--dir`, specify only provide basenames for selecting JSON files.
+  `--custom-rfm-config`, (`-rc`)
+                        Additional reframe configuration file to use instead of built-in ones. It should correspond the with the `--machine-config` specifications.
+  `--dir`, (`-d`)             Name of the directory containing JSON configuration files
+  `--exclude`, (`-e`)         To use in combination with `--dir`, mentioned files will not be launched. 
+                        Only provide basenames to exclude.
+  `--move-results`, (`-mv`)   Directory to move the resulting files to. 
+                        If not provided, result files will be located under the directory specified by the machine configuration.
+  `--list-files`, (`-lf`)     List all benchmarking configuration file found. 
+                        If this option is provided, the application will not run. Use it for validation.
+  `--verbose`, (`-v`)         Select Reframe's verbose level by specifying multiple v's. 
+  `--help`, (`-h`)            Display help and quit program
+  `--website`, (`-w`)         Render reports, compile them and create the website.
+  `--dry-run`             Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.
 
 When a benchmark is done, a `website_config.json` file will be created (or updated) with the current filepaths of the reports and plots generated by the framework. If the `--website` flag is active, the `render-benchmarks` command will be launched with this file as argument.
 
-== Rendering reports
+=== Rendering reports
 
 To render reports, a webiste configuration file is needed. An example is provided under _src/benchmarking/reports/config/config.json_. This file indicates how the website views should be structured, and it indicates the hierarchy of the benchmarks.
 
@@ -91,6 +239,11 @@ Once this file is located, users can run the `render-benchmarks` command to rend
 
 The script takes the following arguments:
 
-- `config-file` : The path of the website configuration file.
-- `remote-download-dir`: [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
-- `modules-path`: [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
+- `--config-file` (`-c`): The path of the website configuration file.
+- `--remote-download-dir` (`-do`): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
+- `--modules-path` (`-m`): [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
+- `--overview-config` (`-oc`): Path to the overview figure configuration file.
+- `--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
+- `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
+- `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
+- `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
