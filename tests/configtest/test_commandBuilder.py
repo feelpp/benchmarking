@@ -22,6 +22,7 @@ class MockParser:
         def __init__(self,dry_run,verbose):
             self.dry_run = dry_run
             self.verbose = verbose
+            self.custom_rfm_config = None
 
     def __init__(self,dry_run= False,verbose=1):
         self.args = self.MockArgs(dry_run= dry_run,verbose=verbose)
