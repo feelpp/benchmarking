@@ -7,7 +7,7 @@
 image:https://github.com/feelpp/benchmarking/workflows/CI/badge.svg[CI]
 
 The `feelpp.benchmarking` framework is designed to automate and facilitate the benchmarking process for any application. It enables hightly customized and flexible benchmarking, providing a pipeline that guides users from test execution to comprehensive report generation.
-The framework is built on top of ReFrame and leverages a modular configuration system based on three JSON files that define machine-specific options, benchmark parameters, and dashboard report figures.
+The framework is built on top of link:https://reframe-hpc.readthedocs.io/en/stable/index.html[ReFrame-HPC] and leverages a modular configuration system based on three JSON files that define machine-specific options, benchmark parameters, and dashboard report figures.
 
 Key features include:
 
@@ -272,21 +272,3 @@ The script takes the following arguments:
 - `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
 - `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
 - `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
-
-== Notable Features
-
-. Flexible configuration files
-
-   Machine, benchmark and figure configuration files support complex parametrization and include a placeholder syntax for easy refactoring and reuse.
-
-. Container support and benchmark reproducibility
-
-   The *feelpp.benchmarking* tool seamlessly integrates Apptainer containers, ensuring compatibility across many HPC systems. The framework ensures, via input configuration, that results are consistent and reproducible. Additionally, the tool guarantees dashboard persistence, allowing users to track performance over time and across different views
-
-. HPC system integration
-
-   At the moment, the Discover supercomputer is supported, and many more machines are planned to be integrated into the framework. Integrating a new HPC system can be done easily by describing the hardware, following link:https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame’s configuration reference] , and configuring access through the CI runners.
-
-. A Continuous Benchmarking (CB) workflow
-
-   The benchmarking framework of *Feel++* provides a pipeline that can be directly executed by any application via a REST request, enabling continuous benchmarking for any application through their CI/CD pipelines.
