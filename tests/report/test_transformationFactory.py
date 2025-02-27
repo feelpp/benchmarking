@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.strategies import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, StrategyFactory
+from feelpp.benchmarking.report.transformationFactory import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, TransformationStrategyFactory
 import pytest
 import pandas as pd
 import numpy as np
@@ -13,15 +13,18 @@ class PlotConfigMocker:
     def __init__(
         self, transformation="",aggregations = [],
         xaxis = AxisMocker(), secondary_axis= AxisMocker(), color_axis=AxisMocker(),
-        variables = [], plot_types = []
+        variables = [], plot_types = [], layout_modifiers = None, title = "", yaxis = AxisMocker()
     ):
         self.transformation = transformation
         self.xaxis = xaxis
         self.secondary_axis = secondary_axis
         self.color_axis = color_axis
+        self.yaxis = yaxis
         self.aggregations = aggregations
         self.variables = variables
         self.plot_types = plot_types
+        self.layout_modifiers = layout_modifiers
+        self.title = title
 
 @pytest.mark.parametrize(("transformation","strategy"),[
     ("performance",PerformanceStrategy),
@@ -31,30 +34,48 @@ class PlotConfigMocker:
 ])
 def test_strategyFactory(transformation,strategy):
     if strategy:
-        assert isinstance(StrategyFactory.create(PlotConfigMocker(transformation=transformation)),strategy)
+        assert isinstance(TransformationStrategyFactory.create(PlotConfigMocker(transformation=transformation)),strategy)
     else:
         with pytest.raises(NotImplementedError):
-            StrategyFactory.create(PlotConfigMocker(transformation=transformation))
+            TransformationStrategyFactory.create(PlotConfigMocker(transformation=transformation))
+
+class MockDataframe:
+    def __init__(self,index_type):
+        if index_type == "simple":
+            parameter_product = list(product([2,4,8,16,32,64,128],["a","b","c","d"]))
+            self.df = pd.DataFrame(
+                {
+                    "some_col":["sample_data"]*len(parameter_product),
+                    "xaxis" : [p[0] for p in parameter_product],
+                    "performance_variable": [p[1] for p in parameter_product],
+                    "value": np.random.uniform(-100,100,len(parameter_product))
+                }
+            )
+        elif index_type == "multi":
+            parameter_product = list(product([32,64,128],["M1","M2"],["A","B","C"]))
+            self.df = pd.DataFrame(
+                {
+                    "some_col":["sample_data"]*len(parameter_product),
+                    "xaxis" : [p[0] for p in parameter_product],
+                    "color_axis" : [p[1] for p in parameter_product],
+                    "secondary_axis": [p[2] for p in parameter_product],
+                    "value": np.random.uniform(-100,100,len(parameter_product)),
+                    "performance_variable":["a"]*len(parameter_product)
+                }
+            )
+        else:
+            raise NotImplementedError
 
 
 class TestSimpleStrategies:
     """Tests for strategies with simple confiugurations (just xaxis)"""
+
     plot_config = PlotConfigMocker( xaxis=AxisMocker(parameter="xaxis",label="x") )
-
-    parameter_product = list(product([2,4,8,16,32,64,128],["a","b","c","d"]))
-
-    mock_data = pd.DataFrame(
-        {
-            "some_col":["sample_data"]*len(parameter_product),
-            "xaxis" : [p[0] for p in parameter_product],
-            "performance_variable": [p[1] for p in parameter_product],
-            "value": np.random.uniform(-100,100,len(parameter_product))
-        }
-    )
+    mock_data = MockDataframe("simple").df
 
     def getCalculatedDf(self,transformation):
         self.plot_config.transformation = transformation
-        calculated_df = StrategyFactory.create(self.plot_config).calculate(self.mock_data)
+        calculated_df = TransformationStrategyFactory.create(self.plot_config).calculate(self.mock_data)
         assert calculated_df.index.name == "xaxis"
         assert calculated_df.columns.name == "performance_variable"
         assert calculated_df.isna().sum().sum() == 0
@@ -84,29 +105,32 @@ class TestSimpleStrategies:
         ignore_columns = ["optimal","half-optimal"]
         assert np.isclose(calculated_df.loc[:,[col for col in calculated_df.columns if col not in ignore_columns]],pivot.loc[pivot.index.min(),:] / pivot).all()
 
+
+    @pytest.mark.parametrize(("param_names","expected"),[
+        ("param1","param1"),
+        ("param1|non_existent","param1"),
+        ("non_existent|param2","param2"),
+        ("non_existent|param2|param3","param2"),
+        ("non_existent",None),
+        (0,None), (None,None), (False,None),
+    ])
+    def test_chooseColumn(self,param_names,expected):
+        df = pd.DataFrame(columns=["param1","param2","param3","param4"])
+        assert PerformanceStrategy.chooseColumn(param_names,df) == expected
+
+
+
 class TestComplexStrategies:
     plot_config = PlotConfigMocker(
         xaxis=AxisMocker(parameter="xaxis",label="x"),
         secondary_axis=AxisMocker(parameter="secondary_axis",label="secondary"),
         color_axis=AxisMocker(parameter="color_axis",label="color")
     )
-
-    parameter_product = list(product([32,64,128],["M1","M2"],["A","B","C"]))
-
-    mock_data = pd.DataFrame(
-        {
-            "some_col":["sample_data"]*len(parameter_product),
-            "xaxis" : [p[0] for p in parameter_product],
-            "color_axis" : [p[1] for p in parameter_product],
-            "secondary_axis": [p[2] for p in parameter_product],
-            "value": np.random.uniform(-100,100,len(parameter_product)),
-            "performance_variable":["a"]*len(parameter_product)
-        }
-    )
+    mock_data = MockDataframe("multi").df
 
     def getCalculatedDf(self,transformation):
         self.plot_config.transformation = transformation
-        calculated_df = StrategyFactory.create(self.plot_config).calculate(self.mock_data)
+        calculated_df = TransformationStrategyFactory.create(self.plot_config).calculate(self.mock_data)
         assert calculated_df.index.names[0] == "secondary_axis"
         assert calculated_df.index.names[1] == "xaxis"
         assert calculated_df.columns.name == "color_axis"

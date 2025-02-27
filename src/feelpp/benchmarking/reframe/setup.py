@@ -3,7 +3,8 @@ from feelpp.benchmarking.reframe.parameters import ParameterFactory
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
-from feelpp.benchmarking.reframe.outputs import OutputsHandler
+from feelpp.benchmarking.reframe.resources import ResourceHandler
+
 
 import reframe as rfm
 import os, re, shutil, sys
@@ -39,6 +40,10 @@ class Setup:
         """
         self.reader.updateConfig(replace)
 
+    def setEnvVariables(self):
+        for env_var_name,env_var_value in self.reader.config.env_variables.items():
+            os.environ[env_var_name] = env_var_value
+
 
 class MachineSetup(Setup):
     """ Machine related setup"""
@@ -56,6 +61,7 @@ class MachineSetup(Setup):
         Args:
             rfm_test (reframe class) : The test to apply the setup
         """
+        self.setEnvVariables()
         self.setValidEnvironments(rfm_test)
         self.setTags(rfm_test)
         self.setPlatform(rfm_test,app_config)
@@ -131,17 +137,53 @@ class AppSetup(Setup):
         """
         self.cleanupDirectories()
         self.setExecutable(rfm_test,machine_config)
+        if machine_config.input_user_dir:
+            self.copyInputFileDependencies(machine_config)
+
+    def copyInputFileDependencies(self,machine_config):
+        """ If input_user_dir exists, copies all files from input_user_dir to input_dataset_base_dir preservign the structure"""
+        if not machine_config.input_user_dir:
+            return
+        print(f"=========COPYING FILES FROM {machine_config.input_user_dir} to {machine_config.input_dataset_base_dir}============")
+        for input_file in self.reader.config.input_file_dependencies.values():
+            print(f"\t {input_file}")
+            base_dirname = os.path.dirname(os.path.join(machine_config.input_dataset_base_dir, input_file))
+            if not os.path.exists(base_dirname):
+                os.makedirs( base_dirname )
+            shutil.copy2(
+                os.path.join(machine_config.input_user_dir, input_file),
+                os.path.join(machine_config.input_dataset_base_dir, input_file)
+            )
+        print("============================================================")
 
     def setupAfterInit(self, rfm_test):
         self.setEnvVariables()
 
-    def setEnvVariables(self):
-        for env_var_name,env_var_value in self.reader.config.env_variables.items():
-            os.environ[env_var_name] = env_var_value
-
     def cleanupDirectories(self):
         if os.path.exists(self.reader.config.scalability.directory):
             shutil.rmtree(self.reader.config.scalability.directory)
+
+    def copyFile(self,dir_path,name,filepath):
+        """ Copies the file from filepath to dir_path/name"""
+        if not filepath:
+            return
+        file_extension = filepath.split(".")[-1] if "." in filepath else None
+        outdir = os.path.join(dir_path,"partials")
+        if not os.path.exists(outdir):
+            os.mkdir(outdir)
+        filename = f"{name}.{file_extension}" if file_extension else name
+        shutil.copy2( filepath, os.path.join(outdir,filename) )
+
+    def copyDescriptionFile(self,dir_path,name):
+        """ copies the file from the description_filepath field"""
+        if self.reader.config.additional_files and self.reader.config.additional_files.description_filepath:
+            self.copyFile(dir_path,name,self.reader.config.additional_files.description_filepath)
+
+    def copyParametrizedDescriptionFile(self,dir_path,name):
+        """ copies the file from the parameterized_descriptions_filepath field"""
+        if self.reader.config.additional_files and self.reader.config.additional_files.parameterized_descriptions_filepath:
+            self.copyFile(dir_path,name,self.reader.config.additional_files.parameterized_descriptions_filepath)
+
 
 
     def setExecutable(self, rfm_test, machine_config):
@@ -159,6 +201,13 @@ class AppSetup(Setup):
 class ReframeSetup(rfm.RunOnlyRegressionTest):
     """ Reframe test used to setup the regression test"""
     report_dir_path = variable(str, value=".")
+
+    #set num_nodes as variable (as not implemented in reframe) - used for exporting
+    num_nodes = variable(int)
+
+    script = variable(str)
+    error_log = variable(str)
+    output_log = variable(str)
 
     #TODO: Find a way to avoid env variables
     machine_setup = MachineSetup(str(os.environ.get("MACHINE_CONFIG_FILEPATH")))
@@ -181,14 +230,42 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             exec(f"{param_config.name}=parameter({param_values})")
 
     @run_after('init')
+    def pruneParameterSpace(self):
+        for param_config in self.app_setup.reader.config.parameters:
+            if not param_config.conditions:
+                continue
+
+            active_parameter_value = str(getattr(self,param_config.name))
+            filters_list = param_config.conditions.get(active_parameter_value)
+            if not filters_list:
+                continue
+
+            active_filter_values = {}
+            for filters in filters_list:
+                for filter_name in filters.keys():
+                    param_path = filter_name.split(".")
+                    active_filter_values[filter_name] = getattr(self,param_path[0])
+                    if len(param_path) > 1:
+                        for p in param_path[1:]:
+                            active_filter_values[filter_name] = active_filter_values[filter_name].get(p)
+
+            is_valid = any(
+                all(
+                    active_filter_values[filter_key] in filter_values
+                    for filter_key, filter_values in filters.items()
+                )
+                for filters in filters_list
+            )
+
+            self.skip_if(not is_valid , f"Invalid parameter combination ({active_filter_values}) for condition list {param_config.name}={active_parameter_value} condition list ({filters_list})", )
+
+    @run_after('init')
     def setupAfterInit(self):
         """ Sets the necessary post-init configurations"""
         self.app_setup.setupAfterInit(self)
         self.machine_setup.setupAfterInit(self,self.app_setup.reader.config)
 
-        #Used only to copy description
-        temp_outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
-        temp_outputs_handler.copyDescription(self.report_dir_path,name="description")
+        self.app_setup.copyDescriptionFile(self.report_dir_path,name="description")
 
     @run_after('setup')
     def setupAfterSetup(self):
@@ -204,50 +281,17 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def setupParameters(self):
         for param_name,subparameters in self.parameters.items():
             value = getattr(self,param_name)
-            if param_name == "nb_tasks":
-
-                if "tasks" in value and "tasks_per_node" in value:
-                    self.num_tasks_per_node = int(value["tasks_per_node"])
-                    self.num_tasks = int(value["tasks"])
-
-                    assert self.num_tasks % self.num_tasks_per_node == 0, f"Number of tasks is not divisible by tasks per node. ( {self.num_tasks} , {self.num_tasks_per_node})"
-                    assert self.num_tasks > 0 and self.num_tasks >= self.num_tasks_per_node > 0, "Tasks and tasks per node should be positive."
-                    assert self.num_tasks_per_node <= self.current_partition.processor.num_cpus, f"A node has not enough capacity ({self.current_partition.processor.num_cpus}, {self.num_tasks_per_node})"
-
-                elif "tasks_per_node" in value and "nodes" in value:
-                    self.num_tasks_per_node = int(value["tasks_per_node"])
-                    self.num_nodes = int(value["nodes"])
-                    self.num_tasks = self.num_tasks_per_node * self.num_nodes
-
-                    assert self.num_tasks_per_node <= self.current_partition.processor.num_cpus, f"A node has not enough capacity ({self.current_partition.processor.num_cpus}, {self.num_tasks_per_node})"
-                    assert self.num_tasks > 0, "Number of tasks must be strictly positive"
-
-                elif "tasks" in value and "nodes" in value:
-                    raise NotImplementedError("Number of tasks and Nodes combination is not yet supported")
-                    self.num_tasks = int(value["tasks"])
-                    self.num_nodes = int(value["nodes"])
-
-                    assert self.num_tasks > 0 and self.num_nodes > 0, "Number of Tasks and nodes should be strictly positive."
-                    assert self.num_nodes >= np.ceil(self.num_tasks/self.current_partition.processor.num_cpus), f"Cannot accomodate {self.num_tasks} tasks in {self.num_nodes} nodes"
-
-                elif "tasks" in value:
-                    self.num_tasks = int(value["tasks"])
-                    self.num_tasks_per_node = min(self.num_tasks,self.current_partition.processor.num_cpus)
-
-                    assert self.num_tasks > 0, "Number of Tasks and nodes should be strictly positive."
-
-                else:
-                    raise ValueError("The Tasks parameter should contain either (tasks_per_node,nodes), (tasks,nodes), (tasks) or (tasks, tasks_per_node)")
-
-                self.job.options += ['--threads-per-core=1']
-                self.num_cpus_per_task = 1
-                self.exclusive_access = value["exclusive_access"] if "exclusive_access" in value else True
-
             self.app_setup.updateConfig({ f"parameters.{param_name}.value":str(value) })
             for subparameter in subparameters:
                 self.app_setup.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
 
+    @run_before('run')
+    def setResources(self):
+        resources = self.app_setup.reader.config.resources
+        ResourceHandler.setResources(resources, self)
 
+        self.job.options += ['--threads-per-core=1']
+        self.num_cpus_per_task = 1
 
 
     @run_before('run')

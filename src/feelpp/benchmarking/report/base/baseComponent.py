@@ -1,6 +1,7 @@
 import os,copy
 from feelpp.benchmarking.report.base.model import AggregationModel
-
+from feelpp.benchmarking.report.base.controller import Controller
+from feelpp.benchmarking.report.base.view import View
 class BaseComponent:
     """ Base class for all components (machine, application, test case) """
     def __init__(self, id, display_name, description):
@@ -130,13 +131,18 @@ class BaseComponent:
             plots_config (list[dict]). Plot configurations of the current overview to render
             master_df (pd.DataFrame): master_df attribute of the model to render, it is a concatenation of the children's model dataframes
         """
+
+
+        model=AggregationModel.fromDataframe(master_df)
+        view=View( plots_config )
+        controller=Controller(model,view)
+
         renderer.render(
             os.path.join(base_dir,*[parent.id for parent in parents],"overview.adoc"),
             data = dict(
                 parent_catalogs = "-".join([parent.id for parent in parents]),
-                plots_config = plots_config,
-                master_df = master_df,
-                parents = parents
+                parents = parents,
+                figures = controller.generateAll()
             )
         )
 
