@@ -20,8 +20,19 @@ class Figure:
     def createSimpleFigure(self,df):
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
-    def createCsv(self,df):
-        return self.transformation_strategy.calculate(df).to_csv()
+    def createCsvs(self,df):
+        """Creates the corresponding csv strings for the figure
+        Args:
+            df (pd.DataFrame). The master dataframe containing all reframe test data
+        Returns:
+            list[dict[str,str]]: A list of dictionaries containing the csv strings and their corresponding titles.
+            Schema: [{"title":str, "data":str}]
+        """
+        df = self.transformation_strategy.calculate(df)
+        if isinstance(df.index,MultiIndex):
+            return [{"title":key, "data":df.xs(key, level=0).to_csv()} for key in df.index.levels[0]]
+        else:
+            return [{"title":self.config.title, "data":df.to_csv()}]
 
     def createFigure(self,df, **args):
         """ Creates a figure from the master dataframe
@@ -45,10 +56,14 @@ class CompositeFigure:
         return self.plotly_figure.createFigure(df)
 
     def createTex(self, df):
-        return self.tikz_figure.createFigure(df)
+        if self.tikz_figure is not None:
+            return self.tikz_figure.createFigure(df)
+        else:
+            print("Warning: Tikz figure not implemented for this plot type")
+            return None
 
-    def createCsv(self,df):
-        return self.plotly_figure.createCsv(df)
+    def createCsvs(self,df):
+        return self.plotly_figure.createCsvs(df)
 
     def createFigureHtml(self,df):
         return self.plotly_figure.createHtml(df)
