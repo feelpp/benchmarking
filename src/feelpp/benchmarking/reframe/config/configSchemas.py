@@ -96,7 +96,7 @@ class Resources(BaseModel):
 class BaseRemoteData(BaseModel):
     destination: str
 
-class RemoteGirderData(BaseRemoteData):
+class RemoteGirderData(BaseModel):
     item: Optional[str] = None
     file: Optional[str] = None
     folder: Optional[str] = None
@@ -107,7 +107,7 @@ class RemoteGirderData(BaseRemoteData):
             raise ValueError("A valid resource needs to be specified, either 'file', 'folder' or 'item'")
         return self
 
-class RemoteData(BaseModel):
+class RemoteData(BaseRemoteData):
     girder: Optional[RemoteGirderData] = None
 
     @model_validator(mode="after")

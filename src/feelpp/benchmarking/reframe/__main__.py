@@ -62,11 +62,11 @@ def main_cli():
                 print(f"Donwloading remote file dependency : {dependency_name} ...")
                 if remote_dependency.girder:
                     if remote_dependency.girder.file:
-                        girder_handler.downloadFile( remote_dependency.girder.file, os.path.dirname(remote_dependency.girder.destination), name=os.path.basename(remote_dependency.girder.destination) )
+                        girder_handler.downloadFile( remote_dependency.girder.file, os.path.dirname(remote_dependency.destination), name=os.path.basename(remote_dependency.destination) )
                     elif remote_dependency.girder.folder:
-                        girder_handler.downloadFolder(remote_dependency.girder.folder,remote_dependency.girder.destination)
+                        girder_handler.downloadFolder(remote_dependency.girder.folder,remote_dependency.destination)
                     elif remote_dependency.girder.item:
-                        girder_handler.downloadItem(remote_dependency.girder.item,remote_dependency.girder.destination)
+                        girder_handler.downloadItem(remote_dependency.girder.item,remote_dependency.destination)
                     else:
                         raise NotImplementedError(f"Remote dependency resource type is not implemented for {dependency_name}")
                 else:
