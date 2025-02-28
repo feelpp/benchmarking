@@ -358,7 +358,7 @@ MathJax.Hub.Config({
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms":{
     "apptainer":{
         "image":{
-            "name":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
+            "filepath":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
         },
         "input_dir":"/input_data/",
         "options":["--home {{machine.output_app_dir}}"],
@@ -368,7 +368,7 @@ MathJax.Hub.Config({
 </div>
 </div>
 <div class="paragraph">
-<p>For any container, the <code>image</code> field must be specified, specifically <code>image.name</code>, containing the path of the image. Pulling images is not yet supported.</p>
+<p>For any container, the <code>image</code> field must be specified, specifically <code>image.filepath</code>, containing the path of the image. Pulling images is not yet supported.</p>
 </div>
 <div class="paragraph">
 <p>In this case, <code>input_dir</code> represents the directory where input files will be found INSIDE the container.</p>
