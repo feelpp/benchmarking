@@ -182,6 +182,11 @@ Along with machine configuration files, users must provide the specifications of
 }
 ----
 
+[CAUTION]
+====
+Remember to modify the `executable` path as well as `output_directory` if installing via pip.
+====
+
 More information about _feelpp.benchmarking_ benchmark specifications can be found link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_benchmark_configuration[here]
 
 === Plots configuration
@@ -218,8 +223,13 @@ execute-benchmark --machine-config config/machines/default.json \
 
 The `--website` option will start an http-server on localhost, so the website can be visualized. Check the console for more information.
 
-[NOTE]
-If you installed the framework via PyPi, you need to directly download all 5 quickstart files.
+[CAUTION]
+====
+If you installed the framework via PyPi:
+
+- You need to directly download all 5 quickstart files.
+- The `--website` option will only work if you have the exact antora setup as this repository.
+====
 
 
 == Usage
