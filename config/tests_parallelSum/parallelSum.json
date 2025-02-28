@@ -22,8 +22,8 @@
     },
     // Resources for the test
     "resources":{
-        "tasks":"{{parameters.resources.tasks.value}}",
-        "exclusive_access":"{{parameters.resources.exclusive_access.value}}"
+        "tasks":"{{parameters.tasks.value}}",
+        "exclusive_access":false
     },
     // Files containing app outputs
     "outputs": [
@@ -40,12 +40,8 @@
     // Test parameters
     "parameters": [
         {
-            "name": "resources",
-            "sequence": [
-                {"tasks" : 1, "exclusive_access":true},
-                {"tasks" : 2, "exclusive_access":true},
-                {"tasks" : 4, "exclusive_access":true}
-            ]
+            "name": "tasks",
+            "sequence": [ 1 ,2,4 ]
         },
         {
             "name":"elements",
