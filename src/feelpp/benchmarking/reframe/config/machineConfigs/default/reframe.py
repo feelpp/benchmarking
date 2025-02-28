@@ -6,33 +6,16 @@ site_configuration = {
     'systems': [
         {
             'name': 'default',
-            'descr': 'Default System',
+            'descr': 'Default system',
             'hostnames': [f'{hostname}'],
             'partitions': [
                 {
                     'name': 'default',
-                    'scheduler': 'squeue',
+                    'scheduler': 'local',
                     'launcher': 'mpiexec',
-                    'max_jobs': 4,
-                    'access': ['--partition=public'],
                     'environs': ['default'],
-                    'prepare_cmds': [],
-                    'processor': {
-                        'num_cpus': 128
-                    },
-                    'resources': [
-                        {
-                            'name':'launcher_options',
-                            'options':['-bind-to','core']
-                        }
-                    ],
-                    'devices': [
-                        {
-                            'type': 'cpu',
-                            'num_devices': 1
-                        }
-                    ]
-                }
+                    'processor': { 'num_cpus': 4 }
+                },
             ]
         }
     ],
