@@ -186,7 +186,7 @@ More information about _feelpp.benchmarking_ benchmark specifications can be fou
 
 === Plots configuration
 
-Along with the benchmark configuration, a figure configuration file is provided _config/test\_parallelSum/plots.json_ (plots.json)[https://github.com/feelpp/benchmarking/blob/master/config/test\_parallelSum/plots.json].
+Along with the benchmark configuration, a figure configuration file is provided _config/test\_parallelSum/plots.json_ Download it here link:https://github.com/feelpp/benchmarking/blob/master/config/tests_parallelSum/plots.json[plots.json].
 
 An example of one figure specification is shown below. Users can add as many figures as they wish, corresponding the figure axis with the parameters used on the benchmark.
 [source,json]
@@ -264,11 +264,11 @@ Once this file is located, users can run the `render-benchmarks` command to rend
 
 The script takes the following arguments:
 
-- `--config-file` (`-c`): The path of the website configuration file.
-- `--remote-download-dir` (`-do`): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
-- `--modules-path` (`-m`): [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
-- `--overview-config` (`-oc`): Path to the overview figure configuration file.
-- `--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
-- `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
-- `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
-- `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
+    `--config-file` (`-c`): The path of the website configuration file.
+    `--remote-download-dir` (`-do`): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
+    `--modules-path` (`-m`): [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
+    `--overview-config` (`-oc`): Path to the overview figure configuration file.
+    `--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
+    `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
+    `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
+    `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
