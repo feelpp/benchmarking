@@ -7,12 +7,11 @@
                     "title": "Execution by application",
                     "plot_types": ["stacked_bar"],
                     "transformation": "performance",
-                    "names": [ ],
                     "xaxis": { "parameter": "application", "label": "Application" },
                     "yaxis": { "label": "Execution time (s)" },
                     "color_axis": {"parameter":"use_case","label":"Use Case"},
                     "aggregations":[
-                        {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                        {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                         {"column":"hsize|mesh","agg":"max"},
                         {"column":"performance_variable","agg":"sum"},
                         {"column":"date","agg":"mean"}
@@ -25,12 +24,11 @@
                         "title": "Execution by use case",
                         "plot_types": ["scatter"],
                         "transformation": "performance",
-                        "names": ["performance"],
                         "xaxis": { "parameter": "date", "label": "Date" },
                         "color_axis":{"parameter":"use_case", "label":"Use case"},
                         "yaxis": { "label": "Execution time (s)" },
                         "aggregations":[
-                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                             {"column":"hsize|mesh","agg":"max"},
                             {"column":"performance_variable","agg":"sum"}
                         ]
@@ -39,12 +37,11 @@
                         "title": "Execution by use case",
                         "plot_types": ["stacked_bar"],
                         "transformation": "performance",
-                        "names": ["performance"],
                         "xaxis": { "parameter": "use_case", "label": "Use Case" },
                         "color_axis":{"parameter":"performance_variable", "label":"Performance Step"},
                         "yaxis": { "label": "Execution time (s)" },
                         "aggregations":[
-                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                             {"column":"hsize|mesh","agg":"max"},
                             {"column":"date","agg":"mean"}
                         ]
@@ -56,10 +53,9 @@
                             "title": "Execution by use case",
                             "plot_types": ["scatter"],
                             "transformation": "performance",
-                            "names": ["performance"],
                             "xaxis": { "parameter": "date", "label": "Date" },
                             "secondary_axis": { "parameter": "hsize|mesh", "label": "h size" },
-                            "color_axis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks", "label": "Tasks" },
+                            "color_axis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks|tasks", "label": "Tasks" },
                             "yaxis": { "label": "Execution time (s)" },
                             "aggregations":[
                                 {"column":"performance_variable","agg":"sum"}
@@ -69,8 +65,7 @@
                             "title": "Execution by environment (latest benchmarks)",
                             "plot_types": ["stacked_bar"],
                             "transformation": "performance",
-                            "names": ["performance"],
-                            "xaxis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks", "label": "Tasks" },
+                            "xaxis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks|tasks", "label": "Tasks" },
                             "secondary_axis": { "parameter": "environment", "label": "Environment" },
                             "color_axis": { "parameter": "performance_variable", "label": "Step" },
                             "yaxis": { "label": "Execution time (s)" },
@@ -91,12 +86,11 @@
                     "title": "Execution by use case",
                     "plot_types": ["stacked_bar"],
                     "transformation": "performance",
-                    "names": [ ],
                     "xaxis": { "parameter": "use_case", "label": "Use Case" },
                     "yaxis": { "label": "Execution time (s)" },
                     "color_axis": {"parameter":"machine","label":"Machine"},
                     "aggregations":[
-                        {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                        {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                         {"column":"hsize|mesh","agg":"max"},
                         {"column":"performance_variable","agg":"sum"},
                         {"column":"date","agg":"mean"}
@@ -109,12 +103,11 @@
                         "title": "Execution by machine",
                         "plot_types": ["scatter"],
                         "transformation": "performance",
-                        "names": ["performance"],
                         "xaxis": { "parameter": "date", "label": "Date" },
                         "color_axis":{"parameter":"machine", "label":"Machine"},
                         "yaxis": { "label": "Execution time (s)" },
                         "aggregations":[
-                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                             {"column":"hsize|mesh","agg":"max"},
                             {"column":"performance_variable","agg":"sum"}
                         ]
@@ -123,12 +116,11 @@
                         "title": "Execution by machine",
                         "plot_types": ["stacked_bar"],
                         "transformation": "performance",
-                        "names": ["performance"],
                         "xaxis": { "parameter": "machine", "label": "Machine" },
                         "color_axis":{"parameter":"performance_variable", "label":"Performance Step"},
                         "yaxis": { "label": "Execution time (s)" },
                         "aggregations":[
-                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                             {"column":"hsize|mesh","agg":"max"},
                             {"column":"date","agg":"mean"}
                         ]
@@ -140,10 +132,9 @@
                             "title": "Execution by use case",
                             "plot_types": ["scatter"],
                             "transformation": "performance",
-                            "names": ["performance"],
                             "xaxis": { "parameter": "date", "label": "Date" },
                             "secondary_axis": { "parameter": "hsize|mesh", "label": "h size" },
-                            "color_axis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks", "label": "Tasks" },
+                            "color_axis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks|tasks", "label": "Tasks" },
                             "yaxis": { "label": "Execution time (s)" },
                             "aggregations":[
                                 {"column":"performance_variable","agg":"sum"}
@@ -153,9 +144,7 @@
                             "title": "Execution by environment (latest benchmarks)",
                             "plot_types": ["stacked_bar"],
                             "transformation": "performance",
-                            "names": ["performance"],
-                            "xaxis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks", "label": "Tasks" },
-                            "secondary_axis": { "parameter": "environment", "label": "Environment" },
+                            "xaxis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks|tasks", "label": "Tasks" },
                             "color_axis": { "parameter": "performance_variable", "label": "Step" },
                             "yaxis": { "label": "Execution time (s)" },
                             "aggregations":[
@@ -175,12 +164,11 @@
                     "title": "Execution by application",
                     "plot_types": ["stacked_bar"],
                     "transformation": "performance",
-                    "names": [ ],
                     "xaxis": { "parameter": "application", "label": "Application" },
                     "yaxis": { "label": "Execution time (s)" },
                     "color_axis": {"parameter":"machine","label":"Machine"},
                     "aggregations":[
-                        {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                        {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                         {"column":"hsize|mesh","agg":"max"},
                         {"column":"performance_variable","agg":"sum"},
                         {"column":"date","agg":"mean"}
@@ -193,12 +181,11 @@
                         "title": "Execution by machine",
                         "plot_types": ["scatter"],
                         "transformation": "performance",
-                        "names": ["performance"],
                         "xaxis": { "parameter": "date", "label": "Date" },
                         "color_axis":{"parameter":"machine", "label":"Machine"},
                         "yaxis": { "label": "Execution time (s)" },
                         "aggregations":[
-                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                             {"column":"hsize|mesh","agg":"max"},
                             {"column":"performance_variable","agg":"sum"}
                         ]
@@ -207,12 +194,11 @@
                         "title": "Execution by machine",
                         "plot_types": ["stacked_bar"],
                         "transformation": "performance",
-                        "names": ["performance"],
                         "xaxis": { "parameter": "machine", "label": "Machine" },
                         "color_axis":{"parameter":"performance_variable", "label":"Performance Step"},
                         "yaxis": { "label": "Execution time (s)" },
                         "aggregations":[
-                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks","agg":"max"},
+                            {"column":"resources.tasks|nb_rays|nb_tasks.tasks|tasks","agg":"max"},
                             {"column":"hsize|mesh","agg":"max"},
                             {"column":"date","agg":"mean"}
                         ]
@@ -224,10 +210,9 @@
                             "title": "Execution by use case",
                             "plot_types": ["scatter"],
                             "transformation": "performance",
-                            "names": ["performance"],
                             "xaxis": { "parameter": "date", "label": "Date" },
                             "secondary_axis": { "parameter": "hsize|mesh", "label": "h size" },
-                            "color_axis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks", "label": "Tasks" },
+                            "color_axis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks|tasks", "label": "Tasks" },
                             "yaxis": { "label": "Execution time (s)" },
                             "aggregations":[
                                 {"column":"performance_variable","agg":"sum"}
@@ -237,8 +222,7 @@
                             "title": "Execution by environment (latest benchmarks)",
                             "plot_types": ["stacked_bar"],
                             "transformation": "performance",
-                            "names": ["performance"],
-                            "xaxis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks", "label": "Tasks" },
+                            "xaxis": { "parameter": "resources.tasks|nb_rays|nb_tasks.tasks|tasks", "label": "Tasks" },
                             "secondary_axis": { "parameter": "environment", "label": "Environment" },
                             "color_axis": { "parameter": "performance_variable", "label": "Step" },
                             "yaxis": { "label": "Execution time (s)" },

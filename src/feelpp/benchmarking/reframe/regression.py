@@ -45,10 +45,10 @@ class RegressionTest(ReframeSetup):
 
     @run_before('performance')
     def copyParametrizedFiles(self):
-        FileHandler.copyFile(
+        FileHandler.copyResource(
+            self.app_reader.config.additional_files.parameterized_descriptions_filepath,
             os.path.join(self.report_dir_path,"partials"),
             self.hashcode,
-            self.app_reader.config.additional_files.parameterized_descriptions_filepath
         )
 
     @run_before('performance')
@@ -69,9 +69,13 @@ class RegressionTest(ReframeSetup):
             FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
         if self.machine_reader.config.input_user_dir and self.app_reader.config.input_file_dependencies:
             print("REMOVING INPUT FILE DEPENDENCIES...")
-            for input_file in self.app_reader.config.input_file_dependencies.values():
-                os.remove(os.path.join(self.machine_reader.config.input_dataset_base_dir,input_file))
-                print(f"\t DELETED {input_file}")
+            for input_dep in self.app_reader.config.input_file_dependencies.values():
+                location = os.path.join(self.machine_reader.config.input_dataset_base_dir,input_dep)
+                if os.path.isfile(location):
+                    os.remove(location)
+                elif os.path.isdir(location):
+                    shutil.rmtree(location)
+                print(f"\t DELETED {input_dep}")
 
             #Delete empty dirs
             for dirpath, dirnames, _ in os.walk(self.machine_reader.config.input_dataset_base_dir, topdown=False):

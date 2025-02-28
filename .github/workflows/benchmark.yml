@@ -6,18 +6,18 @@ on:
 
     workflow_dispatch:
         inputs:
-            machines_config:
-                description: 'Machine related configurations'
+            hpc-systems:
+                description: 'List of systems to run'
                 required: True
-                default: 67504e9a4c9ccbdde21a46fe
+                default: gaya
             benchmark_config:
-                description: 'Applcation related configuration'
+                description: 'Path to benchmark configuration'
                 required: True
-                default: 67504e9a4c9ccbdde21a4701
+                default: config/toolbox_heat/thermal_bridges_case_3.json
             plots_config:
-                description: 'Plots related configuration'
+                description: 'Path to plots related configuration'
                 required: True
-                default: 675053424c9ccbdde21a470a
+                default: config/toolbox_heat/heat_plots.json
             upload_id:
                 description: 'ID to upload the website to'
                 required: False
@@ -25,127 +25,125 @@ on:
 
 jobs:
 
-    build_wheel:
-        runs-on: self-ubuntu-22.04
-        name: Build wheel package
-        if: "!contains(github.event.head_commit.message, 'code skip')"
-        steps:
-        -   uses: actions/checkout@v4
-        -   name: Build wheel
-            run: |
-                npm install
-                npx downdoc README.adoc
-                pip3 wheel --no-deps --wheel-dir dist .
-            env:
-                CXX: clang++
-        -   name: Upload Artifact
-            uses: actions/upload-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist/*.whl
-
     factory:
         name: HPC Systems Factory
-        needs: build_wheel
         runs-on: self-ubuntu-22.04
         outputs:
             matrix: ${{ steps.hpc-systems.outputs.matrix }}
-            executable_name: ${{ steps.gather_arguments.outputs.executable_name }}
-            use_case: ${{ steps.gather_arguments.outputs.use_case }}
         steps:
-        -   name: Download wheel
-            uses: actions/download-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist
-        -   name: Create Virtual Environment
-            run: |
-                python3 -m venv .venv
-                source .venv/bin/activate
-                pip3 install -r requirements.txt
-        -   name: Download machines configuration
-            run: |
-                source .venv/bin/activate
 
-                if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-                    machine_cfg_id=${{ github.event.inputs.machines_config }};
-                elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
-                    machine_cfg_id=${{ github.event.client_payload.machines_config }};
-                fi
-                girder-download -gid $machine_cfg_id -o ./tmp/ -fn "machines_config.json"
-            env:
-                GIRDER_API_KEY: ${{secrets.GIRDER}}
-        -   name: Donwload benchmark configuration
+        -   name: Get machines configuration
+            id: download_systems_config
             run: |
-                source .venv/bin/activate
+                machine_config=$(curl -H 'Authorization: token ${{ secrets.CR_PAT }}' https://raw.githubusercontent.com/feelpp/hpc-systems/refs/heads/main/systems.json)
+                machine_config=$(jq --compact-output '' <<< $machine_config)
+                echo "machine_config=$machine_config" >> $GITHUB_OUTPUT
 
-                if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-                    bench_cfg_id=${{ github.event.inputs.benchmark_config }};
-                    plots_cfg_id=${{ github.event.inputs.plots_config }};
-                elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
-                    bench_cfg_id=${{ github.event.client_payload.benchmark_config }};
-                    plots_cfg_id=${{ github.event.client_payload.plots_config }};
-                fi
-                girder-download -gid $bench_cfg_id -o ./tmp/ -fn "benchmark_config.json"
-                girder-download -gid $plots_cfg_id -o ./tmp/ -fn "plots.json"
-            env:
-                GIRDER_API_KEY: ${{secrets.GIRDER}}
-        -   id: hpc-systems
-            name: Set HPC systems matrix
+        -   name: Filter systems
+            id: filter-systems
             run: |
-                source .venv/bin/activate
-                matrix=$(hpc-dispatch -mcp ./tmp/machines_config.json -mod ./tmp/machines/)
-                echo $matrix
-                echo "matrix={ include : $matrix }" >> $GITHUB_OUTPUT
-        -   name: Gather arguments
-            id: gather_arguments
+                valid_systems=${{ github.event.inputs.hpc-systems || github.event.client_payload.hpc-systems }}
+                machine_config='${{ steps.download_systems_config.outputs.machine_config }}'
+
+                filtered_systems_config=$(echo "$machine_config" | jq --arg valid_systems "$valid_systems" '
+                    ($valid_systems | split(",")) as $systems |
+                    with_entries(select([.key] | inside($systems))) | [.[]]
+                ')
+                filtered_systems_config=$(jq --compact-output '' <<< $filtered_systems_config)
+                echo "filtered_systems_config=$filtered_systems_config" >> $GITHUB_OUTPUT
+
+        -   name: Filter Available Runners
+            id: filter-available-systems
             run: |
-                echo "executable_name=$(jq -r '.executable' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
-                echo "use_case=$(jq -r '.use_case_name' ./tmp/benchmark_config.json)" >> $GITHUB_OUTPUT
-        -   name: Upload configs
-            uses: actions/upload-artifact@v4
-            with:
-                name: config-artifacts
-                path: |
-                    ./tmp/benchmark_config.json
-                    ./tmp/plots.json
-                    ./tmp/machines/
+                all_runners=$(curl -H "Accept: application/vnd.github+json" \
+                                    -H "Authorization: Bearer ${{ secrets.TOKEN_RUNNER }}" \
+                                    -H "X-GitHub-Api-Version: 2022-11-28" \
+                                    https://api.github.com/orgs/feelpp/actions/runners
+                            )
+                all_runners=$(echo $all_runners | jq -r '.runners')
+
+                available_systems="[]"
+
+                while read -r system; do
+                    tag=$(echo "$system" | jq -r .runner_tag);
+                    runner=$(echo "$all_runners" | jq --arg tag "$tag" '
+                        map(select(.labels[].name | contains($tag)))
+                    ')
+
+                    if [ "$(echo "$runner" | jq 'length')" -eq 0 ]; then
+                        echo "No runner found for $tag ..."
+                        continue
+                    fi
+
+                    if echo "$runner" | jq -e 'map(select(.status == "online")) | length > 0' >/dev/null; then
+                        available_systems=$(echo "$available_systems" | jq --argjson sys "$system" '. + [$sys]')
+                    else
+                        echo "No online runners for $tag ..."
+                    fi
+                done < <(echo '${{steps.filter-systems.outputs.filtered_systems_config}}' | jq -c '.[]')
+
+                available_systems=$(jq --compact-output '.' <<< $available_systems)
+                echo "available_systems=$available_systems" >> $GITHUB_OUTPUT
+
+        -   name: Set matrix
+            id: hpc-systems
+            run: |
+                echo "matrix=$(jq -c --null-input --argjson config '${{steps.filter-available-systems.outputs.available_systems}}' '{include: $config}')" >> $GITHUB_OUTPUT
 
     benchmark:
-        needs: factory
+        needs: [factory]
         strategy:
             fail-fast: false
             matrix: ${{ fromJson(needs.factory.outputs.matrix) }}
-        runs-on: ${{matrix.runner}}
+        runs-on: ${{matrix.runner_tag}}
         timeout-minutes: 7200
         name: ${{matrix.machine}}
         steps:
         -   uses: actions/checkout@v4
-        -   name: Download wheel
-            uses: actions/download-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist
-        -   name: Download configs
-            uses: actions/download-artifact@v4
-            with:
-                name: config-artifacts
-                path: ./tmp/
+
+        -   name: Create machine config
+            run: |
+                json_machine_config='${{ toJson(matrix.system_config) }}'
+                echo "$json_machine_config" > machine_config.json
+
         -   name: Setup machine and env
-            run: ${{matrix.submit_command}}
-        -   name: Execute benchmarks
+            run: bash ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/setup.sh
+            env:
+                PROJECT_ID: ${{matrix.project_id || ''}}
+        -   name: Execute benchmarks (CLI)
+            if: ${{ matrix.submit == 'cli' }}
             run: |
                 source .venv/bin/activate
                 execute-benchmark \
-                    -mc ${{matrix.machine_cfg}} \
-                    -bc ./tmp/benchmark_config.json \
-                    -pc ./tmp/plots.json \
+                    -mc machine_config.json \
+                    -bc ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
+                    -pc ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
                     -v
+            env:
+                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
+        -   name: Execute benchmarks (slurm)
+            if: ${{ matrix.submit == 'slurm' }}
+            run: |
+                srun --partition ${{matrix.submit_partition}} \
+                    --time 02:00:00 \
+                    --account ${{matrix.project_id}} \
+                    --qos ${{matrix.qos}} \
+                    --nodes 1 --ntasks 1 --cpus-per-task 1 --ntasks-per-node 1 \
+                    ./src/feelpp/benchmarking/reframe/config/machineConfigs/${{matrix.machine}}/launchBenchmark.sh \
+                        -m machine_config.json \
+                        -b ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
+                        -p ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
+
+        -   name: Parse reports path
+            id: parse_reports_path
+            run: echo "reports_base_dir=${{matrix.system_config.reports_base_dir}}" | sed "s|\$PWD|${{ github.workspace }}|g" >> $GITHUB_OUTPUT
+
         -   name: Upload reframe report
             uses: actions/upload-artifact@v4
             with:
                 name: benchmark-results-${{matrix.machine}}
-                path: ${{matrix.reports_path}}
+                path: ${{steps.parse_reports_path.outputs.reports_base_dir}}
 
     deploy:
         runs-on: self-ubuntu-22.04
@@ -154,17 +152,20 @@ jobs:
         if: ${{ github.event.inputs.upload_id == '' && github.event.client_payload.upload_id == '' }}
         steps:
         -   uses: actions/checkout@v4
+
         -   name: Download results
             uses: actions/download-artifact@v4
             with:
                 pattern: benchmark-results-*
                 path: ./tmp/results/
                 merge-multiple: false
+
         -   name: Create Virtual Environment
             run: |
                 python3 -m venv .venv
                 source .venv/bin/activate
-                pip3 install -r requirements.txt
+                pip3 install .
+
         -   name: Upload to girder
             run: |
                 source .venv/bin/activate
@@ -172,14 +173,22 @@ jobs:
                 girder-upload --item "./tmp/results/*" --girder_id $staging_folder_id
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
         -   name: Update Index Date
             run: |
                 sed -i "s/^:docdatetime: .*/:docdatetime: $(date +'%Y-%m-%dT%H:%M:%S')/" "docs/modules/ROOT/pages/index.adoc"
+
+        -   name: Gather arguments
+            id: gather_arguments
+            run: |
+                echo "executable_name=$(jq -r '.executable' ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }})" >> $GITHUB_OUTPUT
+                echo "use_case=$(jq -r '.use_case_name' ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }})" >> $GITHUB_OUTPUT
+
         -   name: Create Pull Request
             uses: peter-evans/create-pull-request@v7
             with:
-                title: "Add benchmark for ${{ needs.factory.outputs.executable_name }} - ${{ needs.factory.outputs.use_case }}"
-                commit-message: "Add benchmark for ${{ needs.factory.outputs.executable_name }} - ${{ needs.factory.outputs.use_case }}"
+                title: "Add benchmark for ${{ steps.gather_arguments.outputs.executable_name }} - ${{ steps.gather_arguments.outputs.use_case }}"
+                commit-message: "Add benchmark for ${{ steps.gather_arguments.outputs.executable_name }} - ${{ steps.gather_arguments.outputs.use_case }}"
                 body: |
                     Generating reports from staging directory.
                     Auto-generated by [create-pull-request][1]
@@ -224,13 +233,8 @@ jobs:
             -   name: Upload
                 run: |
                     source .venv/bin/activate
-                    if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-                        upload_id=${{ github.event.inputs.upload_id }};
-                    elif [[ "${{ github.event_name}}" == "repository_dispatch" ]]; then
-                        upload_id=${{ github.event.client_payload.upload_id }};
-                    fi
-                    girder-upload --item "./tmp/results/*" --girder_id $upload_id
-                    girder-upload --item "./public/" --girder_id $upload_id
+                    girder-upload --item "./tmp/results/*" --girder_id ${{ github.event.inputs.upload_id || github.event.client_payload.upload_id}}
+                    girder-upload --item "./public/" --girder_id ${{ github.event.inputs.upload_id || github.event.client_payload.upload_id}}
                 env:
                     GIRDER_API_KEY: ${{secrets.GIRDER}}
 
