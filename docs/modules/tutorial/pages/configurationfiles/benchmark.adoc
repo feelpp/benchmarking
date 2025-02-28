@@ -50,51 +50,6 @@ include::benchmark/parameters.adoc[leveloffset=+1]
 include::benchmark/fileDependencies.adoc[leveloffset=+1]
 
 
-== Platforms
-
-The `platforms` object lists all options and directories related to the benchmark execution for each supported platform. A platform present on this object does not imply that it will be benchmarked, but it rather lists all possible options.
-
-The field is optional, if not provided, the builtin platform will be considered.
-
-The syntax for builtin platform is the following:
-
-[source,json]
-----
-"platforms": {
-    "builtin":{
-        "input_dir":"",
-        "append_app_option":[]
-    }
-}
-----
-
-- `append_app_options` is in this case equivalent to the `options` field on the configuration root.
-- `input_dir` indicates the path of the directory where input files can be found.
-
-The following example shows how to configure the Apptainer platform:
-
-[source,json]
-----
-"platforms":{
-    "apptainer":{
-        "image":{
-            "name":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
-        },
-        "input_dir":"/input_data/",
-        "options":["--home {{machine.output_app_dir}}"],
-        "append_app_options":["--my_custom_option_for_apptainer"]
-    }
-}
-----
-
-For any container, the `image` field must be specified, specifically `image.name`, containing the path of the image. Pulling images is not yet supported.
-
-In this case, `input_dir` represents the directory where input files will be found INSIDE the container.
-
-The `options` field contains a list of all the options to include on the container execution. It is equivalent to the machine's `containers.apptainer.options` field. However, users should only include application dependent options in this list.
-
-The `append_app_options` lists all the options to add to the application execution. It does the same as the `options` field in the root of the file, but can be used for case handling.
-
 == Outputs
 
 The `outputs` field lists all the files where application outputs are exported.
