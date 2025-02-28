@@ -4,6 +4,8 @@
 
 Configuring a benchmark can be quite extensive, as this framework focuses on flexibility. For this, the documentation will be divided in main sections.
 
+The benchmark configuration file describes precisely how the benchmarking should be done, for example, specifying where the executable is located, the options to pass to the application, and how the tests will be parametrized.
+
 The base of the configuration file is shown below.
 [source,json]
 ----
@@ -11,17 +13,19 @@ The base of the configuration file is shown below.
     "executable": "",
     "use_case_name": "",
     "timeout":"",
-    "platforms":{},
+    "env_variables":{},
     "options": [],
-    "outputs":{},
+    "resources":{},
+    "platforms":{},
+    "additional_files":{},
     "scalability":{},
     "sanity":{},
     "parameters":{},
 }
 ----
 
-== Fields on JSON root
-
+[TIP]
+====
 Users can add any field used for refactoring. For example, one can do the following.
 
 [source,json]
@@ -29,32 +33,22 @@ Users can add any field used for refactoring. For example, one can do the follow
 "output_directory":"/data/outputs" // This is a custom field
 "options":["--output {{output_directory}}"]
 ----
+====
 
-Mandatory and actionable fields are:
+include::benchmark/base.adoc[leveloffset=+1]
 
-[cols="2,1,1,3,1"]
-|===
-| Field name  | Optional | type | description | Default
+include::benchmark/resources.adoc[leveloffset=+1]
 
-| executable
-| No
-| str
-| Path or name of the application executable.
-|
+include::benchmark/platforms.adoc[leveloffset=+1]
 
-| use_case_name
-| No
-| str
-| Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.
-|
+include::benchmark/scalability.adoc[leveloffset=+1]
 
-| timeout
-| No
-| str
-| Job execution timeout. Format: days-hours:minutes:seconds
-|
+include::benchmark/sanity.adoc[leveloffset=+1]
 
-|===
+include::benchmark/parameters.adoc[leveloffset=+1]
+
+include::benchmark/fileDependencies.adoc[leveloffset=+1]
+
 
 == Platforms
 
