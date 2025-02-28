@@ -1,22 +1,17 @@
-import socket
-
-hostname = socket.gethostname()
-print("Hostname:", hostname)
-
 site_configuration = {
-    'systems':[
+    'systems': [
         {
-            'name': 'vega',
-            'descr': 'Vega',
-            'hostnames': [f'{hostname}'],
+            'name': 'karolina',
+            'descr': 'karolina',
+            'hostnames': ['login\d+.karolina.it4i.cz','cn\d+.karolina.it4i.cz'],
             'modules_system': 'lmod',
             'partitions': [
                 {
-                    'name': 'cpu',
+                    'name': 'qcpu',
                     'scheduler': 'slurm',
                     'launcher': 'srun',
-                    # 'max_jobs': 8,
-                    'access': [f"--partition=cpu"],
+                    'max_jobs': 8,
+                    'access': ['--partition=qcpu'],
                     'environs': ['default'],
                     'processor': {
                         'num_cpus': 128
@@ -24,7 +19,7 @@ site_configuration = {
                     'devices': [
                         {
                             'type': 'cpu',
-                            'num_devices': 960
+                            'num_devices':829
                         }
                     ],
                     'container_platforms':[
@@ -41,9 +36,9 @@ site_configuration = {
     ],
     'environments': [
         {
-            'name':'default',
-            'modules': ["OpenMPI/4.1.5-GCC-12.3.0"],
-            'target_systems':['vega:cpu']
+            'name': 'default',
+            'modules': ['OpenMPI/4.1.4-GCC-12.2.0','apptainer'],
+            'target_systems': ['karolina:qcpu']
         }
     ]
 }

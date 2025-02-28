@@ -1,11 +1,12 @@
 {
     "executable": "feelpp_kub_cem",
     "output_directory": "{{machine.output_app_dir}}/kub",
-    "use_case_name": "poznan",
-    "timeout":"0-0:15:0",
+    "use_case_name": "Paris_Berlin",
+    "timeout":"0-00:15:0",
     "resources":{
-        "tasks":"{{parameters.resources.tasks.value}}",
-        "exclusive_access":"{{parameters.resources.exclusive_access.value}}"
+        "nodes":"{{parameters.resources.nodes.value}}",
+        "tasks_per_node":128,
+        "exclusive_access":true
     },
     "platforms": {
         "apptainer":{
@@ -28,17 +29,16 @@
     },
     "remote_input_dependencies":{
         "simulators":{"girder":{"item":"675051994c9ccbdde21a4707"},"destination":"kub/"},
-        "gis":{"girder":{"file":"66267bd3b0e95728eb00f6e9"},"destination":"kub/gis.json"},
-        "mesh":{"girder":{"file":"66267bd3b0e95728eb00f6ec"},"destination":"kub/mesh.msh"},
-        "weather":{"girder":{"file":"662f9434b0e95728eb00f7ad"},"destination":"kub/weather.csv"},
+        "berlin":{"girder":{"folder":"67b7532f4c9ccbdde21a5800"},"destination":"kub/Berlin/"},
+        "paris":{"girder":{"folder":"67b7533f4c9ccbdde21a5802"},"destination":"kub/Paris/"},
         "scenarios":{"girder":{"item":"67b496894c9ccbdde21a5769"},"destination":"kub/"},
         "config":{"girder":{"file":"67b4a9904c9ccbdde21a5775"},"destination":"kub/kub.cfg"}
     },
     "input_file_dependencies":{
         "simulators":"kub/simulators",
-        "gis":"kub/gis.json",
-        "mesh":"kub/mesh.msh",
-        "weather":"kub/weather.csv",
+        "gis":"kub/{{parameters.city.value}}/{{parameters.radius.value}}/gis.json",
+        "mesh":"kub/{{parameters.city.value}}/{{parameters.radius.value}}/mesh_0_Lod0.msh",
+        "weather":"kub/{{parameters.city.value}}/{{parameters.radius.value}}/weather-data-0.hourly-variables.csv",
         "scenarios":"kub/scenarios_local",
         "cfg":"kub/kub.cfg"
     },
@@ -73,6 +73,7 @@
         "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.gis}}",
         "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh}}",
         "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.weather}}",
+
         "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.scenarios}}/scenarios.json",
 
         "--cem.instance.time.start=0",
@@ -82,25 +83,32 @@
         "--cem.instance.postprocess.export.visualization.enabled=false",
         "--cem.instance.postprocess.export.report.enabled=false",
         "--cem.instance.postprocess.export.outputs.csv.enabled=false",
+        "--cem.instance.postprocess.export.outputs.enabled=false",
         "--cem.instance.solar_shading.enabled=true",
         "--cem.instance.idealflows.enabled=true",
 
         "--cem.database.directory {{output_directory}}/{{instance}}/{{use_case_name}}",
         "--directory {{output_directory}}/{{instance}}/{{use_case_name}}"
     ],
+    "additional_files":{
+        "custom_logs":[
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/np_{{parameters.resources.tasks.value}}/logs/0-199/{{executable}}.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/np_{{parameters.resources.tasks.value}}/logs/0-199/{{executable}}.WARNING"
+        ]
+    },
     "scalability": {
-        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}/cem/",
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
         "clean_directory":true,
         "stages": [
             {
                 "name":"",
-                "filepath": "instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
+                "filepath": "cem/instances/np_{{parameters.resources.tasks.value}}/logs/timers.json",
                 "format": "json",
                 "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max","execute.subtimers.*.timeElapsed.max"]
             },
             {
                 "name":"",
-                "filepath": "logs/timers.json",
+                "filepath": "cem/logs/timers.json",
                 "format": "json",
                 "variables_path":["*.timeElapsed.max","*.subtimers.*.subtimers.*.timeElapsed.max"]
             }
@@ -113,10 +121,24 @@
     "parameters": [
         {
             "name": "resources",
-            "sequence": [
-                {"tasks":32, "exclusive_access":true},
-                {"tasks":64, "exclusive_access":true}
+            "zip":[
+                {
+                    "name":"nodes",
+                    "range": { "min":1, "max":3, "step":1 }
+                },
+                {
+                    "name":"tasks",
+                    "range":{"min":128,"max":384,"step":128}
+                }
             ]
+        },
+        {
+            "name": "city",
+            "sequence": ["Paris","Berlin"]
+        },
+        {
+            "name":"radius",
+            "sequence":["1000m","2000m"]
         }
     ]
 }

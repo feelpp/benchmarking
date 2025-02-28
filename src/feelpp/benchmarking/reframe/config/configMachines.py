@@ -7,18 +7,20 @@ class Container(BaseModel):
     tmpdir:Optional[str] = None
     image_base_dir:str
     options:Optional[List[str]] = []
+    executable: Optional[str] = None
 
     @field_validator("cachedir","tmpdir","image_base_dir",mode="before")
     @classmethod
     def checkDirectories(cls,v, info):
         """Checks that the directories exists"""
-        if v and not os.path.exists(v):
+        if v and not os.path.exists(os.path.expandvars(v)):
             if info.context.get("dry_run", False):
                 print(f"Dry Run: Skipping directory check for {v}")
             else:
                 raise FileNotFoundError(f"Cannot find {v}")
 
         return v
+
 
 class MachineConfig(BaseModel):
     machine:str
@@ -30,6 +32,7 @@ class MachineConfig(BaseModel):
     input_dataset_base_dir:Optional[str] = None
     input_user_dir:Optional[str] = None
     output_app_dir:str
+    access:Optional[List[str]] = []
     env_variables:Optional[Dict] = {}
     containers:Optional[Dict[str,Container]] = {}
 
@@ -94,6 +97,15 @@ class MachineConfig(BaseModel):
         accepted_types = ["apptainer","docker"]
         for container_type in v.keys():
             assert container_type in accepted_types, f"{container_type} not implemented"
+        return v
+
+    @field_validator("containers",mode="after")
+    @classmethod
+    def setContainerExecutable(cls,v):
+        for container_type, container_info in v.items():
+            if not container_info.executable:
+                container_info.executable = container_type
+
         return v
 
     @model_validator(mode="after")

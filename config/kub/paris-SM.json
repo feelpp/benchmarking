@@ -1,11 +1,12 @@
 {
     "executable": "feelpp_kub_cem",
     "output_directory": "{{machine.output_app_dir}}/kub",
-    "use_case_name": "poznan",
-    "timeout":"0-0:15:0",
+    "use_case_name": "paris_SolarMasks",
+    "timeout":"0-2:00:0",
     "resources":{
-        "tasks":"{{parameters.resources.tasks.value}}",
-        "exclusive_access":"{{parameters.resources.exclusive_access.value}}"
+        "nodes":"{{parameters.nodes.value}}",
+        "tasks_per_node":128,
+        "exclusive_access":true
     },
     "platforms": {
         "apptainer":{
@@ -16,29 +17,27 @@
             "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}:{{platforms.apptainer.input_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/kub:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}",
+            "input_dir":"{{machine.input_dataset_base_dir}}/kub",
             "append_app_option":[]
         }
     },
     "remote_input_dependencies":{
         "simulators":{"girder":{"item":"675051994c9ccbdde21a4707"},"destination":"kub/"},
-        "gis":{"girder":{"file":"66267bd3b0e95728eb00f6e9"},"destination":"kub/gis.json"},
-        "mesh":{"girder":{"file":"66267bd3b0e95728eb00f6ec"},"destination":"kub/mesh.msh"},
-        "weather":{"girder":{"file":"662f9434b0e95728eb00f7ad"},"destination":"kub/weather.csv"},
+        "paris":{"girder":{"folder":"67b7533f4c9ccbdde21a5802"},"destination":"kub/Paris/"},
         "scenarios":{"girder":{"item":"67b496894c9ccbdde21a5769"},"destination":"kub/"},
         "config":{"girder":{"file":"67b4a9904c9ccbdde21a5775"},"destination":"kub/kub.cfg"}
     },
     "input_file_dependencies":{
         "simulators":"kub/simulators",
-        "gis":"kub/gis.json",
-        "mesh":"kub/mesh.msh",
-        "weather":"kub/weather.csv",
+        "gis":"kub/Paris/2000m/{{parameters.vegetation.value}}/gis.json",
+        "mesh":"kub/Paris/2000m/{{parameters.vegetation.value}}/{{parameters.mesh.filename.value}}.msh",
+        "weather":"kub/Paris/2000m/{{parameters.vegetation.value}}/weather-data-0.hourly-variables.csv",
         "scenarios":"kub/scenarios_local",
         "cfg":"kub/kub.cfg"
     },
@@ -71,8 +70,9 @@
         "--cem.simulator.lod0.description.filenames={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators}}/simulatordesc10.json",
 
         "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.gis}}",
-        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh}}",
+        "--cem.mesh.{{parameters.mesh.lod.value}}.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh}}",
         "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.weather}}",
+
         "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.scenarios}}/scenarios.json",
 
         "--cem.instance.time.start=0",
@@ -90,7 +90,6 @@
     ],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}/cem/",
-        "clean_directory":true,
         "stages": [
             {
                 "name":"",
@@ -112,11 +111,19 @@
     },
     "parameters": [
         {
-            "name": "resources",
-            "sequence": [
-                {"tasks":32, "exclusive_access":true},
-                {"tasks":64, "exclusive_access":true}
+            "name": "nodes",
+            "geometric": { "start":1, "ratio":2, "n_steps":7 }
+        },
+        {
+            "name":"mesh",
+            "sequence":[
+                { "filename": "mesh_0_Lod0", "lod":"lod0" },
+                { "filename": "mesh_1_Lod1", "lod":"lod1" }
             ]
+        },
+        {
+            "name":"vegetation",
+            "sequence":["vegetation","no_vegetation"]
         }
     ]
 }
