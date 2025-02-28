@@ -86,7 +86,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def setPlatform(self):
         platform = self.app_reader.config.platforms[self.machine_reader.config.platform]
         if self.machine_reader.config.platform != "builtin":
-            self.container_platform.image = platform.image.name
+            self.container_platform.image = platform.image.filepath
             self.container_platform.options = platform.options + self.machine_reader.config.containers[self.machine_reader.config.platform].options
             self.container_platform.workdir = None
 
