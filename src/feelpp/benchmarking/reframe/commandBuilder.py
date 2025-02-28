@@ -15,7 +15,7 @@ class CommandBuilder:
         return Path(__file__).resolve().parent
 
     def buildConfigFilePath(self):
-        return f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.machine }/reframe.py'
+        return self.parser.args.custom_rfm_config or f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.machine }/reframe.py'
 
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'

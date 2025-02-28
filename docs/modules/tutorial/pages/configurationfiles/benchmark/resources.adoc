@@ -1,0 +1,111 @@
+= Resources
+
+The resources field is used for specifying the computing resources that each test will use. Users can specify a combination of `tasks`, `tasks_per_node`, `gpus_per_node`, `nodes`, `memory` and `exclusive_access`.
+However, only certain combinations are supported, and at least one must be provided.
+The resource fields are meant to be parameterized, so that the application scaling can be analyzed, but this is completely optional.
+
+[CAUTION]
+====
+At the moment, multithreading is not supported. The number of tasks per cpu is set to 1.
+====
+
+tasks [*int*]::
+    Total number of tasks to launch the test with.
+
+tasks_per_node [*int*]::
+    Number of tasks per node to use. Must be specified along `nodes` OR `tasks`.
+    If this number cannot be greater than ReFrame's `systems.partitions.processor.num_cpus` configuration value.
+
+nodes [*int*]::
+    Number of nodes to launch the tests on.
+
+gpus_per_node [*int*] (Optional)::
+    Number of GPUs per node to use.
+    Defaults to None. The test will not be launched on any gpu.
+
+memory [*int*] (Optional)::
+    Total memory used by the test, in Gb.
+    If this field is provided, the number of tasks per node and number of nodes will be recalculated so that the application will have enough memory to run.
+
+    If using custom ReFrame configuration files, users must ensure that the `extras.memory_per_node` field is present on the ReFrame configuration file.
+
+exclusive_access [*bool*] (Optional)::
+    If true, the scheduler will reserve the totality of the nodes where tests will run.
+    Defaults to `true`.
+
+
+Valid combinations are the following:
+- `tasks` and `tasks_per_node`
+- `nodes` and `tasks_per_node`
+- Only `tasks`
+
+Other fields can be specified along these combinations as needed.
+
+== Examples
+
+=== Non-parameterized resources field
+
+- Tasks and tasks per node
+
+[source,json]
+----
+"resources":{
+    "tasks": 256,
+    "tasks_per_node":128,
+    "exclussive_access":true
+}
+----
+This configuration will run ALL tests on 2 nodes (reserved exlusively), using 128 task per node. If `systems.partitions.processor.num_cpus` configuration field is inferior to 128, an error will be raised before submitting the test job.
+
+- Memory
+
+Concerning memory, let's suppose that our system has 256Gb of RAM per node, and that our application requires a total of 1000Gb of memory.
+
+[source,json]
+----
+"resources":{
+    "tasks": 256,
+    "tasks_per_node":128,
+    "exclussive_access":true,
+    "memory":1000
+}
+----
+
+This means that in order for the application to run, it needs at least 4 nodes.
+As we specified that we want to run on 256 tasks, and we need at least 4 nodes, the number of tasks per node cannot be greater than 64. The final number of tasks per node will be recomputed as the minimum between the requested number of tasks per node, and 64.
+In this case, all tests will run on 4 nodes, using 64 tasks per node.
+
+=== Parameterized resources field
+
+Suppose that the following parameters are defined:
+
+[source,json]
+----
+"parameters":[
+    {
+        "name":"resources",
+        "sequence":[
+            { "tasks":128, "tasks_per_node":32 },
+            { "tasks":128, "tasks_per_node":64 },
+            { "tasks":128, "tasks_per_node":128 },
+            { "tasks":256, "tasks_per_node":128 }
+        ]
+    }
+]
+----
+
+We would need to define the resources field like this:
+[source,json]
+----
+"resources":{
+    "tasks":"{{parameters.resources.tasks.value}}",
+    "tasks_per_node":"{{parameters.resources.tasks_per_node.value}}",
+}
+----
+
+This configuration will execute one test for each one of the combinations below:
+- 4 nodes, 32 tasks per node (total of 128 tasks)
+- 2 nodes, 64 tasks per node (total of 128 tasks)
+- 1 node, 128 tasks per node (total of 128 tasks)
+- 2 nodes, 128 tasks per node (total of 256 tasks)
+

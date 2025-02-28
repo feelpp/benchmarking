@@ -1,0 +1,88 @@
+= Platforms
+
+The `platforms` object lists all options and directories related to the benchmark execution for each supported platform. A platform present on this object does not imply that it will be benchmarked, but it rather lists all possible options.
+The actual platform where tests will run is defined by either the `access` field of the machine configuration, or the `platform` field.
+
+input_dir [*str*]::
+    Indicates the directory path where input files can be found, INSIDE the given platform. For the built-in platform, it corresponds to where input files can be found on the system.
+
+append_app_options [*List[str*]] (Optional)::
+    Describes the options to pass to the application. It is equivalent to the `options` field on the configuration root. However, it is used for having different application options depending on the platform.
+
+options [*List[str]*] (Optional)::
+    Describes the options to pass to the platform launcher.
+    For example, `"options":["--bind a:b"]` will be interpreted, for the apptainer platform, as `apptainer exec --bind a:b your_image.sif your_application.exe ...`
+
+image [*Dict[str,str]*] (Conditional)::
+    Contains information related to the container image.
+    For any platform other than built-in, the `image` field must be specified
+
+    -filepath [*str*]:::
+        Filepath containing the location of the container image.
+        If provided along the `url` field, the image will be pulled and placed here before tests are executed, otherwise the framework will assume that the image exists on the given filepath.
+
+    -url [*str*] (Optional):::
+        URL to pull the image from.
+        If this field is specified, `feelpp.benchmarking` will pull the image and place it under the `filepath` field.
+        If this field is not provided, the framework will assume that the image exists under `filepath`.
+
+
+The `platforms` field is optional, if not provided, the builtin platform will be considered.
+The syntax for builtin platform is the following:
+
+[source,json]
+----
+"platforms": {
+    "builtin":{
+        "input_dir":"",
+        "append_app_options":[]
+    }
+}
+----
+
+The following shows an example how to configure the Apptainer platform:
+
+[source,json]
+----
+"platforms":{
+    "apptainer":{
+        "input_dir":"/input_data/",
+        "options":["--bind /data/custom_data/:{{platforms.apptainer.input_dir}}"],
+        "append_app_options":["--my_custom_option_for_apptainer"],
+        "image":{
+            "filepath":"/data/images/my_image.sif",
+            "url":"oras://ghcr.io/your-image.sif"
+        }
+    }
+}
+----
+
+In this case, `input_dir` represents the directory where input files will be found INSIDE the container. If there is no input data present in the container, you might need to bind a local input data directory to it, using `options`
+
+The `options` field contains a list of all the options to include on the container execution. It is equivalent to the machine's `containers.apptainer.options` field. However, users should only include benchmark dependent options in this list.
+
+Note that the placeholder syntax is used to tell to the container to bind a directory to the one specified in `ìnput_dir`.
+
+The `append_app_options` lists all the options to add to the application execution. It does the same as the `options` field in the root of the file, but can be used for case handling.
+
+The image field indicates that the image should be pulled from oras://ghcr.io/your-image.sif and placed in _/data/images/my_image.sif_.
+
+To summarize, `feelpp.benchmarking` will first execute (even before ReFrame is launched):
+
+[source,bash]
+----
+apptainer pull -F /data/images/my_image.sif oras://ghcr.io/your-image.sif
+----
+
+And then, ReFrame will submit a job executing (for local scheduler):
+
+[source,bash]
+----
+apptainer exec --bind /data/custom_data/:/input_data/ /data/images/my_image.sif --my_custom_option_for_apptainer
+----
+
+
+[TIP]
+====
+For the `filepath` field, it is very useful to make use of the `{{machine.containers.apptainer.image_base_dir}}` field from the machine configuration.
+====

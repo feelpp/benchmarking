@@ -1,0 +1,202 @@
+
+= Scalability
+
+Lists all the files where performance variables can be found.
+
+directory [*str*]::
+    Common directory where files containing performance variables can be found.
+
+clean_directory [*bool*] (Optional)::
+    If true, it will delete the contents of inside `directory`.
+    Defaults to false.
+
+stages [*List[Stage]*]::
+    Describes the files containing performance variables, and how to extract them.
+
+    -name [*str*]:::
+        Name to describe the stage. It is used as prefix to add to the performance variables found in the file.
+        If no prefix is needed, the name can be "".
+
+    -filepath [*str*]:::
+        Relative filepath of the file containing performance variables, relative to the `directory` field.
+
+    -format [*str*]:::
+        Format of the stage file.
+        Supported values are "csv" and "json".
+
+    -units [*Dict[str,str]*] (Optional):::
+        Custom units for certain performance variables.
+        key:value pairs correspond to performance-variable:unit.
+        For example, `"my-variable":"m/s"` implies that the variable will have "my-variable" has "m/s" as unit.
+        By default, all columns have "s" as unit. To change the default behavior, users need to pass the `"*":"custom-unit"` key:value pair.
+        This will associate the "custom-unit" to ALL performance variables inside the file, excepting other units specified inside this object.
+
+    -variables_path [*str, List[str]*]:::
+        Only valid if format is "json".
+        Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of one or multiple wildcards (`*`).
+
+custom_variables [*List[Dict[str,str]]*] (Optional)::
+    Contains a list of objects describing custom performance variables to create, based on extracted ones (from stages). An aggregation will be performed using provided columns and valid operations.
+    For more information, see  the xref:tutorial:advancedConfiguration.adoc[advanced Configuration]
+
+    -name [*str*]:::
+        The name to give to the custom performance variable.
+
+    -columns [*List[str]*]:::
+        List of columns to aggregate, accepts both variables existing in the performance files, as well as other custom variables.
+
+    -op [*str*]:::
+        The aggregation operation to apply to the performance columns to create the custom one.
+        Valid operations are "sum","min","max","mean".
+
+    -unit [*str*]:::
+        The unit to assign to the created performance variable.
+
+
+[TIP]
+====
+Recursive creation of custom_variables is supported!
+====
+
+[TIP]
+====
+Deeply nested and complex JSON scalability files are supported, using multiple wildcard syntax!
+====
+
+== Examples
+
+Let's assume our application exports the following files:
+
+[NOTE]
+====
+The `{{instance}}` keyword on the export implies that each test exports this files on its own directory, using the test's hashcode.
+====
+
+- /data/outputs/{{instance}}/exports.csv
+
+[source,csv]
+----
+a,b,c
+1,2,3
+----
+
+- /data/outputs/{{instance}}/logs/timers.json
+
+[source,json]
+----
+{
+    "function1":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "function2":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "execution":{
+        "step1":0.5,
+        "step2":0.7,
+        "step3":1.0,
+    }
+}
+----
+
+An example of the scalability field to extract values on these files is found and explained below.
+
+[source,json]
+----
+"scalability": {
+    "directory": "/data/outputs/{{instance}}/",
+    "stages": [
+        {
+            "name":"myExports",
+            "filepath": "export.csv",
+            "format": "csv",
+            "units":{ "*":"meters", "a":"kg" }
+        },
+        {
+            "name":"myTimers",
+            "filepath": "logs/timers.json",
+            "format": "json",
+            "variables_path":"*"
+        }
+    ]
+}
+----
+
+The common directory path of these exports is _/data/outputs/{{instance}}_.
+
+Let's analyse the first stage:
+
+[source,json]
+----
+{
+    "name":"myExports",
+    "filepath": "export.csv",
+    "format": "csv",
+    "units":{ "*":"meters", "a":"kg" }
+}
+----
+
+The name `myExports` means that performance variables from this file will appear in the exported report (and available for plotting) as `myExports_a:1`, `myExports_b:2`, `myExports_c:3`.
+
+Concerning the units, `"*":"meters"` means that all of the variables in this CSV should have the "meters" unit. However, by specifying `"a":"kg"` we indicates that all columns should be "meters", except `a` who should have "kg" as unit.
+
+Let's now consider the second stage:
+
+[source,json]
+----
+{
+    "name":"myTimers",
+    "filepath": "logs/timers.json",
+    "format": "json",
+    "variables_path":"*"
+}
+----
+
+Performance variables on this file will be prefixed by "myTimers_".
+
+As the `units` field is not specified, all variables will have the default ('s') unit.
+
+Having only `*` as variables_path, means that all variables should be exported into the performance report.
+Variables will be exported as follows:
+
+- myTimers_function1.constructor : 1.0
+- myTimers_function1.init : 0.1
+- myTimers_function2.constructor : 1.0
+- myTimers_function2.init : 0.1
+- myTimers_execution.step1 : 0.5
+- myTimers_execution.step2 : 0.7
+- myTimers_execution.step3 : 1.0
+
+=== Filtering with `variables_path`
+
+* `"variables_path":"function1.*"`:
+
+Exported performance variables:
+
+- myTimers_constructor : 1.0
+- myTimers_init : 0.1
+
+[NOTE]
+====
+Using the wildcards removes the part of the json that is not variable.
+====
+
+* `"variables_path":"exectution.step1"`
+
+Exported performance variables:
+
+- myTimers_step1 : 0.5
+
+
+[NOTE]
+====
+If a full path is passed, the variable name corresponds to the key of the leaf  element of the JSON.
+====
+
+
+[TIP]
+====
+`variables_path` can be a list.
+====

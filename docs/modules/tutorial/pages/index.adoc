@@ -1,5 +1,20 @@
 = feelpp.benchmarking project
 
-The {feelpp} benchmarking_ project provides a framework for automating, centralizing and organizing performance evaluation of scientific simulations on HPC systems.
-This project, based on the https://reframe-hpc.readthedocs.io/en/stable/index.html[ReFrame-hpc framework], enables highly customized benchmarking using robust and comprehensive JSON configuration files that parametrize tests, validate executions and generate figures.
-It also provides concrete CI/CD/CB pipelines to fully automate the benchmarking step of any application.
+The `feelpp.benchmarking` framework is designed to automate and facilitate the benchmarking process for any application. It enables hightly customized and flexible benchmarking, providing a pipeline that guides users from test execution to comprehensive report generation.
+The framework is built on top of link:https://reframe-hpc.readthedocs.io/en/stable/index.html[ReFrame-HPC] and leverages a modular configuration system based on three JSON files that define machine-specific options, benchmark parameters, and dashboard report figures.
+
+Key features include:
+
+- Tailored Configuration:
+Separate JSON files allow for detailed setup of machine environments, benchmark execution (including executable paths and test parameters), and report formatting. The use of placeholder syntax facilitates easy refactoring and reuse.
+
+- Automated and Reproducible Workflows:
+The pipeline validates input configurations, sets up execution environments via ReFrame, and runs benchmarks in a controlled manner. Results are gathered and transformed into comprehensive, reproducible reports.
+
+- Container Integration:
+With support for Apptainer (or Singularity), the framework ensures that benchmarks can be executed consistently across various HPC systems.
+
+- Continuous Benchmarking:
+The integration with CI/CD pipelines enables ongoing performance tracking. This is especially useful in projects where monitoring application scaling and performance over time is critical.
+
+The feelpp.benchmarking tool serves as a centralized platform for aggregating benchmarking results into a clear dashboard, making it an essential resource for those looking to monitor and enhance HPC application performance.

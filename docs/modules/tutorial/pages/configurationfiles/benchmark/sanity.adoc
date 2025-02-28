@@ -1,0 +1,40 @@
+= Sanity
+
+The `sanity` field is used to validate the application execution.
+
+The syntax is the following:
+
+[source,json]
+----
+"sanity":{
+    "success":[],
+    "error":[]
+}
+----
+
+- The `success` field contains a list of patterns to look for in the standard output. If any of the patterns are not found, the test will fail.
+- The `error` field contains a list of patters that will make the test fail if found in the standard output. If any of these paterns are found, the test will fail.
+
+[NOTE]
+====
+At the moment, only validating standard output is supported. It will soon be possible to specify custom log files.
+====
+
+== Examples
+
+[source,json]
+----
+"sanity": {
+    "success": ["[SUCCESS]"],
+    "error": ["[OOPSIE]","Error"]
+}
+----
+
+Will check if "[SUCCESS]" is found on the application's standard output. If not, the test will failt.
+
+It will also check that neither "[OOPSIE]" nor "Error" appear in the standard output.
+
+[TIP]
+====
+Regex patterns are supported.
+====

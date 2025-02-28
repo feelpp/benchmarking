@@ -76,6 +76,7 @@ class Parser():
         options.add_argument('--machine-config', '-mc', required=True, type=str, metavar='MACHINE_CONFIG', help='Path to JSON reframe machine configuration file, specific to a system.')
         options.add_argument('--plots-config', '-pc', required=False, default=None, type=str, help='Path to JSON plots configuration file, used to generate figures. \nIf not provided, no plots will be generated. The plots configuration can also be included in the benchmark configuration file, under the "plots" field.')
         options.add_argument('--benchmark-config', '-bc', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON benchmark configuration files \nIn combination with --dir, specify only provide basenames for selecting JSON files.')
+        options.add_argument('--custom-rfm-config', '-rc', type=str, required=False, default=None, help="Additional reframe configuration file to use instead of built-in ones. It should correspond the with the --machine-config specifications.")
         options.add_argument('--dir', '-d', type=str, nargs='+', action='extend', default=[], metavar='DIR', help='Name of the directory containing JSON configuration files')
         options.add_argument('--exclude', '-e', type=str, nargs='+', action='extend', default=[], metavar='EXCLUDE', help='To use in combination with --dir, mentioned files will not be launched. \nOnly provide basenames to exclude.')
         options.add_argument('--move-results', "-mv", type=str, help='Directory to move the resulting files to. \nIf not provided, result files will be located under the directory specified by the machine configuration.', required=False, default=None)
@@ -122,6 +123,11 @@ class Parser():
             for dir in not_found:
                 print(f" > {dir}")
             sys.exit(1)
+
+        if self.args.custom_rfm_config:
+            if not os.path.isfile(self.args.custom_rfm_config):
+                print(f"Provided custom reframe configuration file {self.args.custom_rfm_config} not found...")
+                sys.exit(1)
 
     def buildConfigList(self):
         """ Find configuration filepaths specified by the --dir argument and build a list acordingly.
