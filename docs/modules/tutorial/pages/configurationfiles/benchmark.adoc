@@ -84,7 +84,7 @@ The following example shows how to configure the Apptainer platform:
 "platforms":{
     "apptainer":{
         "image":{
-            "name":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
+            "filepath":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
         },
         "input_dir":"/input_data/",
         "options":["--home {{machine.output_app_dir}}"],
@@ -93,7 +93,7 @@ The following example shows how to configure the Apptainer platform:
 }
 ----
 
-For any container, the `image` field must be specified, specifically `image.name`, containing the path of the image. Pulling images is not yet supported.
+For any container, the `image` field must be specified, specifically `image.filepath`, containing the path of the image. Pulling images is not yet supported.
 
 In this case, `input_dir` represents the directory where input files will be found INSIDE the container.
 
