@@ -153,6 +153,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             self.executable = self.app_reader.config.executable
             self.executable_opts = self.app_reader.config.options
         else:
-            self.container_platform.command = f"{self.app_reader.config.executable} {' '.join(self.app_reader.config.options)}"
+            self.container_platform.command = f"{self.app_reader.config.executable} {' '.join(self.app_reader.config.options + self.app_reader.config.platforms[self.machine_reader.config.platform].append_app_options)}"
 
 
