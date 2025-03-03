@@ -66,12 +66,12 @@ jobs:
 
     - name: Compile test applications
       run: |
-        mpic++ -std=c++17 -O3 tests/data/parallelSum.cpp -o tests/data/parallelSum
+        mpic++ -std=c++17 -O3 examples/parallelsum/parallelSum.cpp -o examples/parallelsum/parallelSum
 
     - name: Test benchmarks
       run: |
         source .venv/bin/activate
-        execute-benchmark -mc config/machines/default.json -bc config/tests_parallelSum/parallelSum.json -pc config/tests_parallelSum/plots.json
+        execute-benchmark -mc examples/machines/default.json -bc examples/parallelsum/parallelSum.json -pc examples/parallelsum/plots.json
         echo $?
 
     - name: Dry-run reports

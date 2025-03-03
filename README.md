@@ -161,7 +161,7 @@ For detailed documentation, refer to our [docs](https://bench.feelpp.org/benchma
 
 ### The benchmarked application
 
-The framwork includes a sample C++/MPI application that can be used to get familiar with the framework’s core concepts. It can be found under _tests/data/parallelSum.cpp_, or you can download it here : [parallelSum.cpp](https://github.com/feelpp/benchmarking/blob/master/tests/data/parallelSum.cpp)
+The framwork includes a sample C++/MPI application that can be used to get familiar with the framework’s core concepts. It can be found under _tests/data/parallelSum.cpp_, or you can download it here : [parallelSum.cpp](https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp)
 
 This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.
 
@@ -174,7 +174,7 @@ mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
 
 ### Machine configuration files
 
-The framework also contains a default system configuration, located under _config/machines/default.json_ corresponding to the file _src/feelpp/benchmarking/reframe/config/machineConfigs/default/reframe.py, that looks like this :
+The framework also contains a default system configuration, located under _examples/machines/default.json_ corresponding to the file _src/feelpp/benchmarking/reframe/config/machineConfigs/default/reframe.py, that looks like this :
 
 ```json
 {
@@ -200,9 +200,9 @@ The framework also contains a default system configuration, located under _confi
    "output_app_dir":"$PWD"
 }
 ```
-You can download this configuration file here [default.json](https://github.com/feelpp/benchmarking/blob/master/config/machines/default.json).
+You can download this configuration file here [default.json](https://github.com/feelpp/benchmarking/blob/master/examples/machines/default.json).
 
-The framework also contains a very basic sample ReFrame configuration file, under _config/machines/default.py_. [default.py](https://github.com/feelpp/benchmarking/blob/master/config/machines/default.py)
+The framework also contains a very basic sample ReFrame configuration file, under _examples/machines/default.py_. [default.py](https://github.com/feelpp/benchmarking/blob/master/examples/machines/default.py)
 
 This file will cause the tool to use a local scheduler and the `mpiexec` launcher with no options. For more advanced configurations, refer to [ReFrame’s configuration reference](https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#)
 
@@ -210,15 +210,15 @@ More information on _feelpp.benchmarking_ machine configuration files can be fou
 
 ### Benchmark configuration files
 
-Along with machine configuration files, users must provide the specifications of the benchmark. A sample file is provided under _config/tests_parallelSum/parallelSum.json_. [parallelSum.json](https://github.com/feelpp/benchmarking/blob/master/config/tests_parallelSum/parallelSum.json)
+Along with machine configuration files, users must provide the specifications of the benchmark. A sample file is provided under _examples/parallelsum/parallelSum.json_. [parallelSum.json](https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.json)
 
 ```json
 {
    //Executable path (Change the location to the actual executable)
-   "executable": "{{machine.input_dataset_base_dir}}/tests/data/parallelSum",
+   "executable": "{{machine.input_dataset_base_dir}}/examples/parallelsum/parallelSum",
    "use_case_name": "parallel_sum",
    "timeout":"0-0:5:0",
-   "output_directory": "{{machine.output_app_dir}}/tests/data/outputs/parallelSum",
+   "output_directory": "{{machine.output_app_dir}}/examples/parallelsum/outputs/parallelSum",
 
    //Application options
    "options": [ "{{parameters.elements.value}}", "{{output_directory}}/{{instance}}" ],
@@ -275,7 +275,7 @@ More information about _feelpp.benchmarking_ benchmark specifications can be fou
 
 ### Plots configuration
 
-Along with the benchmark configuration, a figure configuration file is provided _config/test\_parallelSum/plots.json_ Download it here [plots.json](https://github.com/feelpp/benchmarking/blob/master/config/tests_parallelSum/plots.json).
+Along with the benchmark configuration, a figure configuration file is provided _config/test\_parallelSum/plots.json_ Download it here [plots.json](https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json).
 
 An example of one figure specification is shown below. Users can add as many figures as they wish, corresponding the figure axis with the parameters used on the benchmark.
 ```json
@@ -296,8 +296,8 @@ More information about _feelpp.benchmarking_ figure configuration can be found [
 ### Running a benchmark
 Finally, to benchmark the test application, generate the reports and plot the figures, run (changing the file paths as needed)
 ```bash
-execute-benchmark --machine-config config/machines/default.json \
-                  --custom-rfm-config config/machines/default.py \
+execute-benchmark --machine-config examples/machines/default.json \
+                  --custom-rfm-config examples/machines/default.py \
                   --benchmark-config config/test_parallelSum/parallelSum.json \
                   --plots-config config/test_parallelSum/plots.json \
                   --website
