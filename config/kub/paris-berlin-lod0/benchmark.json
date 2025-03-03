@@ -6,7 +6,8 @@
     "resources":{
         "nodes":"{{parameters.resources.nodes.value}}",
         "tasks_per_node":128,
-        "exclusive_access":true
+        "exclusive_access":true,
+        "memory":"{{parameters.memory.value}}"
     },
     "platforms": {
         "apptainer":{
@@ -139,6 +140,14 @@
         {
             "name":"radius",
             "sequence":["1000m","2000m"]
+        },
+        {
+            "name":"memory",
+            "sequence":[200, 600],
+            "conditions":{
+                "200": [ { "radius": ["1000m"] } ],
+                "600": [ { "radius": ["2000m"] } ]
+            }
         }
     ]
 }
