@@ -5,8 +5,8 @@ from feelpp.benchmarking.reframe.config.configPlots import Plot
 import os, re
 
 class Sanity(BaseModel):
-    success:List[str]
-    error:List[str]
+    success:Optional[List[str]] = []
+    error:Optional[List[str]] = []
 
 class Stage(BaseModel):
     name:str
@@ -128,7 +128,7 @@ class ConfigFile(BaseModel):
     remote_input_dependencies: Optional[Dict[str,RemoteData]] = {}
     input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
-    sanity: Sanity
+    sanity: Optional[Sanity] = Sanity()
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     plots: Optional[List[Plot]] = []
