@@ -30,8 +30,9 @@ def main_cli():
     index_renderer = RendererFactory.create("index")
     overview_renderer = RendererFactory.create("atomic_overview")
 
-    with open(parser.args.overview_config,"r") as f:
-        overview_config = json.load(f)
+    if parser.args.overview_config:
+        with open(parser.args.overview_config,"r") as f:
+            overview_config = json.load(f)
 
     if parser.args.plot_configs:
         atomic_reports.patchPlotConfigs(parser.args.plot_configs, parser.args.patch_reports, parser.args.save_patches)
@@ -39,8 +40,10 @@ def main_cli():
     for repository in [applications,machines,use_cases]:
         repository.printHierarchy()
         repository.initModules(parser.args.modules_path, index_renderer, parent_id="catalog-index")
-        repository.initOverviewModels(overview_config)
-        repository.createOverviews(parser.args.modules_path,overview_renderer)
+
+        if parser.args.overview_config:
+            repository.initOverviewModels(overview_config)
+            repository.createOverviews(parser.args.modules_path,overview_renderer)
 
 
     report_renderer = RendererFactory.create("benchmark")

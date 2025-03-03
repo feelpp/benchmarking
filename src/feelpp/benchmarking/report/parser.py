@@ -43,7 +43,7 @@ class ReportArgParser():
 
     def checkDirectoriesExist(self):
         """ Check that directories passed as arguments exist in the filesystem"""
-        for filepath in [self.args.config_file, self.args.overview_config,self.args.modules_path]:
+        for filepath in [self.args.config_file, self.args.modules_path]:
             if not os.path.exists(filepath):
                 raise FileNotFoundError(f"File not found ({filepath})")
 
