@@ -86,7 +86,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def setPlatform(self):
         platform = self.app_reader.config.platforms[self.machine_reader.config.platform]
         if self.machine_reader.config.platform != "builtin":
-            self.container_platform.image = platform.image.name
+            self.container_platform.image = platform.image.filepath
             self.container_platform.options = platform.options + self.machine_reader.config.containers[self.machine_reader.config.platform].options
             self.container_platform.workdir = None
 
@@ -119,16 +119,15 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
         print(f"==========================================================")
         print(f"     COPYING FILES FROM {self.machine_reader.config.input_user_dir} to {self.machine_reader.config.input_dataset_base_dir}   ")
-        for input_file in self.app_reader.config.input_file_dependencies.values():
-            print(f"\t {input_file}")
-            source = os.path.join(self.machine_reader.config.input_user_dir, input_file)
-            destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_file)
+        for input_dep in self.app_reader.config.input_file_dependencies.values():
+            print(f"\t {input_dep}")
+            source = os.path.join(self.machine_reader.config.input_user_dir, input_dep)
+            destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_dep)
 
             if os.path.exists(destination):
-                print(f"{destination} exists, {input_file} will not be copied...")
+                print(f"{destination} exists, {input_dep} will not be copied...")
                 continue
-
-            FileHandler.copyFile(os.path.dirname(destination),os.path.basename(destination),source)
+            FileHandler.copyResource(source,os.path.dirname(destination) if os.path.isfile(source) else destination)
         print("============================================================")
 
 
@@ -145,6 +144,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     def setSchedOptions(self):
         """ Sets the necessary pre-run configurations"""
         self.job.launcher.options += self.current_partition.get_resource('launcher_options')
+        self.job.options += self.machine_reader.config.access
         self.job.options += ['--threads-per-core=1']
 
     @run_before('run')
@@ -153,6 +153,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             self.executable = self.app_reader.config.executable
             self.executable_opts = self.app_reader.config.options
         else:
-            self.container_platform.command = f"{self.app_reader.config.executable} {' '.join(self.app_reader.config.options)}"
+            self.container_platform.command = f"{self.app_reader.config.executable} {' '.join(self.app_reader.config.options + self.app_reader.config.platforms[self.machine_reader.config.platform].append_app_options)}"
 
 

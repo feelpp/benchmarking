@@ -5,7 +5,7 @@ from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.reporting import WebsiteConfig
 from feelpp.benchmarking.reframe.commandBuilder import CommandBuilder
-
+from feelpp.benchmarking.report.config.handlers import GirderHandler
 
 def main_cli():
     parser = Parser()
@@ -41,6 +41,38 @@ def main_cli():
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
         report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
 
+        if not parser.args.dry_run:
+            #===============PULL IMAGES==================#
+            for platform_name, platform_field in app_reader.config.platforms.items():
+                if not platform_field.image or not platform_field.image.url or not machine_reader.config.containers[platform_name].executable:
+                    continue
+                if platform_name == "apptainer":
+                    completed_pull = subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.filepath} {platform_field.image.url}", shell=True)
+                    completed_pull.check_returncode()
+                else:
+                    raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
+            #=============================================#
+
+        #===== Download remote dependencies ============#
+        if not parser.args.dry_run:
+            if app_reader.config.remote_input_dependencies:
+                if any(v.girder for v in app_reader.config.remote_input_dependencies.values()):
+                    girder_handler = GirderHandler(machine_reader.config.input_user_dir or machine_reader.config.input_dataset_base_dir  )
+            for dependency_name,remote_dependency in app_reader.config.remote_input_dependencies.items():
+                print(f"Donwloading remote file dependency : {dependency_name} ...")
+                if remote_dependency.girder:
+                    if remote_dependency.girder.file:
+                        girder_handler.downloadFile( remote_dependency.girder.file, os.path.dirname(remote_dependency.destination), name=os.path.basename(remote_dependency.destination) )
+                    elif remote_dependency.girder.folder:
+                        girder_handler.downloadFolder(remote_dependency.girder.folder,remote_dependency.destination)
+                    elif remote_dependency.girder.item:
+                        girder_handler.downloadItem(remote_dependency.girder.item,remote_dependency.destination)
+                    else:
+                        raise NotImplementedError(f"Remote dependency resource type is not implemented for {dependency_name}")
+                else:
+                    raise NotImplementedError(f"Platform {remote_dependency} is not implemented for {dependency_name}")
+        #================================================#
+
         reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
 
         exit_code = subprocess.run(reframe_cmd, shell=True)
@@ -50,10 +82,10 @@ def main_cli():
             f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
 
         #Copy use case description if existant
-        FileHandler.copyFile(
+        FileHandler.copyResource(
+            app_reader.config.additional_files.description_filepath,
             os.path.join(report_folder_path,"partials"),
-            "description",
-            app_reader.config.additional_files.description_filepath
+            "description"
         )
 
         if parser.args.move_results:

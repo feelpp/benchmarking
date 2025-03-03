@@ -1,11 +1,3 @@
-from dotenv import load_dotenv
-from pathlib import Path
-import os
-
-load_dotenv(os.path.join(Path(__file__).resolve().parent,"hpc.env"))
-
-project_id = os.getenv("discoverer_project_id")
-
 site_configuration = {
     'systems':[
         {
@@ -19,7 +11,7 @@ site_configuration = {
                     'scheduler': 'slurm',
                     'launcher': 'srun',
                     'max_jobs': 8,
-                    'access': [f"--partition=cn --account={project_id} --qos={project_id}"],
+                    'access': [f"--partition=cn"],
                     'environs': ['default'],
                     'processor': {
                         'num_cpus': 128

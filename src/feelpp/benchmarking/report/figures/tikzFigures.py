@@ -1,12 +1,13 @@
 from feelpp.benchmarking.report.renderer import Renderer
-
 from feelpp.benchmarking.report.figures.base import Figure
+
+from pathlib import Path
 
 class TikzFigure(Figure):
     """Base class for Tikz figures"""
     def __init__(self,plot_config, transformation_strategy, renderer_filename):
         super().__init__(plot_config, transformation_strategy)
-        self.template_dirpath = "./src/feelpp/benchmarking/report/figures/templates/tikz/" #TODO: DO NOT HARDCODE PATHS
+        self.template_dirpath = f"{Path(__file__).resolve().parent}/templates/tikz/"
 
         self.renderer = Renderer(self.template_dirpath,renderer_filename)
         self.xcolors = ["red","green","blue","magenta","yellow","black","gray","white","darkgray","lightgray","olive","orange","pink","purple","teal","violet","cyan","brown","lime"]
