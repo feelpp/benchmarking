@@ -53,8 +53,9 @@ jobs:
       run: |
         python -m venv .venv
         source .venv/bin/activate
-        pip3 install --upgrade pip
-        pip3 install dist/*.whl
+        python3 -m pip install --upgrade pip
+        python3 -m pip install pytest
+        python3 -m pip install dist/*.whl
 
     - name: Unit tests
       run: |
