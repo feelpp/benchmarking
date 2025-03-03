@@ -1,5 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 import os
+from pathlib import Path
+
 
 class Renderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
@@ -46,7 +48,7 @@ class Renderer:
 class RendererFactory:
     @staticmethod
     def create(renderer_type):
-        base = "./src/feelpp/benchmarking/report/templates/"
+        base = f"{Path(__file__).resolve().parent}/templates/"
         templates = {
             "index" : "index.adoc.j2",
             "benchmark" : "benchmark.adoc.j2",
