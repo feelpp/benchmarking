@@ -161,7 +161,7 @@ For detailed documentation, refer to our [docs](https://bench.feelpp.org/benchma
 
 ### The benchmarked application
 
-The framwork includes a sample C++/MPI application that can be used to get familiar with the framework’s core concepts. It can be found under _tests/data/parallelSum.cpp_, or you can download it here : [parallelSum.cpp](https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp)
+The framwork includes a sample C++/MPI application that can be used to get familiar with the framework’s core concepts. It can be found under _examples/parallelsum/parallelSum.cpp_, or you can download it here : [parallelSum.cpp](https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp)
 
 This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.
 
