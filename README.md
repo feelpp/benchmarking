@@ -56,6 +56,105 @@ source .venv/bin/activate
 python3 -m pip install .
 ```
 
+## Prerequisites
+
+In order to generate the benchmark reports website, Antora must be configured beforehand, along with the necessary extensions. More information can be found in [Antora Documentation](https://docs.antora.org/antora/latest/install-and-run-quickstart/)
+
+* Make sure you have [Node.js](http://nodejs.org/en/download) installed.
+
+<dl><dt><strong>❗ IMPORTANT</strong></dt><dd>
+
+The following part of prerequisites is only necessary if the `feelpp.benchmarking` repository is not being cloned.
+</dd></dl>
+
+* A local git repository is needed, so if you are not adding `feelpp.benchmarking` to an existing repository:
+
+```bash
+git init
+git commit --allow-empty -m init
+```
+
+* Download the [package.json](https://github.com/feelpp/benchmarking/blob/master/package.json) dependency file and place it at the root of your project.
+* Install dependencies
+
+```bash
+npm install
+```
+
+* Create the Antora’s [standard directory hierarchy](https://docs.antora.org/antora/latest/standard-directories/).
+
+```bash
+mkdir -p docs/modules/ROOT/pages
+```
+
+* Create the start and navigation pages
+
+```bash
+echo "= <YOUR-PROJECT-TITLE>\n:page-layout: toolboxes\n:page-tags: catalog, catalog-index\n:docdatetime: 2025-01-22T11:42:45" > docs/modules/ROOT/pages/index.adoc
+```
+
+```bash
+echo "* xref:ROOT:index.adoc[YOUR-PROJECT-TITLE]" > docs/modules/ROOT/nav.adoc
+```
+
+* Write the component version descriptor.
+
+```bash
+touch docs/antora.yml
+```
+
+Write the following in the file.
+
+```yaml
+name: <PROJECT-NAME>
+title: <YOUR-PROJECT-TITLE>
+version: ~
+start_page: index.adoc
+asciidoc:
+  attributes:
+    project_name: <YOUR-PROJECT-TITLE>
+    numbered: true
+    dynamic-blocks@: ''
+    allow-uri-read: true
+    hide-uri-scheme: true
+nav:
+  - modules/ROOT/nav.adoc
+```
+
+* Create the antora playbook at the root of your project
+
+```bash
+touch ./site.yml
+```
+
+Write the following to the file
+
+```yaml
+site:
+  title: <YOUR-PROJECT-TITLE>
+  start_page: <YOUR-PROJECT-NAME>::index.adoc
+content:
+  sources:
+  - url: .
+    branches: HEAD
+    start_path: docs
+ui:
+  bundle:
+    url: https://github.com/feelpp/antora-ui/releases/latest/download/ui-bundle.zip
+    snapshot: true
+output:
+  clean: true
+  dir: public
+asciidoc:
+  extensions:
+  - '@feelpp/asciidoctor-extensions'
+```
+
+<dl><dt><strong>❗ IMPORTANT</strong></dt><dd>
+
+Make sure to replace the values of `<YOUR-PROJECT-NAME>` and `<YOUR-PROJECT-TITLE>` with the actual values.
+</dd></dl>
+
 ## Quickstart
 
 For detailed documentation, refer to our [docs](https://bench.feelpp.org/benchmarking/tutorial/index.html).
