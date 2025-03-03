@@ -24,13 +24,13 @@ jobs:
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-download -gid $staging_folder_id -o ./tmp/ -d
+                feelpp-girder download -gid $staging_folder_id -o ./tmp/ -d
 
         -   name: Download Production config
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-download -gid $production_website_config_id -o ./configs_tmp/ -fn production_config.json
+                feelpp-girder download -gid $production_website_config_id -o ./configs_tmp/ -fn production_config.json
 
         -   name: Merge stage configs
             run: |
@@ -52,14 +52,14 @@ jobs:
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-upload --item ./configs_tmp/website_config.json --girder_id $production_folder_id
+                feelpp-girder upload --item ./configs_tmp/website_config.json --girder_id $production_folder_id
 
         -   name: Cleanup stage folder
             run: |
                 echo "Moving all folders from staging/ to merged/"
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-move -oid $staging_folder_id -nid $accepted_folder_id
+                feelpp-girder move -oid $staging_folder_id -nid $accepted_folder_id
 
     denied:
         if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
@@ -82,4 +82,4 @@ jobs:
                 echo "Moving all folders from staging/ to denied/"
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-move -oid $staging_folder_id -nid $denied_folder_id
+                feelpp-girder move -oid $staging_folder_id -nid $denied_folder_id

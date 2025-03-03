@@ -71,13 +71,13 @@ jobs:
     - name: Test benchmarks
       run: |
         source .venv/bin/activate
-        execute-benchmark -mc examples/machines/default.json -bc examples/parallelsum/parallelSum.json -pc examples/parallelsum/plots.json
+        feelpp-benchmarking-exec -mc examples/machines/default.json -bc examples/parallelsum/parallelSum.json -pc examples/parallelsum/plots.json
         echo $?
 
     - name: Dry-run reports
       run: |
         source .venv/bin/activate
-        render-benchmarks --config-file reports/website_config.json
+        feelpp-benchmarking-render --config-file reports/website_config.json
 
     - name: Check files
       run: | #TODO: check if not empty (maybe)
@@ -122,14 +122,14 @@ jobs:
       run: |
         source .venv/bin/activate
         source ./girder_deploy_config.sh
-        girder-download --girder_id=$production_website_config_id --output_dir=./tmp/ --filename=website_config.json
+        feelpp-girder download --girder_id=$production_website_config_id --output_dir=./tmp/ --filename=website_config.json
       env:
         GIRDER_API_KEY: ${{secrets.GIRDER}}
 
     - name: Render reports
       run: |
         source .venv/bin/activate
-        render-benchmarks --config-file=./tmp/website_config.json
+        feelpp-benchmarking-render --config-file=./tmp/website_config.json
       env:
         GIRDER_API_KEY: ${{ secrets.GIRDER }}
 

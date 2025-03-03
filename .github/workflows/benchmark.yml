@@ -2,7 +2,7 @@ name: Benchmark
 
 on:
     repository_dispatch:
-        types: [execute-benchmark]
+        types: [feelpp-benchmarking-exec]
 
     workflow_dispatch:
         inputs:
@@ -114,7 +114,7 @@ jobs:
             if: ${{ matrix.submit == 'cli' }}
             run: |
                 source .venv/bin/activate
-                execute-benchmark \
+                feelpp-benchmarking-exec \
                     -mc machine_config.json \
                     -bc ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
                     -pc ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
@@ -170,7 +170,7 @@ jobs:
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-upload --item "./tmp/results/*" --girder_id $staging_folder_id
+                feelpp-girder upload --item "./tmp/results/*" --girder_id $staging_folder_id
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
 
@@ -224,7 +224,7 @@ jobs:
             -   name: Render docs
                 run: |
                     source .venv/bin/activate
-                    render-benchmarks --config-file=./tmp/website_config.json
+                    feelpp-benchmarking-render --config-file=./tmp/website_config.json
             -   name: Compile docs
                 run: |
                     source .venv/bin/activate
@@ -233,8 +233,8 @@ jobs:
             -   name: Upload
                 run: |
                     source .venv/bin/activate
-                    girder-upload --item "./tmp/results/*" --girder_id ${{ github.event.inputs.upload_id || github.event.client_payload.upload_id}}
-                    girder-upload --item "./public/" --girder_id ${{ github.event.inputs.upload_id || github.event.client_payload.upload_id}}
+                    feelpp-girder upload --item "./tmp/results/*" --girder_id ${{ github.event.inputs.upload_id || github.event.client_payload.upload_id}}
+                    feelpp-girder upload --item "./public/" --girder_id ${{ github.event.inputs.upload_id || github.event.client_payload.upload_id}}
                 env:
                     GIRDER_API_KEY: ${{secrets.GIRDER}}
 
