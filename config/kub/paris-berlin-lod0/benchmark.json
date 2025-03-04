@@ -2,7 +2,7 @@
     "executable": "feelpp_kub_cem",
     "output_directory": "{{machine.output_app_dir}}/kub",
     "use_case_name": "Paris_Berlin",
-    "timeout":"0-00:15:0",
+    "timeout":"0-00:30:0",
     "resources":{
         "tasks":"{{parameters.tasks.value}}",
         "exclusive_access":true
@@ -121,7 +121,7 @@
     "parameters": [
         {
             "name": "tasks",
-            "sequence":[128]
+            "sequence":[256]
             // {"min":128,"max":256,"step":64}
         },
         {
