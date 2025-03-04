@@ -5,8 +5,8 @@
     "timeout":"0-00:30:0",
     "resources":{
         "tasks":"{{parameters.tasks.value}}",
+        "tasks_per_node":64,
         "exclusive_access":true
-        // "memory":"{{parameters.memory.value}}"
     },
     "platforms": {
         "apptainer":{
@@ -29,7 +29,7 @@
     },
     "remote_input_dependencies":{
         "simulators":{"girder":{"item":"675051994c9ccbdde21a4707"},"destination":"kub/"},
-        // "berlin":{"girder":{"folder":"67b7532f4c9ccbdde21a5800"},"destination":"kub/Berlin/"},
+        "berlin":{"girder":{"folder":"67b7532f4c9ccbdde21a5800"},"destination":"kub/Berlin/"},
         "paris":{"girder":{"folder":"67b7533f4c9ccbdde21a5802"},"destination":"kub/Paris/"},
         "scenarios":{"girder":{"item":"67b496894c9ccbdde21a5769"},"destination":"kub/"},
         "config":{"girder":{"file":"67b4a9904c9ccbdde21a5775"},"destination":"kub/kub.cfg"}
@@ -121,8 +121,7 @@
     "parameters": [
         {
             "name": "tasks",
-            "sequence":[128]
-            // {"min":128,"max":256,"step":64}
+            "range":{"min":128,"max":384,"step":128}
         },
         {
             "name": "city",
@@ -130,15 +129,7 @@
         },
         {
             "name":"radius",
-            "sequence":["10km"]
+            "sequence":["1000m","2000m"]
         }
-        // {
-        //     "name":"memory",
-        //     "sequence":[200, 600],
-        //     "conditions":{
-        //         "200": [ { "radius": ["1000m"] } ],
-        //         "600": [ { "radius": ["2000m"] } ]
-        //     }
-        // }
     ]
 }
