@@ -31,7 +31,6 @@
         "simulators":{"girder":{"item":"675051994c9ccbdde21a4707"},"destination":"kub/"},
         // "berlin":{"girder":{"folder":"67b7532f4c9ccbdde21a5800"},"destination":"kub/Berlin/"},
         "paris":{"girder":{"folder":"67b7533f4c9ccbdde21a5802"},"destination":"kub/Paris/"},
-        "weather":{"girder":{"file":"67b752574c9ccbdde21a57ed"},"destination":"kub/weather.csv"},
         "scenarios":{"girder":{"item":"67b496894c9ccbdde21a5769"},"destination":"kub/"},
         "config":{"girder":{"file":"67b4a9904c9ccbdde21a5775"},"destination":"kub/kub.cfg"}
     },
@@ -39,7 +38,7 @@
         "simulators":"kub/simulators",
         "gis":"kub/{{parameters.city.value}}/{{parameters.radius.value}}/gis.json",
         "mesh":"kub/{{parameters.city.value}}/{{parameters.radius.value}}/mesh_0_Lod0.msh",
-        "weather":"kub/weather.csv",
+        "weather":"kub/{{parameters.city.value}}/weather-data-0.hourly-variables.csv",
         "scenarios":"kub/scenarios_local",
         "cfg":"kub/kub.cfg"
     },
