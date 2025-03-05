@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Scalability :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/tutorial/configurationfiles/benchmark/scalability.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="scalability.html">Scalability</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/tutorial/pages/configurationfiles/benchmark/scalability.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Scalability</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lists all the files where performance variables can be found.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">directory [<strong>str</strong>]</dt>
+<dd>
+<p>Common directory where files containing performance variables can be found.</p>
+</dd>
+<dt class="hdlist1">clean_directory [<strong>bool</strong>] (Optional)</dt>
+<dd>
+<p>If true, it will delete the contents of inside <code>directory</code>.
+Defaults to false.</p>
+</dd>
+<dt class="hdlist1">stages [<strong>List[Stage]</strong>]</dt>
+<dd>
+<p>Describes the files containing performance variables, and how to extract them.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-name [<strong>str</strong>]</dt>
+<dd>
+<p>Name to describe the stage. It is used as prefix to add to the performance variables found in the file.
+If no prefix is needed, the name can be "".</p>
+</dd>
+<dt class="hdlist1">-filepath [<strong>str</strong>]</dt>
+<dd>
+<p>Relative filepath of the file containing performance variables, relative to the <code>directory</code> field.</p>
+</dd>
+<dt class="hdlist1">-format [<strong>str</strong>]</dt>
+<dd>
+<p>Format of the stage file.
+Supported values are "csv" and "json".</p>
+</dd>
+<dt class="hdlist1">-units [<strong>Dict[str,str]</strong>] (Optional)</dt>
+<dd>
+<p>Custom units for certain performance variables.
+key:value pairs correspond to performance-variable:unit.
+For example, <code>"my-variable":"m/s"</code> implies that the variable will have "my-variable" has "m/s" as unit.
+By default, all columns have "s" as unit. To change the default behavior, users need to pass the <code>"*":"custom-unit"</code> key:value pair.
+This will associate the "custom-unit" to ALL performance variables inside the file, excepting other units specified inside this object.</p>
+</dd>
+<dt class="hdlist1">-variables_path [<strong>str, List[str]</strong>]</dt>
+<dd>
+<p>Only valid if format is "json".
+Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of one or multiple wildcards (<code>*</code>).</p>
+</dd>
+</dl>
+</div>
+</dd>
+<dt class="hdlist1">custom_variables [<strong>List[Dict[str,str]]</strong>] (Optional)</dt>
+<dd>
+<p>Contains a list of objects describing custom performance variables to create, based on extracted ones (from stages). An aggregation will be performed using provided columns and valid operations.
+For more information, see  the <a href="../../advancedConfiguration.html" class="xref page">advanced Configuration</a></p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-name [<strong>str</strong>]</dt>
+<dd>
+<p>The name to give to the custom performance variable.</p>
+</dd>
+<dt class="hdlist1">-columns [<strong>List[str]</strong>]</dt>
+<dd>
+<p>List of columns to aggregate, accepts both variables existing in the performance files, as well as other custom variables.</p>
+</dd>
+<dt class="hdlist1">-op [<strong>str</strong>]</dt>
+<dd>
+<p>The aggregation operation to apply to the performance columns to create the custom one.
+Valid operations are "sum","min","max","mean".</p>
+</dd>
+<dt class="hdlist1">-unit [<strong>str</strong>]</dt>
+<dd>
+<p>The unit to assign to the created performance variable.</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Recursive creation of custom_variables is supported!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Deeply nested and complex JSON scalability files are supported, using multiple wildcard syntax!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_examples"><a class="anchor" href="#_examples"></a>1. Examples</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s assume our application exports the following files:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>{{instance}}</code> keyword on the export implies that each test exports this files on its own directory, using the test&#8217;s hashcode.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>/data/outputs/{{instance}}/exports.csv</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csv hljs" data-lang="csv">a,b,c
+1,2,3</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>/data/outputs/{{instance}}/logs/timers.json</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "function1":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "function2":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "execution":{
+        "step1":0.5,
+        "step2":0.7,
+        "step3":1.0,
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An example of the scalability field to extract values on these files is found and explained below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"scalability": {
+    "directory": "/data/outputs/{{instance}}/",
+    "stages": [
+        {
+            "name":"myExports",
+            "filepath": "export.csv",
+            "format": "csv",
+            "units":{ "*":"meters", "a":"kg" }
+        },
+        {
+            "name":"myTimers",
+            "filepath": "logs/timers.json",
+            "format": "json",
+            "variables_path":"*"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The common directory path of these exports is <em>/data/outputs/{{instance}}</em>.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s analyse the first stage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name":"myExports",
+    "filepath": "export.csv",
+    "format": "csv",
+    "units":{ "*":"meters", "a":"kg" }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The name <code>myExports</code> means that performance variables from this file will appear in the exported report (and available for plotting) as <code>myExports_a:1</code>, <code>myExports_b:2</code>, <code>myExports_c:3</code>.</p>
+</div>
+<div class="paragraph">
+<p>Concerning the units, <code>"*":"meters"</code> means that all of the variables in this CSV should have the "meters" unit. However, by specifying <code>"a":"kg"</code> we indicates that all columns should be "meters", except <code>a</code> who should have "kg" as unit.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s now consider the second stage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name":"myTimers",
+    "filepath": "logs/timers.json",
+    "format": "json",
+    "variables_path":"*"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Performance variables on this file will be prefixed by "myTimers_".</p>
+</div>
+<div class="paragraph">
+<p>As the <code>units</code> field is not specified, all variables will have the default ('s') unit.</p>
+</div>
+<div class="paragraph">
+<p>Having only <code>*</code> as variables_path, means that all variables should be exported into the performance report.
+Variables will be exported as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>myTimers_function1.constructor : 1.0</p>
+</li>
+<li>
+<p>myTimers_function1.init : 0.1</p>
+</li>
+<li>
+<p>myTimers_function2.constructor : 1.0</p>
+</li>
+<li>
+<p>myTimers_function2.init : 0.1</p>
+</li>
+<li>
+<p>myTimers_execution.step1 : 0.5</p>
+</li>
+<li>
+<p>myTimers_execution.step2 : 0.7</p>
+</li>
+<li>
+<p>myTimers_execution.step3 : 1.0</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_filtering_with_variables_path"><a class="anchor" href="#_filtering_with_variables_path"></a>1.1. Filtering with <code>variables_path</code></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>"variables_path":"function1.*"</code>:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Exported performance variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>myTimers_constructor : 1.0</p>
+</li>
+<li>
+<p>myTimers_init : 0.1</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Using the wildcards removes the part of the json that is not variable.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>"variables_path":"exectution.step1"</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Exported performance variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>myTimers_step1 : 0.5</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If a full path is passed, the variable name corresponds to the key of the leaf  element of the JSON.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>variables_path</code> can be a list.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+
+
+<script async src="../../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

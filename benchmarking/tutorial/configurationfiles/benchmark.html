@@ -241,6 +241,9 @@ MathJax.Hub.Config({
 <p>Configuring a benchmark can be quite extensive, as this framework focuses on flexibility. For this, the documentation will be divided in main sections.</p>
 </div>
 <div class="paragraph">
+<p>The benchmark configuration file describes precisely how the benchmarking should be done, for example, specifying where the executable is located, the options to pass to the application, and how the tests will be parametrized.</p>
+</div>
+<div class="paragraph">
 <p>The base of the configuration file is shown below.</p>
 </div>
 <div class="listingblock">
@@ -249,20 +252,24 @@ MathJax.Hub.Config({
     "executable": "",
     "use_case_name": "",
     "timeout":"",
-    "platforms":{},
+    "env_variables":{},
     "options": [],
-    "outputs":{},
+    "resources":{},
+    "platforms":{},
+    "additional_files":{},
     "scalability":{},
     "sanity":{},
     "parameters":{},
 }</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_fields_on_json_root"><a class="anchor" href="#_fields_on_json_root"></a>1. Fields on JSON root</h2>
-<div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>Users can add any field used for refactoring. For example, one can do the following.</p>
 </div>
@@ -272,168 +279,320 @@ MathJax.Hub.Config({
 "options":["--output {{output_directory}}"]</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Mandatory and actionable fields are:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 37.5%;">
-<col style="width: 12.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Field name</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">Default</th>
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">executable</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path or name of the application executable.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">use_case_name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job execution timeout. Format: days-hours:minutes:seconds</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
 </table>
 </div>
 </div>
+</div>
 <div class="sect1">
-<h2 id="_platforms"><a class="anchor" href="#_platforms"></a>2. Platforms</h2>
+<h2 id="_fields_on_json_root"><a class="anchor" href="#_fields_on_json_root"></a>1. Fields on JSON root</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">executable [<strong>str</strong>]</dt>
+<dd>
+<p>Path to the application executable or command to execute.</p>
+</dd>
+<dt class="hdlist1">use_case_name [<strong>str</strong>]</dt>
+<dd>
+<p>Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.</p>
+</dd>
+<dt class="hdlist1">timeout [<strong>str</strong>]</dt>
+<dd>
+<p>Job execution timeout, starting when the job is launched (and not pending). Format: days-hours:minutes:seconds
+This field is notably important so that HPC resources are not wasted unnecessarily.
+For example, for a 10 minutes timer: <code>0-00:10:00</code></p>
+</dd>
+<dt class="hdlist1">env_variables [<strong>Dict[str,str]</strong>]</dt>
+<dd>
+<p>key:value pairs for benchmark related environment variables. These variables will be set after the <em>init</em> phase of ReFrame tests.</p>
+</dd>
+<dt class="hdlist1">options [<strong>List[str]</strong>]</dt>
+<dd>
+<p>List of application&#8217;s options. Input arguments can be parameterized in here.
+For example,
+<code>[ "--number-of-elements={{parameters.elements.value}}", "--number-of-points={{parameters.points.value}}", "--verbose" ]</code></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resources"><a class="anchor" href="#_resources"></a>2. Resources</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <code>platforms</code> object lists all options and directories related to the benchmark execution for each supported platform. A platform present on this object does not imply that it will be benchmarked, but it rather lists all possible options.</p>
+<p>The resources field is used for specifying the computing resources that each test will use. Users can specify a combination of <code>tasks</code>, <code>tasks_per_node</code>, <code>gpus_per_node</code>, <code>nodes</code>, <code>memory</code> and <code>exclusive_access</code>.
+However, only certain combinations are supported, and at least one must be provided.
+The resource fields are meant to be parameterized, so that the application scaling can be analyzed, but this is completely optional.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At the moment, multithreading is not supported. The number of tasks per cpu is set to 1.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">tasks [<strong>int</strong>]</dt>
+<dd>
+<p>Total number of tasks to launch the test with.</p>
+</dd>
+<dt class="hdlist1">tasks_per_node [<strong>int</strong>]</dt>
+<dd>
+<p>Number of tasks per node to use. Must be specified along <code>nodes</code> OR <code>tasks</code>.
+If this number cannot be greater than ReFrame&#8217;s <code>systems.partitions.processor.num_cpus</code> configuration value.</p>
+</dd>
+<dt class="hdlist1">nodes [<strong>int</strong>]</dt>
+<dd>
+<p>Number of nodes to launch the tests on.</p>
+</dd>
+<dt class="hdlist1">gpus_per_node [<strong>int</strong>] (Optional)</dt>
+<dd>
+<p>Number of GPUs per node to use.
+Defaults to None. The test will not be launched on any gpu.</p>
+</dd>
+<dt class="hdlist1">memory [<strong>int</strong>] (Optional)</dt>
+<dd>
+<p>Total memory used by the test, in Gb.
+If this field is provided, the number of tasks per node and number of nodes will be recalculated so that the application will have enough memory to run.</p>
+<div class="literalblock">
+<div class="content">
+<pre>If using custom ReFrame configuration files, users must ensure that the `extras.memory_per_node` field is present on the ReFrame configuration file.</pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">exclusive_access [<strong>bool</strong>] (Optional)</dt>
+<dd>
+<p>If true, the scheduler will reserve the totality of the nodes where tests will run.
+Defaults to <code>true</code>.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>The field is optional, if not provided, the builtin platform will be considered.</p>
+<p>Valid combinations are the following:
+- <code>tasks</code> and <code>tasks_per_node</code>
+- <code>nodes</code> and <code>tasks_per_node</code>
+- Only <code>tasks</code></p>
 </div>
 <div class="paragraph">
-<p>The syntax for builtin platform is the following:</p>
+<p>Other fields can be specified along these combinations as needed.</p>
+</div>
+<div class="sect2">
+<h3 id="_examples"><a class="anchor" href="#_examples"></a>2.1. Examples</h3>
+<div class="sect3">
+<h4 id="_non_parameterized_resources_field"><a class="anchor" href="#_non_parameterized_resources_field"></a>2.1.1. Non-parameterized resources field</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Tasks and tasks per node</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"resources":{
+    "tasks": 256,
+    "tasks_per_node":128,
+    "exclussive_access":true
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This configuration will run ALL tests on 2 nodes (reserved exlusively), using 128 task per node. If <code>systems.partitions.processor.num_cpus</code> configuration field is inferior to 128, an error will be raised before submitting the test job.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Memory</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Concerning memory, let&#8217;s suppose that our system has 256Gb of RAM per node, and that our application requires a total of 1000Gb of memory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"resources":{
+    "tasks": 256,
+    "tasks_per_node":128,
+    "exclussive_access":true,
+    "memory":1000
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This means that in order for the application to run, it needs at least 4 nodes.
+As we specified that we want to run on 256 tasks, and we need at least 4 nodes, the number of tasks per node cannot be greater than 64. The final number of tasks per node will be recomputed as the minimum between the requested number of tasks per node, and 64.
+In this case, all tests will run on 4 nodes, using 64 tasks per node.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parameterized_resources_field"><a class="anchor" href="#_parameterized_resources_field"></a>2.1.2. Parameterized resources field</h4>
+<div class="paragraph">
+<p>Suppose that the following parameters are defined:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"parameters":[
+    {
+        "name":"resources",
+        "sequence":[
+            { "tasks":128, "tasks_per_node":32 },
+            { "tasks":128, "tasks_per_node":64 },
+            { "tasks":128, "tasks_per_node":128 },
+            { "tasks":256, "tasks_per_node":128 }
+        ]
+    }
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We would need to define the resources field like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"resources":{
+    "tasks":"{{parameters.resources.tasks.value}}",
+    "tasks_per_node":"{{parameters.resources.tasks_per_node.value}}",
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This configuration will execute one test for each one of the combinations below:
+- 4 nodes, 32 tasks per node (total of 128 tasks)
+- 2 nodes, 64 tasks per node (total of 128 tasks)
+- 1 node, 128 tasks per node (total of 128 tasks)
+- 2 nodes, 128 tasks per node (total of 256 tasks)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_platforms"><a class="anchor" href="#_platforms"></a>3. Platforms</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>platforms</code> object lists all options and directories related to the benchmark execution for each supported platform. A platform present on this object does not imply that it will be benchmarked, but it rather lists all possible options.
+The actual platform where tests will run is defined by either the <code>access</code> field of the machine configuration, or the <code>platform</code> field.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">input_dir [<strong>str</strong>]</dt>
+<dd>
+<p>Indicates the directory path where input files can be found, INSIDE the given platform. For the built-in platform, it corresponds to where input files can be found on the system.</p>
+</dd>
+<dt class="hdlist1">append_app_options [<strong>List[str</strong>]] (Optional)</dt>
+<dd>
+<p>Describes the options to pass to the application. It is equivalent to the <code>options</code> field on the configuration root. However, it is used for having different application options depending on the platform.</p>
+</dd>
+<dt class="hdlist1">options [<strong>List[str]</strong>] (Optional)</dt>
+<dd>
+<p>Describes the options to pass to the platform launcher.
+For example, <code>"options":["--bind a:b"]</code> will be interpreted, for the apptainer platform, as <code>apptainer exec --bind a:b your_image.sif your_application.exe &#8230;&#8203;</code></p>
+</dd>
+<dt class="hdlist1">image [<strong>Dict[str,str]</strong>] (Conditional)</dt>
+<dd>
+<p>Contains information related to the container image.
+For any platform other than built-in, the <code>image</code> field must be specified</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-filepath [<strong>str</strong>]</dt>
+<dd>
+<p>Filepath containing the location of the container image.
+If provided along the <code>url</code> field, the image will be pulled and placed here before tests are executed, otherwise the framework will assume that the image exists on the given filepath.</p>
+</dd>
+<dt class="hdlist1">-url [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>URL to pull the image from.
+If this field is specified, <code>feelpp.benchmarking</code> will pull the image and place it under the <code>filepath</code> field.
+If this field is not provided, the framework will assume that the image exists under <code>filepath</code>.</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The <code>platforms</code> field is optional, if not provided, the builtin platform will be considered.
+The syntax for builtin platform is the following:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms": {
     "builtin":{
         "input_dir":"",
-        "append_app_option":[]
+        "append_app_options":[]
     }
 }</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>append_app_options</code> is in this case equivalent to the <code>options</code> field on the configuration root.</p>
-</li>
-<li>
-<p><code>input_dir</code> indicates the path of the directory where input files can be found.</p>
-</li>
-</ul>
-</div>
 <div class="paragraph">
-<p>The following example shows how to configure the Apptainer platform:</p>
+<p>The following shows an example how to configure the Apptainer platform:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms":{
     "apptainer":{
-        "image":{
-            "filepath":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
-        },
         "input_dir":"/input_data/",
-        "options":["--home {{machine.output_app_dir}}"],
-        "append_app_options":["--my_custom_option_for_apptainer"]
+        "options":["--bind /data/custom_data/:{{platforms.apptainer.input_dir}}"],
+        "append_app_options":["--my_custom_option_for_apptainer"],
+        "image":{
+            "filepath":"/data/images/my_image.sif",
+            "url":"oras://ghcr.io/your-image.sif"
+        }
     }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For any container, the <code>image</code> field must be specified, specifically <code>image.filepath</code>, containing the path of the image. Pulling images is not yet supported.</p>
+<p>In this case, <code>input_dir</code> represents the directory where input files will be found INSIDE the container. If there is no input data present in the container, you might need to bind a local input data directory to it, using <code>options</code></p>
 </div>
 <div class="paragraph">
-<p>In this case, <code>input_dir</code> represents the directory where input files will be found INSIDE the container.</p>
+<p>The <code>options</code> field contains a list of all the options to include on the container execution. It is equivalent to the machine&#8217;s <code>containers.apptainer.options</code> field. However, users should only include benchmark dependent options in this list.</p>
 </div>
 <div class="paragraph">
-<p>The <code>options</code> field contains a list of all the options to include on the container execution. It is equivalent to the machine&#8217;s <code>containers.apptainer.options</code> field. However, users should only include application dependent options in this list.</p>
+<p>Note that the placeholder syntax is used to tell to the container to bind a directory to the one specified in <code>ìnput_dir</code>.</p>
 </div>
 <div class="paragraph">
 <p>The <code>append_app_options</code> lists all the options to add to the application execution. It does the same as the <code>options</code> field in the root of the file, but can be used for case handling.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_outputs"><a class="anchor" href="#_outputs"></a>3. Outputs</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>The <code>outputs</code> field lists all the files where application outputs are exported.</p>
+<p>The image field indicates that the image should be pulled from oras://ghcr.io/your-image.sif and placed in <em>/data/images/my_image.sif</em>.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 37.5%;">
-<col style="width: 12.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Field name</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path of the file containing the outputs</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str (csv, json)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Format of the output file</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
-<p>All columns or fields present on the output file will be considered.
-Outputs are added to the ReFrame report as pervormance variables.</p>
+<p>To summarize, <code>feelpp.benchmarking</code> will first execute (even before ReFrame is launched):</p>
 </div>
-<div class="admonitionblock note">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apptainer pull -F /data/images/my_image.sif oras://ghcr.io/your-image.sif</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then, ReFrame will submit a job executing (for local scheduler):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apptainer exec --bind /data/custom_data/:/input_data/ /data/images/my_image.sif --my_custom_option_for_apptainer</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Soon, the same syntax as scalability files will be used.</p>
+<p>For the <code>filepath</code> field, it is very useful to make use of the <code>{{machine.containers.apptainer.image_base_dir}}</code> field from the machine configuration.</p>
 </div>
 </td>
 </tr>
@@ -445,175 +604,114 @@ Outputs are added to the ReFrame report as pervormance variables.</p>
 <h2 id="_scalability"><a class="anchor" href="#_scalability"></a>4. Scalability</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Lists all the files where performance times can be found.</p>
+<p>Lists all the files where performance variables can be found.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 37.5%;">
-<col style="width: 12.5%;">
-</colgroup>
-<thead>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">directory [<strong>str</strong>]</dt>
+<dd>
+<p>Common directory where files containing performance variables can be found.</p>
+</dd>
+<dt class="hdlist1">clean_directory [<strong>bool</strong>] (Optional)</dt>
+<dd>
+<p>If true, it will delete the contents of inside <code>directory</code>.
+Defaults to false.</p>
+</dd>
+<dt class="hdlist1">stages [<strong>List[Stage]</strong>]</dt>
+<dd>
+<p>Describes the files containing performance variables, and how to extract them.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-name [<strong>str</strong>]</dt>
+<dd>
+<p>Name to describe the stage. It is used as prefix to add to the performance variables found in the file.
+If no prefix is needed, the name can be "".</p>
+</dd>
+<dt class="hdlist1">-filepath [<strong>str</strong>]</dt>
+<dd>
+<p>Relative filepath of the file containing performance variables, relative to the <code>directory</code> field.</p>
+</dd>
+<dt class="hdlist1">-format [<strong>str</strong>]</dt>
+<dd>
+<p>Format of the stage file.
+Supported values are "csv" and "json".</p>
+</dd>
+<dt class="hdlist1">-units [<strong>Dict[str,str]</strong>] (Optional)</dt>
+<dd>
+<p>Custom units for certain performance variables.
+key:value pairs correspond to performance-variable:unit.
+For example, <code>"my-variable":"m/s"</code> implies that the variable will have "my-variable" has "m/s" as unit.
+By default, all columns have "s" as unit. To change the default behavior, users need to pass the <code>"*":"custom-unit"</code> key:value pair.
+This will associate the "custom-unit" to ALL performance variables inside the file, excepting other units specified inside this object.</p>
+</dd>
+<dt class="hdlist1">-variables_path [<strong>str, List[str]</strong>]</dt>
+<dd>
+<p>Only valid if format is "json".
+Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of one or multiple wildcards (<code>*</code>).</p>
+</dd>
+</dl>
+</div>
+</dd>
+<dt class="hdlist1">custom_variables [<strong>List[Dict[str,str]]</strong>] (Optional)</dt>
+<dd>
+<p>Contains a list of objects describing custom performance variables to create, based on extracted ones (from stages). An aggregation will be performed using provided columns and valid operations.
+For more information, see  the <a href="../advancedConfiguration.html" class="xref page">advanced Configuration</a></p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-name [<strong>str</strong>]</dt>
+<dd>
+<p>The name to give to the custom performance variable.</p>
+</dd>
+<dt class="hdlist1">-columns [<strong>List[str]</strong>]</dt>
+<dd>
+<p>List of columns to aggregate, accepts both variables existing in the performance files, as well as other custom variables.</p>
+</dd>
+<dt class="hdlist1">-op [<strong>str</strong>]</dt>
+<dd>
+<p>The aggregation operation to apply to the performance columns to create the custom one.
+Valid operations are "sum","min","max","mean".</p>
+</dd>
+<dt class="hdlist1">-unit [<strong>str</strong>]</dt>
+<dd>
+<p>The unit to assign to the created performance variable.</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock tip">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Field name</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">Default</th>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Recursive creation of custom_variables is supported!</p>
+</div>
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">directory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Common directory where scalability files can be found. Used for refactoring fields.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stages</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">list[Stage]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of scalability file objects describing them.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
 </table>
-<div class="paragraph">
-<p>Each stage object is described as follows</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 37.5%;">
-<col style="width: 12.5%;">
-</colgroup>
-<thead>
+<div class="admonitionblock tip">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Field name</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">Default</th>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Deeply nested and complex JSON scalability files are supported, using multiple wildcard syntax!</p>
+</div>
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Prefix to add to the performance variables found in the file</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">filepath</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">partial filepath, relative to the <code>directory</code> field, where values are found.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">format</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Format of the file. Supported values are (csv, json, tsv)</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">variables_path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Only if format is json. Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of a single wildcard (<code>*</code>).</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="_examples_2"><a class="anchor" href="#_examples_2"></a>4.1. Examples</h3>
 <div class="paragraph">
-<p>An example of the scalability field is found and explained below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"scalability": {
-    "directory": "{{output_directory}}/{{instance}}/cem/",
-    "stages": [
-        {
-            "name":"custom_execution_name",
-            "filepath": "instances/np_{{parameters.nb_tasks.tasks.value}}/logs/execution_timers.json",
-            "format": "json",
-            "variables_path":"execution.*"
-        },
-        {
-            "name":"construction",
-            "filepath": "logs/timers.json",
-            "format": "json",
-            "variables_path":"*.constructor"
-        }
-    ]
-}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>directory</code> implies that scalability files can be found under <code>{{output_directory}}/{{instance}}/cem/</code>. Where <code>output_directory</code> is defined above, and <code>instance</code> is a reserved keyword containing the hashcode of the test.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>There are two scalability files in the example. Let&#8217;s suppose files are built like follows:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><em>logs/execution_timers.json</em></p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{
-    "execution":{
-        "step1":0.5,
-        "step2":0.7,
-        "step3":1.0,
-    },
-    "postprocess":{...}
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><em>logs/timers.json</em></p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{
-    "function1":{
-        "constructor":1.0,
-        "init":0.1,
-    },
-    "function2":{
-        "constructor":1.0,
-        "init":0.1,
-    }
-}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then, by specifying <code>"variables_path":"exection.*"</code>, performance variables will be <code>custom_execution_name.step1</code>, <code>custom_execution_name.step2</code> and <code>custom_execution_name.step3</code>.</p>
-</div>
-<div class="paragraph">
-<p>And by specifying <code>"variables_path":"*.constructor</code> for the other file, performance vairalbes will be <code>construction.function1</code>, and <code>construction.function2</code>.</p>
-</div>
-<div class="paragraph">
-<p>Note how variables are prefixed with the value under <code>name</code>, and that the wildcard (<code>*</code>) determines the variable names.</p>
+<p>Let&#8217;s assume our application exports the following files:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -623,7 +721,221 @@ Outputs are added to the ReFrame report as pervormance variables.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Deeply nested and complex JSON scalability files are supported.</p>
+<p>The <code>{{instance}}</code> keyword on the export implies that each test exports this files on its own directory, using the test&#8217;s hashcode.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>/data/outputs/{{instance}}/exports.csv</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-csv hljs" data-lang="csv">a,b,c
+1,2,3</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>/data/outputs/{{instance}}/logs/timers.json</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "function1":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "function2":{
+        "constructor":1.0,
+        "init":0.1,
+    },
+    "execution":{
+        "step1":0.5,
+        "step2":0.7,
+        "step3":1.0,
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An example of the scalability field to extract values on these files is found and explained below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"scalability": {
+    "directory": "/data/outputs/{{instance}}/",
+    "stages": [
+        {
+            "name":"myExports",
+            "filepath": "export.csv",
+            "format": "csv",
+            "units":{ "*":"meters", "a":"kg" }
+        },
+        {
+            "name":"myTimers",
+            "filepath": "logs/timers.json",
+            "format": "json",
+            "variables_path":"*"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The common directory path of these exports is <em>/data/outputs/{{instance}}</em>.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s analyse the first stage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name":"myExports",
+    "filepath": "export.csv",
+    "format": "csv",
+    "units":{ "*":"meters", "a":"kg" }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The name <code>myExports</code> means that performance variables from this file will appear in the exported report (and available for plotting) as <code>myExports_a:1</code>, <code>myExports_b:2</code>, <code>myExports_c:3</code>.</p>
+</div>
+<div class="paragraph">
+<p>Concerning the units, <code>"*":"meters"</code> means that all of the variables in this CSV should have the "meters" unit. However, by specifying <code>"a":"kg"</code> we indicates that all columns should be "meters", except <code>a</code> who should have "kg" as unit.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s now consider the second stage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name":"myTimers",
+    "filepath": "logs/timers.json",
+    "format": "json",
+    "variables_path":"*"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Performance variables on this file will be prefixed by "myTimers_".</p>
+</div>
+<div class="paragraph">
+<p>As the <code>units</code> field is not specified, all variables will have the default ('s') unit.</p>
+</div>
+<div class="paragraph">
+<p>Having only <code>*</code> as variables_path, means that all variables should be exported into the performance report.
+Variables will be exported as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>myTimers_function1.constructor : 1.0</p>
+</li>
+<li>
+<p>myTimers_function1.init : 0.1</p>
+</li>
+<li>
+<p>myTimers_function2.constructor : 1.0</p>
+</li>
+<li>
+<p>myTimers_function2.init : 0.1</p>
+</li>
+<li>
+<p>myTimers_execution.step1 : 0.5</p>
+</li>
+<li>
+<p>myTimers_execution.step2 : 0.7</p>
+</li>
+<li>
+<p>myTimers_execution.step3 : 1.0</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_filtering_with_variables_path"><a class="anchor" href="#_filtering_with_variables_path"></a>4.1.1. Filtering with <code>variables_path</code></h4>
+<div class="ulist">
+<ul>
+<li>
+<p><code>"variables_path":"function1.*"</code>:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Exported performance variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>myTimers_constructor : 1.0</p>
+</li>
+<li>
+<p>myTimers_init : 0.1</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Using the wildcards removes the part of the json that is not variable.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>"variables_path":"exectution.step1"</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Exported performance variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>myTimers_step1 : 0.5</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If a full path is passed, the variable name corresponds to the key of the leaf  element of the JSON.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>variables_path</code> can be a list.</p>
 </div>
 </td>
 </tr>
@@ -631,8 +943,77 @@ Outputs are added to the ReFrame report as pervormance variables.</p>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div class="sect1">
-<h2 id="_sanity"><a class="anchor" href="#_sanity"></a>5. Sanity</h2>
+<h2 id="_additional_files"><a class="anchor" href="#_additional_files"></a>5. Additional Files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This field allows the export of custom files, as well as use case descriptions and logs. It is optional.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">description_filepath [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Filepath of a file to be used as benchmark description.
+This file will be copied to the same directory of the performance report, named description.adoc, after all ReFrame tests are completed (successfully or not).
+This file will automatically appear in the website for the current report, treated as an Antora partial.</p>
+</dd>
+<dt class="hdlist1">parameterized_descriptions_filepath [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Parameterized filepath (using either <code>{{instance}}</code> or <code>{{parameters.MY_PARAM.value}}</code>) of a file generated by a test.
+This file will be copied right after a test finishes (only if successful).
+The copied file will be located in a <em>partials</em> directory, under the current exported report directory. It will be named after the tests hashcode.
+These files will automatically appear in the website, inside the parameter table of  the current report, and are treated as Antora partials.</p>
+</dd>
+<dt class="hdlist1">custom_logs [<strong>List[str]</strong>] (Optional)</dt>
+<dd>
+<p>List of parameter depdendent filepaths of logs to be included in the website.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Currently, it is imposed for <code>description</code> and <code>parameterized_description</code> files to be in AsciiDoc format.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_examples_3"><a class="anchor" href="#_examples_3"></a>5.1. Examples</h3>
+<div class="paragraph">
+<p>Let&#8217;s suppose that our benchmarked application produces an <em>information.adoc</em> file each time it runs. And that we have a use case description named <em>description.adoc</em>. Also, let&#8217;s assume that our app logs some information under <em>logs/log.INFO</em> and under <em>logs/log.WARNING</em> each time it runs.</p>
+</div>
+<div class="paragraph">
+<p>If we have set our application to write its outputs under <em>/data/outputs/{{instance}}</em>. Then our <code>additional_files</code> field will look like this.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"additional_files":{
+    "description_filepath":"/data/outputs/description.adoc",
+    "parameterized_descriptions_filepath":"/data/outputs/{{instance}}/information.adoc",
+    "custom_logs":[
+        "/data/outputs/{{instance}}/logs/log.INFO",
+        "/data/outputs/{{instance}}/logs/log.WARNING"
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All these files will automatically appear on the website&#8217;s report page.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sanity"><a class="anchor" href="#_sanity"></a>6. Sanity</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <code>sanity</code> field is used to validate the application execution.</p>
@@ -672,14 +1053,45 @@ Outputs are added to the ReFrame report as pervormance variables.</p>
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="_examples_4"><a class="anchor" href="#_examples_4"></a>6.1. Examples</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"sanity": {
+    "success": ["[SUCCESS]"],
+    "error": ["[OOPSIE]","Error"]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Will check if "[SUCCESS]" is found on the application&#8217;s standard output. If not, the test will failt.</p>
+</div>
+<div class="paragraph">
+<p>It will also check that neither "[OOPSIE]" nor "Error" appear in the standard output.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Regex patterns are supported.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_parameters"><a class="anchor" href="#_parameters"></a>6. Parameters</h2>
+<h2 id="_parameters"><a class="anchor" href="#_parameters"></a>7. Parameters</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The <code>parameters</code> field list all parameters to be used in the test.
-The cartesian product of the elements in this list will determine the benchmarks.</p>
+The cartesian product of the elements in this list will determine the benchmarks to be executed.</p>
 </div>
 <div class="paragraph">
 <p>Parameters are accessible across the whole configuration file by using the syntax <code>{{parameters.my_parameter.value}}</code>.</p>
@@ -699,14 +1111,14 @@ The cartesian product of the elements in this list will determine the benchmarks
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
     "name": "my_linspace_generator",
-    "geomspace":{
+    "linspace":{
         "min":2,
         "max":10,
         "n_steps":5
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -721,14 +1133,14 @@ The cartesian product of the elements in this list will determine the benchmarks
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
     "name": "my_geomspace_generator",
     "geomspace":{
         "min":1,
         "max":10,
         "n_steps":4
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -743,14 +1155,14 @@ The cartesian product of the elements in this list will determine the benchmarks
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
     "name": "my_range_generator",
-    "geomspace":{
+    "range":{
         "min":1,
         "max":5,
         "step":1
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -765,14 +1177,14 @@ The cartesian product of the elements in this list will determine the benchmarks
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
     "name": "my_geometric_generator",
     "geometric":{
         "start":1,
         "ratio":2,
         "n_steps":5
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -787,13 +1199,13 @@ The cartesian product of the elements in this list will determine the benchmarks
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
     "name": "my_repeat_generator",
     "repeat":{
         "value":"a repeated value",
         "count":3
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -805,9 +1217,6 @@ The cartesian product of the elements in this list will determine the benchmarks
 <p><code>sequence</code>:</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Sequence accepts</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -874,28 +1283,49 @@ The <code>zip</code> generator takes a list of parameters to produce a list of p
 </tr>
 </table>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Parameter filtering is supported, visit the <a href="#tutorial:">Advanced Configuration</a> for more information.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>More advanced features are available (<a href="#tutorial:">Advanced Configuration</a>)such as:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Special parameters</p>
+<p>Downloading remote data</p>
+</li>
+<li>
+<p>Copying input file between disks</p>
+</li>
+<li>
+<p>Pruning the parameter space</p>
+</li>
+<li>
+<p>Specifying custom performance variables</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>There is one special parameter: <code>nb_tasks</code>. If included, should follow some rules for its subparameters.</p>
-</div>
-<div class="paragraph">
-<p>Accepts <code>exclusive_access</code> subparameter. Defaults to <code>true</code>.
-Either specify <code>tasks_per_node</code> and <code>tasks</code> subparameters, OR specify <code>tasks_per_node</code> and <code>nodes</code> subparameters, OR Specify only the <code>tasks</code> parameter.</p>
-</div>
-<div class="paragraph">
-<p>Specifying <code>tasks</code> and <code>nodes</code> is NOT currently supported.</p>
-</div>
-<div class="paragraph">
-<p>The <code>nb_tasks</code> parameter and its subparameters are directly accesses by ReFrame.</p>
-</div>
-<div class="paragraph">
-<p>Other parameters have only an impact on the application execution, meaning that they should be passed as options to the executable.</p>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

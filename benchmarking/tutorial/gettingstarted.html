@@ -229,65 +229,255 @@ MathJax.Hub.Config({
 <div class="sect1">
 <h2 id="_installation"><a class="anchor" href="#_installation"></a>1. Installation</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
+<div class="sect2">
+<h3 id="_using_pypi"><a class="anchor" href="#_using_pypi"></a>1.1. Using PyPi</h3>
+<div class="ulist">
+<ul>
 <li>
-<p>Clone the Repository</p>
+<p>Use a python virtual environment (Optional)</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>git clone https://github.com/feelpp/benchmarking.git</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">python3 -m venv .venv
+source .venv/bin/activate</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Use a python virtual environment [Optional]</p>
+<p>Install the package</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>python3 -m venv .venv
-source .venv/bin/activate</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pip install feelpp-benchmarking</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</div>
+<div class="sect2">
+<h3 id="_using_git"><a class="anchor" href="#_using_git"></a>1.2. Using Git</h3>
+<div class="ulist">
+<ul>
 <li>
-<p>Build the project</p>
+<p>Clone the repository</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>pip3 wheel --no-deps --wheel-dir dist .</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/feelpp/benchmarking.git</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Install requirements</p>
+<p>Use a python virtual environment (Optional)</p>
 </li>
-</ol>
-</div>
-<div class="paragraph">
-<p>This will install necessary dependencies as well as the built project from the previous step.</p>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">python3 -m pip install -r requirements.txt</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">python3 -m venv .venv
+source .venv/bin/activate</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Install the project and dependencies</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">python3 -m pip install .</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_quickstart"><a class="anchor" href="#_quickstart"></a>2. Quickstart</h2>
+<h2 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>2. Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The framwork includes a sample C++/MPI application that can be used to get familiar with the framework&#8217;s core concepts. It can be found under <em>tests/data/parallelSum.cpp</em>.</p>
+<p>In order to generate the benchmark reports website, Antora must be configured beforehand, along with the necessary extensions. More information can be found in <a href="https://docs.antora.org/antora/latest/install-and-run-quickstart/">Antora Documentation</a></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Make sure you have <a href="http://nodejs.org/en/download">Node.js</a> installed.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The following part of prerequisites is only necessary if the <code>feelpp.benchmarking</code> repository is not being cloned.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A local git repository is needed, so if you are not adding <code>feelpp.benchmarking</code> to an existing repository:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git init
+git commit --allow-empty -m init</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Download the <a href="https://github.com/feelpp/benchmarking/blob/master/package.json">package.json</a> dependency file and place it at the root of your project.</p>
+</li>
+<li>
+<p>Install dependencies</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">npm install</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create the Antora&#8217;s <a href="https://docs.antora.org/antora/latest/standard-directories/">standard directory hierarchy</a>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir -p docs/modules/ROOT/pages</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create the start and navigation pages</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "= &lt;YOUR-PROJECT-TITLE&gt;\n:page-layout: toolboxes\n:page-tags: catalog, catalog-index\n:docdatetime: 2025-01-22T11:42:45" &gt; docs/modules/ROOT/pages/index.adoc</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "* xref:ROOT:index.adoc[YOUR-PROJECT-TITLE]" &gt; docs/modules/ROOT/nav.adoc</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Write the component version descriptor.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch docs/antora.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Write the following in the file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">name: &lt;PROJECT-NAME&gt;
+title: &lt;YOUR-PROJECT-TITLE&gt;
+version: ~
+start_page: index.adoc
+asciidoc:
+  attributes:
+    project_name: &lt;YOUR-PROJECT-TITLE&gt;
+    numbered: true
+    dynamic-blocks@: ''
+    allow-uri-read: true
+    hide-uri-scheme: true
+nav:
+  - modules/ROOT/nav.adoc</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create the antora playbook at the root of your project</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch ./site.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Write the following to the file</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">site:
+  title: &lt;YOUR-PROJECT-TITLE&gt;
+  start_page: &lt;YOUR-PROJECT-NAME&gt;::index.adoc
+content:
+  sources:
+  - url: .
+    branches: HEAD
+    start_path: docs
+ui:
+  bundle:
+    url: https://github.com/feelpp/antora-ui/releases/latest/download/ui-bundle.zip
+    snapshot: true
+output:
+  clean: true
+  dir: public
+asciidoc:
+  extensions:
+  - '@feelpp/asciidoctor-extensions'</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Make sure to replace the values of <code>&lt;YOUR-PROJECT-NAME&gt;</code> and <code>&lt;YOUR-PROJECT-TITLE&gt;</code> with the actual values.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quickstart"><a class="anchor" href="#_quickstart"></a>3. Quickstart</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For detailed documentation, refer to our <a href="https://bench.feelpp.org/benchmarking/tutorial/index.html">docs</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_benchmarked_application"><a class="anchor" href="#_the_benchmarked_application"></a>3.1. The benchmarked application</h3>
+<div class="paragraph">
+<p>The framwork includes a sample C++/MPI application that can be used to get familiar with the framework&#8217;s core concepts. It can be found under <em>examples/parallelsum/parallelSum.cpp</em>, or you can download it here : <a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp">parallelSum.cpp</a></p>
 </div>
 <div class="paragraph">
 <p>This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.</p>
@@ -296,91 +486,229 @@ source .venv/bin/activate</pre>
 <p>Additionally, the app will measure the time taken to perform the partial sum, and will save it under a <em>scalability.json</em> file.</p>
 </div>
 <div class="paragraph">
-<p>The executable is already provided as <em>tests/data/parallelSum</em>. You can update it and recompile it for a specific config as needed.</p>
+<p>You can update the sample application and recompile it for a specific config as needed.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Configuration files might require some changes for specific configurations depending on the system you are running the framework.</p>
 </div>
+<div class="sect2">
+<h3 id="_machine_configuration_files"><a class="anchor" href="#_machine_configuration_files"></a>3.2. Machine configuration files</h3>
 <div class="paragraph">
-<p>Finally, to benchmark the test application, generate the reports and plot the figures, run</p>
+<p>The framework also contains a default system configuration, located under <em>examples/machines/default.json</em> corresponding to the file _examples/machines/default.py, that looks like this :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">execute-benchmark --machine-config config/machines/local.json \
-                    --benchmark-config config/test_parallelSum/parallelSum.json \
-                    --plots-config config/test_parallelSum/plots.json \
-                    --website</code></pre>
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+   //will use the `default` ReFrame configuration file
+   "machine": "default",
+
+   //will run on the default partition, using the built-in (or local) platform and the default env
+   "targets":["default:builtin:default"],
+
+   //Tests will run asynchronously (up to 4 jobs at a time)
+   "execution_policy": "async",
+
+   // ReFrame's stage and output directories will be located under _./build/reframe/_
+   "reframe_base_dir":"./build/reframe",
+
+   // The generated JSON report will be created under _./reports/_
+   "reports_base_dir":"./reports/",
+
+   // The base directory where the executable is located
+   "input_dataset_base_dir":"$PWD",
+
+   //The C++ app outputs will be stored under the current working directory (./)
+   "output_app_dir":"$PWD"
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>--website</code> option will start an http-server on localhost, so the website can be visualized, check the console for more information.</p>
+<p>You can download this configuration file here <a href="https://github.com/feelpp/benchmarking/blob/master/examples/machines/default.json">default.json</a>.</p>
+</div>
+<div class="paragraph">
+<p>The framework also contains a very basic sample ReFrame configuration file, under <em>examples/machines/default.py</em>. <a href="https://github.com/feelpp/benchmarking/blob/master/examples/machines/default.py">default.py</a></p>
+</div>
+<div class="paragraph">
+<p>This file will cause the tool to use a local scheduler and the <code>mpiexec</code> launcher with no options. For more advanced configurations, refer to <a href="https://reframe-hpc.readthedocs.io/en/stable/config_reference.html#">ReFrame&#8217;s configuration reference</a></p>
+</div>
+<div class="paragraph">
+<p>More information on <em>feelpp.benchmarking</em> machine configuration files can be found on the documentation <a href="https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_machine_configuration">Machine configuration</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_benchmark_configuration_files"><a class="anchor" href="#_benchmark_configuration_files"></a>3.3. Benchmark configuration files</h3>
+<div class="paragraph">
+<p>Along with machine configuration files, users must provide the specifications of the benchmark. A sample file is provided under <em>examples/parallelsum/parallelSum.json</em>. <a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.json">parallelSum.json</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+   //Executable path (Change the location to the actual executable)
+   "executable": "{{machine.input_dataset_base_dir}}/examples/parallelsum/parallelSum",
+   "use_case_name": "parallel_sum",
+   "timeout":"0-0:5:0",
+   "output_directory": "{{machine.output_app_dir}}/examples/parallelsum/outputs/parallelSum",
+
+   //Application options
+   "options": [ "{{parameters.elements.value}}", "{{output_directory}}/{{instance}}" ],
+
+   //Files containing execution times
+   "scalability": {
+      "directory": "{{output_directory}}/{{instance}}/",
+      "stages": [
+         {
+            "name":"",
+            "filepath": "scalability.json",
+            "format": "json",
+            "variables_path":"*"
+         }
+      ]
+   },
+
+   // Resources for the test
+   "resources":{
+      "tasks":"{{parameters.tasks.value}}"
+   },
+
+   // Files containing app outputs
+   "outputs": [
+      {
+         "filepath":"{{output_directory}}/{{instance}}/outputs.csv",
+         "format":"csv"
+      }
+   ],
+
+   // Test validation (Only stdout supported at the moment)
+   "sanity": { "success": ["[SUCCESS]"], "error": ["[OOPSIE]","Error"] },
+
+   // Test parameters
+   "parameters": [
+      {
+         "name": "tasks",
+         "sequence": [1,2,4]
+      },
+      {
+         "name":"elements",
+         "linspace":{ "min":100000000, "max":1000000000, "n_steps":4 }
+      }
+   ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More information about <em>feelpp.benchmarking</em> benchmark specifications can be found <a href="https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_benchmark_configuration">here</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plots_configuration"><a class="anchor" href="#_plots_configuration"></a>3.4. Plots configuration</h3>
+<div class="paragraph">
+<p>Along with the benchmark configuration, a figure configuration file is provided <em>examples/parallelsum/plots.json</em> (plots.json)[<a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json" class="bare">github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json</a>].</p>
+</div>
+<div class="paragraph">
+<p>An example of one figure specification is shown below. Users can add as many figures as they wish, corresponding the figure axis with the parameters used on the benchmark.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+   "title": "Absolute performance",
+   "plot_types": [ "stacked_bar", "grouped_bar" ],
+   "transformation": "performance",
+   "variables": [ "computation_time" ],
+   "names": ["Time"],
+   "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
+   "yaxis":{"label":"Execution time (s)"},
+   "secondary_axis":{ "parameter":"elements", "label":"N" }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More information about <em>feelpp.benchmarking</em> figure configuration can be found <a href="https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_figures">here</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_a_benchmark"><a class="anchor" href="#_running_a_benchmark"></a>3.5. Running a benchmark</h3>
+<div class="paragraph">
+<p>Finally, to benchmark the test application, generate the reports and plot the figures, run (changing the file paths as needed)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">feelpp-benchmarking-exec --machine-config examples/machines/default.json \
+                  --custom-rfm-config examples/machines/default.py \
+                  --benchmark-config examples/parallelsum/parallelSum.json \
+                  --plots-config examples/parallelsum/plots.json \
+                  --website</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>--website</code> option will start an http-server on localhost, so the website can be visualized. Check the console for more information.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you installed the framework via PyPi, you need to directly download all 5 quickstart files.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_executing_a_benchmark"><a class="anchor" href="#_executing_a_benchmark"></a>3. Executing a benchmark</h2>
+<h2 id="_usage"><a class="anchor" href="#_usage"></a>4. Usage</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_executing_a_benchmark"><a class="anchor" href="#_executing_a_benchmark"></a>4.1. Executing a benchmark</h3>
 <div class="paragraph">
-<p>In order to execute a benchmark, you can make use of the <code>execute-benchmark</code> command after all configuration files have been set ( <a href="configuration.html" class="xref page">Configuration Reference</a>).</p>
+<p>In order to execute a benchmark, you can make use of the <code>feelpp-benchmarking-exec</code> command after all configuration files have been set ( <a href="configuration.html" class="xref page">Configuration Reference</a>).</p>
 </div>
 <div class="paragraph">
 <p>The script accepts the following options :</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>--machine-config</code> (<code>-mc</code>) : The path to the machine configuration JSON file</p>
-</li>
-<li>
-<p><code>--benchmark-config</code> (<code>-bc</code>) : The path to the benchmark configuration JSON file</p>
-</li>
-<li>
-<p><code>--plots-config</code> (<code>-pc</code>) : The path to the plots configuration JSON file. If not provided, it will be assumed that the plots section is included in the benchmark config. Otherwise, no plots will be considered.</p>
-</li>
-<li>
-<p><code>--dir</code> (<code>-d</code>) : [Optional] Directory path where benchmark configuration files can be found. If provided, the application will consider all benchmark configuration files inside the provided directory.</p>
-</li>
-<li>
-<p><code>--exclude</code> (<code>-e</code>) : [Optional] To use in combination with <code>--dir</code>, mentioned files will not be launched. Only provide basenames to exclude.</p>
-</li>
-<li>
-<p><code>--move-results</code> (<code>-mv</code>) : [Optional] Directory to move the resulting files to.  If not provided, result files will be located under the directory specified by the machine configuration.</p>
-</li>
-<li>
-<p><code>--list-files</code> (<code>-lf</code>) : [Optional] List all benchmarking configuration file found. If this option is provided, the application will not run. Use it for validation.</p>
-</li>
-<li>
-<p><code>--verbose</code> (<code>-v</code>) : [Optional] Select Reframe's verbose level by specifying multiple v's.</p>
-</li>
-<li>
-<p><code>--website</code> (<code>-w</code>) : [Optional] Render reports, compile them, create the website and start an http server.</p>
-</li>
-<li>
-<p><code>--help</code> (<code>-h</code>) : Display help and quit program</p>
-</li>
-</ul>
+<div class="literalblock">
+<div class="content">
+<pre>`--machine-config`, (`-mc`)
+                      Path to JSON reframe machine configuration file, specific to a system.
+`--plots-config`, (`-pc`)   Path to JSON plots configuration file, used to generate figures.
+                      If not provided, no plots will be generated. The plots configuration can also be included in the benchmark configuration file, under the "plots" field.
+`--benchmark-config`, (`-bc`)
+                      Paths to JSON benchmark configuration files
+                      In combination with `--dir`, specify only provide basenames for selecting JSON files.
+`--custom-rfm-config`, (`-rc`)
+                      Additional reframe configuration file to use instead of built-in ones. It should correspond the with the `--machine-config` specifications.
+`--dir`, (`-d`)             Name of the directory containing JSON configuration files
+`--exclude`, (`-e`)         To use in combination with `--dir`, mentioned files will not be launched.
+                      Only provide basenames to exclude.
+`--move-results`, (`-mv`)   Directory to move the resulting files to.
+                      If not provided, result files will be located under the directory specified by the machine configuration.
+`--list-files`, (`-lf`)     List all benchmarking configuration file found.
+                      If this option is provided, the application will not run. Use it for validation.
+`--verbose`, (`-v`)         Select Reframe's verbose level by specifying multiple v's.
+`--help`, (`-h`)            Display help and quit program
+`--website`, (`-w`)         Render reports, compile them and create the website.
+`--dry-run`             Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>When a benchmark is done, a <code>website_config.json</code> file will be created (or updated) with the current filepaths of the reports and plots generated by the framework. If the <code>--website</code> flag is active, the <code>render-benchmarks</code> command will be launched with this file as argument.</p>
+<p>When a benchmark is done, a <code>website_config.json</code> file will be created (or updated) with the current filepaths of the reports and plots generated by the framework. If the <code>--website</code> flag is active, the <code>feelpp-benchmarking-render</code> command will be launched with this file as argument.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_rendering_reports"><a class="anchor" href="#_rendering_reports"></a>4. Rendering reports</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_rendering_reports"><a class="anchor" href="#_rendering_reports"></a>4.2. Rendering reports</h3>
 <div class="paragraph">
-<p>To render reports, a webiste configuration file is needed. An example is provided under <em>src/benchmarking/reports/config/config.json</em>. This file indicates how the website views should be structured, and it indicates the hierarchy of the benchmarks.</p>
+<p>To render reports, a webiste configuration file is needed. This file indicates how the website views should be structured, and it indicates the hierarchy of the benchmarks.</p>
 </div>
 <div class="paragraph">
 <p>A file of the same type is generated after a benchmark is launched, called <em>website_config.json</em>, and it is found at the root of the <em>reports</em> directory specified under the <code>reports_base_dir</code> field of machine configuration file ( xref:tutorial:configfiles/machine.adoc).</p>
 </div>
 <div class="paragraph">
-<p>Once this file is located, users can run the <code>render-benchmarks</code> command to render existing reports.</p>
+<p>Once this file is located, users can run the <code>feelpp-benchmarking-render</code> command to render existing reports.</p>
 </div>
 <div class="paragraph">
 <p>The script takes the following arguments:</p>
@@ -388,15 +716,31 @@ source .venv/bin/activate</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><code>config-file</code> : The path of the website configuration file.</p>
+<p><code>--config-file</code> (<code>-c</code>): The path of the website configuration file.</p>
 </li>
 <li>
-<p><code>remote-download-dir</code>: [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).</p>
+<p><code>--remote-download-dir</code> (<code>-do</code>): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).</p>
 </li>
 <li>
-<p><code>modules-path</code>: [Optional] Path to the Antora module to render the reports to. It defaults to <em>docs/modules/ROOT/pages</em>. Multiple directories will be recursively created under the provided path.</p>
+<p><code>--modules-path</code> (<code>-m</code>): [Optional] Path to the Antora module to render the reports to. It defaults to <em>docs/modules/ROOT/pages</em>. Multiple directories will be recursively created under the provided path.</p>
+</li>
+<li>
+<p><code>--overview-config</code> (<code>-oc</code>): Path to the overview figure configuration file.</p>
+</li>
+<li>
+<p><code>--plot-configs</code> (<code>-pc</code>): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports</p>
+</li>
+<li>
+<p><code>--patch-reports</code> (<code>-pr</code>) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)</p>
+</li>
+<li>
+<p><code>--save-patches</code> (<code>-sp</code>) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.</p>
+</li>
+<li>
+<p><code>--website</code> (<code>-w</code>) : [Optional] Automatically compite the website and start an http server.</p>
 </li>
 </ul>
+</div>
 </div>
 </div>
 </div>

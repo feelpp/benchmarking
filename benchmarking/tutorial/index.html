@@ -226,9 +226,34 @@ MathJax.Hub.Config({
 <article class="doc">
 <h1 class="page">feelpp.benchmarking project</h1>
 <div class="paragraph">
-<p>The Feel++ benchmarking_ project provides a framework for automating, centralizing and organizing performance evaluation of scientific simulations on HPC systems.
-This project, based on the <a href="https://reframe-hpc.readthedocs.io/en/stable/index.html">ReFrame-hpc framework</a>, enables highly customized benchmarking using robust and comprehensive JSON configuration files that parametrize tests, validate executions and generate figures.
-It also provides concrete CI/CD/CB pipelines to fully automate the benchmarking step of any application.</p>
+<p>The <code>feelpp.benchmarking</code> framework is designed to automate and facilitate the benchmarking process for any application. It enables hightly customized and flexible benchmarking, providing a pipeline that guides users from test execution to comprehensive report generation.
+The framework is built on top of <a href="https://reframe-hpc.readthedocs.io/en/stable/index.html">ReFrame-HPC</a> and leverages a modular configuration system based on three JSON files that define machine-specific options, benchmark parameters, and dashboard report figures.</p>
+</div>
+<div class="paragraph">
+<p>Key features include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Tailored Configuration:
+Separate JSON files allow for detailed setup of machine environments, benchmark execution (including executable paths and test parameters), and report formatting. The use of placeholder syntax facilitates easy refactoring and reuse.</p>
+</li>
+<li>
+<p>Automated and Reproducible Workflows:
+The pipeline validates input configurations, sets up execution environments via ReFrame, and runs benchmarks in a controlled manner. Results are gathered and transformed into comprehensive, reproducible reports.</p>
+</li>
+<li>
+<p>Container Integration:
+With support for Apptainer (or Singularity), the framework ensures that benchmarks can be executed consistently across various HPC systems.</p>
+</li>
+<li>
+<p>Continuous Benchmarking:
+The integration with CI/CD pipelines enables ongoing performance tracking. This is especially useful in projects where monitoring application scaling and performance over time is critical.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The feelpp.benchmarking tool serves as a centralized platform for aggregating benchmarking results into a clear dashboard, making it an essential resource for those looking to monitor and enhance HPC application performance.</p>
 </div>
 </article>
   </div>

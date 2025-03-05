@@ -228,171 +228,134 @@ MathJax.Hub.Config({
 <article class="doc">
 <h1 class="page">Machine configuration</h1>
 <div class="paragraph">
-<p>The machine configuration file contains all information related uniquely to the system where benchmarks will run on. It is used to tell the application HOW benchmarks will run on it.
+<p>The machine configuration JSON contains all information related uniquely to the system where benchmarks will run on. It is used to tell the application HOW and WHERE benchmarks will run. It is also used to provide access to certain systems.
 The framework supports multiple containers and environments such as Apptainer and Spack. This information should be specified here.</p>
 </div>
 <div class="paragraph">
-<p>The following table describes all supported fields.</p>
+<p>The configuration file schema is described below.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 37.5%;">
-<col style="width: 12.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Field name</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">machine</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the machine. It needs to be the same as the name of the ReFrame configuration file.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">execution_policy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Either 'async' or 'serial'. The way in which ReFrame will run the tests.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">serial</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">reframe_base_dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory of ReFrame&#8217;s <em>stage</em> and <em>output</em> directories. If it does not exist, it will be created.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">reports_base_dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory where ReFrame reports will be saved to.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">input_dataset_base_dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory where input data can be found (if applicable)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">output_app_dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The base directory where the benchmarked application should write its outputs to.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">targets</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">list[str] or str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies in which partition, platform and prog_environment run benchmarks on.
+<div class="dlist">
+<dl>
+<dt class="hdlist1">machine [<strong>str</strong>]</dt>
+<dd>
+<p>The name of the machine. If using built-in system ReFrame configuration for EuroHPC machines, this should correspond to the names described in the <a href="#tutorial:configurationFiles:systems.adoc" class="xref unresolved">systems configuration reference page</a>.</p>
+</dd>
+<dt class="hdlist1">execution_policy [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Describes how reframe will launch the tests.
+Should be either "serial" or "async". Defaults to "serial".</p>
+</dd>
+<dt class="hdlist1">access [<strong>List[str]</strong>] (Optional)</dt>
+<dd>
+<p>List of scheduler directives to be passed in order to grant access to a given partition of the system.
+For example, passing <code>[--account=&lt;YOUR-ACCOUNT&gt;]</code> will add <code>#SBATCH --account=&lt;YOUR-ACCOUNT&gt;</code> to the submit script if using SLURM.</p>
+</dd>
+<dt class="hdlist1">targets [<strong>str | List[str]</strong>] (Optional)</dt>
+<dd>
+<p>Specifies in which partition, platform and prog_environment run benchmarks on.
 The syntax is <code>[partition:platform:prog_environment]</code>. Default values are supported by only putting <code>:</code>. For example <code>partition::prog_environment</code>. Default values are "default" for partition and prog_environment, and "builtin" for platform.
-Provide this field or all (partitions, platform, prog_environments) fields.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">platform</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Platform to run the benchmark on, possible values are "Apptainer" and "builtin". Docker will soon be supported.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">builtin</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">partitions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List[str]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Partitions where the test can run on. Tests will run on the cartesian product of partitions and prog_environments, where environments are specified for the current partition on the ReFrame configuration.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">prog_environments</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List[str]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Environments where the test can run on. Test will run with this programming environment if it is specified on the current partition on the ReFrame configuration.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">containers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dict[str,Container]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dictionary specifying container type "Apptainer" or "Docker" (not yet supported), and container related information. More details on the <code>Container</code> object below.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">{}</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The containers object is defined as follow</p>
+You can choose between providing this field OR indicating all <code>partitions</code>, <code>platform</code>, <code>prog_environments</code> fields.</p>
+</dd>
+<dt class="hdlist1">partitions [<strong>List[str]</strong>] (Optional)</dt>
+<dd>
+<p>Partitions where the test can run on. Tests will run on the cartesian product of partitions and prog_environments, where environments are specified for the current partition on the ReFrame configuration.
+Should not be provided if using the <code>targets</code> field.</p>
+</dd>
+<dt class="hdlist1">prog_environments [<strong>List[str]</strong>] (Optional)</dt>
+<dd>
+<p>Environments where the test can run on. Test will run with this programming environment if it is specified on the current partition on the ReFrame configuration.
+Should not be provided if using the <code>targets</code> field.</p>
+</dd>
+<dt class="hdlist1">platform [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Name of the platform to run the benchmark one.
+Accepted values are : "apptainer","builtin". Defaults to "builtin".
+Should not be provided if using the <code>targets</code> field.</p>
+</dd>
+<dt class="hdlist1">env_variables [<strong>Dict[str,str]</strong>] (Optional)</dt>
+<dd>
+<p>key:value pairs for machine related environment variables. These variables will be set after the <em>init</em> phase of ReFrame tests.</p>
+</dd>
+<dt class="hdlist1">reframe_base_dir [<strong>str</strong>]</dt>
+<dd>
+<p>Directory where ReFrame will save its <em>stage</em> and <em>output</em> directories. If it does not exist, it will be created.</p>
+</dd>
+<dt class="hdlist1">reports_base_dir [<strong>str</strong>]</dt>
+<dd>
+<p>Directory where the output reports should be exported to.</p>
+</dd>
+<dt class="hdlist1">input_dataset_base_dir [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Base directory where inputs can be found by ReFrame at the moment of job sumbission. Advanced configuration allows file transfers between data located under <code>input_user_dir</code> and this directory.
+This directory should ideally be located in the same disk as where the jobs will run on, to avoid unexpected execution times.
+Refer to <a href="../advancedConfiguration.html" class="xref page">Advanced Configuration</a> for more information.</p>
+</dd>
+<dt class="hdlist1">input_user_dir [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Base directory where input data can be found before running tests. If provided, <code>input_dataset_base_dir</code> should be present too. It is used to copy <code>input_file_dependencies</code> from this directory to the <code>input_dataset_base_dir</code>.
+Refer to <a href="../advancedConfiguration.html" class="xref page">Advanced Configuration</a> for more information.</p>
+</dd>
+<dt class="hdlist1">output_app_dir [<strong>str</strong>]</dt>
+<dd>
+<p>The base directory where the benchmarked application should write its outputs to.</p>
+</dd>
+<dt class="hdlist1">containers Dict[str,Container] (Optional)</dt>
+<dd>
+<p>Specifies container type and platform related information. Keys correspond to the platform name (e.g. "apptainer" or "docker")</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">-image_base_dir [<strong>str</strong>]</dt>
+<dd>
+<p>Base directory where container images can be found in the system</p>
+</dd>
+<dt class="hdlist1">-options[<strong>List[str]</strong>] (Optional)</dt>
+<dd>
+<p>Options to add to the container execution command.</p>
+</dd>
+<dt class="hdlist1">-cachedir [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Directory where the pulled images will be cached on.</p>
+</dd>
+<dt class="hdlist1">-tmpdir [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Directory where temporary image files will be written.</p>
+</dd>
+<dt class="hdlist1">-executable [<strong>str</strong>] (Optional)</dt>
+<dd>
+<p>Base command to be used for pulling the image.
+Defaults to the name of the container.
+(e.g. If using Apptainer, one can provide <code>singulariy</code>. And the command for pulling an image that will be used will be <code>singularity pull &#8230;&#8203;</code>)</p>
+</dd>
+</dl>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 37.5%;">
-<col style="width: 12.5%;">
-</colgroup>
-<thead>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Field name</th>
-<th class="tableblock halign-left valign-top">Optional</th>
-<th class="tableblock halign-left valign-top">type</th>
-<th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">cachedir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where the pulled images will be cached on.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">tmpdir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where temporary image files will be written.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">image_base_dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">str</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base directory where images can be found in the system</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">options</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List[str]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Options to add to the container execution command.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
-</tr>
-</tbody>
-</table>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>Below, an example of a machine configuration file can be found, for a machine called "my_machine".</p>
+<p>Using the Docker platform will soon be available.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Below, an example of a complete machine configuration file can be found, for a machine called "my_machine".</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    "machine": "my_machine",
-    "targets":"production:builtin:hpcx",
+    "machine": "my_system",
     "execution_policy": "async",
+    "access":["--account=1234"],
+    "targets":"production:builtin:hpcx",
+    "env_variables":{ "MY_ENV_VAR":"ABCD" },
     "reframe_base_dir":"$PWD/build/reframe",
     "reports_base_dir":"$PWD/reports/",
     "input_dataset_base_dir":"$PWD/input/",
@@ -400,7 +363,10 @@ Provide this field or all (partitions, platform, prog_environments) fields.</p><
     "containers":{
         "apptainer":{
             "image_base_dir":"/data/images/",
-            "options":[ "--sharens", "--bind /opt/:/opt/" ]
+            "options":[ "--sharens", "--bind /opt/:/opt/" ],
+            "cachedir":"/data/images/chache/",
+            "tmpdir":"/data/images/tmp/",
+            "executable":"singularity"
         }
     }
 }</code></pre>
@@ -409,46 +375,79 @@ Provide this field or all (partitions, platform, prog_environments) fields.</p><
 <div class="paragraph">
 <p>Let&#8217;s review step by step what the file defines.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>"machine":"my_machine"</code> indicates that the ReFrame config can be found as <em>my_machine.py</em></p>
-</li>
-<li>
-<p><code>"targets":"production:builtin:hpcx"</code> tells reframe to run tests uniquely on the production partition with the builtin platform and the hpcx programming environment.</p>
-</li>
-<li>
-<p><code>"execution_policy":"async"</code> tells ReFrame to run tests asynchronously on available resources.</p>
-</li>
-<li>
-<p><code>"reframe_base_dir":"$PWD/build/reframe"</code> Reframe will use the <em>build/stage/</em> folder and <em>build/output/</em> folder of the current working directory for staging tests and storing the benchmarked application&#8217;s standard output and errors.</p>
-</li>
-<li>
-<p><code>"reports_base_dir":"$PWD/reports/"</code> Means that the reframe reports will be found under the <em>reports/</em> folder of the current working directory.</p>
-</li>
-<li>
-<p><code>"input_dataset_base_dir":"$PWD/input/"</code> Means that the framework should look for input somewhere under the <em>input/</em> folder of the current working directory. The rest of the path is specified on the benchmark configuration.</p>
-</li>
-<li>
-<p><code>"output_app_dir":"$PWD/output/"</code> Means that the benchmarked application should write its output files under the <em>output/</em> folder of the current working directory. The rest of the path is specified on the benchmark configuration.</p>
-</li>
-</ul>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>"machine":"my_system"</code></dt>
+<dd>
+<p>indicates that the system where tests will run can be identified as "my_system". If no custom reframe configuration is provided, the framework will look for a configuration file named <code>my_system.py</code>.</p>
+</dd>
+<dt class="hdlist1"><code>"execution_policy":"async"</code></dt>
+<dd>
+<p>Tells ReFrame to run tests asynchronously on available resources.</p>
+</dd>
+<dt class="hdlist1"><code>"access":["--account=1234"]</code></dt>
+<dd>
+<p>Indicates that the scheduler should use "--account=1234" to connect to compute nodes for a given partition.
+For example, if using SLURM, <code>#SBATCH --account=1234</code> will be added to the submition script.</p>
+</dd>
+<dt class="hdlist1"><code>"targets":"production:builtin:hpcx"</code></dt>
+<dd>
+<p>Tells reframe to run tests uniquely on the production partition with the builtin platform and the hpcx programming environment. These values should correspond to what&#8217;s contained in the ReFrame configuration file.</p>
+</dd>
+<dt class="hdlist1"><code>"env_variables":{ "MY_ENV_VAR":"ABCD" }</code></dt>
+<dd>
+<p>ReFrame will set environment variable <code>MY_ENV_VAR</code> to have the <code>ABCD</code> value before tests are launched.</p>
+</dd>
+<dt class="hdlist1"><code>"reframe_base_dir":"$PWD/build/reframe"</code></dt>
+<dd>
+<p>Reframe will use the <em>build/stage/</em> folder and <em>build/output/</em> folder of the current working directory for staging tests and storing the benchmarked application&#8217;s standard output and errors.</p>
+</dd>
+<dt class="hdlist1"><code>"reports_base_dir":"$PWD/reports/"</code></dt>
+<dd>
+<p>Means that the reframe reports will be found under the <em>reports/</em> folder of the current working directory.</p>
+</dd>
+<dt class="hdlist1"><code>"input_dataset_base_dir":"$PWD/input/"</code></dt>
+<dd>
+<p>Means that the framework should look for input somewhere under the <em>input/</em> folder of the current working directory. The rest of the path is specified on the benchmark configuration.</p>
+</dd>
+<dt class="hdlist1"><code>"output_app_dir":"$PWD/output/"</code></dt>
+<dd>
+<p>Means that the benchmarked application should write its output files under the <em>output/</em> folder of the current working directory. The rest of the path is specified on the benchmark configuration.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
 <p>Concerning containers:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>"apptainer"</code> key indicated that the application COULD be benchmarked using apptainer. Not necesserily that it will. If the <code>targets</code> field specifies the apptainer platform, then this field is mandatory.</p>
-</li>
-<li>
-<p><code>"image_base_dir":"/data/images"</code> indicates that the built apptainer images can be found somewhere under the _/data/images/ directory. The rest of the path is specified on the benchmark configuration.</p>
-</li>
-<li>
-<p><code>"options":"[ "--sharens", "--bind /opt/:/opt/" ]"</code> Tells ReFrame to add these options to the Apptainer execution command. For example, <code>mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/ &#8230;&#8203;</code>. Only machine related options should be specified here, more options can be defined in the benchmark configuration.</p>
-</li>
-</ul>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>"apptainer"</code></dt>
+<dd>
+<p>The key name indicates that the application CAN be benchmarked using apptainer. Not necesserily that it will. If the <code>targets</code> field specifies the apptainer platform, then this field is mandatory. Otherwise if the <code>tagets</code> field specifies the built-in platform, there is no need to have this object.</p>
+</dd>
+<dt class="hdlist1"><code>"image_base_dir":"/data/images"</code></dt>
+<dd>
+<p>Indicates that the built apptainer images can be found somewhere under the _/data/images/ directory. The rest of the image&#8217;s filepath is specified on the benchmark configuration.</p>
+</dd>
+<dt class="hdlist1"><code>"options":"[ "--sharens", "--bind /opt/:/opt/" ]"</code></dt>
+<dd>
+<p>Tells ReFrame to add these options to the Apptainer execution command. For example, <code>mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/ &#8230;&#8203;</code>. Only machine related options should be specified here, more options can be defined in the benchmark configuration.</p>
+</dd>
+<dt class="hdlist1"><code>"cachedir":"/data/images/chache/"</code></dt>
+<dd>
+<p>Indicates that the container should cache images under the <code>/data/images/cache</code> directory.
+For example, when using apptainer, this will overwrite the <code>APPTAINER_CACHEDIR</code> environment variable. <a href="https://apptainer.org/docs/user/main/build_env.html">Apptainer Build Environment</a></p>
+</dd>
+<dt class="hdlist1"><code>"tmpdir":"/data/images/tmp/"</code></dt>
+<dd>
+<p>Indicates that the container should use the <code>/data/images/tmp</code> directory for temporary files.
+For example, when using apptainer, this will overwrite the <code>APPTAINER_TMPDIR</code> environment variable. <a href="https://apptainer.org/docs/user/main/build_env.html">Apptainer Build Environment</a></p>
+</dd>
+<dt class="hdlist1"><code>"executable":"singularity"</code></dt>
+<dd>
+<p>Tells the framework to use the <code>singularity pull &#8230;&#8203;</code> command for pulling images instead of <code>apptainer pull &#8230;&#8203;</code> .</p>
+</dd>
+</dl>
 </div>
 </article>
   </div>

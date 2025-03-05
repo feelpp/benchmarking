@@ -227,19 +227,112 @@ MathJax.Hub.Config({
 </aside>
 <article class="doc">
 <h1 class="page">System configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>The system configuration files need to be placed under <em>src/feelpp/benchmarking/reframe/config/machineConfigs</em>, and are strictly ReFrame dependent. A single Python file should be provided per machine. Please follow <a href="https://reframe-hpc.readthedocs.io/en/stable/config_reference.html">ReFrame&#8217;s configuration file reference</a> for precise settings.</p>
+<p>The system configuration files need to be placed under are strictly ReFrame dependent, and must be passed to the application via the <code>--custom-rfm-config</code> option. A single Python file should be provided per machine. Please follow <a href="https://reframe-hpc.readthedocs.io/en/stable/config_reference.html">ReFrame&#8217;s configuration file reference</a> for precise settings.</p>
 </div>
 <div class="paragraph">
-<p>Example configurations are provided for the <em>Gaya</em> machine and for a simple single node 8-core system.</p>
+<p>One of the main objectives of having these files, is to be able to describe necessary modules and commands for your application&#8217;s to run as expected.</p>
 </div>
-<div class="admonitionblock note">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_built_in_system_configurations"><a class="anchor" href="#_built_in_system_configurations"></a>1. Built-in system configurations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Configuration files for the following EuroHPC machines are available in the <code>feelpp.benchmarking framework</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>DISCOVERER (cn)</p>
+</li>
+<li>
+<p>Vega (cpu)</p>
+</li>
+<li>
+<p>Karolina (cpu)</p>
+</li>
+<li>
+<p>MeluXina (cpu)</p>
+</li>
+<li>
+<p>Leonardo (cpu) [Coming soon&#8230;&#8203;]</p>
+</li>
+<li>
+<p>LUMI (cpu) [Coming soon&#8230;&#8203;]</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To use them, the <code>machine</code> field on the machine configuration JSON must correspond to the EuroHPC system name (in lowercase).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "machine":"discoverer",
+    "targets":["cn::"],
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_system_configurations"><a class="anchor" href="#_custom_system_configurations"></a>2. Custom system configurations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Users can provide their own ReFrame configuration file using the <code>--custom-rfm-config</code> option.
+In addition to mandatory fields specified in <a href="https://reframe-hpc.readthedocs.io/en/stable/config_reference.html">ReFrame&#8217;s configuration file reference</a>, users must provide the <code>systems.partitions.processor.num_cpus</code> field to indicate the maximum number of logical CPUs per partition&#8217;s node. This information will be used by <code>feelpp.benchmarking</code> to schedule test jobs accordingly. This can be skipped only if no strong scaling is planned for the given system.</p>
+</div>
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
+<div class="paragraph">
+<p>There is no need to hardcode account&#8217;s access information in these files, as it can be specified on the <code>feelpp.benchmarking</code> machine configuration JSON.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If users plan on using certain container platform on their machine, they must provide the <code>systems.partitions.container_platforms</code> object.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>At the moment, only Apptainer and built-in platforms are supported.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Using SLURM as scheduler is highly recommended if possible. Many of the tool&#8217;s features are not available on other schedulers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_additional_resources"><a class="anchor" href="#_additional_resources"></a>2.1. Additional resources</h3>
 <div class="paragraph">
 <p>Processor bindings and other launcher options should be specified as a resource under the desired partition, with the <code>launcher_options</code> name field value for example. For example,</p>
 </div>
@@ -253,9 +346,34 @@ MathJax.Hub.Config({
 ]</code></pre>
 </div>
 </div>
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>If memory is a constraint, the <code>systems.partitions.extras.memory_per_node</code> field can be specified, indicating the memory per compute node of your system in Gb. For example,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"extras":{
+    "memory_per_node":500
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_using_a_gpu_partition"><a class="anchor" href="#_using_a_gpu_partition"></a>2.1.1. Using a GPU partition</h4>
+<div class="paragraph">
+<p>If your system counts with a GPU partition, the following ressource must be added to the <code>launcher_options</code> field:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"resources": [
+    {
+        "name": "_rfm_gpu",
+        "options": ["--gres=gpu:{num_gpus_per_node}"],
+    }
+]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </article>
   </div>
