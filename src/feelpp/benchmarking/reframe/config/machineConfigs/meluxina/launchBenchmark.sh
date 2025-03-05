@@ -20,7 +20,7 @@ while getopts "m:b:p:" opt; do
 done
 
 
-execute-benchmark \
+feelpp-benchmarking-exec \
     -mc $MACHINE_CONFIG \
     -bc $BENCHMARK_CONFIG \
     -pc $PLOTS_CONFIG \

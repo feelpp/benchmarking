@@ -106,6 +106,7 @@ As an example, we will consider the following axis:
 ----
 
 Available strategies are:
+
 - performance
 
 This strategy should be seen as the "base" strategy. No transformation, other that a pivot, is done.
@@ -132,7 +133,8 @@ plot_config = Plot(**{
     }
 })
 strategy = TransformationStrategyFactory.create(plot_config)
-strategy.calculate(model.master_df)
+df = strategy.calculate(model.master_df)
+print(df)
 ----
 
 - relative_performance
@@ -160,7 +162,8 @@ plot_config = Plot(**{
     }
 })
 strategy = TransformationStrategyFactory.create(plot_config)
-strategy.calculate(model.master_df)
+df = strategy.calculate(model.master_df)
+print(df)
 ----
 
 The sum along the column axis will always be equal to 1.
@@ -191,7 +194,8 @@ plot_config = Plot(**{
     }
 })
 strategy = TransformationStrategyFactory.create(plot_config)
-strategy.calculate(model.master_df)
+df = strategy.calculate(model.master_df)
+print(df)
 ----
 
 == Plot types

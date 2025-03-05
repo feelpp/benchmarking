@@ -112,7 +112,7 @@ def main_cli():
         #======================================================#
 
     if parser.args.website:
-        subprocess.run(["render-benchmarks","--config-file", website_config.config_filepath])
+        subprocess.run(["feelpp-benchmarking-render","--config-file", website_config.config_filepath])
         subprocess.run(["npm","run","antora"])
         subprocess.run(["npm","run","start"])
 

@@ -11,11 +11,11 @@ npm i
 source ./girder_deploy_config.sh
 if [[ $HEAD == *"new-benchmark"* ]]; then
     echo "Downloading Staging benchmarks"
-    girder-download -gid $staging_folder_id -o ./tmp/ -d
+    feelpp-girder download -gid $staging_folder_id -o ./tmp/ -d
     merge-json-configs -fp "./tmp/**/website_config.json" -o ./tmp/website_config.json -u
 else
     echo "Downloading Production benchmarks"
-    girder-download -gid $production_website_config_id -o ./tmp/ -fn website_config.json
+    feelpp-girder download -gid $production_website_config_id -o ./tmp/ -fn website_config.json
 fi
-render-benchmarks --config-file=./tmp/website_config.json
+feelpp-benchmarking-render --config-file=./tmp/website_config.json
 npx antora --stacktrace generate --cache-dir cache --clean --html-url-extension-style=indexify site.yml

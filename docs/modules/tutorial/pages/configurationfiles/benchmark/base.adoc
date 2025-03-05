@@ -1,0 +1,27 @@
+= Fields on JSON root
+
+executable [*str*]::
+
+    Path to the application executable or command to execute.
+
+use_case_name [*str*]::
+
+    Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.
+
+timeout [*str*]::
+
+    Job execution timeout, starting when the job is launched (and not pending). Format: days-hours:minutes:seconds
+    This field is notably important so that HPC resources are not wasted unnecessarily.
+    For example, for a 10 minutes timer: `0-00:10:00`
+
+env_variables [*Dict[str,str]*]::
+
+    key:value pairs for benchmark related environment variables. These variables will be set after the _init_ phase of ReFrame tests.
+
+options [*List[str]*]::
+
+    List of application's options. Input arguments can be parameterized in here.
+    For example,
+    `[ "--number-of-elements={{parameters.elements.value}}", "--number-of-points={{parameters.points.value}}", "--verbose" ]`
+
+

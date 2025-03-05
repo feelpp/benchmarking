@@ -1,0 +1,59 @@
+= Examples
+
+The feelpp.benchmarking framework provides a set of examples to familiarize yourself with the application. These are found under the _examples/_ folder.
+It contains common machine configuration files under _examples/machines_.
+
+Feel free to explore these examples and experiment with the configuration files.
+
+== ParallelSum
+
+ParallelSum is a sample C++/MPI application that is used by `feelpp.benchmarking` to showcase benchmarking the parallel scalability of an application.
+
+It will compute the sum of an array distributed accross multiple MPI processes. Each process will compute a partial sum, and then it will be summed by the master rank to get the total sum.
+
+This application exports both the time taken to compute the sum, as the time taken for MPI communications, and it will be saved under a _scalability.json_ file.
+
+The `parallelSum` application takes the number of elements and the output directory as parameters.
+
+The application and the configuration files for this example are found under _examples/parallelsum/_.
+
+To execute this example, run the following command after completing the installation process:
+
+[source,bash]
+----
+feelpp-benchmarking-exec -mc examples/machines/default.json \
+                    -rc examples/machines/default.py \
+                    -bc examples/parallelsum/parallelSum.json \
+                    -pc examples/parallelsum/plots.json \
+                    -v
+----
+
+== Sorting
+
+The `sorting` example consists of a sample Python application that showcases benchmarking time complexity of an application, without considering parallel performance.
+
+This application is found under _examples/sorting/sortingApp_
+
+This application will sort a random list of length N, using a given sorting algorithm.
+It takes the following arguments :
+
+[source,bash]
+----
+-n                  Number of elements
+--algorithm, -a     Sorting algorithm to use
+--out, -o           Filepath where to save elapsed times
+--data-type, -t     Type of the data to sort (int,float,str)
+----
+
+A good use case for this example is to experiment on computing custom aggregated performance variables, as execution times might be biaised by the way the array is randomly created.
+
+To execute this example, run the following command after completing the installation process:
+
+[source,bash]
+----
+feelpp-benchmarking-exec -mc examples/machines/default.json \
+                    -rc examples/machines/default.py \
+                    -bc examples/sorting/sorting.json \
+                    -pc examples/sorting/plots.json \
+                    -v
+----
