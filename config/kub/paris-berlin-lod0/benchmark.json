@@ -2,16 +2,15 @@
     "executable": "feelpp_kub_cem",
     "output_directory": "{{machine.output_app_dir}}/kub",
     "use_case_name": "Paris_Berlin",
-    "timeout":"0-00:30:0",
+    "timeout":"0-02:00:0",
     "resources":{
         "tasks":"{{parameters.tasks.value}}",
-        "tasks_per_node":64,
         "exclusive_access":true
     },
     "platforms": {
         "apptainer":{
             "image": {
-                "url":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
+                "url":"oras://ghcr.io/feelpp/ktirio-urban-building:0.5.0-sif",
                 "filepath":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
             },
             "input_dir":"/input_data",
@@ -36,8 +35,8 @@
     },
     "input_file_dependencies":{
         "simulators":"kub/simulators",
-        "gis":"kub/{{parameters.city.value}}/{{parameters.radius.value}}/gis.json",
-        "mesh":"kub/{{parameters.city.value}}/{{parameters.radius.value}}/mesh_0_Lod0.msh",
+        "gis":"kub/{{parameters.city.value}}/noVegetation/{{parameters.radius.value}}/gis.json",
+        "mesh":"kub/{{parameters.city.value}}/noVegetation/{{parameters.radius.value}}/mesh_0_Lod0.msh",
         "weather":"kub/{{parameters.city.value}}/weather-data-0.hourly-variables.csv",
         "scenarios":"kub/scenarios_local",
         "cfg":"kub/kub.cfg"
@@ -98,7 +97,7 @@
     },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
-        "clean_directory":true,
+        "clean_directory":false,
         "stages": [
             {
                 "name":"",
@@ -121,15 +120,15 @@
     "parameters": [
         {
             "name": "tasks",
-            "range":{"min":128,"max":384,"step":128}
+            "sequence":[64,128,256]
         },
         {
             "name": "city",
-            "sequence": ["Paris","Berlin"]
+            "sequence": ["Paris"]
         },
         {
             "name":"radius",
-            "sequence":["1000m","2000m"]
+            "sequence":["5km","10km"]
         }
     ]
 }
