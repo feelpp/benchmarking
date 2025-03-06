@@ -12,7 +12,7 @@ import numpy as np
 from copy import deepcopy
 
 
-DEBUG = lambda msg: print(msg) if os.environ.get("FEELPP_BENCHMARKING_DEBUG",False) else None
+DEBUG = lambda msg: print(msg) if os.environ.get("FEELPP_BENCHMARKING_DEBUG",0)==1 else None
 
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):

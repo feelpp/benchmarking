@@ -48,7 +48,7 @@ class RegressionTest(ReframeSetup):
         FileHandler.copyResource(
             self.app_reader.config.additional_files.parameterized_descriptions_filepath,
             os.path.join(self.report_dir_path,"partials"),
-            self.hashcode,
+            self.hashcode
         )
 
     @run_before('performance')

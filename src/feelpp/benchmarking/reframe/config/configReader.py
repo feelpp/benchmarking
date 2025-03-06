@@ -88,7 +88,7 @@ class FileHandler:
         if not src:
             return
         if not os.path.exists(src):
-            if os.environ.get("FEELPP_BENCHMARKING_DEBUG",False):
+            if os.environ.get("FEELPP_BENCHMARKING_DEBUG",0) == 1:
                 print(f"File {src} does not exist. Skipping copy.")
             return
 
@@ -100,7 +100,7 @@ class FileHandler:
             if rename:
                 filename = rename
                 if "." not in rename and len(src.split('.'))>1:
-                    filename = f"{rename}.{'.'.join(src.split('.')[-1])}"
+                    filename = f"{rename}.{src.split('.')[-1]}"
 
             shutil.copy2( src, os.path.join(dest_dirpath,filename) )
         elif os.path.isdir(src):
@@ -112,7 +112,7 @@ class FileHandler:
         if os.path.exists(directory):
             shutil.rmtree(directory)
         else:
-            if os.environ.get("FEELPP_BENCHMARKING_DEBUG",False):
+            if os.environ.get("FEELPP_BENCHMARKING_DEBUG",0) == 1:
                 print(f"{directory} does not exist")
 
 
