@@ -459,7 +459,9 @@ class Plotly3DFigure(PlotlyFigure):
             raise ValueError("3D figures can only be created from 2 or 3 level multiindex dataframes")
 
     def createSimpleFigure(self, df):
-        raise ValueError("Secondary axis must be specified for 3d Figures")
+        if not df.empty:
+            raise ValueError("Secondary axis must be specified for 3d Figures")
+        return go.Figure()
 
     def updateLayout(self, fig):
         """ Sets the title, yaxis and legend attributes of the layout"""
