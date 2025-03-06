@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-'feelpp.benchmarking' = ['report/templates/**','report/figures/templates/**']
+'feelpp.benchmarking' = ['report/templates/**','report/figures/templates/**','scripts/data/*']
 
 [project]
 name = "feelpp-benchmarking"
@@ -58,6 +58,7 @@ feelpp-benchmarking-exec = "feelpp.benchmarking.reframe.__main__:main_cli"
 feelpp-girder = "feelpp.benchmarking.scripts.girder:main_cli"
 merge-json-configs = "feelpp.benchmarking.scripts.misc:jsonConfigMerge_cli"
 update-stage-config = "feelpp.benchmarking.scripts.misc:updateStageConfig_cli"
+feelpp-antora = "feelpp.benchmarking.scripts.antora:main_cli"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
