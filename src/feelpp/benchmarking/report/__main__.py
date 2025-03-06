@@ -54,5 +54,6 @@ def main_cli():
     atomic_reports.createReports(os.path.join(parser.args.modules_path,"reports"),report_renderer)
 
     if parser.args.website:
+        os.chdir(parser.args.antora_basepath)
         subprocess.run(["npm","run","antora"])
         subprocess.run(["npm","run","start"])
