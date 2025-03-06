@@ -4,26 +4,25 @@
     "use_case_name": "paris_SolarMasks",
     "timeout":"0-2:00:0",
     "resources":{
-        "nodes":"{{parameters.nodes.value}}",
-        "tasks_per_node":128,
+        "tasks":"{{parameters.tasks.value}}",
         "exclusive_access":true
     },
     "platforms": {
         "apptainer":{
             "image": {
-                "url":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
+                "url":"oras://ghcr.io/feelpp/ktirio-urban-building:0.5.0-sif",
                 "filepath":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
             },
             "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/kub:{{platforms.apptainer.input_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/kub",
+            "input_dir":"{{machine.input_dataset_base_dir}}",
             "append_app_option":[]
         }
     },
@@ -35,9 +34,9 @@
     },
     "input_file_dependencies":{
         "simulators":"kub/simulators",
-        "gis":"kub/Paris/2000m/{{parameters.vegetation.value}}/gis.json",
-        "mesh":"kub/Paris/2000m/{{parameters.vegetation.value}}/{{parameters.mesh.filename.value}}.msh",
-        "weather":"kub/Paris/2000m/{{parameters.vegetation.value}}/weather-data-0.hourly-variables.csv",
+        "gis":"kub/Paris/{{parameters.vegetation.value}}/4km/{{parameters.vegetation.value}}/gis.json",
+        "mesh":"kub/Paris/{{parameters.vegetation.value}}/4km/{{parameters.vegetation.value}}/{{parameters.mesh.filename.value}}.msh",
+        "weather":"kub/Paris/weather-data-0.hourly-variables.csv",
         "scenarios":"kub/scenarios_local",
         "cfg":"kub/kub.cfg"
     },
@@ -90,6 +89,7 @@
     ],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}/cem/",
+        "clean_directory":true,
         "stages": [
             {
                 "name":"",
@@ -111,8 +111,8 @@
     },
     "parameters": [
         {
-            "name": "nodes",
-            "geometric": { "start":1, "ratio":2, "n_steps":7 }
+            "name": "tasks",
+            "sequence":[64]
         },
         {
             "name":"mesh",
@@ -123,7 +123,7 @@
         },
         {
             "name":"vegetation",
-            "sequence":["vegetation","no_vegetation"]
+            "sequence":["vegetation","noVegetation"]
         }
     ]
 }
