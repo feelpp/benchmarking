@@ -38,9 +38,12 @@ class AtomicReportRepository(Repository):
                         reframe_report_json = os.path.join(report_dir,"reframe_report.json")
                         plots_config_json = os.path.join(report_dir,"plots.json")
 
-                        if not os.path.isfile(reframe_report_json) or not os.path.isfile(plots_config_json):
+                        if not os.path.isfile(reframe_report_json):
                             print(f"{report_dir} does not contain any reframe report or plots configuration")
                             continue
+
+                        if not os.path.isfile(plots_config_json):
+                            plots_config_json = None
 
                         partials_dir = os.path.join(report_dir,"partials")
 
