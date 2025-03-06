@@ -60,100 +60,26 @@ python3 -m pip install .
 
 In order to generate the benchmark reports website, Antora must be configured beforehand, along with the necessary extensions. More information can be found in [Antora Documentation](https://docs.antora.org/antora/latest/install-and-run-quickstart/)
 
-* Make sure you have [Node.js](http://nodejs.org/en/download) installed.
+Make sure you have [Node.js](http://nodejs.org/en/download) installed.
 
-<dl><dt><strong>❗ IMPORTANT</strong></dt><dd>
+To initialize the Antora environment, run
 
-The following part of prerequisites is only necessary if the `feelpp.benchmarking` repository is not being cloned.
+```bash
+feelpp-antora init -d <BASE-DIRECTORY> -t <YOUR-PROJECT-TITLE> -n <YOUR-PROJECT-NAME>
+```
+
+<dl><dt><strong>📌 NOTE</strong></dt><dd>
+
+* The project title will be shown on the webpage, but the project name serves as an ID for your project.
+* The project name must not contain spaces or any special character (only underscore is supported).
 </dd></dl>
 
-* A local git repository is needed, so if you are not adding `feelpp.benchmarking` to an existing repository:
+The previous script will do the following:
 
-```bash
-git init
-git commit --allow-empty -m init
-```
-
-* Download the [package.json](https://github.com/feelpp/benchmarking/blob/master/package.json) dependency file and place it at the root of your project.
-* Install dependencies
-
-```bash
-npm install
-```
-
-* Create the Antora’s [standard directory hierarchy](https://docs.antora.org/antora/latest/standard-directories/).
-
-```bash
-mkdir -p docs/modules/ROOT/pages
-```
-
-* Create the start and navigation pages
-
-```bash
-echo "= <YOUR-PROJECT-TITLE>\n:page-layout: toolboxes\n:page-tags: catalog, catalog-index\n:docdatetime: 2025-01-22T11:42:45" > docs/modules/ROOT/pages/index.adoc
-```
-
-```bash
-echo "* xref:ROOT:index.adoc[YOUR-PROJECT-TITLE]" > docs/modules/ROOT/nav.adoc
-```
-
-* Write the component version descriptor.
-
-```bash
-touch docs/antora.yml
-```
-
-Write the following in the file.
-
-```yaml
-name: <PROJECT-NAME>
-title: <YOUR-PROJECT-TITLE>
-version: ~
-start_page: index.adoc
-asciidoc:
-  attributes:
-    project_name: <YOUR-PROJECT-TITLE>
-    numbered: true
-    dynamic-blocks@: ''
-    allow-uri-read: true
-    hide-uri-scheme: true
-nav:
-  - modules/ROOT/nav.adoc
-```
-
-* Create the antora playbook at the root of your project
-
-```bash
-touch ./site.yml
-```
-
-Write the following to the file
-
-```yaml
-site:
-  title: <YOUR-PROJECT-TITLE>
-  start_page: <YOUR-PROJECT-NAME>::index.adoc
-content:
-  sources:
-  - url: .
-    branches: HEAD
-    start_path: docs
-ui:
-  bundle:
-    url: https://github.com/feelpp/antora-ui/releases/latest/download/ui-bundle.zip
-    snapshot: true
-output:
-  clean: true
-  dir: public
-asciidoc:
-  extensions:
-  - '@feelpp/asciidoctor-extensions'
-```
-
-<dl><dt><strong>❗ IMPORTANT</strong></dt><dd>
-
-Make sure to replace the values of `<YOUR-PROJECT-NAME>` and `<YOUR-PROJECT-TITLE>` with the actual values.
-</dd></dl>
+* Initialize a git repository in &lt;BASE-DIRECTORY> if it is not already one.
+* Copy and install a `packages.json` file containing necessary dependencies.
+* Create the `<BASE-DIRECTORY>/docs/modules/ROOT/` directories where rendered files will be located.
+* Create an antora component version descriptor and an antora playbook using &lt;YOUR-PROJECT-TITLE> and &lt;YOUR-PROJECT-NAME>
 
 ## Quickstart
 
@@ -169,7 +95,7 @@ Additionally, the app will measure the time taken to perform the partial sum, an
 
 You can update the sample application and recompile it for a specific config as needed.
 ```bash
-mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
+mpic++ -std=c++17 -o examples/parallelsum/parallelSum examples/parallelsum/parallelSum.cpp
 ```
 
 ### Machine configuration files
