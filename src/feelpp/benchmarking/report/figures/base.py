@@ -66,7 +66,7 @@ class CompositeFigure:
         if self.tikz_figure is not None:
             return self.tikz_figure.createFigure(df)
         else:
-            print("Warning: Tikz figure not implemented for this plot type")
+            print(f"Warning: Tikz figure not implemented for plot type {self.__class__.__name__}")
             return None
 
     def createCsvs(self,df):
