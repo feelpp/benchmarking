@@ -88,7 +88,8 @@ class FileHandler:
         if not src:
             return
         if not os.path.exists(src):
-            print(f"File {src} does not exist. Skipping copy.")
+            if os.environ.get("FEELPP_BENCHMARKING_DEBUG",False):
+                print(f"File {src} does not exist. Skipping copy.")
             return
 
         if not os.path.exists(dest_dirpath):
@@ -111,7 +112,8 @@ class FileHandler:
         if os.path.exists(directory):
             shutil.rmtree(directory)
         else:
-            print(f"{directory} does not exist")
+            if os.environ.get("FEELPP_BENCHMARKING_DEBUG",False):
+                print(f"{directory} does not exist")
 
 
 class ConfigReader:
