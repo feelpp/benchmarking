@@ -12,6 +12,8 @@ import numpy as np
 from copy import deepcopy
 
 
+DEBUG = lambda msg: print(msg) if os.environ.get("FEELPP_BENCHMARKING_DEBUG",0)==1 else None
+
 @rfm.simple_test
 class ReframeSetup(rfm.RunOnlyRegressionTest):
     """ Reframe test used to setup the regression test"""
@@ -117,18 +119,18 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         if not self.machine_reader.config.input_user_dir or not self.app_reader.config.input_file_dependencies:
             return
 
-        print(f"==========================================================")
-        print(f"     COPYING FILES FROM {self.machine_reader.config.input_user_dir} to {self.machine_reader.config.input_dataset_base_dir}   ")
+        DEBUG(f"==========================================================")
+        DEBUG(f"     COPYING FILES FROM {self.machine_reader.config.input_user_dir} to {self.machine_reader.config.input_dataset_base_dir}   ")
         for input_dep in self.app_reader.config.input_file_dependencies.values():
-            print(f"\t {input_dep}")
+            DEBUG(f"\t {input_dep}")
             source = os.path.join(self.machine_reader.config.input_user_dir, input_dep)
             destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_dep)
 
             if os.path.exists(destination):
-                print(f"{destination} exists, {input_dep} will not be copied...")
+                DEBUG(f"{destination} exists, {input_dep} will not be copied...")
                 continue
             FileHandler.copyResource(source,os.path.dirname(destination) if os.path.isfile(source) else destination)
-        print("============================================================")
+        DEBUG("============================================================")
 
 
     @run_before('run')

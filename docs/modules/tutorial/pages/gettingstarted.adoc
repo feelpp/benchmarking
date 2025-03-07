@@ -47,110 +47,28 @@ python3 -m pip install .
 
 In order to generate the benchmark reports website, Antora must be configured beforehand, along with the necessary extensions. More information can be found in link:https://docs.antora.org/antora/latest/install-and-run-quickstart/[Antora Documentation]
 
-- Make sure you have link:http://nodejs.org/en/download[Node.js] installed.
+Make sure you have link:http://nodejs.org/en/download[Node.js] installed.
 
-[IMPORTANT]
+To initialize the Antora environment, run
+
+[source,bash]
+----
+feelpp-antora init -d <BASE-DIRECTORY> -t <YOUR-PROJECT-TITLE> -n <YOUR-PROJECT-NAME>
+----
+
+[NOTE]
 ====
-The following part of prerequisites is only necessary if the `feelpp.benchmarking` repository is not being cloned.
+- The project title will be shown on the webpage, but the project name serves as an ID for your project.
+- The project name must not contain spaces or any special character (only underscore is supported).
 ====
 
-- A local git repository is needed, so if you are not adding `feelpp.benchmarking` to an existing repository:
+The previous script will do the following:
 
-[source,bash]
-----
-git init
-git commit --allow-empty -m init
-----
+- Initialize a git repository in <BASE-DIRECTORY> if it is not already one.
+- Copy and install a `packages.json` file containing necessary dependencies.
+- Create the `<BASE-DIRECTORY>/docs/modules/ROOT/` directories where rendered files will be located.
+- Create an antora component version descriptor and an antora playbook using <YOUR-PROJECT-TITLE> and <YOUR-PROJECT-NAME>
 
-- Download the link:https://github.com/feelpp/benchmarking/blob/master/package.json[package.json] dependency file and place it at the root of your project.
-
-- Install dependencies
-
-[source,bash]
-----
-npm install
-----
-
-- Create the Antora's link:https://docs.antora.org/antora/latest/standard-directories/[standard directory hierarchy].
-
-[source,bash]
-----
-mkdir -p docs/modules/ROOT/pages
-----
-
-- Create the start and navigation pages
-
-[source,bash]
-----
-echo "= <YOUR-PROJECT-TITLE>\n:page-layout: toolboxes\n:page-tags: catalog, catalog-index\n:docdatetime: 2025-01-22T11:42:45" > docs/modules/ROOT/pages/index.adoc
-----
-
-[source,bash]
-----
-echo "* xref:ROOT:index.adoc[YOUR-PROJECT-TITLE]" > docs/modules/ROOT/nav.adoc
-----
-
-- Write the component version descriptor.
-
-[source,bash]
-----
-touch docs/antora.yml
-----
-
-Write the following in the file.
-
-[source,yaml]
-----
-name: <PROJECT-NAME>
-title: <YOUR-PROJECT-TITLE>
-version: ~
-start_page: index.adoc
-asciidoc:
-  attributes:
-    project_name: <YOUR-PROJECT-TITLE>
-    numbered: true
-    dynamic-blocks@: ''
-    allow-uri-read: true
-    hide-uri-scheme: true
-nav:
-  - modules/ROOT/nav.adoc
-----
-
-- Create the antora playbook at the root of your project
-
-[source,bash]
-----
-touch ./site.yml
-----
-
-Write the following to the file
-
-[source,yaml]
-----
-site:
-  title: <YOUR-PROJECT-TITLE>
-  start_page: <YOUR-PROJECT-NAME>::index.adoc
-content:
-  sources:
-  - url: .
-    branches: HEAD
-    start_path: docs
-ui:
-  bundle:
-    url: https://github.com/feelpp/antora-ui/releases/latest/download/ui-bundle.zip
-    snapshot: true
-output:
-  clean: true
-  dir: public
-asciidoc:
-  extensions:
-  - '@feelpp/asciidoctor-extensions'
-----
-
-[IMPORTANT]
-====
-Make sure to replace the values of `<YOUR-PROJECT-NAME>` and `<YOUR-PROJECT-TITLE>` with the actual values.
-====
 
 == Quickstart
 
@@ -167,7 +85,7 @@ Additionally, the app will measure the time taken to perform the partial sum, an
 You can update the sample application and recompile it for a specific config as needed.
 [source,bash]
 ----
-mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp
+mpic++ -std=c++17 -o examples/parallelsum/parallelSum examples/parallelsum/parallelSum.cpp
 ----
 
 === Machine configuration files
@@ -266,11 +184,16 @@ Along with machine configuration files, users must provide the specifications of
 }
 ----
 
+[CAUTION]
+====
+Remember to modify the `executable` path as well as `output_directory` if installing via pip.
+====
+
 More information about _feelpp.benchmarking_ benchmark specifications can be found link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_benchmark_configuration[here]
 
 === Plots configuration
 
-Along with the benchmark configuration, a figure configuration file is provided _examples/parallelsum/plots.json_ (plots.json)[https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json].
+Along with the benchmark configuration, a figure configuration file is provided _examples/parallelsum/plots.json_ Download it here link:https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json[plots.json].
 
 An example of one figure specification is shown below. Users can add as many figures as they wish, corresponding the figure axis with the parameters used on the benchmark.
 [source,json]
@@ -302,8 +225,13 @@ feelpp-benchmarking-exec --machine-config examples/machines/default.json \
 
 The `--website` option will start an http-server on localhost, so the website can be visualized. Check the console for more information.
 
-[NOTE]
-If you installed the framework via PyPi, you need to directly download all 5 quickstart files.
+[CAUTION]
+====
+If you installed the framework via PyPi:
+
+- You need to directly download all 5 quickstart files.
+- The `--website` option will only work if you have the exact antora setup as this repository.
+====
 
 
 == Usage
@@ -348,11 +276,11 @@ Once this file is located, users can run the `feelpp-benchmarking-render` comman
 
 The script takes the following arguments:
 
-- `--config-file` (`-c`): The path of the website configuration file.
-- `--remote-download-dir` (`-do`): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
-- `--modules-path` (`-m`): [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
-- `--overview-config` (`-oc`): Path to the overview figure configuration file.
-- `--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
-- `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
-- `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
-- `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
+    `--config-file` (`-c`): The path of the website configuration file.
+    `--remote-download-dir` (`-do`): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
+    `--modules-path` (`-m`): [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
+    `--overview-config` (`-oc`): Path to the overview figure configuration file.
+    `--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
+    `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
+    `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
+    `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.

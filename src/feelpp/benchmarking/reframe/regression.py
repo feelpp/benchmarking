@@ -1,5 +1,5 @@
 import reframe as rfm
-from feelpp.benchmarking.reframe.setup import ReframeSetup
+from feelpp.benchmarking.reframe.setup import ReframeSetup, DEBUG
 from feelpp.benchmarking.reframe.config.configReader import FileHandler
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
@@ -48,14 +48,14 @@ class RegressionTest(ReframeSetup):
         FileHandler.copyResource(
             self.app_reader.config.additional_files.parameterized_descriptions_filepath,
             os.path.join(self.report_dir_path,"partials"),
-            self.hashcode,
+            self.hashcode
         )
 
     @run_before('performance')
     def loadCustomLogs(self):
         for custom_log_file in self.app_reader.config.additional_files.custom_logs:
             if not os.path.exists(custom_log_file):
-                print(f"{custom_log_file} does not exist, continuing...")
+                DEBUG(f"{custom_log_file} does not exist, continuing...")
                 continue
             with open(custom_log_file,"r") as f:
                 self.custom_logs.append({
@@ -68,14 +68,14 @@ class RegressionTest(ReframeSetup):
         if self.app_reader.config.scalability.clean_directory:
             FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
         if self.machine_reader.config.input_user_dir and self.app_reader.config.input_file_dependencies:
-            print("REMOVING INPUT FILE DEPENDENCIES...")
+            DEBUG("REMOVING INPUT FILE DEPENDENCIES...")
             for input_dep in self.app_reader.config.input_file_dependencies.values():
                 location = os.path.join(self.machine_reader.config.input_dataset_base_dir,input_dep)
                 if os.path.isfile(location):
                     os.remove(location)
                 elif os.path.isdir(location):
                     shutil.rmtree(location)
-                print(f"\t DELETED {input_dep}")
+                DEBUG(f"\t DELETED {input_dep}")
 
             #Delete empty dirs
             for dirpath, dirnames, _ in os.walk(self.machine_reader.config.input_dataset_base_dir, topdown=False):
@@ -83,11 +83,11 @@ class RegressionTest(ReframeSetup):
                     directory = os.path.join(dirpath,dirname)
                     if not os.listdir(directory):
                         os.rmdir(directory)
-                        print(f"Deleted empty directory: {directory}")
+                        DEBUG(f"Deleted empty directory: {directory}")
 
             if not os.listdir(self.machine_reader.config.input_dataset_base_dir):
                 os.rmdir(self.machine_reader.config.input_dataset_base_dir)
-                print(f"Deleted empty directory: {self.machine_reader.config.input_dataset_base_dir}")
+                DEBUG(f"Deleted empty directory: {self.machine_reader.config.input_dataset_base_dir}")
 
     @sanity_function
     def sanityCheck(self):
