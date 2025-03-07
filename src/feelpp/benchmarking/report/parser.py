@@ -22,6 +22,7 @@ class ReportArgParser():
         self.parser.add_argument("--plot-configs", "-pc", type=str, nargs='+',default=[], action='extend', help="Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports")
         self.parser.add_argument("--patch-reports","-pr", type=str, nargs='+',default=[], action='extend', help="Id of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)")
         self.parser.add_argument("--save-patches","-sp", action='store_true', help="If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.")
+        self.parser.add_argument("--antora-basepath", required=False, type=str, default=".", help="Path to the base directory where the antora environment is set (package.json and site.yml)")
         self.parser.add_argument("--website","-w", action='store_true', help="Compile documentation and start HTTP server with benchmark reports")
 
     def validate(self):
@@ -43,7 +44,7 @@ class ReportArgParser():
 
     def checkDirectoriesExist(self):
         """ Check that directories passed as arguments exist in the filesystem"""
-        for filepath in [self.args.config_file, self.args.modules_path]:
+        for filepath in [self.args.config_file, self.args.modules_path, self.args.antora_basepath]:
             if not os.path.exists(filepath):
                 raise FileNotFoundError(f"File not found ({filepath})")
 

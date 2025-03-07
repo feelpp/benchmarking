@@ -20,8 +20,8 @@ class AtomicReport:
             partials_dir (str): The directory path where parametric descriptions of the use case can be found (usually comes with the reframe report). Pass None if non-existent
         """
         data = self.parseJson(reframe_report_json)
-        self.plots_config_path = plot_config_json
-        self.plots_config = self.parseJson(plot_config_json)
+        self.plots_config_path = plot_config_json or os.path.join(os.path.dirname(reframe_report_json),"plots.json")
+        self.plots_config = self.parseJson(plot_config_json) if plot_config_json else []
         self.partials_dir = partials_dir
 
         self.filepath = reframe_report_json

@@ -37,7 +37,16 @@ class AtomicReportRepository(Repository):
                     for report_dir in report_dirs:
                         reframe_report_json = os.path.join(report_dir,"reframe_report.json")
                         plots_config_json = os.path.join(report_dir,"plots.json")
+
+                        if not os.path.isfile(reframe_report_json):
+                            print(f"{report_dir} does not contain any reframe report. Skipping it...")
+                            continue
+
+                        if not os.path.isfile(plots_config_json):
+                            plots_config_json = None
+
                         partials_dir = os.path.join(report_dir,"partials")
+
                         if not os.path.exists(partials_dir) or len(os.listdir(partials_dir)) == 0:
                             partials_dir = None
                         self.add(

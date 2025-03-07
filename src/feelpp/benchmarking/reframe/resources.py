@@ -22,7 +22,7 @@ class TaskAndTaskPerNodeStrategy(ResourceStrategy):
     def configure(self, resources, rfm_test):
         rfm_test.num_tasks_per_node = int(resources.tasks_per_node)
         rfm_test.num_tasks = int(resources.tasks)
-        rfm_test.num_nodes = int(np.ceil(resources.tasks / resources.tasks_per_node))
+        rfm_test.num_nodes = int(np.ceil(rfm_test.num_tasks / rfm_test.num_tasks_per_node))
 
     def validate(self, rfm_test):
         super().validate(rfm_test)
@@ -37,7 +37,7 @@ class NodesAndTasksPerNodeStrategy(ResourceStrategy):
     def configure(self, resources, rfm_test):
         rfm_test.num_tasks_per_node = int(resources.tasks_per_node)
         rfm_test.num_nodes = int(resources.nodes)
-        rfm_test.num_tasks = rfm_test.num_tasks_per_node * rfm_test.num_nodes
+        rfm_test.num_tasks = int(rfm_test.num_tasks_per_node * rfm_test.num_nodes)
 
     def validate(self, rfm_test):
         super().validate(rfm_test)

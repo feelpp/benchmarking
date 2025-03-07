@@ -1,7 +1,6 @@
 import socket
 
 hostname = socket.gethostname()
-print("Hostname:", hostname)
 
 site_configuration = {
     'systems':[
