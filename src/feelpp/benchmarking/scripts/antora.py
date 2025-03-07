@@ -15,7 +15,8 @@ def initGit():
 def init(args):
     #Check destination exists
     if not os.path.isdir(args.destination):
-        raise FileNotFoundError(f"Destination {args.destination} does not exist")
+        print(f"Destination {args.destination} is not a directory, creating it...")
+        os.makedirs(args.destination)
 
     script_data_path = f"{Path(__file__).resolve().parent}/data/"
 
