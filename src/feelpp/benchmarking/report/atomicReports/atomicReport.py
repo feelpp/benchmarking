@@ -108,7 +108,7 @@ class AtomicReport:
         if not os.path.exists(self.partials_dir):
             raise FileNotFoundError("Parametrized descriptions directory does not exist")
 
-        move_dir = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename()).replace("-","_").replace(":","_").replace("+","Z")
+        move_dir = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"))
         if not os.path.exists(move_dir):
             os.makedirs(move_dir)
 
@@ -137,7 +137,7 @@ class AtomicReport:
                 if all(var not in check_vars for var in ["script","output_log","error_log"]):
                     continue
 
-                logs_filepath = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase['hash']}.adoc").replace("-","_").replace(":","_").replace("+","Z")
+                logs_filepath = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"),f"{testcase['hash']}.adoc")
                 if not os.path.exists(os.path.dirname(logs_filepath)):
                     os.makedirs(os.path.dirname(logs_filepath))
 
