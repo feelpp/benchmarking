@@ -1,4 +1,4 @@
-import json, os
+import json, os, shutil
 from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
 from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
 from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
@@ -114,7 +114,7 @@ class AtomicReport:
 
         case_description_filename="description.adoc"
         if os.path.exists(os.path.join(self.partials_dir,case_description_filename)):
-            os.rename(os.path.join(self.partials_dir,case_description_filename), os.path.join(move_dir,case_description_filename))
+            shutil.copy2(os.path.join(self.partials_dir,case_description_filename), os.path.join(move_dir,case_description_filename))
             self.description_path =  os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),case_description_filename)
 
         for description_filename in os.listdir(self.partials_dir):
@@ -122,7 +122,7 @@ class AtomicReport:
             description_file_basename_splitted = description_file_basename.split(".")[0]
 
             if description_file_basename_splitted in self.hash_param_map:
-                os.rename(os.path.join(self.partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
+                shutil.copy2(os.path.join(self.partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
                 self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),description_file_basename)
 
     def createLogReports(self,base_dir, renderer):
