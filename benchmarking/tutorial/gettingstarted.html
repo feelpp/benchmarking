@@ -305,166 +305,56 @@ source .venv/bin/activate</code></pre>
 <div class="paragraph">
 <p>In order to generate the benchmark reports website, Antora must be configured beforehand, along with the necessary extensions. More information can be found in <a href="https://docs.antora.org/antora/latest/install-and-run-quickstart/">Antora Documentation</a></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Make sure you have <a href="http://nodejs.org/en/download">Node.js</a> installed.</p>
-</li>
-</ul>
 </div>
-<div class="admonitionblock important">
+<div class="paragraph">
+<p>To initialize the Antora environment, run</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">feelpp-antora init -d &lt;BASE-DIRECTORY&gt; -t &lt;YOUR-PROJECT-TITLE&gt; -n &lt;YOUR-PROJECT-NAME&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="paragraph">
-<p>The following part of prerequisites is only necessary if the <code>feelpp.benchmarking</code> repository is not being cloned.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The project title will be shown on the webpage, but the project name serves as an ID for your project.</p>
+</li>
+<li>
+<p>The project name must not contain spaces or any special character (only underscore is supported).</p>
+</li>
+</ul>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>A local git repository is needed, so if you are not adding <code>feelpp.benchmarking</code> to an existing repository:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git init
-git commit --allow-empty -m init</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Download the <a href="https://github.com/feelpp/benchmarking/blob/master/package.json">package.json</a> dependency file and place it at the root of your project.</p>
-</li>
-<li>
-<p>Install dependencies</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">npm install</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Create the Antora&#8217;s <a href="https://docs.antora.org/antora/latest/standard-directories/">standard directory hierarchy</a>.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir -p docs/modules/ROOT/pages</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Create the start and navigation pages</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "= &lt;YOUR-PROJECT-TITLE&gt;\n:page-layout: toolboxes\n:page-tags: catalog, catalog-index\n:docdatetime: 2025-01-22T11:42:45" &gt; docs/modules/ROOT/pages/index.adoc</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "* xref:ROOT:index.adoc[YOUR-PROJECT-TITLE]" &gt; docs/modules/ROOT/nav.adoc</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Write the component version descriptor.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch docs/antora.yml</code></pre>
-</div>
-</div>
 <div class="paragraph">
-<p>Write the following in the file.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">name: &lt;PROJECT-NAME&gt;
-title: &lt;YOUR-PROJECT-TITLE&gt;
-version: ~
-start_page: index.adoc
-asciidoc:
-  attributes:
-    project_name: &lt;YOUR-PROJECT-TITLE&gt;
-    numbered: true
-    dynamic-blocks@: ''
-    allow-uri-read: true
-    hide-uri-scheme: true
-nav:
-  - modules/ROOT/nav.adoc</code></pre>
-</div>
+<p>The previous script will do the following:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Create the antora playbook at the root of your project</p>
+<p>Initialize a git repository in &lt;BASE-DIRECTORY&gt; if it is not already one.</p>
+</li>
+<li>
+<p>Copy and install a <code>packages.json</code> file containing necessary dependencies.</p>
+</li>
+<li>
+<p>Create the <code>&lt;BASE-DIRECTORY&gt;/docs/modules/ROOT/</code> directories where rendered files will be located.</p>
+</li>
+<li>
+<p>Create an antora component version descriptor and an antora playbook using &lt;YOUR-PROJECT-TITLE&gt; and &lt;YOUR-PROJECT-NAME&gt;</p>
 </li>
 </ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch ./site.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Write the following to the file</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">site:
-  title: &lt;YOUR-PROJECT-TITLE&gt;
-  start_page: &lt;YOUR-PROJECT-NAME&gt;::index.adoc
-content:
-  sources:
-  - url: .
-    branches: HEAD
-    start_path: docs
-ui:
-  bundle:
-    url: https://github.com/feelpp/antora-ui/releases/latest/download/ui-bundle.zip
-    snapshot: true
-output:
-  clean: true
-  dir: public
-asciidoc:
-  extensions:
-  - '@feelpp/asciidoctor-extensions'</code></pre>
-</div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Make sure to replace the values of <code>&lt;YOUR-PROJECT-NAME&gt;</code> and <code>&lt;YOUR-PROJECT-TITLE&gt;</code> with the actual values.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -490,7 +380,7 @@ asciidoc:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mpic++ -std=c++17 -o test/data/parallelSum test/data/parallelSum.cpp</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mpic++ -std=c++17 -o examples/parallelsum/parallelSum examples/parallelsum/parallelSum.cpp</code></pre>
 </div>
 </div>
 </div>
@@ -598,6 +488,20 @@ asciidoc:
 }</code></pre>
 </div>
 </div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Remember to modify the <code>executable</code> path as well as <code>output_directory</code> if installing via pip.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>More information about <em>feelpp.benchmarking</em> benchmark specifications can be found <a href="https://bench.feelpp.org/benchmarking/tutorial/configuration.html#_benchmark_configuration">here</a></p>
 </div>
@@ -605,7 +509,7 @@ asciidoc:
 <div class="sect2">
 <h3 id="_plots_configuration"><a class="anchor" href="#_plots_configuration"></a>3.4. Plots configuration</h3>
 <div class="paragraph">
-<p>Along with the benchmark configuration, a figure configuration file is provided <em>examples/parallelsum/plots.json</em> (plots.json)[<a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json" class="bare">github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json</a>].</p>
+<p>Along with the benchmark configuration, a figure configuration file is provided <em>examples/parallelsum/plots.json</em> Download it here <a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json">plots.json</a>.</p>
 </div>
 <div class="paragraph">
 <p>An example of one figure specification is shown below. Users can add as many figures as they wish, corresponding the figure axis with the parameters used on the benchmark.</p>
@@ -645,14 +549,26 @@ asciidoc:
 <div class="paragraph">
 <p>The <code>--website</code> option will start an http-server on localhost, so the website can be visualized. Check the console for more information.</p>
 </div>
-<div class="admonitionblock note">
+<div class="admonitionblock caution">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-If you installed the framework via PyPi, you need to directly download all 5 quickstart files.
+<div class="paragraph">
+<p>If you installed the framework via PyPi:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to directly download all 5 quickstart files.</p>
+</li>
+<li>
+<p>The <code>--website</code> option will only work if you have the exact antora setup as this repository.</p>
+</li>
+</ul>
+</div>
 </td>
 </tr>
 </table>
@@ -713,33 +629,17 @@ If you installed the framework via PyPi, you need to directly download all 5 qui
 <div class="paragraph">
 <p>The script takes the following arguments:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>--config-file</code> (<code>-c</code>): The path of the website configuration file.</p>
-</li>
-<li>
-<p><code>--remote-download-dir</code> (<code>-do</code>): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).</p>
-</li>
-<li>
-<p><code>--modules-path</code> (<code>-m</code>): [Optional] Path to the Antora module to render the reports to. It defaults to <em>docs/modules/ROOT/pages</em>. Multiple directories will be recursively created under the provided path.</p>
-</li>
-<li>
-<p><code>--overview-config</code> (<code>-oc</code>): Path to the overview figure configuration file.</p>
-</li>
-<li>
-<p><code>--plot-configs</code> (<code>-pc</code>): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports</p>
-</li>
-<li>
-<p><code>--patch-reports</code> (<code>-pr</code>) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)</p>
-</li>
-<li>
-<p><code>--save-patches</code> (<code>-sp</code>) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.</p>
-</li>
-<li>
-<p><code>--website</code> (<code>-w</code>) : [Optional] Automatically compite the website and start an http server.</p>
-</li>
-</ul>
+<div class="literalblock">
+<div class="content">
+<pre>`--config-file` (`-c`): The path of the website configuration file.
+`--remote-download-dir` (`-do`): [Optional] Path of the directory to download the reports to. Only relevant if the configuration file contains remote locations (only Girder is supported at the moment).
+`--modules-path` (`-m`): [Optional] Path to the Antora module to render the reports to. It defaults to _docs/modules/ROOT/pages_. Multiple directories will be recursively created under the provided path.
+`--overview-config` (`-oc`): Path to the overview figure configuration file.
+`--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
+`--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
+`--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
+`--website` (`-w`) : [Optional] Automatically compite the website and start an http server.</pre>
+</div>
 </div>
 </div>
 </div>
