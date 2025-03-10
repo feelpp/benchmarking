@@ -85,9 +85,6 @@ class RegressionTest(ReframeSetup):
                         os.rmdir(directory)
                         DEBUG(f"Deleted empty directory: {directory}")
 
-            if not os.listdir(self.machine_reader.config.input_dataset_base_dir):
-                os.rmdir(self.machine_reader.config.input_dataset_base_dir)
-                DEBUG(f"Deleted empty directory: {self.machine_reader.config.input_dataset_base_dir}")
 
     @sanity_function
     def sanityCheck(self):
