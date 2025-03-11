@@ -108,7 +108,7 @@ class AtomicReport:
         if not os.path.exists(self.partials_dir):
             raise FileNotFoundError("Parametrized descriptions directory does not exist")
 
-        rel_move_dir = os.path.join(base_dir.split("/")[-1],self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"))
+        rel_move_dir = self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z")
         move_dir = os.path.join(base_dir,rel_move_dir)
         if not os.path.exists(move_dir):
             os.makedirs(move_dir)
@@ -116,7 +116,7 @@ class AtomicReport:
         case_description_filename="description.adoc"
         if os.path.exists(os.path.join(self.partials_dir,case_description_filename)):
             shutil.copy2(os.path.join(self.partials_dir,case_description_filename), os.path.join(move_dir,case_description_filename))
-            self.description_path =  os.path.join(rel_move_dir,case_description_filename)
+            self.description_path =  os.path.join(base_dir.split("/")[-1],rel_move_dir,case_description_filename)
 
         for description_filename in os.listdir(self.partials_dir):
             description_file_basename = os.path.basename(description_filename)
@@ -124,7 +124,7 @@ class AtomicReport:
 
             if description_file_basename_splitted in self.hash_param_map:
                 shutil.copy2(os.path.join(self.partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
-                self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(rel_move_dir,description_file_basename)
+                self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(base_dir.split("/")[-1],rel_move_dir,description_file_basename)
 
     def createLogReports(self,base_dir, renderer):
         """ Render the reframe logs (output, error, script) for each testcase
@@ -138,12 +138,12 @@ class AtomicReport:
                 if all(var not in check_vars for var in ["script","output_log","error_log"]):
                     continue
 
-                logs_rel_dir = os.path.join(base_dir.split("/")[-1],self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"),f"{testcase['hash']}.adoc")
+                logs_rel_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"),f"{testcase['hash']}.adoc")
                 logs_filepath = os.path.join(base_dir,logs_rel_dir)
                 if not os.path.exists(os.path.dirname(logs_filepath)):
                     os.makedirs(os.path.dirname(logs_filepath))
 
-                self.hash_param_map[testcase["hash"]]["logs_filepath"] = logs_rel_dir
+                self.hash_param_map[testcase["hash"]]["logs_filepath"] = os.path.join(base_dir.split("/")[-1],logs_rel_dir)
                 renderer.render(
                     logs_filepath,
                     dict(
