@@ -4,9 +4,6 @@ from datetime import datetime
 from feelpp.benchmarking.report.renderer import Renderer
 from pathlib import Path
 
-def isGitDirectory(path = '.'):
-    return subprocess.call(['git', '-C', path, 'status'], stderr=subprocess.STDOUT, stdout = open(os.devnull, 'w')) == 0
-
 def initGit():
     print("initializing git repository...")
     subprocess.call(["git","init"])
@@ -26,8 +23,7 @@ def init(args):
     #Init git repo at destination
     cwd = os.getcwd()
     os.chdir(args.destination)
-    if not isGitDirectory("."):
-        initGit()
+    initGit()
 
     #Install packages (npm install)
     subprocess.call(["npm","install"])
