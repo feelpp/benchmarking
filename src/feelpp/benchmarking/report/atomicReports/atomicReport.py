@@ -108,7 +108,7 @@ class AtomicReport:
         if not os.path.exists(self.partials_dir):
             raise FileNotFoundError("Parametrized descriptions directory does not exist")
 
-        rel_move_dir = self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z")
+        rel_move_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"))
         move_dir = os.path.join(base_dir,rel_move_dir)
         if not os.path.exists(move_dir):
             os.makedirs(move_dir)
