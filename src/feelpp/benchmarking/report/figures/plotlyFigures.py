@@ -96,7 +96,7 @@ class PlotlyFigure(Figure):
         return figure
 
     def createHtml(self,df):
-        return self.createFigure(df).to_html()
+        return self.createFigure(df).to_html(auto_play=False,include_plotlyjs=False, full_html=False)
 
 
 class PlotlyScatterFigure(PlotlyFigure):
