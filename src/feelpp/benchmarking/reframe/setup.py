@@ -121,9 +121,12 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
         DEBUG(f"==========================================================")
         DEBUG(f"     COPYING FILES FROM {self.machine_reader.config.input_user_dir} to {self.machine_reader.config.input_dataset_base_dir}   ")
-        for input_dep in self.app_reader.config.input_file_dependencies.values():
+        for input_dep_name,input_dep in self.app_reader.config.input_file_dependencies.items():
             DEBUG(f"\t {input_dep}")
             source = os.path.join(self.machine_reader.config.input_user_dir, input_dep)
+            if not os.path.exists(source):
+                raise FileNotFoundError(f"Did not found input dependency {input_dep_name}")
+
             destination = os.path.join(self.machine_reader.config.input_dataset_base_dir, input_dep)
 
             if os.path.exists(destination):
@@ -131,6 +134,20 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
                 continue
             FileHandler.copyResource(source,os.path.dirname(destination) if os.path.isfile(source) else destination)
         DEBUG("============================================================")
+
+    @run_before('run')
+    def checkInputFileDependencies(self):
+        if not self.machine_reader.config.input_file_dependencies:
+            return
+
+        for input_dep_name, input_dep in self.app_reader.config.input_file_dependencies.items():
+            if os.path.isabs(input_dep):
+                if not os.path.exists(input_dep):
+                    raise FileNotFoundError(f"Input dependency {input_dep_name} not found in {input_dep}")
+            else:
+                expected_path = os.path.join(self.machine_reader.config.input_dataset_base_dir,input_dep)
+                if not os.path.exists(expected_path):
+                    raise FileNotFoundError(f"Input dependency {input_dep_name} not found in {expected_path}")
 
 
     @run_before('run')
