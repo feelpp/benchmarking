@@ -23,7 +23,8 @@ def init(args):
     #Init git repo at destination
     cwd = os.getcwd()
     os.chdir(args.destination)
-    initGit()
+    if not os.path.exists(".git"):
+        initGit()
 
     #Install packages (npm install)
     subprocess.call(["npm","install"])
