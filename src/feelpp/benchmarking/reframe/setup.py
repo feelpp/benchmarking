@@ -137,7 +137,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def checkInputFileDependencies(self):
-        if not self.machine_reader.config.input_file_dependencies:
+        if not self.app_reader.config.input_file_dependencies:
             return
 
         for input_dep_name, input_dep in self.app_reader.config.input_file_dependencies.items():
