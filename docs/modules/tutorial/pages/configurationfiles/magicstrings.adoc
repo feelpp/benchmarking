@@ -1,6 +1,6 @@
 = Magic strings
 
-Benchmarking configuration files support a special *placeholder* syntax, using double curly braces `{{placeholder}}`.
+Benchmarking configuration files support a special *placeholder* syntax, using double curly braces `{\{placeholder\}}`.
 This syntax is specially useful for:
 
 - Refactoring configuration fields.
@@ -26,7 +26,7 @@ For replacing a value coming from the machine configuration, simply prepend any 
 
 The framework is equiped with the following reserved keywords for placeholders:
 
-- `{{instance}}` : Returns the hashcode of the current ReFrame test.
+- `{\{instance\}}` : Returns the hashcode of the current ReFrame test.
 - `{{.value}}`: The value keyword must be appended to a parameter name (e.g. `{{parameters.my_param.value}}`). It fetches the current value of a given runtime variable (such as a parameter). More information on the xref:tutorial:configurationfiles/benchmark.adoc#_parameters[Parameters] section.
 
 == Nested placeholders
