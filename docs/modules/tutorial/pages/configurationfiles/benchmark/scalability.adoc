@@ -69,10 +69,10 @@ Let's assume our application exports the following files:
 
 [NOTE]
 ====
-The `{{instance}}` keyword on the export implies that each test exports this files on its own directory, using the test's hashcode.
+The `{\{instance\}}` keyword on the export implies that each test exports this files on its own directory, using the test's hashcode.
 ====
 
-- /data/outputs/{{instance}}/exports.csv
+- /data/outputs/{\{instance\}}/exports.csv
 
 [source,csv]
 ----
@@ -80,7 +80,7 @@ a,b,c
 1,2,3
 ----
 
-- /data/outputs/{{instance}}/logs/timers.json
+- /data/outputs/{\{instance\}}/logs/timers.json
 
 [source,json]
 ----
@@ -124,7 +124,7 @@ An example of the scalability field to extract values on these files is found an
 }
 ----
 
-The common directory path of these exports is _/data/outputs/{{instance}}_.
+The common directory path of these exports is _/data/outputs/{\{instance\}}_.
 
 Let's analyse the first stage:
 

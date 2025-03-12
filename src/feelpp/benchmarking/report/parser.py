@@ -24,6 +24,7 @@ class ReportArgParser():
         self.parser.add_argument("--save-patches","-sp", action='store_true', help="If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.")
         self.parser.add_argument("--antora-basepath", required=False, type=str, default=".", help="Path to the base directory where the antora environment is set (package.json and site.yml)")
         self.parser.add_argument("--website","-w", action='store_true', help="Compile documentation and start HTTP server with benchmark reports")
+        self.parser.add_argument('--help', '-h', action='help', help='Display help and quit program')
 
     def validate(self):
         """ Validate specific options """

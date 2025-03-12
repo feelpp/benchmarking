@@ -1,11 +1,8 @@
-import os,subprocess,shutil
+import os,subprocess,shutil,glob
 from argparse import ArgumentParser
 from datetime import datetime
 from feelpp.benchmarking.report.renderer import Renderer
 from pathlib import Path
-
-def isGitDirectory(path = '.'):
-    return subprocess.call(['git', '-C', path, 'status'], stderr=subprocess.STDOUT, stdout = open(os.devnull, 'w')) == 0
 
 def initGit():
     print("initializing git repository...")
@@ -15,7 +12,8 @@ def initGit():
 def init(args):
     #Check destination exists
     if not os.path.isdir(args.destination):
-        raise FileNotFoundError(f"Destination {args.destination} does not exist")
+        print(f"Destination {args.destination} is not a directory, creating it...")
+        os.makedirs(args.destination)
 
     script_data_path = f"{Path(__file__).resolve().parent}/data/"
 
@@ -25,7 +23,7 @@ def init(args):
     #Init git repo at destination
     cwd = os.getcwd()
     os.chdir(args.destination)
-    if not isGitDirectory("."):
+    if not os.path.exists(".git"):
         initGit()
 
     #Install packages (npm install)
@@ -38,8 +36,9 @@ def init(args):
     if not os.path.isdir("docs/modules/ROOT/images"):
         os.mkdir("docs/modules/ROOT/images")
 
-    #Add default images
-    #TODO
+    #Add builtin images
+    for img in glob.glob(os.path.join(script_data_path,"website_images","*")):
+        shutil.copy(img,"docs/modules/ROOT/images")
 
     #Create index
     with open("docs/modules/ROOT/pages/index.adoc","w") as f:
