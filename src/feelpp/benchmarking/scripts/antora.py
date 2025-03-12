@@ -1,4 +1,4 @@
-import os,subprocess,shutil
+import os,subprocess,shutil,glob
 from argparse import ArgumentParser
 from datetime import datetime
 from feelpp.benchmarking.report.renderer import Renderer
@@ -36,8 +36,9 @@ def init(args):
     if not os.path.isdir("docs/modules/ROOT/images"):
         os.mkdir("docs/modules/ROOT/images")
 
-    #Add default images
-    #TODO
+    #Add builtin images
+    for img in glob.glob(os.path.join(script_data_path,"website_images","*")):
+        shutil.copy(img,"docs/modules/ROOT/images")
 
     #Create index
     with open("docs/modules/ROOT/pages/index.adoc","w") as f:
