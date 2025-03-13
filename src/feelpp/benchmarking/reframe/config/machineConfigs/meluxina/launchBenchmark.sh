@@ -1,5 +1,6 @@
 #!/bin/bash -l
 
+module load env/staging/2023.1
 module load Apptainer/1.2.4-GCCcore-12.3.0
 
 export GIRDER_API_KEY=$GIRDER_API_KEY
