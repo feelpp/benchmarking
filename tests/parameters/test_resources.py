@@ -147,10 +147,10 @@ class TestResourcesStrategies:
             assert rfm_test.num_gpus_per_node == gpus_per_node
 
     @pytest.mark.parametrize(("tasks","memory","expected_nodes","expected_tasks_per_node"), [
-        (128, 900, 1, 128), (128, 1000, 1, 128), (128, 1100, 2, 64), (128, 2100, 4, 42),
-        (64, 500, 1, 64), (64, 1000, 1, 64), (64, 1100, 2, 32),
-        (256, 900, 2, 128), (256, 1100, 2, 128), (256, 2500, 4, 85), (256, 3500, 4, 64),
-        (301, 900, 3, 128), (301, 1100, 4, 100), (301, 4100, 6, 60)
+        (128, 900, 1, 128), (128, 1000, 1, 128), (128, 1100, 2, None), (128, 2100, 3, None),
+        (64, 500, 1, 64), (64, 1000, 1, 64), (64, 1100, 2, None),
+        (256, 900, 2, 128), (256, 1100, 2, None), (256, 2500, 3, None), (256, 3500, 4, None),
+        (301, 900, 3, 128), (301, 1100, 3, None), (301, 4100, 5, None)
     ])
     def test_memoryEnforcer(self, tasks, memory, expected_nodes, expected_tasks_per_node):
         """ Tests the MemoryEnforcer
