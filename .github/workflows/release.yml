@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      major:
+        description: 'Major version (e.g., 1)'
+        required: true
+        type: string
+      minor:
+        description: 'Minor version (e.g., 0)'
+        required: true
+        type: string
+      patch:
+        description: 'Patch version (e.g., 0)'
+        required: true
+        type: string
+      pre-release:
+        description: 'Pre-release version (e.g., alpha.1, beta.1, rc.1, preview.1, leave empty if not applicable)'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Git Tag
+        id: create_tag
+        run: |
+          PRE_RELEASE=${{ github.event.inputs.pre-release }}
+          if [ -n "$PRE_RELEASE" ]; then
+            PRE_RELEASE="-${PRE_RELEASE}"
+          fi
+          VERSION="v${{ github.event.inputs.major }}.${{ github.event.inputs.minor }}.${{ github.event.inputs.patch }}${PRE_RELEASE}"
+          git tag $VERSION
+          git push origin $VERSION
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Trigger CI Workflow
+        run: |
+          gh workflow run CI --ref ${{ steps.create_tag.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
