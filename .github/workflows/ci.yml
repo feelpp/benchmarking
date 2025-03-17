@@ -89,7 +89,7 @@ jobs:
         fi
 
   docs:
-    runs-on: self-ubuntu-22.04
+    runs-on: self-antora
     name: Build Antora Site
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'docs skip')"
