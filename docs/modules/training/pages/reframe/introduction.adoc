@@ -1,22 +1,52 @@
+= Overview of ReFrame-HPC and feelpp.benchmarking
 
-= Introduction to ReFrame-HPC
+== What is feelpp.benchmarking ?
 
-== What is ReFrame-HPC
+_feelpp.benchmarking_ is a framework designed to automate and facilitate the benchmarking process for any application. It is built on top of link:https://github.com/reframe-hpc/reframe[ReFrame-HPC], and was conceived to simplify benchmarking on any HPC system. The framework is specially useful for centralizing benchmarking results and ensuring reproducibility.
 
-- What is
-- Why useful in HPC
+image::bench_supercomputers.png[feelpp.benchmarking Supercomputers,width=75%]
 
-== Core Features
+=== Motivation
 
-- Regression testing
-- Performance Validation
-- Benchmarking
+Benchmarking an HPC application can often be an error-prone process, as the benchmarks need to be configured for multiple systems. If evaluating multiple applications, a benchmarking pipeline needs to be created for each one of them.
+This is where _feelpp.benchmarking_ comes in hand, as it allows users to run reproducible and consistent benchmarks for their applications on different architectures without manually handling execution details.
 
-- Reproducibility of results
-- Continuous benchmarking
+The framework's customizable configuration files make it adaptable to various scenarios.
+Whether you're optimizing code, comparing hardware, or ensuring the reliability of numerical simulations, _feelpp.benchmarking_ offers a structured, scalable, and user-friendly solution to streamline the benchmarking process.
 
-== Setup
+=== How it works
 
-- Installation: Spack, EasyBuild, PyPi, GitHub
-- >=Python 3.6, Some Python dependencies
+The framework requires 4 configuration files, in JSON format, in order to set up a benchmark.
+
+4 configuration files::
+    System settings (ReFrame)::: Describes the system architecture (e.g. partitions, environments, available physical memory, devices)
+    Machine Specifications::: Filters the environments to benchmark, specifies access, I/O directories and test execution policies.
+    Benchmark/Application Specifications::: Describes how to execute the application, where and how to extract performance variables, and the test parametrization.
+    Figure configuration::: Describes how to build the generated report's plots
+
+Once the files are built and _feelpp.benchmarking_ is launched, a pre-processing phase begins where configuration files are parse. After this, the ReFrame test pipeline is executed according to the provided configuration.
+
+Pre-processing stage::
+    1. Configuration files are parsed to replace *placeholders*.
+    2. If a container image is being benchmarked, this one is pulled and placed on the provided destination.
+    3. If there are remote file dependencies, they are downloaded to the specified destinations.
+
+ReFrame test pipeline::
+    1. The parameter space is created.
+    2. Tests are dispatched.
+    3. Computing resources are set, along with specific launcher and scheduler options.
+    4. Jobs are submitted by the scheduler.
+    5. Performance variables are extracted.
+    6. Sanity checks
+    7. Cleanup
+
+== What is ReFrame-HPC ?
+
+image::reframe_logo-width400p.png[ReFrame Logo]
+
+"ReFrame is a powerful framework for writing system regression tests and benchmarks, specifically targeted to HPC systems. The goal of the framework is to abstract away the complexity of the interactions with the system, separating the logic of a test from the low-level details, which pertain to the system configuration and setup. This allows users to write portable tests in a declarative way that describes only the test's functionality."
+-- https://github.com/reframe-hpc/reframe[ReFrame in a Nutshell]
+
+
+- Core features: performance validation, regression testing, benchmarking
 
