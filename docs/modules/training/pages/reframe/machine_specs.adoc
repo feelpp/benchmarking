@@ -1,0 +1,29 @@
+= Machine Specification File
+
+When benchmarking an application, users must tell _feelpp.benchmarking_ in which system the tests will run. To do this, a machine specification JSON file should be provided.
+
+This configuration file will not only filter partitions and environments for the tests, but also specifies access to the target systems (if needed). Users can also specify some input and output directories path that are common for all benchmarked applications.
+
+[TIP]
+====
+Thanks to _feelpp.benchmarking_'s {{placeholder}} syntax, multiple configuration fields can be refactored inside this file.
+====
+
+.Basic machine configuration file
+====
+[source,json]
+----
+{
+    "machine": "default",
+
+    "partitions":["my_partition"],
+    "prog_environments":["my_environment"],
+
+    "reframe_base_dir":"$PWD/build/reframe",
+    "reports_base_dir":"$PWD/reports/",
+
+    "input_dataset_base_dir":"$PWD/input_data",
+    "output_app_dir":"$PWD/outputs"
+}
+----
+====
