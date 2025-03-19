@@ -59,8 +59,6 @@ Regression testing:: Ensures that new changes do not introduce errors by re-runn
 Performance evaluation:: Monitors and assesses the performance of applications to detect any regressions or improvements.
 Performance and Sanity checks:: Automates validation of test results with built-in support for performance benchmarks, ensuring correctness and efficiency.
 
-image::reframe-system-arch.svg[ReFrame system architecture]
-
 === Test Execution Pipeline
 
 ReFrame tests go through a pre-defined pipeline where users can customize the what happens in between each step by using decorators (e.g. `@run_after("setup")`).
@@ -76,6 +74,8 @@ ReFrame tests go through a pre-defined pipeline where users can customize the wh
 5. Performance: Performance metrics are collected.
 
 6. Cleanup: Test resources are cleaned up.
+
+image::reframe-test-cases.svg[How ReFrame loads and schedules tests for execution]
 
 .Example Pipeline
 ====
