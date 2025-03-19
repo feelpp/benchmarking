@@ -40,6 +40,12 @@ ReFrame test pipeline::
     6. Sanity checks
     7. Cleanup
 
+Finally, at the end phase of the pipeline, _feelpp.benchmarking_ will store the ReFrame report following a specific folder structure.
+This will allow the framework to handle multiple ReFrame reports in order to render them in a dashboard-like website.
+
+The diagram figure summarizes the _feelpp.benchmarking_ workflow.
+image::benchmark_code_design.png[feelpp.benchmarking sequence diagram]
+
 == What is ReFrame-HPC ?
 
 image::reframe_logo-width400p.png[ReFrame Logo]
@@ -47,6 +53,75 @@ image::reframe_logo-width400p.png[ReFrame Logo]
 "ReFrame is a powerful framework for writing system regression tests and benchmarks, specifically targeted to HPC systems. The goal of the framework is to abstract away the complexity of the interactions with the system, separating the logic of a test from the low-level details, which pertain to the system configuration and setup. This allows users to write portable tests in a declarative way that describes only the test's functionality."
 -- https://github.com/reframe-hpc/reframe[ReFrame in a Nutshell]
 
+=== Core features
 
-- Core features: performance validation, regression testing, benchmarking
+Regression testing:: Ensures that new changes do not introduce errors by re-running existing test cases.
+Performance evaluation:: Monitors and assesses the performance of applications to detect any regressions or improvements.
+Performance and Sanity checks:: Automates validation of test results with built-in support for performance benchmarks, ensuring correctness and efficiency.
 
+image::reframe-system-arch.svg[ReFrame system architecture]
+
+=== Test Execution Pipeline
+
+ReFrame tests go through a pre-defined pipeline where users can customize the what happens in between each step by using decorators (e.g. `@run_after("setup")`).
+
+1. Setup: Tests are set up for current partition and programming environment.
+
+2. Compile: If needed, the script for test compilation is created and submitted for execution.
+
+3. Run: Scripts associated to the test execution are submitted (asynchronously or sequentially).
+
+4. Sanity: The test outputs are checked to validate the correct execution.
+
+5. Performance: Performance metrics are collected.
+
+6. Cleanup: Test resources are cleaned up.
+
+.Example Pipeline
+====
+[source, python]
+----
+import reframe as rfm
+import reframe.utility.sanity as sn
+
+@rfm.simple_test
+class SleepTest(rfm.RunOnlyRegressionTest):
+    valid_systems = ['*']
+    valid_prog_environs = ['*']
+
+    executable = 'bash'
+    executable_opts = ['-c']
+    seconds_to_sleep = parameter([1,2,3])
+
+    @run_after("init")
+    def setReferences(self):
+        self.reference = {
+            '*': {
+                'sleepTime': (self.seconds_to_sleep,-0.05,0.05,'s')
+            }
+        }
+
+    @run_before("run")
+    def setExecutableOpts(self):
+        self.executable_opts += [f'''
+            SECONDS=0;
+            sleep {self.seconds_to_sleep};
+            duration=$SECONDS;
+            echo "slept for $duration s";
+            echo "I'm done sleeping!";
+        ''']
+
+    @sanity_function
+    def validateExecution(self):
+        return sn.assert_found("I'm done sleeping!", self.stdout)
+
+    @performance_function('s')
+    def sleepTime(self):
+        return sn.extractsingle(f'slept for (\d+)\s+s',self.stdout,1,float)
+----
+====
+
+For those interested in learning more, check out:
+
+- Official ReFrame Documentation: https://reframe-hpc.readthedocs.io
+- GitHub Repository: https://github.com/reframe-hpc
