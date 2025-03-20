@@ -1,0 +1,18 @@
+= Launching the benchmarks
+
+The `feelpp-benchmarking-exec` command is used to launch the benchmarks. The command is used as follows:
+
+[source,bash]
+----
+feelpp-benchmarking-exec --machine-config <machine-config> \
+                            --benchmark-config <benchmark-config> \
+                            --plots-config <plots-config> \
+                            --custom-rfm-config <custom-rfm-config>
+----
+
+Additionally, the `-v` flag can be used to increase the verbosity, the `--dry-run` flag can be used to simulate the execution and only generate scheduler scripts without submitting them, and the `--website` flag can be used to render the final reports and launch an http server to visualize the generated dashboard.
+
+The `feelpp-benchmarking-exec` command will export the ReFrame performance reports, along with a snapshot of the plots configuration used for the current benchmark, and a _website_config.json_ file that contains the information necessary to render the dashboard.
+
+There is also a `feelpp-benchmarking-render` command that is used to render the dashboard using Asciidoc and Antora, from a given website configuration, into a specified modules directory. Using this command allows to tweak figures and the dashboard layout, without having to re-run the benchmarks.
+
