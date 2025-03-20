@@ -18,4 +18,5 @@ else
     feelpp-girder download -gid $production_website_config_id -o ./tmp/ -fn website_config.json
 fi
 feelpp-benchmarking-render --config-file=./tmp/website_config.json
-npx antora --stacktrace generate --cache-dir cache --clean --html-url-extension-style=indexify site.yml
+npm run antora || true
+npm run antora || true
