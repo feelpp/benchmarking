@@ -1,22 +1,14 @@
 {
     "plots": [
         {
-            "title": "Validation measures",
+            "title": "Validation measures (Heat flux)",
             "plot_types": [ "scatter" ],
             "transformation": "performance",
             "variables": [
-                "Outputs_Normal_Heat_Flux_alpha", "Outputs_Normal_Heat_Flux_beta", "Outputs_Normal_Heat_Flux_gamma",
-                "Outputs_Points_alpha_max_field_temperature", "Outputs_Points_alpha_min_field_temperature",
-                "Outputs_Points_beta_max_field_temperature", "Outputs_Points_beta_min_field_temperature",
-                "Outputs_Statistics_temperature_alpha_max", "Outputs_Statistics_temperature_alpha_min",
-                "Outputs_Statistics_temperature_beta_max", "Outputs_Statistics_temperature_beta_min"
+                "Outputs_Normal_Heat_Flux_alpha", "Outputs_Normal_Heat_Flux_beta", "Outputs_Normal_Heat_Flux_gamma"
             ],
             "names": [
-                "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma",
-                "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature",
-                "Points_beta_max_field_temperature", "Points_beta_min_field_temperature",
-                "Statistics_temperature_alpha_max", "Statistics_temperature_alpha_min",
-                "Statistics_temperature_beta_max", "Statistics_temperature_beta_min"
+                "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma"
             ],
             "xaxis": {
                 "parameter": "mesh",
@@ -24,6 +16,35 @@
             },
             "yaxis": {
                 "label": "Heat flow [W]"
+            },
+            "color_axis":{
+                "parameter": "discretization",
+                "label":"Discretization"
+            },
+            "secondary_axis":{
+                "parameter": "performance_variable",
+                "label": "Measures"
+            },
+            "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
+        },
+        {
+            "title": "Validation measures (Temperatures)",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "variables": [
+                "Outputs_Points_alpha_max_field_temperature", "Outputs_Points_alpha_min_field_temperature",
+                "Outputs_Points_beta_max_field_temperature", "Outputs_Points_beta_min_field_temperature"
+            ],
+            "names": [
+                "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature",
+                "Points_beta_max_field_temperature", "Points_beta_min_field_temperature"
+            ],
+            "xaxis": {
+                "parameter": "mesh",
+                "label": "mesh levels"
+            },
+            "yaxis": {
+                "label": "Temperature [C°]"
             },
             "color_axis":{
                 "parameter": "discretization",
@@ -82,7 +103,13 @@
                 "PostProcessing_exportResults",
                 "Total"
             ],
-            "names": [ ],
+            "names": [
+                "Preprocessing",
+                "Algebraic assembly",
+                "Algebraic solve",
+                "Postprocess",
+                "Total"
+            ],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -112,7 +139,12 @@
                 "Solve_algebraic-solve",
                 "PostProcessing_exportResults"
             ],
-            "names": [ ],
+            "names": [
+                "Preprocessing",
+                "Algebraic assembly",
+                "Algebraic solve",
+                "Postprocess"
+            ],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -140,9 +172,16 @@
                 "Constructor_init",
                 "Solve_algebraic-assembly",
                 "Solve_algebraic-solve",
-                "PostProcessing_exportResults"
+                "PostProcessing_exportResults",
+                "Total"
             ],
-            "names": [ ],
+            "names": [
+                "Preprocessing",
+                "Algebraic assembly",
+                "Algebraic solve",
+                "Postprocess",
+                "Total"
+            ],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -172,7 +211,12 @@
                 "Solve_algebraic-solve",
                 "PostProcessing_exportResults"
             ],
-            "names": [ ],
+            "names": [
+                "Preprocessing",
+                "Algebraic assembly",
+                "Algebraic solve",
+                "Postprocess"
+            ],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
@@ -200,9 +244,16 @@
                 "Constructor_init",
                 "Solve_algebraic-assembly",
                 "Solve_algebraic-solve",
-                "PostProcessing_exportResults"
+                "PostProcessing_exportResults",
+                "Total"
             ],
-            "names": [ ],
+            "names": [
+                "Preprocessing",
+                "Algebraic assembly",
+                "Algebraic solve",
+                "Postprocess",
+                "Total"
+            ],
             "xaxis": {
                 "parameter": "resources.tasks",
                 "label": "Number of tasks"
