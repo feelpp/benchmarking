@@ -90,11 +90,6 @@ def main_cli():
         #======================================================#
 
 
-        # ============== LAUNCH REFRAME =======================#
-        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
-        exit_code = subprocess.run(reframe_cmd, shell=True)
-        #======================================================#
-
         #============ CREATING RESULT ITEM ================#
         with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
             f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
