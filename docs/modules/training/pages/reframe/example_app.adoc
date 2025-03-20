@@ -11,7 +11,7 @@ This application takes the following arguments:
 
 This example can be recreated with the following python code:
 
-.Bubble sort
+Bubble sort::
 ====
 [source,python]
 ----
@@ -29,7 +29,7 @@ def bubbleSort(array):
 ----
 ====
 
-.Insertion sort
+Insertion sort::
 ====
 [source,python]
 ----
@@ -46,7 +46,7 @@ def insertionSort(array):
 ----
 ====
 
-.Merge sort
+Merge sort::
 ====
 [source,python]
 ----
@@ -87,7 +87,7 @@ def mergeSort(array):
 
 Then, the main function that parses the arguments and calls the sorting algorithm can be defined as follows:
 
-.Main function
+Main function::
 ====
 [source,python]
 ----
@@ -96,41 +96,42 @@ from time import perf_counter
 import numpy as np
 import os, json
 
-#Parse the arguments
-parser = ArgumentParser()
-parser.add_argument('-n',help="Number of elements")
-parser.add_argument('--algorithm','-a', help="Sorting algorithm to use")
-parser.add_argument('--out','-o', help="Filepath where to save elapsed time")
-args = parser.parse_args()
+if __name__=="__main__":
+    #Parse the arguments
+    parser = ArgumentParser()
+    parser.add_argument('-n',help="Number of elements")
+    parser.add_argument('--algorithm','-a', help="Sorting algorithm to use")
+    parser.add_argument('--out','-o', help="Filepath where to save elapsed time")
+    args = parser.parse_args()
 
-#Generate a random list of integers
-n = int(float(args.n))
-array = np.random.randint(min(-1000,-n),max(1000,n),n).tolist()
+    #Generate a random list of integers
+    n = int(float(args.n))
+    array = np.random.randint(min(-1000,-n),max(1000,n),n).tolist()
 
-#Select the sorting algorithm
-if args.algorithm == "bubble":
-    alg = bubbleSort
-elif args.algorithm == "insertion":
-    alg = insertionSort
-elif args.algorithm == "merge":
-    alg = mergeSort
-else:
-    raise NotImplementedError(f"Sorting algorithm - {args.algorithm} - not implemented")
+    #Select the sorting algorithm
+    if args.algorithm == "bubble":
+        alg = bubbleSort
+    elif args.algorithm == "insertion":
+        alg = insertionSort
+    elif args.algorithm == "merge":
+        alg = mergeSort
+    else:
+        raise NotImplementedError(f"Sorting algorithm - {args.algorithm} - not implemented")
 
-#Sort the array and measure the elapsed time
-start_time = perf_counter()
-sorted_array = alg(array)
-end_time = perf_counter()
-elapsed_time = end_time - start_time
+    #Sort the array and measure the elapsed time
+    start_time = perf_counter()
+    sorted_array = alg(array)
+    end_time = perf_counter()
+    elapsed_time = end_time - start_time
 
-#Create the folder if it does not exist
-folder = os.path.dirname(args.out)
-if not os.path.exists(folder):
-    os.makedirs(folder)
+    #Create the folder if it does not exist
+    folder = os.path.dirname(args.out)
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
-#Save the elapsed time
-with open(args.out,'w') as f:
-    json.dump({"elapsed": elapsed_time},f)
+    #Save the elapsed time
+    with open(args.out,'w') as f:
+        json.dump({"elapsed": elapsed_time},f)
 ----
 ====
 
