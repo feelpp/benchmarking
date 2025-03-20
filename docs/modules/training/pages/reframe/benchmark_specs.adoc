@@ -196,3 +196,54 @@ CAUTION: Only validating the standard output is supported for now.
 }
 ----
 ====
+
+=== Example
+
+The full configuration file for a sorting algorithms benchmark can be found below:
+
+[source,json]
+----
+{
+    "use_case_name": "sorting",
+    "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/sorting",
+
+    "executable": "python3 {{machine.input_dataset_base_dir}}/sorting/sortingApp",
+    "options": [
+        "-n {{parameters.elements.value}}",
+        "-a {{parameters.algorithm.value}}",
+        "-o {{output_directory}}/{{instance}}/outputs.json"
+    ],
+    "resources":{ "tasks":1, "exclusive_access":false },
+
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "outputs.json",
+                "format": "json",
+                "variables_path":"elapsed"
+            }
+        ]
+    },
+    "sanity": { "success": [], "error": [] },
+
+    // Test parameters
+    "parameters": [
+        {
+            "name": "algorithm",
+            "sequence": [ "bubble", "insertion", "merge" ]
+        },
+        {
+            "name":"elements",
+            //Equivalent to [10,100,1000,10000]
+            "geomspace":{
+                "min":10,
+                "max":10000,
+                "n_steps":4
+            }
+        }
+    ]
+}
+----
