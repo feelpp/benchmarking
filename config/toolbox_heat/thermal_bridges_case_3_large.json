@@ -117,14 +117,15 @@
         {
             // P1 -> M1: <50, M2: 50 , M3: 400
             // P2 -> M1: <100, M2:<200, M3: 1200 (to check)
-            // P3 -> M1: <200, M2: 1000: M3: ???
+            // P3 -> M1: <200, M2: 1000: M3: 5000???
             "name":"memory",
-            "sequence": [50, 200,400,1200],
+            "sequence": [50, 200,400,1200;5000],
             "conditions":{
-                 "50": [ { "discretization": ["P1"], "mesh": ["M1","M2"] } ],
-                 "200": [ { "discretization": ["P2"], "mesh": ["M1","M2"] }, { "discretization": ["P3"], "mesh": ["M1"] } ],
-                 "400": [ { "discretization": ["P1"], "mesh": ["M3"] } ],
-                 "1200": [ { "discretization": ["P2"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M2"] } ]
+                "50": [ { "discretization": ["P1"], "mesh": ["M1","M2"] } ],
+                "200": [ { "discretization": ["P2"], "mesh": ["M1","M2"] }, { "discretization": ["P3"], "mesh": ["M1"] } ],
+                "400": [ { "discretization": ["P1"], "mesh": ["M3"] } ],
+                "1200": [ { "discretization": ["P2"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M2"] } ],
+                "5000": [ { "discretization": ["P3"], "mesh": ["M3"] } ]
               }
          },
         {
