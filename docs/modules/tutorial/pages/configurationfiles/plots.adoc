@@ -6,7 +6,7 @@ In order to generate reports, the _Feel++ benchmarking_ framework requires a fig
 
 These descriptions should be provided either with a specific JSON file with the structure containing uniquely
 
-[source,json]
+[source,json,subs=attributes]
 ----
 {
     "plots":[]
@@ -56,11 +56,11 @@ The ReFrame report will be used to create a _Master DataFrame_, which will conta
 
 To explain how transformation and plot types work, we can consider the following example.
 
-[%dynamic%open%hide_code,python]
+[%dynamic%open%hide_code,python,subs=attributes]
 ----
 import json
 from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
-with open("./docs/modules/tutorial/data/reframe_report.json","r") as rfm_report:
+with open("xref:attachment$data/reframe_report.json[]","r") as rfm_report:
     report = json.load(rfm_report)
 
 model = AtomicReportModel(report["runs"])

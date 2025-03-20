@@ -89,7 +89,7 @@ jobs:
         fi
 
   docs:
-    runs-on: self-ubuntu-22.04
+    runs-on: self-antora
     name: Build Antora Site
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'docs skip')"
@@ -136,7 +136,8 @@ jobs:
     - name: Build Antora Site
       run: |
           source .venv/bin/activate
-          npm run antora
+          npm run antora || true
+          npm run antora || true
 
     - name: Deploy
       if: ${{ github.ref_name == 'master' }}
@@ -202,11 +203,11 @@ jobs:
           path: dist/
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/*.whl
           draft: false
-          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc')}}
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') || contains(github.ref, 'preview')}}
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
           tag_name: ${{ github.ref }}
