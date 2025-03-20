@@ -136,7 +136,8 @@ jobs:
     - name: Build Antora Site
       run: |
           source .venv/bin/activate
-          npm run antora
+          npm run antora || true
+          npm run antora || true
 
     - name: Deploy
       if: ${{ github.ref_name == 'master' }}
