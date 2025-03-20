@@ -44,7 +44,8 @@ It is also possible to access values from the machine specifications file.
 The parameter field consists of a list of *Parameter* objects that contain the values for which the test will be executed. 
 
 .Simple parameter
-====
+[.examp#examp:6]
+****
 [source,json]
 ----
 {
@@ -54,12 +55,13 @@ The parameter field consists of a list of *Parameter* objects that contain the v
 ----
 
 Specifying uniquely this parameter implies that ReFrame will launch 3 tests, one for each value of `my_parameter`.
-====
+****
 
 It must be noted that ReFrame will consider the cartesian product of the `parameters` list in order to launch the tests.
 
 .Cartesian product of parameters
-====
+[.examp#examp:7]
+****
 For the following parameters section
 
 [source,json]
@@ -76,12 +78,13 @@ For the following parameters section
 - param1 = 2, param2 = "a"
 - param1 = 1, param2 = "b"
 - param1 = 2, param2 = "b"
-====
+****
 
 The framework is equiped with multiple parameter generators that simplifies having to manually specify all desired parameters. For example, users can provide a range or a linspace _function_.
 
 .Parameter configuration for sorting algorithms benchmark
-====
+[.examp#examp:8]
+****
 [source,json]
 ----
 "parameters": [
@@ -103,7 +106,7 @@ The framework is equiped with multiple parameter generators that simplifies havi
 
 NOTE: 12 tests will be executed for this parameter combination
 
-====
+****
 
 Finally, parameter values can be accessed -on the go- by other configuration fields by using the placeholder syntax and appending the reserved keyword `.value`. i.e.
 `"{\{parameters.my_param.value\}}"`.
@@ -113,7 +116,8 @@ Finally, parameter values can be accessed -on the go- by other configuration fie
 The executable and options fields specify the command that will be executed for the benchmark. The executable defines the application or script to run, while the options array contains command-line arguments passed to it. Users can use placeholders to reference parameters or system variables dynamically.
 
 .App setup for sorting algorithms benchmark
-====
+[.examp#examp:9]
+****
 [source,json]
 ----
 {
@@ -126,7 +130,7 @@ The executable and options fields specify the command that will be executed for 
 ]
 }
 ----
-====
+****
 
 == Resources
 
@@ -135,7 +139,8 @@ Users can specify the computing resources for which the tests will run, and can 
 A combination of (tasks, tasks_per_node, gpus_per_node, nodes, memory and exclusive_access) can be specified. However, only certain combinations are supported, and at least one must be provided.
 
 .Parametrized resources
-====
+[.examp#examp:10]
+****
 [source,json]
 ----
 {
@@ -150,7 +155,7 @@ A combination of (tasks, tasks_per_node, gpus_per_node, nodes, memory and exclus
 ]
 }
 ----
-====
+****
 
 
 == Performance Values Extraction
@@ -162,7 +167,8 @@ NOTE: At the moment supported formats are : CSV and JSON
 TIP: Wildcards (`*`) are supported for extracting variables from deeply nested or complex JSON structures.
 
 .Performance extraction for sorting algorithms benchmark
-====
+[.examp#examp:11]
+****
 [source,json]
 ----
 "scalability": {
@@ -177,7 +183,7 @@ TIP: Wildcards (`*`) are supported for extracting variables from deeply nested o
     ]
 }
 ----
-====
+****
 
 == Test validation
 
@@ -187,7 +193,8 @@ Analogously, tests will fail if the patterns in the `error` list are found.
 CAUTION: Only validating the standard output is supported for now.
 
 .Validating a tests execution
-====
+[.examp#examp:12]
+****
 [source,json]
 ----
 "sanity": {
@@ -195,9 +202,9 @@ CAUTION: Only validating the standard output is supported for now.
     "error": ["[OOPSIE]","Error"]
 }
 ----
-====
+****
 
-=== Example
+=== Full Example Configuration File
 
 The full configuration file for a sorting algorithms benchmark can be found below:
 

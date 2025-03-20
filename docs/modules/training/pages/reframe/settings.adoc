@@ -8,7 +8,8 @@ System configuration files can be provided as a JSON file, or as a Python script
 
 
 .Very simple configuration file
-====
+[.examp#examp:2]
+****
 [source,python]
 ----
 site_configuration = {
@@ -36,7 +37,7 @@ site_configuration = {
     ]
 }
 ----
-====
+****
 
 Built-in supercomputers config::
     - *Discoverer*. Sofia, Bulgaria.
@@ -71,7 +72,8 @@ Now, a user might define a programming environment that uses Python3.8, and anot
 It can be useful to specify some configurations, like the maximum number of jobs that can be submitted asynchronously, additional launcher options, or the available memory per node.
 
 .Specify custom launcher options
-====
+[.examp#examp:3]
+****
 [source,json]
 ----
 {
@@ -85,7 +87,7 @@ It can be useful to specify some configurations, like the maximum number of jobs
     }]
 }
 ----
-====
+****
 
 [WARNING]
 ====
@@ -93,7 +95,8 @@ _feelpp.benchmarking_ requires to set the `systems.partitions.processor.num_cpus
 ====
 
 .Karolina's Configuration File
-====
+[.examp#examp:4]
+****
 [source, json]
 ----
 {
@@ -141,4 +144,4 @@ _feelpp.benchmarking_ requires to set the `systems.partitions.processor.num_cpus
     ]
 }
 ----
-====
+****

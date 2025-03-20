@@ -79,7 +79,8 @@ ReFrame tests go through a pre-defined pipeline where users can customize the wh
 image::reframe-test-cases.svg[How ReFrame loads and schedules tests for execution]
 
 .Example Pipeline
-====
+[.examp#examp:1]
+****
 [source, python]
 ----
 import reframe as rfm
@@ -120,7 +121,7 @@ class SleepTest(rfm.RunOnlyRegressionTest):
     def sleepTime(self):
         return sn.extractsingle(f'slept for (\d+)\s+s',self.stdout,1,float)
 ----
-====
+****
 
 For those interested in learning more, check out:
 
