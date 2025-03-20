@@ -43,8 +43,8 @@
     "additional_files":{
         "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc",
         "custom_logs":[
-            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.INFO",
-            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.WARNING"
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_heat.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_heat.WARNING"
         ]
     },
     "scalability": {
@@ -78,6 +78,14 @@
                     "*":"W"
                 }
             }
+        ],
+        "custom_variables": [
+            {
+                "name":"Total",
+                "columns":["Constructor_init","Solve_solve","PostProcessing_exportResults" ],
+                "op":"sum",
+                "unit":"s"
+            }
         ]
     },
     "sanity": {
@@ -90,7 +98,7 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence":[64,128]
+                    "sequence": [32,64,128,256]
                 },
                 {
                     "name":"exclusive_access",
@@ -103,25 +111,29 @@
             "sequence":["M1","M2","M3"]
         },
         {
+            // P1 -> M1: <50, M2: 50 , M3: 400
+            // P2 -> M1: <100, M2:<200, M3: 1200 (to check)
+            // P3 -> M1: <200, M2: 1000: M3: ???
             "name":"memory",
-            "sequence":[200, 300, 3000],
+            "sequence": [50, 200,400,1200],
             "conditions":{
-                "200": [ { "discretization": ["P1","P2"], "mesh": ["M1","M2"] }, { "discretization": ["P2"], "mesh": ["M3"] } ],
-                "300": [ { "discretization": ["P1"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M1","M2"] } ],
-                "3000": [ { "discretization": ["P3"], "mesh": ["M3"] } ]
-            }
-        },
+                 "50": [ { "discretization": ["P1"], "mesh": ["M1","M2"] } ],
+                 "200": [ { "discretization": ["P2"], "mesh": ["M1","M2"] }, { "discretization": ["P3"], "mesh": ["M1"] } ],
+                 "400": [ { "discretization": ["P1"], "mesh": ["M3"] } ],
+                 "1200": [ { "discretization": ["P2"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M2"] } ]
+              }
+         },
         {
             "name":"discretization",
-            "sequence":["P1","P2","P3"],
-            "conditions":{
-                "P1":[{ "resources.tasks":[64,128] }],
-                "P2":[{ "resources.tasks":[] }],
-                "P3":[{ "resources.tasks":[] }]
-            }
+            "sequence":["P1","P2","P3"]
+            // "conditions":{
+            //     "P1":[{ "resources.tasks":[64,128] }],
+            //     "P2":[{ "resources.tasks":[] }],
+            //     "P3":[{ "resources.tasks":[] }]
+            // }
         },
         {
-            "name": "solver",
+             "name": "solver",
             "sequence": ["gamg"]
         }
     ]
