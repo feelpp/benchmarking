@@ -1,0 +1,43 @@
+= Figure specifications
+
+The final configuration file that must be provided to the _feelpp.benchmarking_ framework is the plot specifications file. This file contains the information necessary to generate the plots that will be displayed in the report.
+
+It has a flexible syntax that allows users to build figures depending on the benchmark parameters.
+
+The file should contain a single field: `plots`, which is a list of *Plot* objects.
+
+The figures will appear in the report in the order they are defined in the file.
+
+Users should specify the plot type and which data to use for different axis.
+
+Additionally, a `transformation` field can be provided to apply a transformation to the data before plotting. For example, users can apply a `speedup` transformation.
+
+
+.Plot for sorting algorithms benchmark
+====
+[source,json]
+----
+{
+    "plots":[
+        {
+            "title":"Complexity",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "xaxis":{ "parameter":"elements", "label":"N" },
+            "yaxis": {"label":"Execution time (s)"},
+            "color_axis":{"parameter":"algorithm","label":"Algorithm"}
+        }
+    ]
+}
+----
+
+This configuration will generate a scatter plot with the execution time on the y-axis and the number of elements on the x-axis. The color of the points will represent the algorithm used for sorting.
+
+image::plot_example.png[width=600,align="center"]
+
+====
+
+[NOTE]
+====
+Many plot types are supported. Some of them can take an arbitrary number of parameters by using the `extra_axes` field.
+====
