@@ -17,6 +17,7 @@ site_configuration = {
         {
             'name': 'my_system',
             'descr': 'Very simple example system',
+            'hostnames':['py::socket.gethostname'],
             'partitions': [
                 {
                     'name': 'my_partition',
@@ -24,7 +25,7 @@ site_configuration = {
                     'launcher': 'mpiexec',
                     'environs': ['my_environment'],
                     'processor': { 'num_cpus': 4 }
-                },
+                }
             ]
         }
     ],

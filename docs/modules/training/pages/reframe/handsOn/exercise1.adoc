@@ -1,0 +1,373 @@
+= Exercice 1: Benchmarking a simple application locally
+
+== Pre-requisites
+
+For this exercise, we will use GitHub codespaces to benchmark a simple application using _feelpp.benchmarking_.
+
+=== GitHub Codespaces
+
+1. First, log in to your GitHub account and navigate to your assignated repository.
+2. Go to the `Code` tab and click on the green `Code` button.
+3. Now click on `Create codespace on main` on the `Codespaces` section.
+
+=== Create a python environment
+
+It is useful to create a dedicated Python environment for the hands-on exercises. This way, you can avoid conflicts with other Python projects you may have on your system.
+
+Start by creating an empty directory:
+[source,bash]
+----
+mkdir benchmarking-course
+cd benchmarking-course
+----
+
+Then, create a new Python environment using `venv` and activate it:
+
+[source,bash]
+----
+python -m venv .venv
+source .venv/bin/activate
+----
+
+=== Install `feelpp.benchmarking`
+
+_feelpp.benchmarking_ is available on PyPI and can be installed using `pip`:
+
+[source,bash]
+----
+pip install feelpp-benchmarking
+----
+
+
+=== Initialize antora environment
+
+In order to generate the benchmark reports website, the Antora environment must be configured beforehand.
+
+Initialize the Antora environment in the current directory. There is a built-in script that automates this process:
+
+[source,bash]
+----
+feelpp-antora init -d . -t "My Benchmarks" -n my_benchmarks
+----
+
+
+=== Verify the setup
+
+You should see the following files and directories created on the root of your project:
+
+- `.venv/`: The directory where the Python environment is stored.
+- `site.yml`: The antora playbook file.
+- `docs/`: The directory where the dashboard Asciidoc pages are stored.
+- `package.json`: The nodejs package file, containing necessary dependencies for _feelpp.benchmarking_.
+- `package-lock.json`: The lock file for the nodejs package.
+- `node_modules/`: The directory where the nodejs dependencies are stored.
+
+
+To see if our dashboard is correctly configured, compile the Asciidoc files to HTML and start a web server:
+
+[source,bash]
+----
+npm run antora
+npm run start
+----
+
+Finally, click on the link on the terminal to open the dashboard in your browser.
+If everything OK, you should see a page with the title `My Benchmarks`.
+
+Close the server by pressing `Ctrl+C` on the terminal.
+
+
+== Copy the system configuration file
+
+To benchmark applications on a machine, a ReFrame configuration file must be provided to _feelpp.benchmarking_. This file describes the system's architecture, as well as the necessary modules, partitions, commands, and environments for your applications to run as expected.
+
+Create a new Python file named `codespace_machine.py` in the root of your project
+
+[source,bash]
+----
+touch codespace_machine.py
+----
+
+and copy the following content to the file:
+
+[source,python]
+----
+site_configuration = {
+    'systems': [
+        {
+            'name': 'codespace_machine',
+            'descr': 'GitHub Codespace Machine',
+            'hostnames':['py::socket.gethostname'],
+            'partitions': [
+                {
+                    'name': 'my_partition',
+                    'scheduler': 'local',
+                    'launcher': 'local',
+                    'environs': ['my_environment'],
+                    'processor': { 'num_cpus': 1 }
+                }
+            ]
+        }
+    ],
+    'environments':[
+        {
+            'name': 'my_environment',
+            'target_systems': ["codespace_machine:my_partition"]
+        }
+    ]
+}
+----
+
+== Create a Machine Specification File
+
+Create a new JSON file names `codespace_specs.json` in the root of your project
+
+[source,bash]
+----
+touch codespace_specs.json
+----
+
+and copy the following template:
+
+[source,json]
+----
+{
+    "machine": "<TODO>",
+    "targets":["<TODO>:builtin:<TODO>"],
+    "reframe_base_dir":"<TODO>",
+    "reports_base_dir":"<TODO>",
+    //HELP: The input_dataset_base_dir can be used to indicate where benchmarked application can be found.
+    "input_dataset_base_dir":"<TODO>",
+    "output_app_dir":"<TODO>"
+}
+----
+
+.Exercise: Machine Specification File
+[.exer#exer:1]
+****
+Complete the <TODO> fields in the JSON file.
+****
+
+[TIP]
+====
+- The `targets` field follows the format `<partition>:<platform>:<environment>`.
+- The framework does not support relative paths, but it supports using environment variables. Use `$PWD` to refer to the current working directory.
+- The example applications can be found under the `examples` directory.
+====
+
+.Solution
+[%collapsible.proof]
+****
+[source,json]
+----
+{
+    "machine": "codespace_machine",
+    "targets":["my_partition:builtin:my_environment"],
+    "reframe_base_dir":"$PWD/reframe",
+    "reports_base_dir":"$PWD/reports",
+    "input_dataset_base_dir":"$PWD/examples",
+    "output_app_dir":"$PWD/outputs"
+}
+----
+****
+
+== Example application
+
+For this exercise, we will use a simple Python application that calculates the n'th Fibonacci number, in two different ways: recursively and iteratively.
+
+This application is found under _examples/fibonacci.py_, and takes the following arguments:
+
+- `-n`: the sequence number to calculate
+- `-a`: the approach to use. Options are `recursive` and `iterative`
+- `-o`: the output file to write the sequence. It will be saved in CSV format (`elapsed,fibonacci_number`)
+
+!!!=========TODO============
+TODO: Make sure app is availabe, otherwise provide it in a source code block
+
+== Create a Benchmark Specification File
+
+Once how the application that will benchmarked works is understood, a benchmark specification file must be created to describe how the application will be tested.
+
+Create a new JSON file named `fibonacci_benchmark.json` in the root of your project
+
+[source,bash]
+----
+touch fibonacci_benchmark.json
+----
+
+and copy the following template:
+
+[source,json]
+----
+{
+    "use_case_name":"Fibonacci",
+    "timeout":"0-0:5:0",
+    "executable": "python <TODO>/fibonacci.py",
+    "output_dir":"<TODO>",
+    "options":[
+        "-n <TODO>",
+        "-a <TODO>",
+        "-o <TODO>/output.json"
+    ],
+    "scalability": {
+        "directory":"<TODO>",
+        "stages":[
+            {
+                "name":"",
+                "filepath":"output.json",
+                "format":"csv",
+                "units":{ "fibonacci_number":"" }
+            }
+        ]
+    },
+    "sanity":{ "success":["<TODO>"] },
+
+    "resources": {"tasks":1, "exclusive_access":false },
+    "parameters": [
+        {
+            "name":"n",
+            //Equivalent to: "sequence":[10,15,20,25,30,35,40]
+            "range":{"min":10,"max":40,"step":5}
+        },
+        {
+            "name":"method",
+            "sequence":["recursive","iterative"]
+        }
+    ]
+}
+----
+
+.Exercise: Benchmark Specification File
+[.exer#exer:2]
+****
+Complete the <TODO> fields in the JSON file.
+****
+
+[TIP]
+====
+- Remember to use the `{\{placeholder\}}` syntax
+    - To access fields from the machine specification file, use the `{\{machine.field\}}` syntax.
+    - To access parameter values, use the `{\{parameters.parameter_name.value\}}` syntax.
+- The `{\{instance\}}` keyword serves as a unique identifier. It can be used to create a unique directory for each test instance, for executing tests asynchronously.
+====
+
+
+.Solution
+[%collapsible.proof]
+****
+[source,json]
+----
+{
+    "use_case_name":"Fibonacci",
+    "timeout":"0-0:5:0",
+    "executable": "python {{machine.input_dataset_base_dir}}/fibonacci.py",
+    "output_dir":"{{machine.output_app_dir}}/fibo",
+    "options":[
+        "-n {{parameters.n.value}}",
+        "-a {{parameters.method.value}}",
+        "-o {{output_dir}}/output.json"
+    ],
+    "scalability": {
+        "directory":"{{output_dir}}",
+        "stages":[
+            {
+                "name":"",
+                "filepath":"output.json",
+                "format":"csv",
+                "units":{ "fibonacci_number":"" }
+            }
+        ]
+    },
+    "sanity":{ "success":["Done!"] },
+
+    "resources": {"tasks":1, "exclusive_access":false },
+    "parameters": [
+        {
+            "name":"n",
+            "range":{"min":10,"max":40,"step":5}
+        },
+        {
+            "name":"method",
+            "sequence":["recursive","iterative"]
+        }
+    ]
+}
+----
+****
+
+
+== Create a Figure Description File
+
+To immediately be able to visualize the results of the benchmark, a figure description file must be created.
+
+Create a new JSON file named `fibonacci_plot.json` in the root of your project
+
+[source,bash]
+----
+touch fibonacci_plot.json
+----
+
+and copy the following template:
+
+[source,json]
+----
+{
+    "plots":[
+        {
+            "title":"Time Complexity",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "variables": ["elapsed"],
+            "xaxis":{ "parameter":"<TODO>", "label":"<TODO>" },
+            "yaxis": {"label":"Execution time (s)"},
+            "color_axis":{"parameter":"<TODO>","label":"<TODO>"}
+        }
+    ]
+}
+----
+
+.Exercise: Figure Description File
+[.exer#exer:3]
+****
+Complete the <TODO> fields in the JSON file to be able to recreate the following figure:
+
+image::fibonacci_time_complexity_plot.png[align="center"]
+
+****
+
+
+.Solution
+[%collapsible.proof]
+****
+[source,json]
+----
+{
+    "plots":[
+        {
+            "title":"Time Complexity",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "variables": ["elapsed"],
+            "xaxis":{ "parameter":"n", "label":"N" },
+            "yaxis": {"label":"Execution time (s)"},
+            "color_axis":{"parameter":"method","label":"Method"}
+        }
+    ]
+}
+----
+****
+
+== Run the benchmark and visualize the results
+
+To launch the benchmarks, use the following command:
+
+[source,bash]
+----
+feelpp-benchmarking-exec --machine-config codespace_specs.json \
+                            --custom-rfm-config codespace_machine.py \
+                            --benchmark-config fibonacci_benchmark.json \
+                            --plots-config fibonacci_plot.json \
+                            --website
+----
+
+TIP: The `--website` flag will generate the dashboard files and start a web server to visualize the results.
