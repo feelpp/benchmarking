@@ -49,11 +49,14 @@ int main(int argc, char** argv)
     std::vector<double> matrix(rank == 0 ? N * N : 0);
     std::vector<double> result(rank == 0 ? N : 0);
 
+    double start_fill_time = MPI_Wtime();
+
     if (rank == 0) fill_matrix_vector(matrix, vector);
 
     MPI_Scatter(matrix.data(), rows_per_proc * N, MPI_DOUBLE, local_matrix.data(), rows_per_proc * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     MPI_Bcast(vector.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    double end_fill_time = MPI_Wtime();
 
     double start_time = MPI_Wtime();
 
@@ -66,7 +69,8 @@ int main(int argc, char** argv)
     double end_time = MPI_Wtime();
 
     if (rank == 0){
-        std::cout << "Execution time: " << (end_time - start_time) << " s\n";
+        std::cout << "Fill time: " << (end_fill_time - start_fill_time) << " s\n";
+        std::cout << "Compute time: " << (end_time - start_time) << " s\n";
 
         fs::path filename = "scalability.json";
 
@@ -76,7 +80,10 @@ int main(int argc, char** argv)
         std::ofstream scal_outfile(output_dir/filename);
         if ( scal_outfile.is_open() )
         {
-            scal_outfile << "{\"elapsed\": " << end_time << "}";
+            scal_outfile << "{\n";
+            scal_outfile << "  \"elapsed_fill\": " << (end_fill_time - start_fill_time) << ",\n";
+            scal_outfile << "  \"elapsed_compute\": " << (end_time - start_time) << "\n";
+            scal_outfile << "}\n";
             scal_outfile.close();
         }
         else
