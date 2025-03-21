@@ -51,8 +51,7 @@ int main(int argc, char** argv)
 
     if (rank == 0) fill_matrix_vector(matrix, vector);
 
-    MPI_Scatter(matrix.data(), rows_per_proc * N, MPI_DOUBLE, local_matrix.data(),
-                rows_per_proc * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatter(matrix.data(), rows_per_proc * N, MPI_DOUBLE, local_matrix.data(), rows_per_proc * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     MPI_Bcast(vector.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
