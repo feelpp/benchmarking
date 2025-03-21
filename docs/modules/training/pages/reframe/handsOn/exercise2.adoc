@@ -1,0 +1,269 @@
+= Benchmarking a parallel application on Karolina
+
+Before you start this hands-on exercise, you need to follow the steps below to set up your environment in Karolina.
+
+== Pre-requisites
+
+This exercise takes place on the Karolina cluster. Start by logging in to Karolina.
+
+Then, clone your assignated repository from GitHub classrooms, and place yourself in the root directory of the repository.
+
+== Create a python environment
+
+It is useful to create a dedicated Python environment for the hands-on exercises. This way, you can avoid conflicts with other Python projects you may have on your system.
+
+Karolina's system default Python version is too old... More recent versions are available as modules. For this session, we are going to use Pyton3.10.4. Load it with:
+
+[source,bash]
+----
+module load Python/3.12.3-GCCcore-13.3.0
+----
+
+Now if you type `python --version`, you should see `Python 3.12.3`.
+
+Then, create a new Python environment using `venv` and activate it:
+
+[source,bash]
+----
+python -m venv .venv
+source .venv/bin/activate
+----
+
+Update pip:
+
+[source,bash]
+----
+pip install --upgrade pip
+----
+
+== Install `feelpp.benchmarking`
+
+_feelpp.benchmarking_ is available on PyPI and can be installed using `pip`:
+
+[source,bash]
+----
+pip install feelpp-benchmarking
+----
+
+== Initialize antora environment
+
+In order to generate the benchmark reports website, the Antora environment must be configured beforehand.
+
+First, we need Node.js, so start by loading the nodejs module:
+
+[source,bash]
+----
+module load nodejs
+----
+
+
+Then, initialize the Antora environment in the current directory. There is a built-in script that automates this process:
+
+[source,bash]
+----
+feelpp-antora init -d . -t "My Benchmarks" -n my_benchmarks
+----
+
+== Verify the setup
+
+You should see the following files and directories created on the root of your project:
+
+- `.venv/`: The directory where the Python environment is stored.
+- `site.yml`: The antora playbook file.
+- `docs/`: The directory where the dashboard Asciidoc pages are stored.
+- `package.json`: The nodejs package file, containing necessary dependencies for _feelpp.benchmarking_.
+- `package-lock.json`: The lock file for the nodejs package.
+- `node_modules/`: The directory where the nodejs dependencies are stored.
+
+
+To see if our dashboard is correctly configured, compile the Asciidoc files to HTML and start a web server:
+
+[source,bash]
+----
+npm run antora
+npm run start
+----
+
+Finally, click on the link on the terminal to open the dashboard in your browser. You might need to forward the port to your local machine to access the dashboard.
+If everything OK, you should see a page with the title `My Benchmarks`.
+
+Close the server by pressing `Ctrl+C` on the terminal.
+
+
+== Create a Machine Specification File
+
+Fortunately, the _feelpp.benchmarking_ package already contains the general ReFrame configuration for the Karolina cluster. However, we need to create a machine specification file to specify user-dependent configurations.
+
+Create a new file named `karolina.json` at the root of your project
+
+[source,bash]
+----
+touch karolina.json
+----
+
+Edit the file and add the following content:
+
+[source,json]
+----
+{
+    "machine": "karolina",
+    "targets":["qcpu:builtin:default"],
+    "execution_policy": "async",
+    "reframe_base_dir":"$PWD/reframe",
+    "reports_base_dir":"$PWD/reports/",
+    "input_dataset_base_dir":"$PWD/examples",
+    "output_app_dir":"$PWD/outputs",
+    "access":[
+        "--account=dd-24-88",
+        "--reservation=dd-24-88_2025-03-25T14:30:00_2025-03-25T17:00:00_40_qcpu"
+    ]
+}
+----
+
+[NOTE]
+====
+In this case, we will use and export data from within the current directory. But there are some cases where it is useful to use different disks for benchmarking an application (e.g. large capacity vs high performance disks).
+====
+
+== Example application
+
+For this exercice, we will use a MPI application that computes a matrix vector multiplication in parallel. The matrix and vector are initialized randomly for a given size.
+
+The application executable is found under examples/matrixvector/matrixvector and takes the following positional arguments:
+
+- The matrix size.
+- The output directory to write the `scalability.json` file containing elapsed times.
+
+== Create a Benchmark Specification File
+
+It is now time to describe the benchmark.
+
+Create the file `matrixvector_benchmark.json` in the root of your project
+
+[source,bash]
+----
+touch matrixvector_benchmark.json
+----
+
+Copy the following template
+
+[source,json]
+----
+{
+    "executable": "{{machine.input_dataset_base_dir}}/matrixvector/matrixvector",
+    "use_case_name": "Multiplication",
+    "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/matrixvector",
+    "options": [
+        "{{parameters.elements.value}}",
+        "{{output_directory}}/{{instance}}"
+    ],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "scalability.json",
+                "format": "json",
+                "variables_path":"*"
+            }
+        ]
+    },
+    "sanity": { "success": [], "error": ["[OOPSIE]"] },
+    "resources":{ "tasks":"<TODO>", "exclusive_access":false },
+    "parameters": [
+        {
+            "name": "<TODO>",
+            "<TODO>": <TODO>
+        },
+        {
+            "name":"elements",
+            "linspace":{ "min":10000, "max":40000, "n_steps":4 }
+        }
+    ]
+}
+----
+
+
+.Exercise: Benchmark Specification File
+[.exer#exer:1]
+****
+Complete the <TODO> fields in the JSON file in order to benchmark the Matrix-Vector multiplication using 1, 2, 4, 8, 16, 32, 64 and 128 tasks.
+****
+
+
+[TIP]
+====
+- Multiple parameter generators are available, some examples are:
+    - `"linspace":{"min": 1, "max":2, "n_steps":10}`
+    - `"sequence":[1,2,3]`,
+    - `"geometric":{"start":1,"ratio":2, "n_steps":10}`
+    - `"range":{"min":1,"max":10,"step":1}`
+====
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "resources":{ "tasks":"{{parameters.tasks.value}}", "exclusive_access":false },
+    "parameters": [
+        {
+            //Any name would work
+            "name": "tasks",
+            "sequence": [1,2,4,8,16,32,64,128]
+            //"geometric": {"start":1, "ratio":2, "n_steps":8}
+        },
+        {
+            "name":"elements",
+            "linspace":{ "min":10000, "max":40000, "n_steps":4 }
+        }
+    ]
+}
+----
+====
+
+
+== Create a Figure Description File
+
+Create the file `matrixvector_plots.json` in the root of your project
+
+[source,bash]
+----
+touch matrixvector_plots.json
+----
+
+And copy the following file to configure a speedup plot.
+
+[source,json]
+----
+{
+    "plots":[
+        {
+            "title": "Speedup",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [ "elapsed_fill","elapsed_compute" ],
+            "names": ["Fill","Compute"],
+            "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+            "yaxis": { "label": "Speedup" },
+            "secondary_axis":{ "parameter":"elements", "label":"N" }
+        }
+    ]
+}
+----
+
+
+== Run the benchmark and visualize the results
+
+To launch the benchmarks, use the following command:
+
+[source,bash]
+----
+feelpp-benchmarking-exec --machine-config karolina.json \
+                            --benchmark-config matrixvector_benchmark.json \
+                            --plots-config matrixvector_plots.json \
+                            --website
+----
