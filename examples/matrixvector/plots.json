@@ -4,8 +4,8 @@
             "title": "Performance",
             "plot_types": [ "scatter", "stacked_bar", "grouped_bar" ],
             "transformation": "performance",
-            "variables": [ "elapsed" ],
-            "names": ["Time"],
+            "variables": [ "elapsed_fill","elapsed_compute" ],
+            "names": ["Fill","Compute"],
             "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
             "yaxis":{"label":"Execution time (s)"},
             "secondary_axis":{ "parameter":"elements", "label":"N" }
@@ -14,8 +14,8 @@
             "title": "Absolute performance",
             "plot_types": [ "scatter","stacked_bar","grouped_bar" ],
             "transformation": "performance",
-            "variables": [ "elapsed" ],
-            "names": ["Time"],
+            "variables": [ "elapsed_fill","elapsed_compute" ],
+            "names": ["Fill","Compute"],
             "xaxis":{ "parameter":"elements", "label":"N" },
             "yaxis":{"label":"Execution time (s)"},
             "secondary_axis":{ "parameter":"tasks", "label":"Number of tasks" }
@@ -24,8 +24,8 @@
             "title": "Speedup",
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
-            "variables": [ "elapsed" ],
-            "names": ["Time"],
+            "variables": [ "elapsed_fill","elapsed_compute" ],
+            "names": ["Fill","Compute"],
             "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
             "yaxis": { "label": "Speedup" },
             "secondary_axis":{ "parameter":"elements", "label":"N" }
