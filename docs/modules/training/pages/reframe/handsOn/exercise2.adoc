@@ -129,7 +129,7 @@ In this case, we will use and export data from within the current directory. But
 
 For this exercice, we will use a MPI application that computes a matrix vector multiplication in parallel. The matrix and vector are initialized randomly for a given size.
 
-The application executable is found under examples/matrixvector/matrixvector and takes the following positional arguments:
+The application executable is found under examples/matrixvector and takes the following positional arguments:
 
 - The matrix size.
 - The output directory to write the `scalability.json` file containing elapsed times.
@@ -150,7 +150,7 @@ Copy the following template
 [source,json]
 ----
 {
-    "executable": "{{machine.input_dataset_base_dir}}/matrixvector/matrixvector",
+    "executable": "{{machine.input_dataset_base_dir}}/matrixvector",
     "use_case_name": "Multiplication",
     "timeout":"0-0:5:0",
     "output_directory": "{{machine.output_app_dir}}/matrixvector",
