@@ -5,6 +5,8 @@ _feelpp.benchmarking_ supports specifying the total memory required by your appl
 The system's available memory per node should be specified in ReFrame's System settings file, in GB, under an `extra.memory_per_node` field the partition configuration.
 
 .Available Memory per Node in ReFrame system settings
+[.examp#examp:0]
+****
 [source,json]
 ----
 "partitions":[{
@@ -13,13 +15,14 @@ The system's available memory per node should be specified in ReFrame's System s
     }
 }]
 ----
+****
 
 == Specifying memory in resources
 
 If the memory requirements by your application are independent of the specified parameter space, users can simply specify the memory requirements (in GB) in the `resources` field of the Benchmark Specification file.
 
 .Static memory requirements
-[examp#examp:1]
+[.examp#examp:1]
 ****
 [source,json]
 ----
@@ -40,7 +43,7 @@ TIP: Specify a little less memory than the available memory per node to avoid sw
 The `memory` field can be parametrized. This is quite useful if your application requires different memory for different parameter values. For example, if you want to compare the application's performance for different mesh sizes.
 
 .Dynamic memory requirements
-[examp#examp:2]
+[.examp#examp:2]
 ****
 
 Let's suppose that you want to benchmark an application using 3 different mesh resolutions: M1, M2, M3.
