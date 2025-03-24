@@ -1,0 +1,63 @@
+= Website persistance and aggregating results
+
+The framework allows users to create a dashboard that aggregates results from multiple benchmarks. This is useful for comparing different machines, applications, or use cases.
+
+== The dashboard configuration file
+
+Whenever a benchmark is done, a file called `website_config.json` is created inside the directory specified under `reports_base_dir` on the machine specification file.
+
+If this file already exists from a previous benchmark, it will be updated to include the latest results. For example, when a benchmark runs on a new system.
+
+This file describes the dashboard hierarchy and where to find the benchmark results for each case/machine/application.
+
+Each website configuration file corresponds exactly to one dashboard, so users can have multiple dashboards by defining multiple website configuration files.
+
+The file is structured as follows:
+
+[source,json]
+----
+{
+"execution_mapping":{
+    "my_application":{
+        "my_machine":{
+            "my_usecase": {
+                "platform": "local", //Or "girder"
+                "path": "./path/to/use_case/results" //Directory containing reports for a single machine-application-usecase combination
+            }
+        }
+    }
+},
+"machines":{
+    "my_machine":{
+        "display_name": "My Machine",
+        "description": "A description of the machine",
+    }
+},
+"applications":{
+    "my_application":{
+        "display_name": "My Application",
+        "description": "A description of the application",
+        "main_variables":[] //Used for aggregations
+    }
+},
+"use_cases":{
+    "my_usecase":{
+        "display_name": "My Use Case",
+        "description": "A description of the use case",
+    }
+}
+
+}
+----
+
+The `execution_mapping` field describes the hierarchy of the dashboard. That is, which applications where run on which machines and for which use cases. The `path` field supports having reports stored on remote locations, such as Girder.
+
+The `machines`, `applications`, and `use_cases` fields define the display names and descriptions for each machine, application, and use case, respectively.
+
+
+== Aggregating results
+
+=== The `aggregations` field
+
+=== Overview configuration file
+
