@@ -6,23 +6,13 @@ For this exercise, we will use GitHub codespaces to benchmark a simple applicati
 
 === GitHub Codespaces
 
-1. First, log in to your GitHub account and navigate to your assignated repository.
-2. Go to the `Code` tab and click on the green `Code` button.
-3. Now click on `Create codespace on main` on the `Codespaces` section.
+1. First, log in to your GitHub account and navigate to your assignment repository.
+2. On the top-left branches button, select the *feedback* branch. (This is because we do not want the Docker configuration from the CI/CD course to interfere with this exercice).
+3. Click again on that button, and write *benchmarking*. Now click on create branch *benchmarking* from the *feedback* branch.
+4. In this branch, go to the *Code* button and create a new codespace for the *benchmarking* branch.
+5. Inside the codespace, DELETE the .devcontainer folder to use the default image. If you want, you can actually delete everything in the repository and start from scratch.
+6. Rebuild the codespace.
 
-=== Create a python environment
-
-It is useful to create a dedicated Python environment for the hands-on exercises. This way, you can avoid conflicts with other Python projects you may have on your system.
-
-Make sure you are located at the root of the repository.
-
-Then, create a new Python environment using `venv` and activate it:
-
-[source,bash]
-----
-python -m venv .venv
-source .venv/bin/activate
-----
 
 === Install `feelpp.benchmarking`
 
@@ -33,6 +23,27 @@ _feelpp.benchmarking_ is available on PyPI and can be installed using `pip`:
 pip install feelpp-benchmarking
 ----
 
+=== Create a .gitignore file
+
+The next steps will create a large number of files and directories that are not necessary to be tracked by Git. To avoid cluttering the repository, create a `.gitignore` file in the root of your project, or update the existing one.
+
+[source,bash]
+----
+touch .gitignore
+----
+
+And add the following content:
+
+[source,txt]
+----
+node_modules/
+package-lock.json
+public/
+cache/
+reframe/
+reports/
+outputs/
+----
 
 === Initialize antora environment
 
@@ -50,7 +61,6 @@ feelpp-antora init -d . -t "My Benchmarks" -n my_benchmarks
 
 You should see the following files and directories created on the root of your project:
 
-- `.venv/`: The directory where the Python environment is stored.
 - `site.yml`: The antora playbook file.
 - `docs/`: The directory where the dashboard Asciidoc pages are stored.
 - `package.json`: The nodejs package file, containing necessary dependencies for _feelpp.benchmarking_.
@@ -140,7 +150,7 @@ and copy the following template:
 .Exercise: Machine Specification File
 [.exer#exer:1]
 ****
-Complete the <TODO> fields in the JSON file.
+Complete the <TODO> fields in the JSON file, using information from the codespace_machine.py file.
 ****
 
 [TIP]
@@ -170,11 +180,77 @@ Complete the <TODO> fields in the JSON file.
 
 For this exercise, we will use a simple Python application that calculates the n'th Fibonacci number, in two different ways: recursively and iteratively.
 
-This application is found under _examples/fibonacci.py_, and takes the following arguments:
+It takes the following arguments:
 
 - `-n`: the sequence number to calculate
 - `-a`: the approach to use. Options are `recursive` and `iterative`
 - `-o`: the output file to write the elapsed time. It will be saved in CSV format (`elapsed,fibonacci_number`)
+
+Create a new folder named _examples/_ and a Python file named `fibonacci.py` inside the examples folder.
+
+[source,bash]
+----
+mkdir examples
+touch examples/fibonacci.py
+----
+
+and copy the following content to the file:
+
+[source,python]
+----
+from argparse import ArgumentParser
+import os
+from time import perf_counter
+
+def fibonacciRecursive(n):
+    if n < 1: return 0
+    elif n <= 2: return 1
+    else: return fibonacciRecursive(n-1) + fibonacciRecursive(n-2)
+
+def fibonacciIterative(n):
+    if n < 1: return 0
+    elif n <= 2: return 1
+    else:
+        a,b = 1,1
+        for i in range(3,n+1):
+            a,b = b,a+b
+        return b
+
+
+if __name__=="__main__":
+    parser = ArgumentParser()
+    parser.add_argument('-n',type=int,help="Sequence number",required=True)
+    parser.add_argument('--approach','-a',type=str, help="Fibonacci algorithm approach to use",required=True)
+    parser.add_argument('--out','-o',type=str, help="Filepath where to save elapsed times",required=True)
+    args = parser.parse_args()
+
+    n = int(args.n)
+
+    if args.approach == "recursive":
+        fib = fibonacciRecursive
+    elif args.approach == "iterative":
+        fib = fibonacciIterative
+    else:
+        raise NotImplementedError(f"Fibonacci approach - {args.approach} - not implemented")
+
+
+    tic = perf_counter()
+    fib_number = fib(n)
+    toc = perf_counter()
+    elapsed_time = toc - tic
+
+
+    dirpath = os.path.dirname(args.out)
+    if not os.path.exists(dirpath):
+        os.makedirs(dirpath)
+
+    with open(args.out,'w') as f:
+        f.write(f"elapsed,fibonacci_number\n{elapsed_time},{fib_number}")
+
+    print(f"Elapsed time: {elapsed_time}")
+    print(f"Fibonacci number: {fib_number}")
+    print("Done!")
+----
 
 
 == Create a Benchmark Specification File
@@ -233,7 +309,7 @@ and copy the following template:
 .Exercise: Benchmark Specification File
 [.exer#exer:2]
 ****
-Complete the <TODO> fields in the JSON file.
+Complete the <TODO> fields in the JSON file, using information from the Fibonacci application and the machine specification file.
 ****
 
 [TIP]
