@@ -1,0 +1,52 @@
+= Custom Performance Variables
+
+Custom performance variables can be created by performing operations on existing ones.
+This can be done in the _feelpp.benchmarking_ framework by specifying a custom performance variable in the Benchmark Specification file.
+
+The `custom_varialbes` field should be added on the `scalability` section. This field should contain a list of dictionaries, each dictionary containing the following fields:
+
+- `name`: The given name of the custom performance variable.
+- `operation`: The operation to be performed on the existing performance variables. (available operations: `sum`, `mean`, `max`, `min` ).
+- `columns`: The list of performance variables to be used in the operation.
+- `unit`: The unit of the custom performance variable.
+
+TIP: Custom variables can be used in other custom variables. Recursion is allowed.
+
+.Custom performance variables
+[.examp#examp:1]
+****
+
+Let's say that the _/output/data.csv_ file contains the following performance variables:
+
+[source,raw]
+----
+initialization, simulation, postprocessing
+0.1, 0.2, 0.3
+----
+
+Then, the total time custom performance variable can be specified as follows:
+
+[source,json]
+----
+"scalability": {
+    "directory":"/output",
+    "stages": [
+        {
+            "name": "stage1",
+            "filepath":"data.csv",
+            "format":"csv"
+        }
+    ],
+    "custom_variables":[
+        {
+            "name": "total_time",
+            "op":"sum",
+            "columns": ["stage1_initialization", "stage1_simulation", "stage1_postprocessing"],
+            "unit":"s"
+        }
+    ]
+}
+----
+****
+
+TIP: Variables from different files (stages) can be aggregated in the same custom variable.
