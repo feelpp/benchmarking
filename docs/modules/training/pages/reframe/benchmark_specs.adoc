@@ -1,0 +1,256 @@
+= Benchmark Specification File
+
+This configuration file describes precisely what will be benchmarked. It is used to specify the parameter space for the benchmarking process, the application executable and its arguments, as well as where to find performance variables and how to validate tests.
+
+The basic skeleton of the JSON file is the following: 
+
+[source,json]
+----
+{
+    //A given name for your Use Case
+    "use_case_name":"my_use_case",
+
+    //The maximum time the submitted job can run. After this, it will be killed. 
+    "timeout":"0-0:5:0",
+
+    //Where to find the application.
+    "executable":"my_app.sh",
+
+    // Application options
+    "options": ["-my-flag","--my-option=1"],
+
+    // How many computational resources to use for the benchmark, and how
+    "resources": {},
+
+    // Performance values extraction
+    "scalability": {},
+
+    // Check if test succesfull
+    "sanity":{},
+
+    // Test parametrization
+    "parameters":[]
+}
+----
+
+== Magic strings
+
+_feelpp.benchmarking_ is equiped with a special *{\{placeholder\}}* syntax that replaces values from a json field into another. This syntax is specially helpful for refactoring the configuration file.
+However, the main objective of this syntax is to access values assigned during the test, like parameter values or the test ID.
+It is also possible to access values from the machine specifications file.
+
+== Parameters
+
+The parameter field consists of a list of *Parameter* objects that contain the values for which the test will be executed. 
+
+.Simple parameter
+[.examp#examp:6]
+****
+[source,json]
+----
+{
+    "name":"my_parameter",
+    "sequence":[1,2,3]
+}
+----
+
+Specifying uniquely this parameter implies that ReFrame will launch 3 tests, one for each value of `my_parameter`.
+****
+
+It must be noted that ReFrame will consider the cartesian product of the `parameters` list in order to launch the tests.
+
+.Cartesian product of parameters
+[.examp#examp:7]
+****
+For the following parameters section
+
+[source,json]
+----
+[
+    {"name":"param1", "sequence":[1,2]},
+    {"name":"param2", "sequence":["a","b"]}
+]
+----
+
+4 tests will be launched, taking the values: 
+
+- param1 = 1, param2 = "a"
+- param1 = 2, param2 = "a"
+- param1 = 1, param2 = "b"
+- param1 = 2, param2 = "b"
+****
+
+The framework is equiped with multiple parameter generators that simplifies having to manually specify all desired parameters. For example, users can provide a range or a linspace _function_.
+
+.Parameter configuration for sorting algorithms benchmark
+[.examp#examp:8]
+****
+[source,json]
+----
+"parameters": [
+    {
+        "name": "algorithm",
+        "sequence": [ "bubble", "insertion", "merge" ]
+    },
+    {
+        "name":"elements",
+        //Equivalent to [10,100,1000,10000]
+        "geomspace":{
+            "min":10,
+            "max":10000,
+            "n_steps":4
+        }
+    }
+]
+----
+
+NOTE: 12 tests will be executed for this parameter combination
+
+****
+
+Finally, parameter values can be accessed -on the go- by other configuration fields by using the placeholder syntax and appending the reserved keyword `.value`. i.e.
+`"{{parameters.my_param.value}}"`.
+
+== Application setup
+
+The executable and options fields specify the command that will be executed for the benchmark. The executable defines the application or script to run, while the options array contains command-line arguments passed to it. Users can use placeholders to reference parameters or system variables dynamically.
+
+.App setup for sorting algorithms benchmark
+[.examp#examp:9]
+****
+[source,json]
+----
+{
+"executable": "python3 {{machine.input_dataset_base_dir}}/sorting/sortingApp",
+"timeout":"0-0:5:0",
+"options":[
+    "-n {{parameters.elements.value}}",
+    "-a {{parameters.algorithm.value}}",
+    "-o {{output_directory}}/{{instance}}/outputs.json"
+]
+}
+----
+****
+
+== Resources
+
+Users can specify the computing resources for which the tests will run, and can even parametrize this.
+
+A combination of (tasks, tasks_per_node, gpus_per_node, nodes, memory and exclusive_access) can be specified. However, only certain combinations are supported, and at least one must be provided.
+
+.Parametrized resources
+[.examp#examp:10]
+****
+[source,json]
+----
+{
+"resources":{
+    "tasks":"{{parameters.tasks.value}}",
+    "nodes":1,
+    "exclusive_access":false
+
+},
+"parameters":[
+    {"name":"tasks","sequence":[16,32,64,128]}
+]
+}
+----
+****
+
+
+== Performance Values Extraction
+
+The `scalability` field defines how performance metrics are extracted from output files. Users first need to specify the base directory where performance variables are written. Then, users should provide the list of all the performance files, along with the file format. For JSON files, a `variables_path` field should be passed indicating how to extract the variables from the dictionary structure.
+
+NOTE: At the moment supported formats are : CSV and JSON
+
+TIP: Wildcards (`*`) are supported for extracting variables from deeply nested or complex JSON structures.
+
+.Performance extraction for sorting algorithms benchmark
+[.examp#examp:11]
+****
+[source,json]
+----
+"scalability": {
+    "directory": "{{output_directory}}/{{instance}}/",
+    "stages": [
+        {
+            "name":"",
+            "filepath": "outputs.json",
+            "format": "json",
+            "variables_path":"elapsed"
+        }
+    ]
+}
+----
+****
+
+== Test validation
+
+The `sanity` field is used to ensure the correct execution of a test. It contains two lists: `success` and `error`. The framework will look for all text patterns in the `success` list and will force the test to fail if the patterns are not found.
+Analogously, tests will fail if the patterns in the `error` list are found.
+
+CAUTION: Only validating the standard output is supported for now.
+
+.Validating a tests execution
+[.examp#examp:12]
+****
+[source,json]
+----
+"sanity": {
+    "success": ["[SUCCESS]"],
+    "error": ["[OOPSIE]","Error"]
+}
+----
+****
+
+=== Full Example Configuration File
+
+The full configuration file for a sorting algorithms benchmark can be found below:
+
+[source,json]
+----
+{
+    "use_case_name": "sorting",
+    "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/sorting",
+
+    "executable": "python3 {{machine.input_dataset_base_dir}}/sorting/sortingApp",
+    "options": [
+        "-n {{parameters.elements.value}}",
+        "-a {{parameters.algorithm.value}}",
+        "-o {{output_directory}}/{{instance}}/outputs.json"
+    ],
+    "resources":{ "tasks":1, "exclusive_access":false },
+
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "outputs.json",
+                "format": "json",
+                "variables_path":"elapsed"
+            }
+        ]
+    },
+    "sanity": { "success": [], "error": [] },
+
+    // Test parameters
+    "parameters": [
+        {
+            "name": "algorithm",
+            "sequence": [ "bubble", "insertion", "merge" ]
+        },
+        {
+            "name":"elements",
+            //Equivalent to [10,100,1000,10000]
+            "geomspace":{
+                "min":10,
+                "max":10000,
+                "n_steps":4
+            }
+        }
+    ]
+}
+----
