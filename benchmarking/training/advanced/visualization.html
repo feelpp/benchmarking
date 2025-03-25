@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Website persistance and aggregating results :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/training/advanced/visualization.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../reframe/index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../reframe/handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="../index.html">Training</a></li>
+    <li><a href="index.html">Advanced Usage of <em>feelpp.benchmarking</em></a></li>
+    <li><a href="visualization.html">Visualization</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/training/pages/advanced/visualization.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Website persistance and aggregating results</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The framework allows users to create a dashboard that aggregates results from multiple benchmarks. This is useful for comparing different machines, applications, or use cases.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_dashboard_configuration_file"><a class="anchor" href="#_the_dashboard_configuration_file"></a>1. The dashboard configuration file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Whenever a benchmark is done, a file called <code>website_config.json</code> is created inside the directory specified under <code>reports_base_dir</code> on the machine specification file.</p>
+</div>
+<div class="paragraph">
+<p>If this file already exists from a previous benchmark, it will be updated to include the latest results. For example, when a benchmark runs on a new system.</p>
+</div>
+<div class="paragraph">
+<p>This file describes the dashboard hierarchy and where to find the benchmark results for each case/machine/application.</p>
+</div>
+<div class="paragraph">
+<p>Each website configuration file corresponds exactly to one dashboard, so users can have multiple dashboards by defining multiple website configuration files.</p>
+</div>
+<div class="paragraph">
+<p>The file is structured as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"execution_mapping":{
+    "my_application":{
+        "my_machine":{
+            "my_usecase": {
+                "platform": "local", //Or "girder"
+                "path": "./path/to/use_case/results" //Directory containing reports for a single machine-application-usecase combination
+            }
+        }
+    }
+},
+"machines":{
+    "my_machine":{
+        "display_name": "My Machine",
+        "description": "A description of the machine",
+    }
+},
+"applications":{
+    "my_application":{
+        "display_name": "My Application",
+        "description": "A description of the application",
+        "main_variables":[] //Used for aggregations
+    }
+},
+"use_cases":{
+    "my_usecase":{
+        "display_name": "My Use Case",
+        "description": "A description of the use case",
+    }
+}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>execution_mapping</code> field describes the hierarchy of the dashboard. That is, which applications where run on which machines and for which use cases. The <code>path</code> field supports having reports stored on remote locations, such as Girder.</p>
+</div>
+<div class="paragraph">
+<p>The <code>machines</code>, <code>applications</code>, and <code>use_cases</code> fields define the display names and descriptions for each machine, application, and use case, respectively.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aggregating_results"><a class="anchor" href="#_aggregating_results"></a>2. Aggregating results</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If our benchmarks contain more than 2 parameters, it can be difficult to visualize results on a single figure. The framework allows users to aggregate results by reducing the number of dimensions in the data.
+In addition, the framework indexes reports based on their date, the system they where executed on, the platform and environment, as well as the application and use case benchmarked.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_aggregations_field_on_figure_specifications"><a class="anchor" href="#_the_aggregations_field_on_figure_specifications"></a>2.1. The <code>aggregations</code> field on Figure Specifications</h3>
+<div class="paragraph">
+<p>In order to aggregate data (and reduce the number of dimensions), the <code>aggregations</code> field can be used on the figure specification file. This field is a list of dictionaries, each containing the fields <code>column</code> and <code>agg</code>, describing the column/parameter to aggregate and the operation to perform, respectively.</p>
+</div>
+<div class="paragraph">
+<p>Available aggregation operations are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>mean</code>: The mean of the values</p>
+</li>
+<li>
+<p><code>sum</code>: The sum of the values</p>
+</li>
+<li>
+<p><code>min</code>: The minimum value</p>
+</li>
+<li>
+<p><code>max</code>: The maximum value</p>
+</li>
+<li>
+<p><code>filter:value</code> : Filters the data based on the value of the column</p>
+</li>
+</ul>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Example of aggregating data</div>
+<div class="paragraph">
+<p>Let&#8217;s consider the benchmark with the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>tasks</code> : The number of tasks used in the benchmark</p>
+</li>
+<li>
+<p><code>mesh</code> : The mesh size used in the benchmark</p>
+</li>
+<li>
+<p><code>solver</code> : The solver used in the benchmark</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then, if we want to plot the mean execution times based on the <code>tasks</code> parameter, we will do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "title": "Avg Execution times by # tasks",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+    "yaxis": { "label": "Time (s)" },
+    "secondary_axis": {"parameter":"solver", "label":"Solver"},
+    "color_axis":{ "parameter": "performance_variable", "label":"Performance variables" },
+    "aggregations":[ {"column":"tasks","agg":"mean"} ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will generate the following figure:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/aggregation_example.png" alt="Aggregation Example">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_overview_configuration_file"><a class="anchor" href="#_overview_configuration_file"></a>2.2. Overview configuration file</h3>
+<div class="paragraph">
+<p>It is possible to create overview pages that show the performance of a group of benchmarks. This is useful for comparing different machines, applications, or use cases.</p>
+</div>
+<div class="paragraph">
+<p>Each perforamnce value, for all reports, is indexed by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The parameter space</p>
+</li>
+<li>
+<p>The variable name</p>
+</li>
+<li>
+<p>The benchmark date</p>
+</li>
+<li>
+<p>The system where the benchmark was executed</p>
+</li>
+<li>
+<p>The platform where the benchmark was executed</p>
+</li>
+<li>
+<p>The environment where the benchmark was executed</p>
+</li>
+<li>
+<p>The application</p>
+</li>
+<li>
+<p>The use case</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Depending on the dashboard page you are located, benchmarks are filtered by default. For example, if you are in the <code>machine</code> page, only benchmarks for that machine will be shown.</p>
+</div>
+<div class="paragraph">
+<p>Accessible column names:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>environment</p>
+</li>
+<li>
+<p>platform</p>
+</li>
+<li>
+<p>result</p>
+</li>
+<li>
+<p>machine</p>
+</li>
+<li>
+<p>usecase</p>
+</li>
+<li>
+<p>date</p>
+</li>
+</ul>
+</div>
+<div id="examp:2" class="sidebarblock examp">
+<div class="content">
+<div class="title">Example: Plot the performance evolution in time of reports for a specific machine-application-use_case combination</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "title": "Performance over time",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "xaxis": { "parameter": "date", "label": "Report Date" },
+    "yaxis": { "label": "Performance (s)" },
+    "color_axis":{ "parameter": "solver", "label":"Solver" },
+    "aggregations":[
+        {"column":"tasks","agg":"mean"},
+        {"column":"mesh","agg":"mean"},
+        {"column":"performance_variable","agg":"sum"}
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The dashboard administrator can define the overview configuration file, which is a JSON file that describes the figures to be displayed on each overview page.</p>
+</div>
+<div class="paragraph">
+<p>This overview configuration file is currently too extensive and verbose and needs to be simplified, so it will not be treated in this course. However, be aware that it is possible to create overview pages that show the performance of a group of benchmarks.</p>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<script async src="../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

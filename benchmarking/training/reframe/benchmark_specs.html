@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Benchmark Specification File :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/training/reframe/benchmark_specs.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../advanced/index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../advanced/handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="../index.html">Training</a></li>
+    <li><a href="index.html">Introduction to <em>feelpp.benchmarking</em></a></li>
+    <li><a href="benchmark_specs.html">Benchmark Specifications</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/training/pages/reframe/benchmark_specs.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Benchmark Specification File</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This configuration file describes precisely what will be benchmarked. It is used to specify the parameter space for the benchmarking process, the application executable and its arguments, as well as where to find performance variables and how to validate tests.</p>
+</div>
+<div class="paragraph">
+<p>The basic skeleton of the JSON file is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    //A given name for your Use Case
+    "use_case_name":"my_use_case",
+
+    //The maximum time the submitted job can run. After this, it will be killed.
+    "timeout":"0-0:5:0",
+
+    //Where to find the application.
+    "executable":"my_app.sh",
+
+    // Application options
+    "options": ["-my-flag","--my-option=1"],
+
+    // How many computational resources to use for the benchmark, and how
+    "resources": {},
+
+    // Performance values extraction
+    "scalability": {},
+
+    // Check if test succesfull
+    "sanity":{},
+
+    // Test parametrization
+    "parameters":[]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_magic_strings"><a class="anchor" href="#_magic_strings"></a>1. Magic strings</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>feelpp.benchmarking</em> is equiped with a special <strong>{{placeholder}}</strong> syntax that replaces values from a json field into another. This syntax is specially helpful for refactoring the configuration file.
+However, the main objective of this syntax is to access values assigned during the test, like parameter values or the test ID.
+It is also possible to access values from the machine specifications file.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_parameters"><a class="anchor" href="#_parameters"></a>2. Parameters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The parameter field consists of a list of <strong>Parameter</strong> objects that contain the values for which the test will be executed.</p>
+</div>
+<div id="examp:6" class="sidebarblock examp">
+<div class="content">
+<div class="title">Simple parameter</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "name":"my_parameter",
+    "sequence":[1,2,3]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specifying uniquely this parameter implies that ReFrame will launch 3 tests, one for each value of <code>my_parameter</code>.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>It must be noted that ReFrame will consider the cartesian product of the <code>parameters</code> list in order to launch the tests.</p>
+</div>
+<div id="examp:7" class="sidebarblock examp">
+<div class="content">
+<div class="title">Cartesian product of parameters</div>
+<div class="paragraph">
+<p>For the following parameters section</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
+    {"name":"param1", "sequence":[1,2]},
+    {"name":"param2", "sequence":["a","b"]}
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>4 tests will be launched, taking the values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>param1 = 1, param2 = "a"</p>
+</li>
+<li>
+<p>param1 = 2, param2 = "a"</p>
+</li>
+<li>
+<p>param1 = 1, param2 = "b"</p>
+</li>
+<li>
+<p>param1 = 2, param2 = "b"</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The framework is equiped with multiple parameter generators that simplifies having to manually specify all desired parameters. For example, users can provide a range or a linspace <em>function</em>.</p>
+</div>
+<div id="examp:8" class="sidebarblock examp">
+<div class="content">
+<div class="title">Parameter configuration for sorting algorithms benchmark</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"parameters": [
+    {
+        "name": "algorithm",
+        "sequence": [ "bubble", "insertion", "merge" ]
+    },
+    {
+        "name":"elements",
+        //Equivalent to [10,100,1000,10000]
+        "geomspace":{
+            "min":10,
+            "max":10000,
+            "n_steps":4
+        }
+    }
+]</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+12 tests will be executed for this parameter combination
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, parameter values can be accessed -on the go- by other configuration fields by using the placeholder syntax and appending the reserved keyword <code>.value</code>. i.e.
+<code>"{{parameters.my_param.value}}"</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_application_setup"><a class="anchor" href="#_application_setup"></a>3. Application setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The executable and options fields specify the command that will be executed for the benchmark. The executable defines the application or script to run, while the options array contains command-line arguments passed to it. Users can use placeholders to reference parameters or system variables dynamically.</p>
+</div>
+<div id="examp:9" class="sidebarblock examp">
+<div class="content">
+<div class="title">App setup for sorting algorithms benchmark</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"executable": "python3 {{machine.input_dataset_base_dir}}/sorting/sortingApp",
+"timeout":"0-0:5:0",
+"options":[
+    "-n {{parameters.elements.value}}",
+    "-a {{parameters.algorithm.value}}",
+    "-o {{output_directory}}/{{instance}}/outputs.json"
+]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resources"><a class="anchor" href="#_resources"></a>4. Resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Users can specify the computing resources for which the tests will run, and can even parametrize this.</p>
+</div>
+<div class="paragraph">
+<p>A combination of (tasks, tasks_per_node, gpus_per_node, nodes, memory and exclusive_access) can be specified. However, only certain combinations are supported, and at least one must be provided.</p>
+</div>
+<div id="examp:10" class="sidebarblock examp">
+<div class="content">
+<div class="title">Parametrized resources</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"resources":{
+    "tasks":"{{parameters.tasks.value}}",
+    "nodes":1,
+    "exclusive_access":false
+
+},
+"parameters":[
+    {"name":"tasks","sequence":[16,32,64,128]}
+]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_performance_values_extraction"><a class="anchor" href="#_performance_values_extraction"></a>5. Performance Values Extraction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>scalability</code> field defines how performance metrics are extracted from output files. Users first need to specify the base directory where performance variables are written. Then, users should provide the list of all the performance files, along with the file format. For JSON files, a <code>variables_path</code> field should be passed indicating how to extract the variables from the dictionary structure.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+At the moment supported formats are : CSV and JSON
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Wildcards (<code>*</code>) are supported for extracting variables from deeply nested or complex JSON structures.
+</td>
+</tr>
+</table>
+</div>
+<div id="examp:11" class="sidebarblock examp">
+<div class="content">
+<div class="title">Performance extraction for sorting algorithms benchmark</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"scalability": {
+    "directory": "{{output_directory}}/{{instance}}/",
+    "stages": [
+        {
+            "name":"",
+            "filepath": "outputs.json",
+            "format": "json",
+            "variables_path":"elapsed"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_test_validation"><a class="anchor" href="#_test_validation"></a>6. Test validation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>sanity</code> field is used to ensure the correct execution of a test. It contains two lists: <code>success</code> and <code>error</code>. The framework will look for all text patterns in the <code>success</code> list and will force the test to fail if the patterns are not found.
+Analogously, tests will fail if the patterns in the <code>error</code> list are found.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Only validating the standard output is supported for now.
+</td>
+</tr>
+</table>
+</div>
+<div id="examp:12" class="sidebarblock examp">
+<div class="content">
+<div class="title">Validating a tests execution</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"sanity": {
+    "success": ["[SUCCESS]"],
+    "error": ["[OOPSIE]","Error"]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_full_example_configuration_file"><a class="anchor" href="#_full_example_configuration_file"></a>6.1. Full Example Configuration File</h3>
+<div class="paragraph">
+<p>The full configuration file for a sorting algorithms benchmark can be found below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "use_case_name": "sorting",
+    "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/sorting",
+
+    "executable": "python3 {{machine.input_dataset_base_dir}}/sorting/sortingApp",
+    "options": [
+        "-n {{parameters.elements.value}}",
+        "-a {{parameters.algorithm.value}}",
+        "-o {{output_directory}}/{{instance}}/outputs.json"
+    ],
+    "resources":{ "tasks":1, "exclusive_access":false },
+
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "outputs.json",
+                "format": "json",
+                "variables_path":"elapsed"
+            }
+        ]
+    },
+    "sanity": { "success": [], "error": [] },
+
+    // Test parameters
+    "parameters": [
+        {
+            "name": "algorithm",
+            "sequence": [ "bubble", "insertion", "merge" ]
+        },
+        {
+            "name":"elements",
+            //Equivalent to [10,100,1000,10000]
+            "geomspace":{
+                "min":10,
+                "max":10000,
+                "n_steps":4
+            }
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<script async src="../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

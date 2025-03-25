@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Exercice 1: Benchmarking a simple application locally :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/training/reframe/handsOn/exercise1.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../../_/css/site.css">
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../advanced/index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../advanced/containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../advanced/remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../advanced/file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../advanced/custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../advanced/memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../advanced/visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../advanced/workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../advanced/handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="../../index.html">Training</a></li>
+    <li><a href="index.html">Hands-on session 1</a></li>
+    <li><a href="exercise1.html">Exercise 1</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/training/pages/reframe/handsOn/exercise1.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Exercice 1: Benchmarking a simple application locally</h1>
+<div class="sect1">
+<h2 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>1. Pre-requisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For this exercise, we will use GitHub codespaces to benchmark a simple application using <em>feelpp.benchmarking</em>.</p>
+</div>
+<div class="sect2">
+<h3 id="_github_codespaces"><a class="anchor" href="#_github_codespaces"></a>1.1. GitHub Codespaces</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First, log in to your GitHub account and navigate to your assignment repository.</p>
+</li>
+<li>
+<p>On the top-left branches button, select the <strong>feedback</strong> branch. (This is because we do not want the Docker configuration from the CI/CD course to interfere with this exercice).</p>
+</li>
+<li>
+<p>Click again on that button, and write <strong>benchmarking</strong>. Now click on create branch <strong>benchmarking</strong> from the <strong>feedback</strong> branch.</p>
+</li>
+<li>
+<p>In this branch, go to the <strong>Code</strong> button and create a new codespace for the <strong>benchmarking</strong> branch.</p>
+</li>
+<li>
+<p>Inside the codespace, DELETE the .devcontainer folder to use the default image. If you want, you can actually delete everything in the repository and start from scratch.</p>
+</li>
+<li>
+<p>Rebuild the codespace.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_feelpp_benchmarking"><a class="anchor" href="#_install_feelpp_benchmarking"></a>1.2. Install <code>feelpp.benchmarking</code></h3>
+<div class="paragraph">
+<p><em>feelpp.benchmarking</em> is available on PyPI and can be installed using <code>pip</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pip install feelpp-benchmarking</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_gitignore_file"><a class="anchor" href="#_create_a_gitignore_file"></a>1.3. Create a .gitignore file</h3>
+<div class="paragraph">
+<p>The next steps will create a large number of files and directories that are not necessary to be tracked by Git. To avoid cluttering the repository, create a <code>.gitignore</code> file in the root of your project, or update the existing one.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch .gitignore</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And add the following content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-txt hljs" data-lang="txt">node_modules/
+package-lock.json
+public/
+cache/
+reframe/
+reports/
+outputs/</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_initialize_antora_environment"><a class="anchor" href="#_initialize_antora_environment"></a>1.4. Initialize antora environment</h3>
+<div class="paragraph">
+<p>In order to generate the benchmark reports website, the Antora environment must be configured beforehand.</p>
+</div>
+<div class="paragraph">
+<p>Initialize the Antora environment in the current directory. There is a built-in script that automates this process:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">feelpp-antora init -d . -t "My Benchmarks" -n my_benchmarks</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_the_setup"><a class="anchor" href="#_verify_the_setup"></a>1.5. Verify the setup</h3>
+<div class="paragraph">
+<p>You should see the following files and directories created on the root of your project:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>site.yml</code>: The antora playbook file.</p>
+</li>
+<li>
+<p><code>docs/</code>: The directory where the dashboard Asciidoc pages are stored.</p>
+</li>
+<li>
+<p><code>package.json</code>: The nodejs package file, containing necessary dependencies for <em>feelpp.benchmarking</em>.</p>
+</li>
+<li>
+<p><code>package-lock.json</code>: The lock file for the nodejs package.</p>
+</li>
+<li>
+<p><code>node_modules/</code>: The directory where the nodejs dependencies are stored.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To see if our dashboard is correctly configured, compile the Asciidoc files to HTML and start a web server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">npm run antora
+npm run start</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, click on the link on the terminal to open the dashboard in your browser.
+If everything OK, you should see a page with the title <code>My Benchmarks</code>.</p>
+</div>
+<div class="paragraph">
+<p>Close the server by pressing <code>Ctrl+C</code> on the terminal.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copy_the_system_configuration_file"><a class="anchor" href="#_copy_the_system_configuration_file"></a>2. Copy the system configuration file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To benchmark applications on a machine, a ReFrame configuration file must be provided to <em>feelpp.benchmarking</em>. This file describes the system&#8217;s architecture, as well as the necessary modules, partitions, commands, and environments for your applications to run as expected.</p>
+</div>
+<div class="paragraph">
+<p>Create a new Python file named <code>codespace_machine.py</code> in the root of your project</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch codespace_machine.py</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and copy the following content to the file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">site_configuration = {
+    'systems': [
+        {
+            'name': 'codespace_machine',
+            'descr': 'GitHub Codespace Machine',
+            'hostnames':['py::socket.gethostname'],
+            'partitions': [
+                {
+                    'name': 'my_partition',
+                    'scheduler': 'local',
+                    'launcher': 'local',
+                    'environs': ['my_environment'],
+                    'processor': { 'num_cpus': 1 }
+                }
+            ]
+        }
+    ],
+    'environments':[
+        {
+            'name': 'my_environment',
+            'target_systems': ["codespace_machine:my_partition"]
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_machine_specification_file"><a class="anchor" href="#_create_a_machine_specification_file"></a>3. Create a Machine Specification File</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create a new JSON file names <code>codespace_specs.json</code> in the root of your project</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch codespace_specs.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and copy the following template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "machine": "&lt;TODO&gt;",
+    "targets":["&lt;TODO&gt;:builtin:&lt;TODO&gt;"],
+    "reframe_base_dir":"&lt;TODO&gt;",
+    "reports_base_dir":"&lt;TODO&gt;",
+    //HELP: The input_dataset_base_dir can be used to indicate where benchmarked application can be found.
+    "input_dataset_base_dir":"&lt;TODO&gt;",
+    "output_app_dir":"&lt;TODO&gt;"
+}</code></pre>
+</div>
+</div>
+<div id="exer:1" class="sidebarblock exer">
+<div class="content">
+<div class="title">Exercise: Machine Specification File</div>
+<div class="paragraph">
+<p>Complete the &lt;TODO&gt; fields in the JSON file, using information from the codespace_machine.py file.</p>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>targets</code> field follows the format <code>&lt;partition&gt;:&lt;platform&gt;:&lt;environment&gt;</code>.</p>
+</li>
+<li>
+<p>The framework does not support relative paths, but it supports using environment variables. Use <code>$PWD</code> to refer to the current working directory.</p>
+</li>
+<li>
+<p>The example applications can be found under the <code>examples</code> directory.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<details class="proof">
+<summary class="title">Solution</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "machine": "codespace_machine",
+    "targets":["my_partition:builtin:my_environment"],
+    "reframe_base_dir":"$PWD/reframe",
+    "reports_base_dir":"$PWD/reports",
+    "input_dataset_base_dir":"$PWD/examples",
+    "output_app_dir":"$PWD/outputs"
+}</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_application"><a class="anchor" href="#_example_application"></a>4. Example application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For this exercise, we will use a simple Python application that calculates the n&#8217;th Fibonacci number, in two different ways: recursively and iteratively.</p>
+</div>
+<div class="paragraph">
+<p>It takes the following arguments:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>-n</code>: the sequence number to calculate</p>
+</li>
+<li>
+<p><code>-a</code>: the approach to use. Options are <code>recursive</code> and <code>iterative</code></p>
+</li>
+<li>
+<p><code>-o</code>: the output file to write the elapsed time. It will be saved in CSV format (<code>elapsed,fibonacci_number</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create a new folder named <em>examples/</em> and a Python file named <code>fibonacci.py</code> inside the examples folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir examples
+touch examples/fibonacci.py</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and copy the following content to the file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from argparse import ArgumentParser
+import os
+from time import perf_counter
+
+def fibonacciRecursive(n):
+    if n &lt; 1: return 0
+    elif n &lt;= 2: return 1
+    else: return fibonacciRecursive(n-1) + fibonacciRecursive(n-2)
+
+def fibonacciIterative(n):
+    if n &lt; 1: return 0
+    elif n &lt;= 2: return 1
+    else:
+        a,b = 1,1
+        for i in range(3,n+1):
+            a,b = b,a+b
+        return b
+
+
+if __name__=="__main__":
+    parser = ArgumentParser()
+    parser.add_argument('-n',type=int,help="Sequence number",required=True)
+    parser.add_argument('--approach','-a',type=str, help="Fibonacci algorithm approach to use",required=True)
+    parser.add_argument('--out','-o',type=str, help="Filepath where to save elapsed times",required=True)
+    args = parser.parse_args()
+
+    n = int(args.n)
+
+    if args.approach == "recursive":
+        fib = fibonacciRecursive
+    elif args.approach == "iterative":
+        fib = fibonacciIterative
+    else:
+        raise NotImplementedError(f"Fibonacci approach - {args.approach} - not implemented")
+
+
+    tic = perf_counter()
+    fib_number = fib(n)
+    toc = perf_counter()
+    elapsed_time = toc - tic
+
+
+    dirpath = os.path.dirname(args.out)
+    if not os.path.exists(dirpath):
+        os.makedirs(dirpath)
+
+    with open(args.out,'w') as f:
+        f.write(f"elapsed,fibonacci_number\n{elapsed_time},{fib_number}")
+
+    print(f"Elapsed time: {elapsed_time}")
+    print(f"Fibonacci number: {fib_number}")
+    print("Done!")</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_benchmark_specification_file"><a class="anchor" href="#_create_a_benchmark_specification_file"></a>5. Create a Benchmark Specification File</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once how the application that will benchmarked works is understood, a benchmark specification file must be created to describe how the application will be tested.</p>
+</div>
+<div class="paragraph">
+<p>Create a new JSON file named <code>fibonacci_benchmark.json</code> in the root of your project</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch fibonacci_benchmark.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and copy the following template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "use_case_name":"Fibonacci",
+    "timeout":"0-0:5:0",
+    "executable": "python &lt;TODO&gt;/fibonacci.py",
+    "output_dir":"&lt;TODO&gt;",
+    "options":[
+        "-n &lt;TODO&gt;",
+        "-a &lt;TODO&gt;",
+        "-o &lt;TODO&gt;/output.json"
+    ],
+    "scalability": {
+        "directory":"&lt;TODO&gt;",
+        "stages":[
+            {
+                "name":"",
+                "filepath":"output.json",
+                "format":"csv",
+                "units":{ "fibonacci_number":"" }
+            }
+        ]
+    },
+    "sanity":{ "success":["&lt;TODO&gt;"] },
+
+    "resources": {"tasks":1, "exclusive_access":false },
+    "parameters": [
+        {
+            "name":"n",
+            //Equivalent to: "sequence":[10,15,20,25,30,35,40]
+            "range":{"min":10,"max":40,"step":5}
+        },
+        {
+            "name":"method",
+            "sequence":["recursive","iterative"]
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div id="exer:2" class="sidebarblock exer">
+<div class="content">
+<div class="title">Exercise: Benchmark Specification File</div>
+<div class="paragraph">
+<p>Complete the &lt;TODO&gt; fields in the JSON file, using information from the Fibonacci application and the machine specification file.</p>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Remember to use the <code>{{placeholder}}</code> syntax</p>
+</li>
+<li>
+<p>To access fields from the machine specification file, use the <code>{{machine.field}}</code> syntax.</p>
+</li>
+<li>
+<p>To access parameter values, use the <code>{{parameters.parameter_name.value}}</code> syntax.</p>
+</li>
+<li>
+<p>The <code>{{instance}}</code> keyword serves as a unique identifier. It can be used to create a unique directory for each test instance, for executing tests asynchronously.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<details class="proof">
+<summary class="title">Solution</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "use_case_name":"Fibonacci",
+    "timeout":"0-0:5:0",
+    "executable": "python {{machine.input_dataset_base_dir}}/fibonacci.py",
+    "output_dir":"{{machine.output_app_dir}}/fibo",
+    "options":[
+        "-n {{parameters.n.value}}",
+        "-a {{parameters.method.value}}",
+        "-o {{output_dir}}/output.json"
+    ],
+    "scalability": {
+        "directory":"{{output_dir}}",
+        "stages":[
+            {
+                "name":"",
+                "filepath":"output.json",
+                "format":"csv",
+                "units":{ "fibonacci_number":"" }
+            }
+        ]
+    },
+    "sanity":{ "success":["Done!"] },
+
+    "resources": {"tasks":1, "exclusive_access":false },
+    "parameters": [
+        {
+            "name":"n",
+            "range":{"min":10,"max":40,"step":5}
+        },
+        {
+            "name":"method",
+            "sequence":["recursive","iterative"]
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_figure_description_file"><a class="anchor" href="#_create_a_figure_description_file"></a>6. Create a Figure Description File</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To immediately be able to visualize the results of the benchmark, a figure description file must be created.</p>
+</div>
+<div class="paragraph">
+<p>Create a new JSON file named <code>fibonacci_plot.json</code> in the root of your project</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">touch fibonacci_plot.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and copy the following template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "plots":[
+        {
+            "title":"Time Complexity",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "variables": ["elapsed"],
+            "xaxis":{ "parameter":"&lt;TODO&gt;", "label":"&lt;TODO&gt;" },
+            "yaxis": {"label":"Execution time (s)"},
+            "color_axis":{"parameter":"&lt;TODO&gt;","label":"&lt;TODO&gt;"}
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div id="exer:3" class="sidebarblock exer">
+<div class="content">
+<div class="title">Exercise: Figure Description File</div>
+<div class="paragraph">
+<p>Complete the &lt;TODO&gt; fields in the JSON file to be able to recreate the following figure:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../../_images/fibonacci_time_complexity_plot.png" alt="fibonacci time complexity plot">
+</div>
+</div>
+</div>
+</div>
+<details class="proof">
+<summary class="title">Solution</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "plots":[
+        {
+            "title":"Time Complexity",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "variables": ["elapsed"],
+            "xaxis":{ "parameter":"n", "label":"N" },
+            "yaxis": {"label":"Execution time (s)"},
+            "color_axis":{"parameter":"method","label":"Method"}
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_run_the_benchmark_and_visualize_the_results"><a class="anchor" href="#_run_the_benchmark_and_visualize_the_results"></a>7. Run the benchmark and visualize the results</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To launch the benchmarks, use the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">feelpp-benchmarking-exec --machine-config codespace_specs.json \
+                            --custom-rfm-config codespace_machine.py \
+                            --benchmark-config fibonacci_benchmark.json \
+                            --plots-config fibonacci_plot.json \
+                            --website</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <code>--website</code> flag will generate the dashboard files and start a web server to visualize the results.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+
+
+<script async src="../../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

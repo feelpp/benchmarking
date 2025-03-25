@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Overview of ReFrame-HPC and feelpp.benchmarking :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/training/reframe/introduction.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../advanced/index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../advanced/workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../advanced/handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="../index.html">Training</a></li>
+    <li><a href="index.html">Introduction to <em>feelpp.benchmarking</em></a></li>
+    <li><a href="introduction.html">Overview</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/training/pages/reframe/introduction.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Overview of ReFrame-HPC and feelpp.benchmarking</h1>
+<div class="sect1">
+<h2 id="_what_is_feelpp_benchmarking"><a class="anchor" href="#_what_is_feelpp_benchmarking"></a>1. What is feelpp.benchmarking ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>feelpp.benchmarking</em> is a framework designed to automate and facilitate the benchmarking process for any application. It is built on top of <a href="https://github.com/reframe-hpc/reframe">ReFrame-HPC</a>, and was conceived to simplify benchmarking on any HPC system. The framework is specially useful for centralizing benchmarking results and ensuring reproducibility.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/bench_supercomputers.png" alt="feelpp.benchmarking Supercomputers" width="75%">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_motivation"><a class="anchor" href="#_motivation"></a>1.1. Motivation</h3>
+<div class="paragraph">
+<p>Benchmarking an HPC application can often be an error-prone process, as the benchmarks need to be configured for multiple systems. If evaluating multiple applications, a benchmarking pipeline needs to be created for each one of them.
+This is where <em>feelpp.benchmarking</em> comes in hand, as it allows users to run reproducible and consistent benchmarks for their applications on different architectures without manually handling execution details.</p>
+</div>
+<div class="paragraph">
+<p>The framework&#8217;s customizable configuration files make it adaptable to various scenarios.
+Whether you&#8217;re optimizing code, comparing hardware, or ensuring the reliability of numerical simulations, <em>feelpp.benchmarking</em> offers a structured, scalable, and user-friendly solution to streamline the benchmarking process.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_it_works"><a class="anchor" href="#_how_it_works"></a>1.2. How it works</h3>
+<div class="paragraph">
+<p>The framework requires 4 configuration files, in JSON format, in order to set up a benchmark.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">4 configuration files</dt>
+<dd>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">System settings (ReFrame)</dt>
+<dd>
+<p>Describes the system architecture (e.g. partitions, environments, available physical memory, devices)</p>
+</dd>
+<dt class="hdlist1">Machine Specifications</dt>
+<dd>
+<p>Filters the environments to benchmark, specifies access, I/O directories and test execution policies.</p>
+</dd>
+<dt class="hdlist1">Benchmark/Application Specifications</dt>
+<dd>
+<p>Describes how to execute the application, where and how to extract performance variables, and the test parametrization.</p>
+</dd>
+<dt class="hdlist1">Figure configuration</dt>
+<dd>
+<p>Describes how to build the generated report&#8217;s plots</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Once the files are built and <em>feelpp.benchmarking</em> is launched, a pre-processing phase begins where configuration files are parse. After this, the ReFrame test pipeline is executed according to the provided configuration.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Pre-processing stage</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configuration files are parsed to replace <strong>placeholders</strong>.</p>
+</li>
+<li>
+<p>If a container image is being benchmarked, this one is pulled and placed on the provided destination.</p>
+</li>
+<li>
+<p>If there are remote file dependencies, they are downloaded to the specified destinations.</p>
+</li>
+</ol>
+</div>
+</dd>
+<dt class="hdlist1">ReFrame test pipeline</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The parameter space is created.</p>
+</li>
+<li>
+<p>Tests are dispatched.</p>
+</li>
+<li>
+<p>Computing resources are set, along with specific launcher and scheduler options.</p>
+</li>
+<li>
+<p>Jobs are submitted by the scheduler.</p>
+</li>
+<li>
+<p>Performance variables are extracted.</p>
+</li>
+<li>
+<p>Sanity checks</p>
+</li>
+<li>
+<p>Cleanup</p>
+</li>
+</ol>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Finally, at the end phase of the pipeline, <em>feelpp.benchmarking</em> will store the ReFrame report following a specific folder structure.
+This will allow the framework to handle multiple ReFrame reports in order to render them in a dashboard-like website.</p>
+</div>
+<div class="paragraph">
+<p>The diagram figure summarizes the <em>feelpp.benchmarking</em> workflow.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/benchmark_code_design.png" alt="feelpp.benchmarking sequence diagram">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_reframe_hpc"><a class="anchor" href="#_what_is_reframe_hpc"></a>2. What is ReFrame-HPC ?</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="../_images/reframe_logo-width400p.png" alt="ReFrame Logo">
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+ReFrame is a powerful framework for writing system regression tests and benchmarks, specifically targeted to HPC systems. The goal of the framework is to abstract away the complexity of the interactions with the system, separating the logic of a test from the low-level details, which pertain to the system configuration and setup. This allows users to write portable tests in a declarative way that describes only the test&#8217;s functionality.
+</blockquote>
+<div class="attribution">
+&#8212; <a href="https://github.com/reframe-hpc/reframe">ReFrame in a Nutshell</a>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_core_features"><a class="anchor" href="#_core_features"></a>2.1. Core features</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Regression testing</dt>
+<dd>
+<p>Ensures that new changes do not introduce errors by re-running existing test cases.</p>
+</dd>
+<dt class="hdlist1">Performance evaluation</dt>
+<dd>
+<p>Monitors and assesses the performance of applications to detect any regressions or improvements.</p>
+</dd>
+<dt class="hdlist1">Performance and Sanity checks</dt>
+<dd>
+<p>Automates validation of test results with built-in support for performance benchmarks, ensuring correctness and efficiency.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_execution_pipeline"><a class="anchor" href="#_test_execution_pipeline"></a>2.2. Test Execution Pipeline</h3>
+<div class="paragraph">
+<p>ReFrame tests go through a pre-defined pipeline where users can customize the what happens in between each step by using decorators (e.g. <code>@run_after("setup")</code>).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Setup: Tests are set up for current partition and programming environment.</p>
+</li>
+<li>
+<p>Compile: If needed, the script for test compilation is created and submitted for execution.</p>
+</li>
+<li>
+<p>Run: Scripts associated to the test execution are submitted (asynchronously or sequentially).</p>
+</li>
+<li>
+<p>Sanity: The test outputs are checked to validate the correct execution.</p>
+</li>
+<li>
+<p>Performance: Performance metrics are collected.</p>
+</li>
+<li>
+<p>Cleanup: Test resources are cleaned up.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/reframe-test-cases.svg" alt="How ReFrame loads and schedules tests for execution">
+</div>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Example Pipeline</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import reframe as rfm
+import reframe.utility.sanity as sn
+
+@rfm.simple_test
+class SleepTest(rfm.RunOnlyRegressionTest):
+    valid_systems = ['*']
+    valid_prog_environs = ['*']
+
+    executable = 'bash'
+    executable_opts = ['-c']
+    seconds_to_sleep = parameter([1,2,3])
+
+    @run_after("init")
+    def setReferences(self):
+        self.reference = {
+            '*': {
+                'sleepTime': (self.seconds_to_sleep,-0.05,0.05,'s')
+            }
+        }
+
+    @run_before("run")
+    def setExecutableOpts(self):
+        self.executable_opts += [f'''
+            SECONDS=0;
+            sleep {self.seconds_to_sleep};
+            duration=$SECONDS;
+            echo "slept for $duration s";
+            echo "I'm done sleeping!";
+        ''']
+
+    @sanity_function
+    def validateExecution(self):
+        return sn.assert_found("I'm done sleeping!", self.stdout)
+
+    @performance_function('s')
+    def sleepTime(self):
+        return sn.extractsingle(f'slept for (\d+)\s+s',self.stdout,1,float)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>For those interested in learning more, check out:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Official ReFrame Documentation: <a href="https://reframe-hpc.readthedocs.io" class="bare">reframe-hpc.readthedocs.io</a></p>
+</li>
+<li>
+<p>GitHub Repository: <a href="https://github.com/reframe-hpc" class="bare">github.com/reframe-hpc</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<script async src="../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>3. feelpp.benchmarking for advanced performance analysis :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/training/advanced/index.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../reframe/index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../reframe/handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../reframe/handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="../index.html">Training</a></li>
+    <li><a href="index.html">Advanced Usage of <em>feelpp.benchmarking</em></a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/training/pages/advanced/index.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">3. feelpp.benchmarking for advanced performance analysis</h1>
+<div class="sect1">
+<h2 id="_what_you_will_learn_in_this_course"><a class="anchor" href="#_what_you_will_learn_in_this_course"></a>1. What you will learn in this course</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>How to configure feelpp.benchmarking to overcome common benchmarking challenges</p>
+</li>
+<li>
+<p>How to create custom figures to visualize benchmarking results</p>
+</li>
+<li>
+<p>How to create a continuous benchmarking workflow</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When benchmarking applications on HPC systems, multiple challenges arise. For example,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>how does one guarantees reproducibility of an application across different systems?</p>
+</li>
+<li>
+<p>how to compare the performance of an application across different systems?</p>
+</li>
+<li>
+<p>how do I handle large input datasets and memory requirements?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This course will teach you how to use <em>feelpp.benchmarking</em> to overcome these challenges.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_containers_in_feelpp_benchmarking"><a class="anchor" href="#_configuring_containers_in_feelpp_benchmarking"></a>2. Configuring containers in <em>feelpp.benchmarking</em></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A good practice for guaranteeing reproducibility of an application is to containerize it. This way, the application can be run in the same environment across different systems. <em>feelpp.benchmarking</em> supports the use of containers to run benchmarks.</p>
+</div>
+<div class="sect2">
+<h3 id="_specifying_container_platforms_in_reframe_system_settings"><a class="anchor" href="#_specifying_container_platforms_in_reframe_system_settings"></a>2.1. Specifying container platforms in ReFrame system settings.</h3>
+<div class="paragraph">
+<p>The first step to supporting containers, is to modify ReFrame&#8217;s system configuration.
+This can be simply done by adding the following lines to your system partition configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"container_platforms":[{ "type": "Apptainer" }]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Multiple container runtimes are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Docker</p>
+</li>
+<li>
+<p>Singularity</p>
+</li>
+<li>
+<p>Apptainer</p>
+</li>
+<li>
+<p>Sarus</p>
+</li>
+<li>
+<p>Shifter</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Custom modules and environment variables can be specified in this field.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_containers_in_the_machine_specifications_file"><a class="anchor" href="#_configuring_containers_in_the_machine_specifications_file"></a>2.2. Configuring containers in the Machine Specifications file</h3>
+<div class="paragraph">
+<p>The next step is to configure the container settings in the machine specifications file.</p>
+</div>
+<div class="paragraph">
+<p><em>feelpp.benchmarking</em>'s machine specification interface is equiped with a container field that allows you to specify common directory paths, options and some settings for executing benchmarks in containers.</p>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Container settings in the Machine Specification file</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"containers":{
+    "apptainer":{
+        "image_base_dir":"/data/my_images/",
+        "options":[ "--bind /opt/:/opt/" ],
+        "cachedir": "/tmp/apptainer_cache",
+        "tmpdir": "/tmp/apptainer_tmp"
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><code>containers</code> is a dictionary containing the container runtime name as the key and the settings as value. The settings include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>image_base_dir</code>: The base directory where the container images are stored, or will be stored.</p>
+</li>
+<li>
+<p><code>options</code>: A list of options to pass to the container execution command.</p>
+</li>
+<li>
+<p><code>executable</code>: If the command used for pulling images is different from the default, it can be specified here.</p>
+</li>
+<li>
+<p><code>cachedir</code>: The directory where the container cache is stored.</p>
+</li>
+<li>
+<p><code>tmpdir</code>: The directory where container temporary files are stored.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+At the moment, only the <code>apptainer</code> container is supported. Support for other container runtimes will be added in future releases.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_containers_in_the_benchmark_specification_file"><a class="anchor" href="#_configuring_containers_in_the_benchmark_specification_file"></a>2.3. Configuring containers in the Benchmark Specification file</h3>
+<div class="paragraph">
+<p>Concerning the benchmark specification file, the container settings are specified in the <code>platform</code> field.</p>
+</div>
+<div class="paragraph">
+<p>This field will containg all possible platform configurations, including the built-in (local). However, it is the machine configuration file that will determine where tests will be executed, by specifying it in the <code>targets</code> field.</p>
+</div>
+<div id="examp:2" class="sidebarblock examp">
+<div class="content">
+<div class="title">Platform settings in the Benchmark Specification file</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"platforms": {
+    "apptainer":{
+        "image": {
+            "url":"oras://ghcr.io/feelpp/my_image:master-sif",
+            "filepath":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
+        },
+        "input_dir":"/input_data",
+        "options": [
+            "--home {{machine.output_app_dir}}",
+            "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
+            "--env OMP_NUM_THREADS=1"
+        ],
+        "append_app_option":[]
+    },
+    "builtin":{
+        "input_dir":"{{machine.input_dataset_base_dir}}",
+        "append_app_option":[]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example will first pull the <code>oras://ghcr.io/feelpp/my_image:master-sif</code> image and store it in the <code>{{machine.containers.apptainer.image_base_dir}}/my_image.sif</code> directory. Then, ReFrame will launch tests as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apptainer exec --home /path/to/output --bind /path/to/input_data/:/input_data --env OMP_NUM_THREADS=1 data/my_images/my_image.sif ...</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s break down the <code>platforms</code> field:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>apptainer</code>: The container runtime name. Must match the name specified in the machine configuration file.</p>
+</li>
+<li>
+<p><code>image</code>: The image field contains the path where the container image can, or will be, be found. If the URL is specified, the image will be pulled and stored in <code>filepath</code>.</p>
+</li>
+<li>
+<p><code>input_dir</code>: The directory where input data is stored in the container.</p>
+</li>
+<li>
+<p><code>options</code>: A list of options to pass to the container execution command.</p>
+</li>
+<li>
+<p><code>append_app_option</code>: A list of options to append to the application command. This allows customizing the application execution depending on the platform.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Image pulling will be done ONCE, and usually from a head node.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_remote_input_files"><a class="anchor" href="#_remote_input_files"></a>3. Remote Input Files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is possible to download input files for your application from a remote location.
+This is useful when input files are not yet available on the system where the benchmark is executed, and for users to not have to manually upload the files.</p>
+</div>
+<div class="paragraph">
+<p>To use remote input files, you can use the <code>remote_input_dependencies</code> field in the Benchmark Specification file.</p>
+</div>
+<div class="paragraph">
+<p>The <code>remote_input_dependencies</code> field is a dictionary containing a custom name as the key and a <code>RemoteData</code> object as a value.</p>
+</div>
+<div class="paragraph">
+<p>The RemoteData object can be constructed using the following syntax:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    // File, folder or item
+    "my_data_management_platform": { "file": "my_id" },
+    // The path to download the files to
+    "destination": "/path/to/destination"
+}</code></pre>
+</div>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Using remote input files in the Benchmark Specification file</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"remote_input_dependencies":{
+    "my_input_file": { "girder":{"file":"abcdefg123456"},"destination":"/path/to/destination.txt"}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This example will download the file with the ID <code>abcdefg123456</code> from the Girder platform and store it as <code>/path/to/destination.txt</code>.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, the destination path can be accessed by other fields using the <code>{{remote_input_dependencies.my_input_file.destination}}</code> syntax.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_input_file_dependencies"><a class="anchor" href="#_input_file_dependencies"></a>4. Input File Dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <em>feelpp.benchmarking</em> framework allows you to specify input file dependencies in the Benchmark Specification file. This is notably useful to impose validation checks on the input files before running the benchmark.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, this field can be used to handle data transfer between different disks.</p>
+</div>
+<div class="paragraph">
+<p>For example, most HPC clusters have Large Capacity disks and High Performance disks. A common problem is that the application&#8217;s performance can be bottlenecked by the disk&#8217;s read/write speed if the input files are stored on the Large Capacity disk. In this case, you can use the <code>input_file_dependencies</code> field to copy the input files to the High Performance disk before running the benchmark, and delete them after the benchmark is completed so that the High Performance disk does not become cluttered.</p>
+</div>
+<div class="sect2">
+<h3 id="_how_to_specify_file_dependencies"><a class="anchor" href="#_how_to_specify_file_dependencies"></a>4.1. How to specify file dependencies</h3>
+<div class="paragraph">
+<p>The <code>input_file_dependencies</code> field is a dictionary containing a custom name as the key and an absolute or relative path to the file as the value.</p>
+</div>
+<div class="paragraph">
+<p>However, this field is highly dependent on a special field on the Machine Specification file: <code>input_user_dir</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If this field is not specified and the filepaths are relative, they are relative to <code>machine.input_dataset_base_dir</code>.</p>
+</li>
+<li>
+<p>If this field is specified, the filepaths should be relative to <code>machine.input_user_dir</code>, and they will be copied from <code>machine.input_user_dir</code> to <code>machine.input_dataset_base_dir</code> keeping the same directory structure.</p>
+</li>
+</ul>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Using file dependencies</div>
+<div class="paragraph">
+<p>If we have the following diretory paths set on the machine configuration file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"input_dataset_base_dir":"/hpd/input_data",
+"input_user_dir":"/lcd/input_data"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following <code>input_file_dependencies</code> field in the Benchmark Specification file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"input_file_dependencies":{
+    "my_input_file": "input_file.txt"
+}</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First, the framework will check if the file <code>lcd/input_data/input_file.txt</code> exists.</p>
+</li>
+<li>
+<p>Right before job submission, it will then copy the file from <code>lcd/input_data/input_file.txt</code> to <code>hpd/input_data/input_file.txt</code>.</p>
+</li>
+<li>
+<p>The jobs will run using the file <code>hpd/input_data/input_file.txt</code>.</p>
+</li>
+<li>
+<p>After the job is completed, the file <code>hpd/input_data/input_file.txt</code> will be deleted.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The existance of all file dependencies will be verified.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Parameters can be used in the <code>input_file_dependencies</code> field for refactoring.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_performance_variables"><a class="anchor" href="#_custom_performance_variables"></a>5. Custom Performance Variables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Custom performance variables can be created by performing operations on existing ones.
+This can be done in the <em>feelpp.benchmarking</em> framework by specifying a custom performance variable in the Benchmark Specification file.</p>
+</div>
+<div class="paragraph">
+<p>The <code>custom_varialbes</code> field should be added on the <code>scalability</code> section. This field should contain a list of dictionaries, each dictionary containing the following fields:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>name</code>: The given name of the custom performance variable.</p>
+</li>
+<li>
+<p><code>operation</code>: The operation to be performed on the existing performance variables. (available operations: <code>sum</code>, <code>mean</code>, <code>max</code>, <code>min</code> ).</p>
+</li>
+<li>
+<p><code>columns</code>: The list of performance variables to be used in the operation.</p>
+</li>
+<li>
+<p><code>unit</code>: The unit of the custom performance variable.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Custom variables can be used in other custom variables. Recursion is allowed.
+</td>
+</tr>
+</table>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Custom performance variables</div>
+<div class="paragraph">
+<p>Let&#8217;s say that the <em>/output/data.csv</em> file contains the following performance variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-raw hljs" data-lang="raw">initialization, simulation, postprocessing
+0.1, 0.2, 0.3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, the total time custom performance variable can be specified as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"scalability": {
+    "directory":"/output",
+    "stages": [
+        {
+            "name": "stage1",
+            "filepath":"data.csv",
+            "format":"csv"
+        }
+    ],
+    "custom_variables":[
+        {
+            "name": "total_time",
+            "op":"sum",
+            "columns": ["stage1_initialization", "stage1_simulation", "stage1_postprocessing"],
+            "unit":"s"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Variables from different files (stages) can be aggregated in the same custom variable.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_memory_management"><a class="anchor" href="#_memory_management"></a>6. Memory management</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>feelpp.benchmarking</em> supports specifying the total memory required by your application under the <code>resources</code> field. Using the system&#8217;s available memory per node, the framework will ensure that the necessary resources are allocated for each test to run.</p>
+</div>
+<div class="paragraph">
+<p>The system&#8217;s available memory per node should be specified in ReFrame&#8217;s System settings file, in GB, under an <code>extra.memory_per_node</code> field the partition configuration.</p>
+</div>
+<div id="examp:0" class="sidebarblock examp">
+<div class="content">
+<div class="title">Available Memory per Node in ReFrame system settings</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"partitions":[{
+    "extras":{
+        "memory_per_node":256
+    }
+}]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_specifying_memory_in_resources"><a class="anchor" href="#_specifying_memory_in_resources"></a>6.1. Specifying memory in resources</h3>
+<div class="paragraph">
+<p>If the memory requirements by your application are independent of the specified parameter space, users can simply specify the memory requirements (in GB) in the <code>resources</code> field of the Benchmark Specification file.</p>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Static memory requirements</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"resources": {
+    "tasks": 128,
+    "memory": 1024
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the system has 256GB of availabe memory per node, and 128 tasks per node. The above configuration will still execute the application with 128 tasks, but will distribute the tasks on 4 nodes: 32 tasks per node. This way, the application will use 256GB of memory per node, under the assumption that good partitioning is used.</p>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Specify a little less memory than the available memory per node to avoid swapping.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_parameter_dependent_memory_specifications"><a class="anchor" href="#_parameter_dependent_memory_specifications"></a>6.2. Parameter dependent memory specifications</h3>
+<div class="paragraph">
+<p>The <code>memory</code> field can be parametrized. This is quite useful if your application requires different memory for different parameter values. For example, if you want to compare the application&#8217;s performance for different mesh sizes.</p>
+</div>
+<div id="examp:2" class="sidebarblock examp">
+<div class="content">
+<div class="title">Dynamic memory requirements</div>
+<div class="paragraph">
+<p>Let&#8217;s suppose that you want to benchmark an application using 3 different mesh resolutions: M1, M2, M3.</p>
+</div>
+<div class="paragraph">
+<p>The benchmark specification will then have the following parameter</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"parameters":[
+    {
+        "name":"mesh",
+        "sequence":["M1", "M2", "M3"]
+    }
+]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, these mesh resolutions require the following memory to be free: 512GB, 1024GB, 2048GB respectively.</p>
+</div>
+<div class="paragraph">
+<p>Then, we should create an additional parameter and set its value in the <code>resources</code> field.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"resources":{
+    "tasks":128,
+    "memory": "{{parameters.memory.value}}"
+},
+"parameters":[
+    {
+        "name":"memory",
+        "sequence":[512, 1024, 2048]
+    },
+    {
+        "name":"mesh",
+        "sequence":["M1", "M2", "M3"]
+    }
+]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But&#8230;&#8203; doing just this will create 9 tests (3x3) and we do not want to run the same test with different memory values. To avoid this, we should constrain the memory parameter to be dependent on the mesh parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"resources":{
+    "tasks":128,
+    "memory": "{{parameters.memory.value}}"
+},
+"parameters":[
+    {
+        "name":"memory",
+        "sequence":[512, 1024, 2048]
+    },
+    {
+        "name":"mesh",
+        "sequence":["M1", "M2", "M3"],
+        "conditions":{
+            "M1":[{"memory":[512]}],
+            "M2":[{"memory":[1024]}],
+            "M3":[{"memory":[2048]}]
+        }
+    }
+]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The previous configuration will ensure that the case M1 will be run with 512GB of memory, M2 with 1024GB, and M3 with 2048GB.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_website_persistance_and_aggregating_results"><a class="anchor" href="#_website_persistance_and_aggregating_results"></a>7. Website persistance and aggregating results</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The framework allows users to create a dashboard that aggregates results from multiple benchmarks. This is useful for comparing different machines, applications, or use cases.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_dashboard_configuration_file"><a class="anchor" href="#_the_dashboard_configuration_file"></a>7.1. The dashboard configuration file</h3>
+<div class="paragraph">
+<p>Whenever a benchmark is done, a file called <code>website_config.json</code> is created inside the directory specified under <code>reports_base_dir</code> on the machine specification file.</p>
+</div>
+<div class="paragraph">
+<p>If this file already exists from a previous benchmark, it will be updated to include the latest results. For example, when a benchmark runs on a new system.</p>
+</div>
+<div class="paragraph">
+<p>This file describes the dashboard hierarchy and where to find the benchmark results for each case/machine/application.</p>
+</div>
+<div class="paragraph">
+<p>Each website configuration file corresponds exactly to one dashboard, so users can have multiple dashboards by defining multiple website configuration files.</p>
+</div>
+<div class="paragraph">
+<p>The file is structured as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+"execution_mapping":{
+    "my_application":{
+        "my_machine":{
+            "my_usecase": {
+                "platform": "local", //Or "girder"
+                "path": "./path/to/use_case/results" //Directory containing reports for a single machine-application-usecase combination
+            }
+        }
+    }
+},
+"machines":{
+    "my_machine":{
+        "display_name": "My Machine",
+        "description": "A description of the machine",
+    }
+},
+"applications":{
+    "my_application":{
+        "display_name": "My Application",
+        "description": "A description of the application",
+        "main_variables":[] //Used for aggregations
+    }
+},
+"use_cases":{
+    "my_usecase":{
+        "display_name": "My Use Case",
+        "description": "A description of the use case",
+    }
+}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>execution_mapping</code> field describes the hierarchy of the dashboard. That is, which applications where run on which machines and for which use cases. The <code>path</code> field supports having reports stored on remote locations, such as Girder.</p>
+</div>
+<div class="paragraph">
+<p>The <code>machines</code>, <code>applications</code>, and <code>use_cases</code> fields define the display names and descriptions for each machine, application, and use case, respectively.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_aggregating_results"><a class="anchor" href="#_aggregating_results"></a>7.2. Aggregating results</h3>
+<div class="paragraph">
+<p>If our benchmarks contain more than 2 parameters, it can be difficult to visualize results on a single figure. The framework allows users to aggregate results by reducing the number of dimensions in the data.
+In addition, the framework indexes reports based on their date, the system they where executed on, the platform and environment, as well as the application and use case benchmarked.</p>
+</div>
+<div class="sect3">
+<h4 id="_the_aggregations_field_on_figure_specifications"><a class="anchor" href="#_the_aggregations_field_on_figure_specifications"></a>7.2.1. The <code>aggregations</code> field on Figure Specifications</h4>
+<div class="paragraph">
+<p>In order to aggregate data (and reduce the number of dimensions), the <code>aggregations</code> field can be used on the figure specification file. This field is a list of dictionaries, each containing the fields <code>column</code> and <code>agg</code>, describing the column/parameter to aggregate and the operation to perform, respectively.</p>
+</div>
+<div class="paragraph">
+<p>Available aggregation operations are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>mean</code>: The mean of the values</p>
+</li>
+<li>
+<p><code>sum</code>: The sum of the values</p>
+</li>
+<li>
+<p><code>min</code>: The minimum value</p>
+</li>
+<li>
+<p><code>max</code>: The maximum value</p>
+</li>
+<li>
+<p><code>filter:value</code> : Filters the data based on the value of the column</p>
+</li>
+</ul>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Example of aggregating data</div>
+<div class="paragraph">
+<p>Let&#8217;s consider the benchmark with the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>tasks</code> : The number of tasks used in the benchmark</p>
+</li>
+<li>
+<p><code>mesh</code> : The mesh size used in the benchmark</p>
+</li>
+<li>
+<p><code>solver</code> : The solver used in the benchmark</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then, if we want to plot the mean execution times based on the <code>tasks</code> parameter, we will do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "title": "Avg Execution times by # tasks",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+    "yaxis": { "label": "Time (s)" },
+    "secondary_axis": {"parameter":"solver", "label":"Solver"},
+    "color_axis":{ "parameter": "performance_variable", "label":"Performance variables" },
+    "aggregations":[ {"column":"tasks","agg":"mean"} ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will generate the following figure:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/aggregation_example.png" alt="Aggregation Example">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_overview_configuration_file"><a class="anchor" href="#_overview_configuration_file"></a>7.2.2. Overview configuration file</h4>
+<div class="paragraph">
+<p>It is possible to create overview pages that show the performance of a group of benchmarks. This is useful for comparing different machines, applications, or use cases.</p>
+</div>
+<div class="paragraph">
+<p>Each perforamnce value, for all reports, is indexed by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The parameter space</p>
+</li>
+<li>
+<p>The variable name</p>
+</li>
+<li>
+<p>The benchmark date</p>
+</li>
+<li>
+<p>The system where the benchmark was executed</p>
+</li>
+<li>
+<p>The platform where the benchmark was executed</p>
+</li>
+<li>
+<p>The environment where the benchmark was executed</p>
+</li>
+<li>
+<p>The application</p>
+</li>
+<li>
+<p>The use case</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Depending on the dashboard page you are located, benchmarks are filtered by default. For example, if you are in the <code>machine</code> page, only benchmarks for that machine will be shown.</p>
+</div>
+<div class="paragraph">
+<p>Accessible column names:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>environment</p>
+</li>
+<li>
+<p>platform</p>
+</li>
+<li>
+<p>result</p>
+</li>
+<li>
+<p>machine</p>
+</li>
+<li>
+<p>usecase</p>
+</li>
+<li>
+<p>date</p>
+</li>
+</ul>
+</div>
+<div id="examp:2" class="sidebarblock examp">
+<div class="content">
+<div class="title">Example: Plot the performance evolution in time of reports for a specific machine-application-use_case combination</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "title": "Performance over time",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "xaxis": { "parameter": "date", "label": "Report Date" },
+    "yaxis": { "label": "Performance (s)" },
+    "color_axis":{ "parameter": "solver", "label":"Solver" },
+    "aggregations":[
+        {"column":"tasks","agg":"mean"},
+        {"column":"mesh","agg":"mean"},
+        {"column":"performance_variable","agg":"sum"}
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The dashboard administrator can define the overview configuration file, which is a JSON file that describes the figures to be displayed on each overview page.</p>
+</div>
+<div class="paragraph">
+<p>This overview configuration file is currently too extensive and verbose and needs to be simplified, so it will not be treated in this course. However, be aware that it is possible to create overview pages that show the performance of a group of benchmarks.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_continuous_benchmarking"><a class="anchor" href="#_continuous_benchmarking"></a>8. Continuous benchmarking</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is possible to configure a workflow for <em>feelpp.benchmarking</em> to continuously benchmark an application.
+This will allow users to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Centralize benchmark results in a dashboard</p>
+</li>
+<li>
+<p>Connect the CB pipeline to an existing CI pipeline</p>
+</li>
+<li>
+<p>Ensure non-regression and analyse the performance over time</p>
+</li>
+<li>
+<p>Compare the performance of different versions of the application</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_launching_a_benchmark"><a class="anchor" href="#_launching_a_benchmark"></a>8.1. Launching a benchmark</h3>
+<div class="paragraph">
+<p>Currently, the workflow is not directly available from <em>feelpp.benchmarking</em>. However, a template repository is coming soon to help users set up the workflow.</p>
+</div>
+<div class="paragraph">
+<p>In order to have this workflow running, self-hosted runners for your machines are required. And one "default" runner is needed to orchestrate launching the application on different machines.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/benchmark_workflow.jpg" alt="Benchmark workflow">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The workflow takes as input: the benchmark configurations paths, a list of machines to run, and optionally a Girder ID to updload the website to (more data management platorms will be supported in the future).</p>
+</li>
+<li>
+<p>In a default runner (can even be a GitHub hosted runner), machine specification files are read and filtered by the given machine name list input. This allows to launch the application on multiple machines. Then, a "Matrix" is created to later tell the workflow what runners to launch.</p>
+</li>
+<li>
+<p>Then, only desired machine configurations are uploaded as GitHub artifacts.</p>
+</li>
+<li>
+<p>On each HPC system, the machine configuration is downloaded.</p>
+</li>
+<li>
+<p>A Python environment is then set up, depending on the system. (e.g. loading necessary modules, creating the python virtual environment, downloading <code>feelpp-benchmarking</code>).</p>
+</li>
+<li>
+<p><em>feelpp.benchmarking</em> launches all parametrized tests using the <code>feelpp-benchmarking-exec</code> command.</p>
+</li>
+<li>
+<p>When benchmarks are done, results are uploaded as GitHub artifacts in order to communicate them with the default runner.</p>
+</li>
+<li>
+<p>The default runner then collects all results and uploads them to the data management platform.</p>
+</li>
+<li>
+<p>If a custom remote ID is provided to upload the dashboard to, the dashboard is uploaded to the data management platform. Otherwise, a pull request tagged with <code>new-benchmark</code> is created to preview the results. We do the preview with Netlify.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This workflow requires setting up the Girder data management platform so that it contains to following folders: <code>staging</code>, <code>production</code>, <code>denied</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploying_the_dashboard"><a class="anchor" href="#_deploying_the_dashboard"></a>8.2. Deploying the dashboard</h3>
+<div class="paragraph">
+<p>GitHub pages can be configured to have a persistent dashboard containing benchmarks. But we want to have only pertinent benchmarks on this publicly available dashboard. To do so, the following workflow is proposed.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/dashboard_workflow.jpg" alt="Dashboard workflow">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>When a pull request tagged with <code>new-benchmark</code> is closed, the deploy.yml workflow is launched.</p>
+</li>
+<li>
+<p>If the pull request is closed, all benchmarks present on the <code>staging/</code> folder are moved to the <code>denied</code> folder (on the data management platform).</p>
+</li>
+<li>
+<p>If the pull request is merged, staging and production dashboard configuration files are downloaded.</p>
+</li>
+<li>
+<p>Both configuration files are merged, so that staging benchmarks are added to the production dashboard.</p>
+</li>
+<li>
+<p>The new dashboard configuration is uploaded, and staging benchmarks are moved to production.</p>
+</li>
+<li>
+<p>This will trigger the GitHub pages deployment, having all production benchmarks.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_wrap_up_and_qa"><a class="anchor" href="#_wrap_up_and_qa"></a>9. Wrap-up and Q&amp;A</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>feelpp.benchmarking</em> just recently made its first release. It is still under development and many features are still being added and improved. Contribution and feature requests are more than welcome on this open-source project. Check out the <a href="https://github.com/feelpp/benchmarking">GitHub repository</a>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Questions?</p>
+</li>
+<li>
+<p>Suggestions? Feedback?</p>
+</li>
+<li>
+<p>Star the project on GitHub!</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<script async src="../../../_/js/vendor/fontawesome-icon-defs.js"></script>
+<script async src="../../../_/js/vendor/fontawesome.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>
