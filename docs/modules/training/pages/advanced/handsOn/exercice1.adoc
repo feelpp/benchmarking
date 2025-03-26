@@ -196,7 +196,7 @@ Create a *platforms* field specifying container related information needed by _f
         },
         "input_dir":"/input_data",
         "options": [
-            "--home {{output_directory}}",
+            "--home {{machine.output_app_dir}}",
             "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
             "--env OMP_NUM_THREADS=1"
         ],
@@ -654,7 +654,7 @@ Now that necessary fields are set, we should set the application options dependi
             },
             "input_dir":"/input_data",
             "options": [
-                "--home {{output_directory}}",
+                "--home {{machine.output_app_dir}}",
                 "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ],
