@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>4. Hands-on (Session 2) :: Benchmarking</title>
-    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/training/advanced/handsOn/index.html">
+    <title>Benchmarking a Feel++ toolboxes on Karolina :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/training/advanced/handsOn/exercice1.html">
     <meta name="generator" content="Antora 3.1.10">
     <link rel="stylesheet" href="../../../../_/css/site.css">
 <link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
@@ -247,7 +247,7 @@ MathJax.Hub.Config({
   </li>
 </ul>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="index.html">Hands-on session 2</a>
   </li>
 </ul>
@@ -278,13 +278,12 @@ MathJax.Hub.Config({
   <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../../../index.html">The Feel++ Benchmarking Project</a></li>
-    <li><a href="../../index.html">Training</a></li>
-    <li><a href="index.html">Hands-on session 2</a></li>
+    <li><a href="exercice1.html">Benchmarking a Feel++ toolboxes on Karolina</a></li>
   </ul>
 </nav>
 
   
-    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/training/pages/advanced/handsOn/index.adoc">Edit this Page</a></div>
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/training/pages/advanced/handsOn/exercice1.adoc">Edit this Page</a></div>
   
   <div class="page-downloads">
   <span class="label">Download as</span>
@@ -304,15 +303,17 @@ MathJax.Hub.Config({
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">4. Hands-on (Session 2)</h1>
-<div class="sect1">
-<h2 id="_benchmarking_a_feel_toolboxes_on_karolina"><a class="anchor" href="#_benchmarking_a_feel_toolboxes_on_karolina"></a>1. Benchmarking a Feel++ toolboxes on Karolina</h2>
+<h1 class="page">Benchmarking a Feel++ toolboxes on Karolina</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Before you start this hands-on exercise, you need to follow the steps below to set up your environment in Karolina.</p>
 </div>
-<div class="sect2">
-<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>1.1. Pre-requisites</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>1. Pre-requisites</h2>
+<div class="sectionbody">
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -356,13 +357,15 @@ module load nodejs/20.13.1-GCCcore-13.3.0</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_the_feel_heat_transfer_toolbox"><a class="anchor" href="#_the_feel_heat_transfer_toolbox"></a>1.2. The Feel++ Heat Transfer toolbox</h3>
+</div>
+<div class="sect1">
+<h2 id="_the_feel_heat_transfer_toolbox"><a class="anchor" href="#_the_feel_heat_transfer_toolbox"></a>2. The Feel++ Heat Transfer toolbox</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>In this exercice, we will benchmark the <strong>thermal bridges</strong> use case using of the Feel++ Heat transfer toolbox on Karolina.</p>
 </div>
-<div class="sect3">
-<h4 id="_what_is_feel"><a class="anchor" href="#_what_is_feel"></a>1.2.1. What is Feel++ ?</h4>
+<div class="sect2">
+<h3 id="_what_is_feel"><a class="anchor" href="#_what_is_feel"></a>2.1. What is Feel++ ?</h3>
 <div class="quoteblock">
 <blockquote>
 Feel is an Open-Source C library which allows to solve a large range of partial differential equations using Galerkin methods, e.g. finite element method, spectral element method, discontinuous Galerkin methods or reduced basis methods.
@@ -375,8 +378,8 @@ Feel is an Open-Source C library which allows to solve a large range of partial 
 <p>You can find more information on the Heat Transfer toolbox in this <a href="https://docs.feelpp.org/toolboxes/latest/heat/index.html">link</a></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_what_is_the_thermal_bridges_benchmark"><a class="anchor" href="#_what_is_the_thermal_bridges_benchmark"></a>1.2.2. What is The Thermal Bridges benchmark</h4>
+<div class="sect2">
+<h3 id="_what_is_the_thermal_bridges_benchmark"><a class="anchor" href="#_what_is_the_thermal_bridges_benchmark"></a>2.2. What is The Thermal Bridges benchmark</h3>
 <div class="paragraph">
 <p>The benchmark known as "thermal bridges" is an example of an application that
 enables us to validate numerical simulation tools using Feel++. We have developed tests based on the ISO 10211:2017 standard, which provides methodologies for evaluating thermal bridges in building construction.</p>
@@ -405,8 +408,10 @@ enables us to validate numerical simulation tools using Feel++. We have develope
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_modifying_karlinas_specification_file"><a class="anchor" href="#_modifying_karlinas_specification_file"></a>1.3. Modifying Karlina&#8217;s specification file</h3>
+</div>
+<div class="sect1">
+<h2 id="_modifying_karlinas_specification_file"><a class="anchor" href="#_modifying_karlinas_specification_file"></a>3. Modifying Karlina&#8217;s specification file</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>As this benchmark is a little bit different than what we did in the previous exercices. The machine specifications file needs to be adapted.</p>
 </div>
@@ -535,8 +540,10 @@ You can see that under access, we have specified <code>--mem=200G</code>. This i
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_application_setup"><a class="anchor" href="#_application_setup"></a>1.4. Application setup</h3>
+</div>
+<div class="sect1">
+<h2 id="_application_setup"><a class="anchor" href="#_application_setup"></a>4. Application setup</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>We will benchmark this use case using a SIF image. The image is already located in Karolina, under <code>/scratch/project/dd-24-88/benchmarking/inputdata/images/feelpp-noble.sif</code>.</p>
 </div>
@@ -626,8 +633,10 @@ You can see that under access, we have specified <code>--mem=200G</code>. This i
 </div>
 </details>
 </div>
-<div class="sect2">
-<h3 id="_input_data"><a class="anchor" href="#_input_data"></a>1.5. Input data</h3>
+</div>
+<div class="sect1">
+<h2 id="_input_data"><a class="anchor" href="#_input_data"></a>5. Input data</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The shared folder <code>/scratch/project/dd-24-88/benchmarking/inputdata/ThermalBridges/</code> contains all necessary input dependencies for the application.
 It is structured as follows:</p>
@@ -676,8 +685,8 @@ Running the test cases for the FEM order P3 and the mesh level 3 can take some t
 <img src="../../_images/mesh_stats.png" alt="Mesh statistics">
 </div>
 </div>
-<div class="sect3">
-<h4 id="_resources"><a class="anchor" href="#_resources"></a>1.5.1. Resources</h4>
+<div class="sect2">
+<h3 id="_resources"><a class="anchor" href="#_resources"></a>5.1. Resources</h3>
 <div id="exer:6" class="sidebarblock exer">
 <div class="content">
 <div class="title">Exercise: Resources</div>
@@ -707,8 +716,8 @@ Running the test cases for the FEM order P3 and the mesh level 3 can take some t
 </div>
 </details>
 </div>
-<div class="sect3">
-<h4 id="_parameters"><a class="anchor" href="#_parameters"></a>1.5.2. Parameters</h4>
+<div class="sect2">
+<h3 id="_parameters"><a class="anchor" href="#_parameters"></a>5.2. Parameters</h3>
 <div id="exer:7" class="sidebarblock exer">
 <div class="content">
 <div class="title">Exercise: Parameters</div>
@@ -743,8 +752,8 @@ Running the test cases for the FEM order P3 and the mesh level 3 can take some t
 </div>
 </details>
 </div>
-<div class="sect3">
-<h4 id="_memory"><a class="anchor" href="#_memory"></a>1.5.3. Memory</h4>
+<div class="sect2">
+<h3 id="_memory"><a class="anchor" href="#_memory"></a>5.3. Memory</h3>
 <div class="paragraph">
 <p>After some debugging, we have noticed that tests for the different mesh - discretization parameter combinations require different amounts of memory.</p>
 </div>
@@ -858,8 +867,8 @@ Running the test cases for the FEM order P3 and the mesh level 3 can take some t
 </div>
 </details>
 </div>
-<div class="sect3">
-<h4 id="_setting_input_paths"><a class="anchor" href="#_setting_input_paths"></a>1.5.4. Setting input paths</h4>
+<div class="sect2">
+<h3 id="_setting_input_paths"><a class="anchor" href="#_setting_input_paths"></a>5.4. Setting input paths</h3>
 <div class="paragraph">
 <p>Now that the parameters are set, and we understand how the input data is structured, we can proceed to specifying the input files for each test case.</p>
 </div>
@@ -917,8 +926,10 @@ Running the test cases for the FEM order P3 and the mesh level 3 can take some t
 </details>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_outputs"><a class="anchor" href="#_outputs"></a>1.6. Outputs</h3>
+</div>
+<div class="sect1">
+<h2 id="_outputs"><a class="anchor" href="#_outputs"></a>6. Outputs</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>For this session, we require all application outputs to be written on a user-dependent directory.</p>
 </div>
@@ -942,8 +953,8 @@ Running the test cases for the FEM order P3 and the mesh level 3 can take some t
 </div>
 </div>
 </details>
-<div class="sect3">
-<h4 id="_application_outputs"><a class="anchor" href="#_application_outputs"></a>1.6.1. Application outputs</h4>
+<div class="sect2">
+<h3 id="_application_outputs"><a class="anchor" href="#_application_outputs"></a>6.1. Application outputs</h3>
 <div class="paragraph">
 <p>The toolbox exports the following files, depending on the specified output directory passed as an argument.</p>
 </div>
@@ -1078,8 +1089,8 @@ Also, set the corresponding units for the following columns:</p>
 </div>
 </details>
 </div>
-<div class="sect3">
-<h4 id="_additional_files"><a class="anchor" href="#_additional_files"></a>1.6.2. Additional files</h4>
+<div class="sect2">
+<h3 id="_additional_files"><a class="anchor" href="#_additional_files"></a>6.2. Additional files</h3>
 <div class="paragraph">
 <p>The Heat toolbox builds some Asciidoc files containing the description of the current test. We can include this in the report. These files can be found in <code>{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc</code>.</p>
 </div>
@@ -1114,8 +1125,10 @@ Also, set the corresponding units for the following columns:</p>
 </details>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_options"><a class="anchor" href="#_options"></a>1.7. Options</h3>
+</div>
+<div class="sect1">
+<h2 id="_options"><a class="anchor" href="#_options"></a>7. Options</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Now that necessary fields are set, we should set the application options depending on the parameter values.</p>
 </div>
@@ -1135,8 +1148,10 @@ Also, set the corresponding units for the following columns:</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_summary"><a class="anchor" href="#_summary"></a>1.8. Summary</h3>
+</div>
+<div class="sect1">
+<h2 id="_summary"><a class="anchor" href="#_summary"></a>8. Summary</h2>
+<div class="sectionbody">
 <details class="proof">
 <summary class="title">Complete benchmark specification</summary>
 <div class="content">
@@ -1268,8 +1283,8 @@ Also, set the corresponding units for the following columns:</p>
 </div>
 </div>
 </details>
-<div class="sect3">
-<h4 id="_verification"><a class="anchor" href="#_verification"></a>1.8.1. Verification</h4>
+<div class="sect2">
+<h3 id="_verification"><a class="anchor" href="#_verification"></a>8.1. Verification</h3>
 <div class="paragraph">
 <p>Before launching the benchmarks, we want to ensure that everything is set up correctly. For this, we can use:</p>
 </div>
@@ -1296,10 +1311,12 @@ Also, set the corresponding units for the following columns:</p>
 </div>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_plots"><a class="anchor" href="#_plots"></a>9. Plots</h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="_plots"><a class="anchor" href="#_plots"></a>1.9. Plots</h3>
-<div class="sect3">
-<h4 id="_measure_validation"><a class="anchor" href="#_measure_validation"></a>1.9.1. Measure validation</h4>
+<h3 id="_measure_validation"><a class="anchor" href="#_measure_validation"></a>9.1. Measure validation</h3>
 <div class="paragraph">
 <p>First, we are interested in seeing how computed measures (solutions) behave depending on the mesh refinement and the discretization used. What we expect to happen, is that the more refined the mesh is, and the bigger the FEM order parameter, the closer the solutions will be to the actual expected value.</p>
 </div>
@@ -1430,8 +1447,8 @@ All performance variables are stored in a column accessible by the plot config, 
 </div>
 </details>
 </div>
-<div class="sect3">
-<h4 id="_analyzing_execution_times"><a class="anchor" href="#_analyzing_execution_times"></a>1.9.2. Analyzing execution times</h4>
+<div class="sect2">
+<h3 id="_analyzing_execution_times"><a class="anchor" href="#_analyzing_execution_times"></a>9.2. Analyzing execution times</h3>
 <div class="paragraph">
 <p>Now, we want to compare the time taken by the different steps of the application, and see how they scale depending on the number of tasks they run on.</p>
 </div>
@@ -1555,8 +1572,8 @@ Use <code>stacked_bar</code> and <code>grouped_bar</code> plot_types.
 </div>
 </details>
 </div>
-<div class="sect3">
-<h4 id="_other_performance_variables"><a class="anchor" href="#_other_performance_variables"></a>1.9.3. Other performance variables</h4>
+<div class="sect2">
+<h3 id="_other_performance_variables"><a class="anchor" href="#_other_performance_variables"></a>9.3. Other performance variables</h3>
 <div id="exer:19" class="sidebarblock exer">
 <div class="content">
 <div class="title">Exercise: Analyzing the number of iterations of the GMRES method</div>
@@ -1600,8 +1617,8 @@ Use <code>stacked_bar</code> and <code>grouped_bar</code> plot_types.
 </div>
 </details>
 </div>
-<div class="sect3">
-<h4 id="_multi_parameter_figures_optional"><a class="anchor" href="#_multi_parameter_figures_optional"></a>1.9.4. Multi-parameter figures (optional)</h4>
+<div class="sect2">
+<h3 id="_multi_parameter_figures_optional"><a class="anchor" href="#_multi_parameter_figures_optional"></a>9.4. Multi-parameter figures (optional)</h3>
 <div class="paragraph">
 <p>We sometimes want to have all of the benchmarked information shown in the same figure. But this is quite difficult to do in a simple line plot if we have more than 2 parameters.
 For this, <em>feelpp.benchmarking</em> support some multi-parametric figures, such as surface and 3D scatter plots, parallelcoordinates plots and sunburst charts. These, take an additional field on the plot configuration: the <strong>extra_axes</strong> field.</p>
@@ -1764,7 +1781,6 @@ For this, <em>feelpp.benchmarking</em> support some multi-parametric figures, su
 </div>
 </div>
 </details>
-</div>
 </div>
 </div>
 </div>
