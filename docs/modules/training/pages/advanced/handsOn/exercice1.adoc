@@ -762,6 +762,14 @@ Before launching the benchmarks, we want to ensure that everything is set up cor
 - The `--list` flag to list all tests that will be executed.
 - The `--dry-run` flag to verify that input dependencies are found, and to take a quick look to the generated SLURM scripts.
 
+By running this command, we should see a total of 12 tests.
+[source,bash]
+----
+feelpp-benchmarking-exec -mc examples/ThermalBridges/karolina.json  -bc examples/ThermalBridges/thermal_bridges.json -v --dry-run --list
+----
+
+We can run it without the `--list` flag to generate SLURM scripts.
+
 
 == Plots
 
