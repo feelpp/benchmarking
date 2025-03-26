@@ -497,7 +497,7 @@ Supposing that previous performance and output files will be located under `{{ou
 Also, set the corresponding units for the following columns: 
 
 - ksp-niter : iter
-- Outputs: K
+- Outputs: C
 - Execution times: s
 ****
 
@@ -580,7 +580,7 @@ The Heat toolbox builds some Asciidoc files containing the description of the cu
 
 Also, we can include some logfiles that are located under `{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.INFO` and `{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.WARNING`.
 
-.Exercise: Parametrized descriptions
+.Exercise: Additional files
 [.exer#exer:14]
 ****
 Build the *additional_files* field, using the *parameterized_descriptions_filepath* and *custom_logs* fields, to include all these files in the report
@@ -773,3 +773,337 @@ We can run it without the `--list` flag to generate SLURM scripts.
 
 == Plots
 
+=== Measure validation
+
+First, we are interested in seeing how computed measures (solutions) behave depending on the mesh refinement and the discretization used. What we expect to happen, is that the more refined the mesh is, and the bigger the FEM order parameter, the closer the solutions will be to the actual expected value.
+
+.Exercise: Heat Flux measures convergence analysis
+[.exer#exer:15]
+****
+Using the following template, create a figure description of a scatter plot, equipped with a slider, to be able to visualize the convergence of Heat Flows measures.
+
+TIP: All performance variables are stored in a column accessible by the plot config, called `performance_variable`.
+
+[source,json]
+----
+{
+"plots": [
+    {
+        "title": "",
+        "plot_types": [ "" ],
+        "transformation": "performance",
+        "variables": [ ],
+        "names": [ ],
+        "xaxis": { "parameter": "", "label": "" },
+        "yaxis": { "label": " " },
+        "color_axis":{ "parameter": "", "label":"" },
+        "secondary_axis":{ "parameter": "", "label": "" },
+        "aggregations":[ {"column":"","agg":""} ]
+    }
+]
+}
+----
+
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"plots": [
+    {
+        "title": "Validation measures (Heat flux)",
+        "plot_types": [ "scatter" ],
+        "transformation": "performance",
+        "variables": [
+            "Outputs_Normal_Heat_Flux_alpha", "Outputs_Normal_Heat_Flux_beta", "Outputs_Normal_Heat_Flux_gamma"
+        ],
+        "names": [
+            "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma"
+        ],
+        "xaxis": {
+            "parameter": "mesh",
+            "label": "mesh levels"
+        },
+        "yaxis": {
+            "label": "Heat flow [W]"
+        },
+        "color_axis":{
+            "parameter": "discretization",
+            "label":"Discretization"
+        },
+        "secondary_axis":{
+            "parameter": "performance_variable",
+            "label": "Measures"
+        },
+        "aggregations":[ {"column":"tasks","agg":"max"} ]
+    }
+]
+}
+----
+====
+
+
+.Exercise: Temperature measures convergence analysis
+[.exer#exer:16]
+****
+Repeat the previous exercice to reproduce the same figure, but for temperature measures.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Validation measures (Temperatures)",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "variables": [
+        "Outputs_Points_alpha_max_field_temperature", "Outputs_Points_alpha_min_field_temperature",
+        "Outputs_Points_beta_max_field_temperature", "Outputs_Points_beta_min_field_temperature"
+    ],
+    "names": [
+        "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature",
+        "Points_beta_max_field_temperature", "Points_beta_min_field_temperature"
+    ],
+    "xaxis": {
+        "parameter": "mesh",
+        "label": "mesh levels"
+    },
+    "yaxis": {
+        "label": "Temperature [C°]"
+    },
+    "color_axis":{
+        "parameter": "discretization",
+        "label":"Discretization"
+    },
+    "secondary_axis":{
+        "parameter": "performance_variable",
+        "label": "Measures"
+    },
+    "aggregations":[ {"column":"tasks","agg":"max"} ]
+}
+----
+
+====
+
+===
+
+=== Analyzing execution times
+
+Now, we want to compare the time taken by the different steps of the application, and see how they scale depending on the number of tasks they run on.
+
+
+
+
+.Exercise: Visualizing stages performance
+[.exer#exer:17]
+****
+Compare the execution time of the `Cosntructor_init`, `Solve_algebraic-assembly`, `Solve_algebraic-solve` and `PostProcessing_exportResults`, depending on the mesh size and the number of tasks. We want only to analyze the first discretization order.
+
+TIP: Use `stacked_bar` and `grouped_bar` plot_types.
+
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Performance (P1)",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "performance",
+    "variables": [
+        "Constructor_init",
+        "Solve_algebraic-assembly",
+        "Solve_algebraic-solve",
+        "PostProcessing_exportResults"
+    ],
+    "names": [
+        "Preprocessing",
+        "Algebraic assembly",
+        "Algebraic solve",
+        "Postprocess"
+    ],
+    "xaxis": {
+        "parameter": "tasks",
+        "label": "Number of tasks"
+    },
+    "secondary_axis": {
+        "parameter": "mesh",
+        "label": "Mesh level"
+    },
+    "yaxis": {
+        "label": "execution time (s)"
+    },
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "aggregations":[
+        {"column":"performance_variable", "agg":"sum"},
+        {"column":"discretization","agg":"filter:P1"}
+    ]
+}
+----
+====
+
+.Exercise: Strong scaling
+[.exer#exer:18]
+****
+Construct a plot to analyze the speedup of each application stage, for the second FEM order. Also include the total execution time.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Speedup (P2)",
+    "plot_types": [ "scatter" ],
+    "transformation": "speedup",
+    "variables": [
+        "Constructor_init",
+        "Solve_algebraic-assembly",
+        "Solve_algebraic-solve",
+        "PostProcessing_exportResults",
+        "Total"
+    ],
+    "names": [
+        "Preprocessing",
+        "Algebraic assembly",
+        "Algebraic solve",
+        "Postprocess",
+        "Total"
+    ],
+    "xaxis": {
+        "parameter": "tasks",
+        "label": "Number of tasks"
+    },
+    "secondary_axis": {
+        "parameter": "mesh",
+        "label": "Mesh level"
+    },
+    "yaxis": {
+        "label": "Speedup"
+    },
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "aggregations":[
+        {"column":"discretization","agg":"filter:P2"}
+    ]
+}
+----
+====
+
+=== Other performance variables
+
+
+.Exercise: Analyzing the number of iterations of the GMRES method
+[.exer#exer:19]
+****
+The `Solve_ksp-niter` performance variable contains the number of iterations taken by the GMRES method to converge. We want to compare this number of iterations between the chosen number of tasks, the mesh size and the discretization order.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title":"Number of iterations of GMRES",
+    "plot_types":["scatter"],
+    "transformation":"performance",
+    "variables":["Solve_ksp-niter"],
+    "names":[],
+    "xaxis":{
+        "parameter":"tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{
+        "label":"Number of iterations"
+    },
+    "color_axis":{
+        "parameter":"mesh",
+        "label":"Mesh"
+    },
+    "secondary_axis":{
+        "parameter":"discretization",
+        "label":"Discretization"
+    },
+    "aggregations":[
+        {"column":"performance_variable","agg":"filter:Solve_ksp-niter"}
+    ]
+}
+----
+====
+
+
+== Multi-parameter figures (optional)
+
+We sometimes want to have all of the benchmarked information shown in the same figure. But this is quite difficult to do in a simple line plot if we have more than 2 parameters.
+For this, _feelpp.benchmarking_ support some multi-parametric figures, such as surface and 3D scatter plots, parallelcoordinates plots and sunburst charts. These, take an additional field on the plot configuration: the *extra_axes* field.
+
+
+
+.Exercise: Parallelcoorinates
+[.exer#exer:20]
+****
+Using the `parallelcoordinates` plot type, show which Mesh-discretization-memory values where actually executed.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Parameters",
+    "plot_types": [ "parallelcoordinates" ],
+    "transformation": "performance",
+    "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+    "xaxis": { "parameter": "tasks", "label": "Tasks" },
+    "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+    "yaxis": { "label": "execution time (s)"},
+    "color_axis": {"parameter":"performance_variable", "label":"Step"},
+    "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+}
+----
+====
+
+
+.Exercise: Sunburst chart
+[.exer#exer:21]
+****
+Using the `sunburst` plot type, show the time taken by different application stages for all parameter combinations.
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Application Performance",
+    "plot_types": [ "parallelcoordinates","scatter3d" ],
+    "transformation": "performance",
+    "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+    "xaxis": { "parameter": "tasks", "label": "Tasks" },
+    "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+    "yaxis": { "label": "execution time (s)"},
+    "color_axis": {"parameter":"performance_variable", "label":"Step"},
+    "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+}
+----
+====
