@@ -1095,7 +1095,7 @@ Using the `sunburst` plot type, show the time taken by different application sta
 ----
 {
     "title": "Application Performance",
-    "plot_types": [ "parallelcoordinates","scatter3d" ],
+    "plot_types": [ "sunburst","scatter3d" ],
     "transformation": "performance",
     "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
     "xaxis": { "parameter": "tasks", "label": "Tasks" },
@@ -1103,6 +1103,110 @@ Using the `sunburst` plot type, show the time taken by different application sta
     "yaxis": { "label": "execution time (s)"},
     "color_axis": {"parameter":"performance_variable", "label":"Step"},
     "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+}
+----
+====
+
+
+
+
+.Complete plot configuration
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "plots": [
+        {
+            "title": "Validation measures (Heat flux)",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "variables": [ "Outputs_Normal_Heat_Flux_alpha", "Outputs_Normal_Heat_Flux_beta", "Outputs_Normal_Heat_Flux_gamma" ],
+            "names": [ "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma" ],
+            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+            "yaxis": { "label": "Heat flow [W]" },
+            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+            "secondary_axis":{ "parameter": "performance_variable", "label": "Measures" },
+            "aggregations":[ {"column":"tasks","agg":"max"} ]
+        },
+        {
+            "title": "Validation measures (Temperatures)",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "variables": [ "Outputs_Points_alpha_max_field_temperature", "Outputs_Points_alpha_min_field_temperature", "Outputs_Points_beta_max_field_temperature", "Outputs_Points_beta_min_field_temperature" ],
+            "names": [ "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature", "Points_beta_max_field_temperature", "Points_beta_min_field_temperature" ],
+            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+            "yaxis": { "label": "Temperature [C°]" },
+            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+            "secondary_axis":{ "parameter": "performance_variable", "label": "Measures" },
+            "aggregations":[ {"column":"tasks","agg":"max"} ]
+        },
+        {
+            "title": "Performance (P1)",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [ "Constructor_init", "Solve_algebraic-assembly", "Solve_algebraic-solve", "PostProcessing_exportResults" ],
+            "names": [ "Preprocessing", "Algebraic assembly", "Algebraic solve", "Postprocess" ],
+            "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+            "yaxis": { "label": "execution time (s)" },
+            "color_axis":{ "parameter":"performance_variable", "label":"Performance variable" },
+            "aggregations":[
+                {"column":"performance_variable", "agg":"sum"},
+                {"column":"discretization","agg":"filter:P1"}
+            ]
+        },
+        {
+            "title": "Speedup (P2)",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [ "Constructor_init", "Solve_algebraic-assembly", "Solve_algebraic-solve", "PostProcessing_exportResults", "Total" ],
+            "names": [ "Preprocessing", "Algebraic assembly", "Algebraic solve", "Postprocess", "Total" ],
+            "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+            "yaxis": { "label": "Speedup" },
+            "color_axis":{ "parameter":"performance_variable", "label":"Performance variable" },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P2"}
+            ]
+        },
+        {
+            "title":"Number of iterations of GMRES",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "variables":["Solve_ksp-niter"],
+            "names":[],
+            "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+            "yaxis":{ "label":"Number of iterations" },
+            "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+            "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+            "aggregations":[
+                {"column":"performance_variable","agg":"filter:Solve_ksp-niter"}
+            ]
+        },
+        {
+            "title": "Parameters",
+            "plot_types": [ "parallelcoordinates" ],
+            "transformation": "performance",
+            "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+            "xaxis": { "parameter": "tasks", "label": "Tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+            "yaxis": { "label": "execution time (s)"},
+            "color_axis": {"parameter":"performance_variable", "label":"Step"},
+            "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+        },
+        {
+            "title": "Application Performance",
+            "plot_types": [ "sunburst","scatter3d" ],
+            "transformation": "performance",
+            "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+            "xaxis": { "parameter": "tasks", "label": "Tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+            "yaxis": { "label": "execution time (s)"},
+            "color_axis": {"parameter":"performance_variable", "label":"Step"},
+            "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+        }
+    ]
 }
 ----
 ====
