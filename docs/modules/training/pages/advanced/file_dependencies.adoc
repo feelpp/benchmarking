@@ -1,0 +1,51 @@
+= Input File Dependencies
+
+The _feelpp.benchmarking_ framework allows you to specify input file dependencies in the Benchmark Specification file. This is notably useful to impose validation checks on the input files before running the benchmark.
+
+Additionally, this field can be used to handle data transfer between different disks.
+
+For example, most HPC clusters have Large Capacity disks and High Performance disks. A common problem is that the application's performance can be bottlenecked by the disk's read/write speed if the input files are stored on the Large Capacity disk. In this case, you can use the `input_file_dependencies` field to copy the input files to the High Performance disk before running the benchmark, and delete them after the benchmark is completed so that the High Performance disk does not become cluttered.
+
+== How to specify file dependencies
+
+The `input_file_dependencies` field is a dictionary containing a custom name as the key and an absolute or relative path to the file as the value.
+
+However, this field is highly dependent on a special field on the Machine Specification file: `input_user_dir`.
+
+- If this field is not specified and the filepaths are relative, they are relative to `machine.input_dataset_base_dir`.
+- If this field is specified, the filepaths should be relative to `machine.input_user_dir`, and they will be copied from `machine.input_user_dir` to `machine.input_dataset_base_dir` keeping the same directory structure.
+
+
+.Using file dependencies
+[.examp#examp:1]
+****
+
+If we have the following diretory paths set on the machine configuration file:
+
+[source,json]
+----
+{
+"input_dataset_base_dir":"/hpd/input_data",
+"input_user_dir":"/lcd/input_data"
+}
+----
+
+And the following `input_file_dependencies` field in the Benchmark Specification file:
+
+[source,json]
+----
+"input_file_dependencies":{
+    "my_input_file": "input_file.txt"
+}
+----
+
+1. First, the framework will check if the file `lcd/input_data/input_file.txt` exists.
+2. Right before job submission, it will then copy the file from `lcd/input_data/input_file.txt` to `hpd/input_data/input_file.txt`.
+3. The jobs will run using the file `hpd/input_data/input_file.txt`.
+4. After the job is completed, the file `hpd/input_data/input_file.txt` will be deleted.
+
+****
+
+NOTE: The existance of all file dependencies will be verified.
+
+TIP: Parameters can be used in the `input_file_dependencies` field for refactoring.
