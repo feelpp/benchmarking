@@ -1,0 +1,35 @@
+{
+    "use_case_name":"Fibonacci",
+    "timeout":"0-0:5:0",
+    "executable": "python {{machine.input_dataset_base_dir}}/fibonacci/fibonacci.py",
+    "output_dir":"{{machine.output_app_dir}}/fibo",
+    "options":[
+        "-n {{parameters.n.value}}",
+        "-a {{parameters.method.value}}",
+        "-o {{output_dir}}/output.json"
+    ],
+    "scalability": {
+        "directory":"{{output_dir}}",
+        "stages":[
+            {
+                "name":"",
+                "filepath":"output.json",
+                "format":"csv",
+                "units":{ "fibonacci_number":"" }
+            }
+        ]
+    },
+    "sanity":{ "success":["Done!"] },
+
+    "resources": {"tasks":1, "exclusive_access":false },
+    "parameters": [
+        {
+            "name":"n",
+            "range":{"min":10,"max":40,"step":5}
+        },
+        {
+            "name":"method",
+            "sequence":["recursive","iterative"]
+        }
+    ]
+}

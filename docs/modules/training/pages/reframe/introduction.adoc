@@ -1,0 +1,129 @@
+= Overview of ReFrame-HPC and feelpp.benchmarking
+
+== What is feelpp.benchmarking ?
+
+_feelpp.benchmarking_ is a framework designed to automate and facilitate the benchmarking process for any application. It is built on top of link:https://github.com/reframe-hpc/reframe[ReFrame-HPC], and was conceived to simplify benchmarking on any HPC system. The framework is specially useful for centralizing benchmarking results and ensuring reproducibility.
+
+image::bench_supercomputers.png[feelpp.benchmarking Supercomputers,width=75%]
+
+=== Motivation
+
+Benchmarking an HPC application can often be an error-prone process, as the benchmarks need to be configured for multiple systems. If evaluating multiple applications, a benchmarking pipeline needs to be created for each one of them.
+This is where _feelpp.benchmarking_ comes in hand, as it allows users to run reproducible and consistent benchmarks for their applications on different architectures without manually handling execution details.
+
+The framework's customizable configuration files make it adaptable to various scenarios.
+Whether you're optimizing code, comparing hardware, or ensuring the reliability of numerical simulations, _feelpp.benchmarking_ offers a structured, scalable, and user-friendly solution to streamline the benchmarking process.
+
+=== How it works
+
+The framework requires 4 configuration files, in JSON format, in order to set up a benchmark.
+
+4 configuration files::
+    System settings (ReFrame)::: Describes the system architecture (e.g. partitions, environments, available physical memory, devices)
+    Machine Specifications::: Filters the environments to benchmark, specifies access, I/O directories and test execution policies.
+    Benchmark/Application Specifications::: Describes how to execute the application, where and how to extract performance variables, and the test parametrization.
+    Figure configuration::: Describes how to build the generated report's plots
+
+Once the files are built and _feelpp.benchmarking_ is launched, a pre-processing phase begins where configuration files are parse. After this, the ReFrame test pipeline is executed according to the provided configuration.
+
+Pre-processing stage::
+    1. Configuration files are parsed to replace *placeholders*.
+    2. If a container image is being benchmarked, this one is pulled and placed on the provided destination.
+    3. If there are remote file dependencies, they are downloaded to the specified destinations.
+
+ReFrame test pipeline::
+    1. The parameter space is created.
+    2. Tests are dispatched.
+    3. Computing resources are set, along with specific launcher and scheduler options.
+    4. Jobs are submitted by the scheduler.
+    5. Performance variables are extracted.
+    6. Sanity checks
+    7. Cleanup
+
+Finally, at the end phase of the pipeline, _feelpp.benchmarking_ will store the ReFrame report following a specific folder structure.
+This will allow the framework to handle multiple ReFrame reports in order to render them in a dashboard-like website.
+
+The diagram figure summarizes the _feelpp.benchmarking_ workflow.
+
+image::benchmark_code_design.png[feelpp.benchmarking sequence diagram]
+
+== What is ReFrame-HPC ?
+
+image::reframe_logo-width400p.png[ReFrame Logo]
+
+"ReFrame is a powerful framework for writing system regression tests and benchmarks, specifically targeted to HPC systems. The goal of the framework is to abstract away the complexity of the interactions with the system, separating the logic of a test from the low-level details, which pertain to the system configuration and setup. This allows users to write portable tests in a declarative way that describes only the test's functionality."
+-- https://github.com/reframe-hpc/reframe[ReFrame in a Nutshell]
+
+=== Core features
+
+Regression testing:: Ensures that new changes do not introduce errors by re-running existing test cases.
+Performance evaluation:: Monitors and assesses the performance of applications to detect any regressions or improvements.
+Performance and Sanity checks:: Automates validation of test results with built-in support for performance benchmarks, ensuring correctness and efficiency.
+
+=== Test Execution Pipeline
+
+ReFrame tests go through a pre-defined pipeline where users can customize the what happens in between each step by using decorators (e.g. `@run_after("setup")`).
+
+1. Setup: Tests are set up for current partition and programming environment.
+
+2. Compile: If needed, the script for test compilation is created and submitted for execution.
+
+3. Run: Scripts associated to the test execution are submitted (asynchronously or sequentially).
+
+4. Sanity: The test outputs are checked to validate the correct execution.
+
+5. Performance: Performance metrics are collected.
+
+6. Cleanup: Test resources are cleaned up.
+
+image::reframe-test-cases.svg[How ReFrame loads and schedules tests for execution]
+
+.Example Pipeline
+[.examp#examp:1]
+****
+[source, python]
+----
+import reframe as rfm
+import reframe.utility.sanity as sn
+
+@rfm.simple_test
+class SleepTest(rfm.RunOnlyRegressionTest):
+    valid_systems = ['*']
+    valid_prog_environs = ['*']
+
+    executable = 'bash'
+    executable_opts = ['-c']
+    seconds_to_sleep = parameter([1,2,3])
+
+    @run_after("init")
+    def setReferences(self):
+        self.reference = {
+            '*': {
+                'sleepTime': (self.seconds_to_sleep,-0.05,0.05,'s')
+            }
+        }
+
+    @run_before("run")
+    def setExecutableOpts(self):
+        self.executable_opts += [f'''
+            SECONDS=0;
+            sleep {self.seconds_to_sleep};
+            duration=$SECONDS;
+            echo "slept for $duration s";
+            echo "I'm done sleeping!";
+        ''']
+
+    @sanity_function
+    def validateExecution(self):
+        return sn.assert_found("I'm done sleeping!", self.stdout)
+
+    @performance_function('s')
+    def sleepTime(self):
+        return sn.extractsingle(f'slept for (\d+)\s+s',self.stdout,1,float)
+----
+****
+
+For those interested in learning more, check out:
+
+- Official ReFrame Documentation: https://reframe-hpc.readthedocs.io
+- GitHub Repository: https://github.com/reframe-hpc
