@@ -1,18 +1,25 @@
-from pydantic import BaseModel, field_validator, model_validator, RootModel
+from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.reframe.config.configPlots import Plot
 import os, re
 
 class Sanity(BaseModel):
-    success:List[str]
-    error:List[str]
+    success:Optional[List[str]] = []
+    error:Optional[List[str]] = []
 
 class Stage(BaseModel):
     name:str
     filepath:str
     format:Literal["csv","tsv","json"]
     variables_path:Optional[Union[str,List[str]]] = []
+    units: Optional[Dict[str,str]] = {}
+
+    @field_validator("units",mode="before")
+    @classmethod
+    def parseUnits(cls,v):
+        v["*"] = v.get("*","s")
+        return v
 
     @model_validator(mode="after")
     def checkFormatOptions(self):
@@ -36,32 +43,18 @@ class Scalability(BaseModel):
     directory: str
     stages: List[Stage]
     custom_variables:Optional[List[CustomVariable]] = []
+    clean_directory: Optional[bool] = False
 
-class AppOutput(BaseModel):
-    filepath: str
-    format: str
 
 
 class Image(BaseModel):
-    protocol:Optional[Literal["oras","docker","library","local"]] = None
-    name:str
+    url: Optional[str] = None
+    filepath:str
 
-    @model_validator(mode="before")
-    def extractProtocol(self):
-        """ Extracts the image protocol (oras, docker, etc..) or if a local image is provided.
-        If local, checks if the image exists """
-
-        self["protocol"] = self["name"].split("://")[0] if "://" in self["name"] else "local"
-
-        if self["protocol"] not in ["oras","docker","library","local"]:
-            raise ValueError("Unkown Protocol")
-
-        return self
-
-    @field_validator("name", mode="after")
+    @field_validator("filepath", mode="after")
     @classmethod
     def checkImage(cls,v,info):
-        if info.data["protocol"] == "local" and not ("{{"  in v  or "}}" in v) :
+        if not info.data["url"] and not ("{{"  in v  or "}}" in v) :
             if not os.path.exists(v):
                 if info.context and info.context.get("dry_run", False):
                    print(f"Dry Run: Skipping image check for {v}")
@@ -80,11 +73,13 @@ class Platform(BaseModel):
 class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
     parameterized_descriptions_filepath: Optional[str] = None
+    custom_logs: Optional[List[str]] = []
 
 
 class Resources(BaseModel):
     tasks: Optional[Union[str,int]] = None
     tasks_per_node: Optional[Union[str,int]] = None
+    gpus_per_node: Optional[Union[str,int]] = None
     nodes: Optional[Union[str,int]] = None
     memory: Optional[Union[str,int]] = 0
     exclusive_access: Optional[Union[str,bool]] = True
@@ -98,6 +93,29 @@ class Resources(BaseModel):
         ), "Tasks - tasks_per_node - nodes combination is not supported"
         return self
 
+class BaseRemoteData(BaseModel):
+    destination: str
+
+class RemoteGirderData(BaseModel):
+    item: Optional[str] = None
+    file: Optional[str] = None
+    folder: Optional[str] = None
+
+    @model_validator(mode="after")
+    def checkValidResource(self):
+        if all(res is None for res in [self.item, self.file, self.folder]):
+            raise ValueError("A valid resource needs to be specified, either 'file', 'folder' or 'item'")
+        return self
+
+class RemoteData(BaseRemoteData):
+    girder: Optional[RemoteGirderData] = None
+
+    @model_validator(mode="after")
+    def checkRemoteDataPlatform(self):
+        if all(plat is None for plat in [self.girder]):
+            raise ValueError("A remote data platform should be specified, valid options are ['girder'] ")
+        return self
+
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
@@ -107,12 +125,20 @@ class ConfigFile(BaseModel):
     use_case_name: str
     options: List[str]
     env_variables:Optional[Dict] = {}
-    outputs: List[AppOutput]
+    remote_input_dependencies: Optional[Dict[str,RemoteData]] = {}
+    input_file_dependencies: Optional[Dict[str,str]] = {}
     scalability: Scalability
-    sanity: Sanity
+    sanity: Optional[Sanity] = Sanity()
     parameters: List[Parameter]
-    additional_files: Optional[AdditionalFiles] = None
+    additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     plots: Optional[List[Plot]] = []
+
+    model_config = ConfigDict( extra='allow' )
+    def __getattr__(self, item):
+        if item in self.model_extra:
+            return self.model_extra[item]
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
+
 
     @field_validator("timeout",mode="before")
     @classmethod

@@ -1,18 +1,17 @@
-import os, json, subprocess
+import os, json, subprocess, shutil
 from feelpp.benchmarking.reframe.parser import Parser
-from feelpp.benchmarking.reframe.config.configReader import ConfigReader
+from feelpp.benchmarking.reframe.config.configReader import ConfigReader, FileHandler
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.reporting import WebsiteConfig
 from feelpp.benchmarking.reframe.commandBuilder import CommandBuilder
-
+from feelpp.benchmarking.report.config.handlers import GirderHandler
 
 def main_cli():
     parser = Parser()
     parser.printArgs()
 
-    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,dry_run=parser.args.dry_run)
-    machine_reader.updateConfig()
+    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
 
     #Sets the cachedir and tmpdir directories for containers
     for platform, dirs in machine_reader.config.containers.items():
@@ -37,27 +36,42 @@ def main_cli():
         configs = [config_filepath]
         if parser.args.plots_config:
             configs += [parser.args.plots_config]
-        app_reader = ConfigReader(configs,ConfigFile,dry_run=parser.args.dry_run)
+        app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
+
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
         report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
-        app_reader.updateConfig(machine_reader.processor.flattenDict(machine_reader.config,"machine"))
-        app_reader.updateConfig() #Update with own field
 
-        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
+        #===============PULL IMAGES==================#
+        if not parser.args.dry_run:
+            for platform_name, platform_field in app_reader.config.platforms.items():
+                if not platform_field.image or not platform_field.image.url or not machine_reader.config.containers[platform_name].executable:
+                    continue
+                if platform_name == "apptainer":
+                    completed_pull = subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.filepath} {platform_field.image.url}", shell=True)
+                    completed_pull.check_returncode()
+                else:
+                    raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
+        #=============================================#
 
-        exit_code = subprocess.run(reframe_cmd, shell=True)
-
-        #============ CREATING RESULT ITEM ================#
-        with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
-            f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
-
-
-        if parser.args.move_results:
-            if not os.path.exists(parser.args.move_results):
-                os.makedirs(parser.args.move_results)
-            os.rename(os.path.join(report_folder_path,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
-            os.rename(os.path.join(report_folder_path,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
-        #======================================================#
+        #===== Download remote dependencies ============#
+        if not parser.args.dry_run:
+            if app_reader.config.remote_input_dependencies:
+                if any(v.girder for v in app_reader.config.remote_input_dependencies.values()):
+                    girder_handler = GirderHandler(machine_reader.config.input_user_dir or machine_reader.config.input_dataset_base_dir  )
+            for dependency_name,remote_dependency in app_reader.config.remote_input_dependencies.items():
+                print(f"Donwloading remote file dependency : {dependency_name} ...")
+                if remote_dependency.girder:
+                    if remote_dependency.girder.file:
+                        girder_handler.downloadFile( remote_dependency.girder.file, os.path.dirname(remote_dependency.destination), name=os.path.basename(remote_dependency.destination) )
+                    elif remote_dependency.girder.folder:
+                        girder_handler.downloadFolder(remote_dependency.girder.folder,remote_dependency.destination)
+                    elif remote_dependency.girder.item:
+                        girder_handler.downloadItem(remote_dependency.girder.item,remote_dependency.destination)
+                    else:
+                        raise NotImplementedError(f"Remote dependency resource type is not implemented for {dependency_name}")
+                else:
+                    raise NotImplementedError(f"Platform {remote_dependency} is not implemented for {dependency_name}")
+        #================================================#
 
         #============== UPDATE WEBSITE CONFIG FILE ==============#
         common_itempath = (parser.args.move_results or report_folder_path).split("/")
@@ -75,8 +89,34 @@ def main_cli():
         website_config.save()
         #======================================================#
 
+
+        #============ CREATING RESULT ITEM ================#
+        with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
+            f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
+
+        #Copy use case description if existant
+        FileHandler.copyResource(
+            app_reader.config.additional_files.description_filepath,
+            os.path.join(report_folder_path,"partials"),
+            "description"
+        )
+        #===============================================#
+
+        # ============== LAUNCH REFRAME =======================#
+        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
+        exit_code = subprocess.run(reframe_cmd, shell=True)
+        #======================================================#
+
+        # ================== MOVE RESULTS (OPTION)============#
+        if parser.args.move_results:
+            if not os.path.exists(parser.args.move_results):
+                os.makedirs(parser.args.move_results)
+            os.rename(os.path.join(report_folder_path,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
+            os.rename(os.path.join(report_folder_path,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
+        #======================================================#
+
     if parser.args.website:
-        subprocess.run(["render-benchmarks","--config-file", website_config.config_filepath])
+        subprocess.run(["feelpp-benchmarking-render","--config-file", website_config.config_filepath])
         subprocess.run(["npm","run","antora"])
         subprocess.run(["npm","run","start"])
 

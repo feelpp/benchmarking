@@ -1,0 +1,48 @@
+{
+    "executable": "{{machine.input_dataset_base_dir}}/parallelsum/parallelSum",
+    "use_case_name": "parallel_sum",
+    "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/parallelSum",
+    //Application options
+    "options": [
+        "{{parameters.elements.value}}",
+        "{{output_directory}}/{{instance}}"
+    ],
+    //Files containing execution times
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "scalability.json",
+                "format": "json",
+                "variables_path":"*"
+            }
+        ]
+    },
+    // Resources for the test
+    "resources":{
+        "tasks":"{{parameters.tasks.value}}",
+        "exclusive_access":false
+    },
+    // Test validation (Only stdout supported at the moment)
+    "sanity": {
+        "success": ["[SUCCESS]"],
+        "error": ["[OOPSIE]","Error"]
+    },
+    // Test parameters
+    "parameters": [
+        {
+            "name": "tasks",
+            "sequence": [ 1 ,2,4 ]
+        },
+        {
+            "name":"elements",
+            "linspace":{
+                "min":100000000,
+                "max":1000000000,
+                "n_steps":4
+            }
+        }
+    ]
+}

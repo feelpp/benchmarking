@@ -36,8 +36,10 @@ class TransformationStrategy:
     def updateDimensions(self,df):
         dimensions = {}
         for k,v in self.dimensions.items():
-            if v:
+            if isinstance(v,str):
                 dimensions[k] = self.chooseColumn(v,df)
+            elif isinstance(v,list):
+                dimensions[k] = [self.chooseColumn(value,df) for value in v]
             else:
                 dimensions[k] = v
         self.dimensions = dimensions
@@ -70,6 +72,9 @@ class PerformanceStrategy(TransformationStrategy):
             index.append(self.dimensions["secondary_axis"])
         if self.dimensions["xaxis"] and self.dimensions["xaxis"] in df.columns:
             index.append(self.dimensions["xaxis"])
+        for axis in self.dimensions["extra_axes"]:
+            if axis in df.columns:
+                index.append(axis)
 
         pivot = df[df["performance_variable"].isin(self.variables or df["performance_variable"].unique())]
 
@@ -149,6 +154,7 @@ class TransformationStrategyFactory:
             "xaxis" : plot_config.xaxis.parameter,
             "secondary_axis" : plot_config.secondary_axis.parameter if plot_config.secondary_axis and plot_config.secondary_axis.parameter else None,
             "color_axis" : plot_config.color_axis.parameter if plot_config.color_axis and plot_config.color_axis.parameter else "performance_variable",
+            "extra_axes" : [extra.parameter for extra in plot_config.extra_axes]
         }
         aggregations = plot_config.aggregations
 

@@ -1,0 +1,143 @@
+= Example: Benchmarking the time complexity of sorting algorithms
+
+To exemplify what _feelpp.benchmarking_ can do, a good test case is to benchmark the time complexity of sorting algorithms.
+
+The framework provides an example python application that sorts a random list of integers using different sorting algorithms.
+This application takes the following arguments:
+
+- `-n`: the number of elements in the list to sort
+- `-a`: The algorithm to use for sorting. Options are `bubble`, `insertion`, `merge`
+- `-o`: The output file to write execution time. It will be written in JSON format (`{"elapsed": 0.0}`)
+
+This example can be recreated with the following python code:
+
+Bubble sort::
+====
+[source,python]
+----
+def bubbleSort(array):
+    n = len(array)
+    is_sorted = True
+    for i in range(n):
+        for j in range( n - i - 1 ):
+            if array[j] > array[j+1]:
+                array[j],array[j+1] = array[j+1], array[j]
+                is_sorted = False
+        if is_sorted:
+            break
+    return array
+----
+====
+
+Insertion sort::
+====
+[source,python]
+----
+def insertionSort(array):
+    n = len(array)
+    for i in range(1,n):
+        key_item = array[i]
+        j = i - 1
+        while j>=0 and array[j] > key_item:
+            array[j+1]=array[j]
+            j-=1
+        array[j+1] = key_item
+    return array
+----
+====
+
+Merge sort::
+====
+[source,python]
+----
+def merge(left,right):
+    if not left:
+        return right
+    if not right:
+        return left
+    result = []
+    left_i = right_i = 0
+    while len(result) < len(left) + len(right):
+        if left[left_i] <= right[right_i]:
+            result.append(left[left_i])
+            left_i+=1
+        else:
+            result.append(right[right_i])
+            right_i+=1
+
+        if right_i == len(right):
+            result += left[left_i:]
+            break
+
+        if left_i == len(left):
+            result += right[right_i:]
+            break
+
+    return result
+
+
+def mergeSort(array):
+    if len(array) < 2:
+        return array
+    mid = len(array) // 2
+    return merge( left = self.sort(array[:mid]), right=self.sort(array[mid:]) )
+----
+====
+
+
+Then, the main function that parses the arguments and calls the sorting algorithm can be defined as follows:
+
+Main function::
+====
+[source,python]
+----
+from argparse import ArgumentParser
+from time import perf_counter
+import numpy as np
+import os, json
+
+if __name__=="__main__":
+    #Parse the arguments
+    parser = ArgumentParser()
+    parser.add_argument('-n',help="Number of elements")
+    parser.add_argument('--algorithm','-a', help="Sorting algorithm to use")
+    parser.add_argument('--out','-o', help="Filepath where to save elapsed time")
+    args = parser.parse_args()
+
+    #Generate a random list of integers
+    n = int(float(args.n))
+    array = np.random.randint(min(-1000,-n),max(1000,n),n).tolist()
+
+    #Select the sorting algorithm
+    if args.algorithm == "bubble":
+        alg = bubbleSort
+    elif args.algorithm == "insertion":
+        alg = insertionSort
+    elif args.algorithm == "merge":
+        alg = mergeSort
+    else:
+        raise NotImplementedError(f"Sorting algorithm - {args.algorithm} - not implemented")
+
+    #Sort the array and measure the elapsed time
+    start_time = perf_counter()
+    sorted_array = alg(array)
+    end_time = perf_counter()
+    elapsed_time = end_time - start_time
+
+    #Create the folder if it does not exist
+    folder = os.path.dirname(args.out)
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    #Save the elapsed time
+    with open(args.out,'w') as f:
+        json.dump({"elapsed": elapsed_time},f)
+----
+====
+
+
+[NOTE]
+====
+At the moment, _feelpp.benchmarking_ only supports extracting performance metrics from JSON and CSV files.
+Very soon, extracting metrics from stdout and plain text files will be supported, using regular expressions.
+====

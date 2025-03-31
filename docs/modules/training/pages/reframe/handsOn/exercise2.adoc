@@ -1,0 +1,420 @@
+= Benchmarking a parallel application on Karolina
+
+Before you start this hands-on exercise, you need to follow the steps below to set up your environment in Karolina.
+
+== Pre-requisites
+
+This exercise takes place on the Karolina cluster. Start by logging in to Karolina.
+
+Then, create a new directory for the hands-on exercise and navigate to it:
+
+[source,bash]
+----
+mkdir benchmarking
+cd benchmarking
+----
+
+If you are on VSCode, you can open it in the current directory by typing `code . -r` on the terminal.
+
+=== Create a python environment
+
+It is useful to create a dedicated Python environment for the hands-on exercises. This way, you can avoid conflicts with other Python projects you may have on your system.
+
+Karolina's system default Python version is too old... More recent versions are available as modules. For this session, we are going to use Pyton3.10.4. Load it with:
+
+[source,bash]
+----
+module load Python/3.12.3-GCCcore-13.3.0
+----
+
+Now if you type `python --version`, you should see `Python 3.12.3`.
+
+Then, create a new Python environment using `venv` and activate it:
+
+[source,bash]
+----
+python -m venv .venv
+source .venv/bin/activate
+----
+
+Update pip:
+
+[source,bash]
+----
+pip install --upgrade pip
+----
+
+=== Install `feelpp.benchmarking`
+
+_feelpp.benchmarking_ is available on PyPI and can be installed using `pip`:
+
+[source,bash]
+----
+pip install feelpp-benchmarking
+----
+
+=== Initialize antora environment
+
+In order to generate the benchmark reports website, the Antora environment must be configured beforehand.
+
+First, we need Node.js, so start by loading the nodejs module:
+
+[source,bash]
+----
+module load nodejs/18.12.1-GCCcore-12.2.0
+----
+
+
+Then, initialize the Antora environment in the current directory. There is a built-in script that automates this process:
+
+[source,bash]
+----
+feelpp-antora init -d . -t "My Benchmarks" -n my_benchmarks
+----
+
+This script initializes a Git repository, creates the necessary files and directories, and installs the required dependencies.
+
+Because antora requires an initialized Git repository, make sure you are authenticated with your Git account.
+
+[source,bash]
+----
+git config user.name "<YOUR_NAME>"
+git config user.email "<YOUR_EMAIL>"
+----
+
+And create an empty commit:
+
+[source,bash]
+----
+git commit --allow-empty -m "Initial commit"
+----
+
+
+=== Verify the setup
+
+You should see the following files and directories created on the root of your project:
+
+- `.venv/`: The directory where the Python environment is stored.
+- `site.yml`: The antora playbook file.
+- `docs/`: The directory where the dashboard Asciidoc pages are stored.
+- `package.json`: The nodejs package file, containing necessary dependencies for _feelpp.benchmarking_.
+- `package-lock.json`: The lock file for the nodejs package.
+- `node_modules/`: The directory where the nodejs dependencies are stored.
+
+
+To see if our dashboard is correctly configured, compile the Asciidoc files to HTML and start a web server:
+
+[source,bash]
+----
+npm run antora
+npm run start
+----
+
+Finally, click on the link on the terminal to open the dashboard in your browser. You might need to forward the port to your local machine to access the dashboard.
+If everything OK, you should see a page with the title `My Benchmarks`.
+
+Close the server by pressing `Ctrl+C` on the terminal.
+
+
+== Create a Machine Specification File
+
+Fortunately, the _feelpp.benchmarking_ package already contains the general ReFrame configuration for the Karolina cluster. However, we need to create a machine specification file to specify user-dependent configurations.
+
+Create a new file named `karolina.json` at the root of your project
+
+[source,bash]
+----
+touch karolina.json
+----
+
+Edit the file and add the following content:
+
+[source,json]
+----
+{
+    "machine": "karolina",
+    "targets":["qcpu:builtin:default"],
+    "execution_policy": "async",
+    "reframe_base_dir":"$PWD/reframe",
+    "reports_base_dir":"$PWD/reports/",
+    "input_dataset_base_dir":"$PWD/examples",
+    "output_app_dir":"$PWD/outputs",
+    "access":[
+        "--account=dd-24-88",
+        "--reservation=dd-24-88_2025-03-25T14:30:00_2025-03-25T17:00:00_40_qcpu"
+    ]
+}
+----
+
+[NOTE]
+====
+In this case, we will use and export data from within the current directory. But there are some cases where it is useful to use different disks for benchmarking an application (e.g. large capacity vs high performance disks).
+====
+
+== Example application
+
+For this exercice, we will use a MPI application that computes a matrix vector multiplication in parallel. The matrix and vector are initialized randomly for a given size.
+
+It takes the following positional arguments:
+
+- (*int*) The matrix size.
+- (*string*) The output directory to write the `scalability.json` file containing elapsed times.
+
+Create a new folder named _examples/_ and a C++ file named `matrixvector.cpp` inside the examples folder.
+
+[source,bash]
+----
+mkdir examples
+touch examples/matrixvector.cpp
+----
+
+Copy the following code to the `matrixvector.cpp` file:
+
+[source,cpp]
+----
+#include <mpi.h>
+#include <iostream>
+#include <random>
+#include <fstream>
+#include <vector>
+#include <numeric>
+#include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+void fill_matrix_vector(std::vector<double>& matrix, std::vector<double>& vector) {
+    std::mt19937 gen(42);
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+    for (double& x : matrix) x = dist(gen);
+    for (double& x : vector) x = dist(gen);
+}
+
+int main(int argc, char** argv)
+{
+    MPI_Init(&argc, &argv);
+
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    if ( argc < 3 )
+    {
+        if (rank == 0)
+            std::cerr << "Usage: " << argv[0] << " <N> <output_directory>\n";
+        MPI_Finalize();
+        return 1;
+    }
+
+    int N = std::stoi(argv[1]);
+    fs::path output_dir = argv[2];
+
+    int rows_per_proc = N / size;
+    std::vector<double> vector(N);
+    std::vector<double> local_matrix(rows_per_proc * N);
+    std::vector<double> matrix(rank == 0 ? N * N : 0);
+    std::vector<double> result(rank == 0 ? N : 0);
+
+    double start_fill_time = MPI_Wtime();
+
+    if (rank == 0) fill_matrix_vector(matrix, vector);
+
+    MPI_Scatter(matrix.data(), rows_per_proc * N, MPI_DOUBLE, local_matrix.data(), rows_per_proc * N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    MPI_Bcast(vector.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    double end_fill_time = MPI_Wtime();
+
+    double start_time = MPI_Wtime();
+
+    for (int avg_i = 0; avg_i < 10; avg_i++)
+    {
+        std::vector<double> local_result(rows_per_proc, 0);
+        for (int i = 0; i < rows_per_proc; ++i)
+            for (int j = 0; j < N; ++j)
+                local_result[i] += local_matrix[i * N + j] * vector[j];
+
+        MPI_Gather(local_result.data(), rows_per_proc, MPI_DOUBLE, result.data(), rows_per_proc, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    }
+    double end_time = MPI_Wtime();
+    double compute_elapsed = (end_time - start_time)/10;
+
+    if (rank == 0){
+        std::cout << "Fill time: " << (end_fill_time - start_fill_time) << " s\n";
+        std::cout << "Compute time: " << compute_elapsed << " s\n";
+
+        fs::path filename = "scalability.json";
+
+        if (!fs::exists(output_dir))
+            fs::create_directories(output_dir);
+
+        std::ofstream scal_outfile(output_dir/filename);
+        if ( scal_outfile.is_open() )
+        {
+            scal_outfile << "{\n";
+            scal_outfile << "  \"elapsed_fill\": " << (end_fill_time - start_fill_time) << ",\n";
+            scal_outfile << "  \"elapsed_compute\": " << compute_elapsed << "\n";
+            scal_outfile << "}\n";
+            scal_outfile.close();
+        }
+        else
+            std::cerr << "[OOPSIE] Error opening file for writing." << std::endl;
+
+    }
+
+    MPI_Finalize();
+
+    return 0;
+}
+----
+
+We now need to compile the application. To do so (quickly), we will use the `mpicxx` compiler.
+
+First, we need to load OpenMPI:
+
+[source,bash]
+----
+module load OpenMPI/4.1.4-GCC-12.2.0
+----
+
+Then, compile the application:
+
+[source,bash]
+----
+mpicxx examples/matrixvector.cpp -o examp
+les/matrixvector
+----
+
+
+== Create a Benchmark Specification File
+
+It is now time to describe the benchmark.
+
+Create the file `matrixvector_benchmark.json` in the root of your project
+
+[source,bash]
+----
+touch matrixvector_benchmark.json
+----
+
+Copy the following template
+
+[source,json]
+----
+{
+    "executable": "{{machine.input_dataset_base_dir}}/matrixvector",
+    "use_case_name": "Multiplication",
+    "timeout":"0-0:10:0",
+    "output_directory": "{{machine.output_app_dir}}/matrixvector",
+    "options": [
+        "{{parameters.elements.value}}",
+        "{{output_directory}}/{{instance}}"
+    ],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "scalability.json",
+                "format": "json",
+                "variables_path":"*"
+            }
+        ]
+    },
+    "sanity": { "success": [], "error": ["[OOPSIE]"] },
+    "resources":{ "tasks":"<TODO>", "exclusive_access":false },
+    "parameters": [
+        {
+            "name": "<TODO>",
+            "<TODO>": <TODO>
+        },
+        {
+            "name":"elements",
+            "linspace":{ "min":10000, "max":40000, "n_steps":4 }
+        }
+    ]
+}
+----
+
+
+.Exercise: Benchmark Specification File
+[.exer#exer:1]
+****
+Complete the <TODO> fields in the JSON file in order to benchmark the Matrix-Vector multiplication using 1, 2, 4, 8, 16, 32, 64 and 128 tasks.
+****
+
+
+[TIP]
+====
+- Multiple parameter generators are available, some examples are:
+    - `"linspace":{"min": 1, "max":2, "n_steps":10}`
+    - `"sequence":[1,2,3]`,
+    - `"geometric":{"start":1,"ratio":2, "n_steps":10}`
+    - `"range":{"min":1,"max":10,"step":1}`
+====
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "resources":{ "tasks":"{{parameters.tasks.value}}", "exclusive_access":false },
+    "parameters": [
+        {
+            //Any name would work
+            "name": "tasks",
+            "sequence": [1,2,4,8,16,32,64,128]
+            //"geometric": {"start":1, "ratio":2, "n_steps":8}
+        },
+        {
+            "name":"elements",
+            "linspace":{ "min":10000, "max":40000, "n_steps":4 }
+        }
+    ]
+}
+----
+====
+
+
+== Create a Figure Description File
+
+Create the file `matrixvector_plots.json` in the root of your project
+
+[source,bash]
+----
+touch matrixvector_plots.json
+----
+
+And copy the following file to configure a speedup plot.
+
+[source,json]
+----
+{
+    "plots":[
+        {
+            "title": "Speedup",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [ "elapsed_fill","elapsed_compute" ],
+            "names": ["Fill","Compute"],
+            "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+            "yaxis": { "label": "Speedup" },
+            "secondary_axis":{ "parameter":"elements", "label":"N" }
+        }
+    ]
+}
+----
+
+
+== Run the benchmark and visualize the results
+
+To launch the benchmarks, use the following command:
+
+[source,bash]
+----
+feelpp-benchmarking-exec --machine-config karolina.json \
+                            --benchmark-config matrixvector_benchmark.json \
+                            --plots-config matrixvector_plots.json \
+                            --website
+----

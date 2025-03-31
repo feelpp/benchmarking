@@ -1,12 +1,58 @@
 = System configuration
 
-The system configuration files need to be placed under _src/feelpp/benchmarking/reframe/config/machineConfigs_, and are strictly ReFrame dependent. A single Python file should be provided per machine. Please follow https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame's configuration file reference] for precise settings.
+The system configuration files need to be placed under are strictly ReFrame dependent, and must be passed to the application via the `--custom-rfm-config` option. A single Python file should be provided per machine. Please follow https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame's configuration file reference] for precise settings.
 
-Example configurations are provided for the _Gaya_ machine and for a simple single node 8-core system.
+One of the main objectives of having these files, is to be able to describe necessary modules and commands for your application's to run as expected.
 
-[NOTE]
+
+== Built-in system configurations
+
+Configuration files for the following EuroHPC machines are available in the `feelpp.benchmarking framework`:
+
+- DISCOVERER (cn)
+- Vega (cpu)
+- Karolina (cpu)
+- MeluXina (cpu)
+- Leonardo (cpu) [Coming soon...]
+- LUMI (cpu) [Coming soon...]
+
+To use them, the `machine` field on the machine configuration JSON must correspond to the EuroHPC system name (in lowercase).
+
+[source,json]
+----
+{
+    "machine":"discoverer",
+    "targets":["cn::"],
+    ...
+}
+----
+
+== Custom system configurations
+
+Users can provide their own ReFrame configuration file using the `--custom-rfm-config` option.
+In addition to mandatory fields specified in https://reframe-hpc.readthedocs.io/en/stable/config_reference.html[ReFrame's configuration file reference], users must provide the `systems.partitions.processor.num_cpus` field to indicate the maximum number of logical CPUs per partition's node. This information will be used by `feelpp.benchmarking` to schedule test jobs accordingly. This can be skipped only if no strong scaling is planned for the given system.
+
+[TIP]
 ====
+There is no need to hardcode account's access information in these files, as it can be specified on the `feelpp.benchmarking` machine configuration JSON.
+====
+
+If users plan on using certain container platform on their machine, they must provide the `systems.partitions.container_platforms` object.
+
+[CAUTION]
+====
+At the moment, only Apptainer and built-in platforms are supported.
+====
+
+[CAUTION]
+====
+Using SLURM as scheduler is highly recommended if possible. Many of the tool's features are not available on other schedulers.
+====
+
+=== Additional resources
+
 Processor bindings and other launcher options should be specified as a resource under the desired partition, with the `launcher_options` name field value for example. For example,
+
 [source,json]
 ----
 "resources": [
@@ -16,4 +62,26 @@ Processor bindings and other launcher options should be specified as a resource 
     }
 ]
 ----
-====
+
+If memory is a constraint, the `systems.partitions.extras.memory_per_node` field can be specified, indicating the memory per compute node of your system in Gb. For example,
+
+[source,json]
+----
+"extras":{
+    "memory_per_node":500
+}
+----
+
+==== Using a GPU partition
+
+If your system counts with a GPU partition, the following ressource must be added to the `launcher_options` field:
+
+[source,json]
+----
+"resources": [
+    {
+        "name": "_rfm_gpu",
+        "options": ["--gres=gpu:{num_gpus_per_node}"],
+    }
+]
+----

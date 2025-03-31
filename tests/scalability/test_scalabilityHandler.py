@@ -2,16 +2,16 @@
 
 import pytest
 import tempfile, json
-from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
-from unittest.mock import patch
+from feelpp.benchmarking.reframe.scalability import ScalabilityHandler, CsvExtractor,TsvExtractor,JsonExtractor,Extractor,ExtractorFactory
 import numpy as np
 
 class StageMocker:
-    def __init__(self,format="",filepath="",name="",variables_path=[]):
+    def __init__(self,format="",filepath="",name="",variables_path=[],units={"*":"s"}):
         self.format = format
         self.filepath = filepath
         self.name = name
         self.variables_path = variables_path
+        self.units = units
 
 class CustomVariableMocker:
     def __init__(self, name="",columns=[],op="",unit="s"):
@@ -27,7 +27,38 @@ class ScalabilityMocker:
         self.custom_variables = custom_variables
 
 
-class TestScalabilityHandler:
+class TestExtractors:
+
+    @staticmethod
+    def buildCsvString(columns,values):
+        """Helper function to create the content of a CSV from a list of columns and a list of values.
+        Args:
+            columns(list[str]): List of colum values
+            values(list[list[any]]): List of lists containing the csv values
+        Returns
+            str: The built csv string
+        """
+        assert all(len(columns) == len(v) for v in values)
+        return ",".join(columns) + "\n" + "\n".join([",".join([str(r) for r in row]) for row in values])
+
+
+    @pytest.mark.parametrize(("values"),[
+        ([[1,2,3]]), ([[1,2,3],[4,5,6]])
+    ])
+    def test_extractCsv(self,values):
+        file = tempfile.NamedTemporaryFile()
+        columns = ["col1","col2","col3"]
+        with open(file.name,"w") as f:
+            f.write(self.buildCsvString(columns,values))
+
+        extractor = CsvExtractor(filepath=file.name,stage_name="",units={"*":"s"})
+        perfvars = extractor.extract()
+        for j,column in enumerate(columns):
+            for i in range(len(values)):
+                column_name = column if len(values) == 1 else f"{column}_{i}"
+                assert perfvars[column_name].evaluate() == values[i][j]
+
+        file.close()
 
     @staticmethod
     def buildTsvString(index, columns, values):
@@ -35,44 +66,21 @@ class TestScalabilityHandler:
         tsv = "# nProc "+ "   ".join(columns) + "\n" + f"{index} " + "   ".join([str(v) for v in values]) + "\n"
         return tsv
 
-    def test_extractCsv(self):
-        """ Test performance variable extraction for CSV files"""
-        pass
-
     def test_extractTsv(self):
         """ Test performance variable extraction for special TSV files [WILL BE REMOVED]"""
-
         index = 32
-        file1 = tempfile.NamedTemporaryFile()
-        columns1 = ["col1","col2","col3"]
-        values1 = [1,2.5,1e-5]
-        with open(file1.name,"w") as f:
-            f.write(self.buildTsvString(index,columns1,values=values1))
+        file = tempfile.NamedTemporaryFile()
+        columns = ["col1","col2","col3"]
+        values = [1,2.5,1e-5]
+        with open(file.name,"w") as f:
+            f.write(self.buildTsvString(index,columns,values=values))
 
-        file2 = tempfile.NamedTemporaryFile()
-        columns2 = ["col1","colX"]
-        values2 = [4,5.5]
-        with open(file2.name,"w") as f:
-            f.write(self.buildTsvString(index,columns2,values2))
+        extractor = TsvExtractor(filepath=file.name,stage_name="file",index=index,units={"*":"s"})
+        perfvars = extractor.extract()
+        for i,col1 in enumerate(columns):
+            assert perfvars[f"file_{col1}"].evaluate() == values[i]
 
-        scalability_handler = ScalabilityHandler(ScalabilityMocker(
-            directory="",
-            stages = [
-                StageMocker(format="tsv",filepath=file1.name,name="file1"),
-                StageMocker(format="tsv",filepath=file2.name,name="file2")
-            ]
-        ))
-
-        perf_vars = scalability_handler.getPerformanceVariables(index)
-        for i,col1 in enumerate(columns1):
-            print(perf_vars["file1_"+col1])
-            assert perf_vars[f"file1_{col1}"].evaluate() == values1[i]
-
-        for j,col2 in enumerate(columns2):
-            assert perf_vars[f"file2_{col2}"].evaluate() == values2[j]
-
-        file1.close()
-        file2.close()
+        file.close()
 
 
     def test_extractJson(self):
@@ -92,25 +100,15 @@ class TestScalabilityHandler:
             json.dump(values,f)
 
         #Test no variables path
-        scalability_handler = ScalabilityHandler(ScalabilityMocker(
-            directory="",
-            stages = [
-                StageMocker(format="json",filepath=file.name,name=""),
-            ]
-        ))
-        perf_vars = scalability_handler.getPerformanceVariables(None)
-        assert perf_vars == {}
+        extractor = JsonExtractor(file.name,"",units={"*":"s"},variables_path=[])
+        perfvars = extractor.extract()
+        assert perfvars == {}
 
 
         #Test with *
-        scalability_handler = ScalabilityHandler(ScalabilityMocker(
-            directory="",
-            stages = [
-                StageMocker(format="json",filepath=file.name,name="",variables_path=["*"]),
-            ]
-        ))
-        perf_vars = scalability_handler.getPerformanceVariables(None)
-        for k,v in perf_vars.items():
+        extractor = JsonExtractor(file.name,"",units={"*":"s"},variables_path=["*"])
+        perfvars = extractor.extract()
+        for k,v in perfvars.items():
             path = k.split(".")
             dic = values
             for p in path:
@@ -119,20 +117,79 @@ class TestScalabilityHandler:
             assert val == v.evaluate()
 
         #Test with specific paths
-        scalability_handler = ScalabilityHandler(ScalabilityMocker(
-            directory="",
-            stages = [
-                StageMocker(format="json",filepath=file.name,name="",variables_path=["field2.field2_2.*","field1"]),
-            ]
-        ))
-        perf_vars = scalability_handler.getPerformanceVariables(None)
-        assert len(perf_vars.keys()) == 3
-        assert perf_vars["field1"].evaluate() == values["field1"]
-        assert perf_vars["field2_2_1"].evaluate() == values["field2"]["field2_2"]["field2_2_1"]
-        assert perf_vars["field2_2_2"].evaluate() == values["field2"]["field2_2"]["field2_2_2"]
+        extractor = JsonExtractor(file.name,"",units={"*":"s"},variables_path=["field2.field2_2.*","field1"])
+        perfvars = extractor.extract()
+        assert len(perfvars.keys()) == 3
+        assert perfvars["field1"].evaluate() == values["field1"]
+        assert perfvars["field2_2_1"].evaluate() == values["field2"]["field2_2"]["field2_2_1"]
+        assert perfvars["field2_2_2"].evaluate() == values["field2"]["field2_2"]["field2_2_2"]
 
         file.close()
 
+        #Test with multiple wildcards
+        file = tempfile.NamedTemporaryFile()
+        values = {
+            "hardware": {
+                "gaya3": {
+                    "mem": {
+                        "available": {
+                            "host": "527759648",
+                            "physical": "442275",
+                            "virtual": "51059"
+                        },
+                        "total": {
+                            "host": "527759648",
+                            "physical": "515390",
+                            "virtual": "51199"
+                        }
+                    }
+                },
+                "gaya2":{
+                    "mem": {
+                        "available": {
+                            "host": "101010101",
+                            "physical": "442275",
+                        },
+                        "total": {
+                            "host": "202020202",
+                            "physical": "515390",
+                            "virtual": "51199"
+                        }
+                    }
+                }
+            }
+        }
+        with open(file.name,"w") as f:
+            json.dump(values,f)
+
+
+        extractor = JsonExtractor(file.name,"",variables_path=["hardware.*.mem.*.host"],units={"*":"s"})
+        perfvars = extractor.extract()
+        assert perfvars["gaya2.available"] == values["hardware"]["gaya2"]["mem"]["available"]["host"]
+        assert perfvars["gaya2.total"] == values["hardware"]["gaya2"]["mem"]["total"]["host"]
+        assert perfvars["gaya3.available"] == values["hardware"]["gaya3"]["mem"]["available"]["host"]
+        assert perfvars["gaya3.total"] == values["hardware"]["gaya3"]["mem"]["total"]["host"]
+
+
+
+        extractor = JsonExtractor(file.name,"",variables_path=["hardware.*.mem.*"],units={"*":"s"})
+        perfvars = extractor.extract()
+        assert perfvars["gaya2.available.host"] == values["hardware"]["gaya2"]["mem"]["available"]["host"]
+        assert perfvars["gaya2.available.physical"] == values["hardware"]["gaya2"]["mem"]["available"]["physical"]
+        assert perfvars["gaya2.total.host"] == values["hardware"]["gaya2"]["mem"]["total"]["host"]
+        assert perfvars["gaya2.total.physical"] == values["hardware"]["gaya2"]["mem"]["total"]["physical"]
+
+        assert perfvars["gaya3.available.host"] == values["hardware"]["gaya3"]["mem"]["available"]["host"]
+        assert perfvars["gaya3.available.physical"] == values["hardware"]["gaya3"]["mem"]["available"]["physical"]
+        assert perfvars["gaya3.available.virtual"] == values["hardware"]["gaya3"]["mem"]["available"]["virtual"]
+        assert perfvars["gaya3.total.host"] == values["hardware"]["gaya3"]["mem"]["total"]["host"]
+        assert perfvars["gaya3.total.physical"] == values["hardware"]["gaya3"]["mem"]["total"]["physical"]
+        assert perfvars["gaya3.total.virtual"] == values["hardware"]["gaya3"]["mem"]["total"]["virtual"]
+
+        file.close()
+
+
+class TestScalabilityHandler:
 
 
     @pytest.mark.parametrize(("op","fct"),[
@@ -161,7 +218,7 @@ class TestScalabilityHandler:
         columns = ["col1","col2","col3"]
         values = [1,2,5.5]
         with open(file.name,"w") as f:
-            f.write(self.buildTsvString(index,columns,values=values))
+            f.write(TestExtractors.buildTsvString(index,columns,values=values))
 
         scalability_handler = ScalabilityHandler(ScalabilityMocker(
             directory="",

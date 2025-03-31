@@ -1,0 +1,140 @@
+= Parameters
+
+The `parameters` field list all parameters to be used in the test.
+The cartesian product of the elements in this list will determine the benchmarks to be executed.
+
+Parameters are accessible across the whole configuration file by using the syntax `{{parameters.my_parameter.value}}`.
+
+Each parameter is described by a name and a generator.
+
+Valid generators are :
+
+
+- `linspace`:
+
+[source,json]
+----
+{
+    "name": "my_linspace_generator",
+    "linspace":{
+        "min":2,
+        "max":10,
+        "n_steps":5
+    }
+}
+----
+The example will yield `[2,4,6,8,10]`. Min and max are inclusive.
+
+- `geomspace`:
+
+[source,json]
+----
+{
+    "name": "my_geomspace_generator",
+    "geomspace":{
+        "min":1,
+        "max":10,
+        "n_steps":4
+    }
+}
+----
+The example will yield `[2,16,128,1024]`. Min and max are inclusive.
+
+- `range`:
+
+[source,json]
+----
+{
+    "name": "my_range_generator",
+    "range":{
+        "min":1,
+        "max":5,
+        "step":1
+    }
+}
+----
+The example will yield `[1,2,3,4,5]`. Min and max are inclusive.
+
+
+- `geometric`:
+
+[source,json]
+----
+{
+    "name": "my_geometric_generator",
+    "geometric":{
+        "start":1,
+        "ratio":2,
+        "n_steps":5
+    }
+}
+----
+The example will yield `[1,2,4,8,16]`.
+
+- `repeat`:
+
+[source,json]
+----
+{
+    "name": "my_repeat_generator",
+    "repeat":{
+        "value":"a repeated value",
+        "count":3
+    }
+}
+----
+The example will yield `["a repeated value", "a repeated value", "a repeated value"]`.
+
+- `sequence`:
+
+[source,json]
+----
+{
+    "name": "my_sequence_generator",
+    "sequence":[ 1, 2, 3, 4]
+}
+----
+Sequence is the simplest generator. It will yield exactly the given list.
+It accepts dictionnaries as items, which can then be accessed via the `.` separator.
+
+
+- `zip` and subparameters:
+
+Parameters can contain subparameters, which can be accessed recursively via the `.` separator. Its objective is to have parameters that depend on eachother, without producing a cartesian product.
+Aditionnaly, parameters can be zipped together via the `zip` generator.
+The `zip` generator takes a list of parameters to produce a list of python dictionaries. Each param inside the list can then have any desired generator from above.
+
+[source,json]
+----
+{
+    "name": "my_zip_generator",
+    "zip":[
+        {
+            "name":"param1",
+            "sequence":[
+                {"val1":1,"val2":2},
+                {"val1":3,"val2":4},
+                {"val1":5,"val2":6}
+            ]
+        },
+        {
+            "name":"param2",
+            "repeat":{
+                "value":"a repeated value",
+                "count":3
+            }
+        }
+    ]
+}
+----
+This example will yield `[{'param1': {'val1': 1, 'val2': 2}, 'param2': 'a repeated value'}, {'param1': {'val1': 3, 'val2': 4}, 'param2': 'a repeated value'}, {'param1': {'val1': 5, 'val2': 6}, 'param2': 'a repeated value'}]`
+
+[WARNING]
+====
+Zipped parameters need to have the same lenght.
+====
+
+[TIP]
+====
+Parameter filtering is supported, visit the xref:tutorial:advancedConfiguration.adoc[Advanced Configuration] for more information.
+====

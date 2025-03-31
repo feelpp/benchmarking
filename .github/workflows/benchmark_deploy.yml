@@ -5,107 +5,81 @@ on:
         types: [closed]
 
 jobs:
-    build_wheel:
-        runs-on: self-ubuntu-22.04
-        name: Build wheel package
-        if: contains(github.event.pull_request.labels.*.name, 'new-benchmark')
-        steps:
-        -   uses: actions/checkout@v4
-        -   name: Build wheel
-            run: |
-                npm install
-                npx downdoc README.adoc
-                pip3 wheel --no-deps --wheel-dir dist .
-            env:
-                CXX: clang++
-        -   name: Upload Artifact
-            uses: actions/upload-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist/*.whl
-
     accepted:
         if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
         runs-on: self-ubuntu-22.04
+        env:
+            GIRDER_API_KEY: ${{ secrets.GIRDER }}
         name: Move to production
-        needs: build_wheel
         steps:
-        -   name: Download wheel
-            uses: actions/download-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist
+        -   uses: actions/checkout@v4
 
         -   name: Create Virtual Environment
             run: |
                 python3 -m venv .venv
                 source .venv/bin/activate
-                pip3 install -r requirements.txt
+                pip3 install .
+
         -   name: Download stage reports
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-download -gid $staging_folder_id -o ./tmp/ -d
-            env:
-                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+                feelpp-girder download -gid $staging_folder_id -o ./tmp/ -d
+
         -   name: Download Production config
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-download -gid $production_website_config_id -o ./configs_tmp/ -fn production_config.json
-            env:
-                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+                feelpp-girder download -gid $production_website_config_id -o ./configs_tmp/ -fn production_config.json
+
         -   name: Merge stage configs
             run: |
                 source .venv/bin/activate
                 merge-json-configs -fp "./tmp/**/website_config.json" -o ./configs_tmp/stage_config.json -u
+
         -   name: Update Stage Config
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
                 update-stage-config -stag ./configs_tmp/stage_config.json -prod ./configs_tmp/production_config.json -prodid $production_folder_id
-            env:
-                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
         -   name: Merge stage and prod configs
             run: |
                 source .venv/bin/activate
                 merge-json-configs -fp "./configs_tmp/**/*.json" -o ./configs_tmp/website_config.json
+
         -   name: Upload New Website config
             run: |
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-upload --item ./configs_tmp/website_config.json --girder_id $production_folder_id
-            env:
-                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+                feelpp-girder upload --item ./configs_tmp/website_config.json --girder_id $production_folder_id
+
         -   name: Cleanup stage folder
             run: |
                 echo "Moving all folders from staging/ to merged/"
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-move -oid $staging_folder_id -nid $accepted_folder_id
-            env:
-                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+                feelpp-girder move -oid $staging_folder_id -nid $accepted_folder_id
+
     denied:
         if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
         runs-on: self-ubuntu-22.04
+        env:
+            GIRDER_API_KEY: ${{ secrets.GIRDER }}
+
         name: Move to denied
-        needs: build_wheel
         steps:
-        -   name: Download wheel
-            uses: actions/download-artifact@v4
-            with:
-                name: wheel-artifacts
-                path: dist
+        -   uses: actions/checkout@v4
+
         -   name: Create Virtual Environment
             run: |
                 python3 -m venv .venv
                 source .venv/bin/activate
-                pip3 install -r requirements.txt
+                pip3 install .
+
         -   name: Cleanup stage folder
             run: |
                 echo "Moving all folders from staging/ to denied/"
                 source .venv/bin/activate
                 source ./girder_deploy_config.sh
-                girder-move -oid $staging_folder_id -nid $denied_folder_id
-            env:
-                GIRDER_API_KEY: ${{ secrets.GIRDER }}
+                feelpp-girder move -oid $staging_folder_id -nid $denied_folder_id

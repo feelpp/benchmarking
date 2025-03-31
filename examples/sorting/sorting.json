@@ -1,0 +1,44 @@
+{
+    "executable": "python3 {{machine.input_dataset_base_dir}}/sorting/sortingApp",
+    "use_case_name": "sorting",
+    "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/sorting",
+    //Application options
+    "options": [
+        "-n {{parameters.elements.value}}",
+        "-a {{parameters.algorithm.value}}",
+        "-o {{output_directory}}/{{instance}}/outputs.json"
+    ],
+    //Files containing execution times
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "outputs.json",
+                "format": "json",
+                "variables_path":"elapsed"
+            }
+        ]
+    },
+    // Resources for the test
+    "resources":{ "tasks":1, "exclusive_access":false },
+    // Test validation (Only stdout supported at the moment)
+    "sanity": { "success": [], "error": [] },
+    // Test parameters
+    "parameters": [
+        {
+            "name": "algorithm",
+            "sequence": [ "bubble", "insertion", "merge" ]
+        },
+        {
+            "name":"elements",
+            //Equivalent to [10,100,1000,10000]
+            "geomspace":{
+                "min":10,
+                "max":10000,
+                "n_steps":4
+            }
+        }
+    ]
+}

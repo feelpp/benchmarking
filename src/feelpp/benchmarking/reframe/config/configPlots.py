@@ -18,7 +18,7 @@ class Aggregation(BaseModel):
 
 class Plot(BaseModel):
     title:str
-    plot_types:List[Literal["scatter","table","stacked_bar","grouped_bar"]]
+    plot_types:List[Literal["scatter","table","stacked_bar","grouped_bar","heatmap","sunburst","scatter3d","surface3d","parallelcoordinates","marked_scatter"]]
     transformation:Literal["performance","relative_performance","speedup"]
     aggregations:Optional[List[Aggregation]] = None
     variables:Optional[List[str]] = None
@@ -27,8 +27,14 @@ class Plot(BaseModel):
     secondary_axis:Optional[PlotAxis] = None
     yaxis:PlotAxis
     color_axis:Optional[PlotAxis] = None
+    extra_axes:Optional[List[PlotAxis]] = []
     layout_modifiers: Optional[Dict] = {}
 
+    @model_validator(mode="after")
+    def checkNames(self):
+        if self.variables and self.names:
+            assert len(self.variables)==len(self.names)
+        return self
 
     @field_validator("xaxis","secondary_axis", mode="after")
     @classmethod

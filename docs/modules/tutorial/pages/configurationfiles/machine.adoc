@@ -1,126 +1,109 @@
 = Machine configuration
 
-The machine configuration file contains all information related uniquely to the system where benchmarks will run on. It is used to tell the application HOW benchmarks will run on it.
+The machine configuration JSON contains all information related uniquely to the system where benchmarks will run on. It is used to tell the application HOW and WHERE benchmarks will run. It is also used to provide access to certain systems.
 The framework supports multiple containers and environments such as Apptainer and Spack. This information should be specified here.
 
-The following table describes all supported fields.
+The configuration file schema is described below.
 
-[cols="2,1,1,3,1"]
-|===
-| Field name  | Optional | type | description | Default
+machine [*str*]::
 
-| machine
-| No
-| str
-| The name of the machine. It needs to be the same as the name of the ReFrame configuration file.
-|
+    The name of the machine. If using built-in system ReFrame configuration for EuroHPC machines, this should correspond to the names described in the xref:tutorial:configurationfiles/system.adoc[systems configuration reference page].
+execution_policy [*str*] (Optional)::
 
-| execution_policy
-| Yes
-| str
-| Either 'async' or 'serial'. The way in which ReFrame will run the tests.
-| serial
+    Describes how reframe will launch the tests.
+    Should be either "serial" or "async". Defaults to "serial".
 
-| reframe_base_dir
-| No
-| str
-| The base directory of ReFrame's _stage_ and _output_ directories. If it does not exist, it will be created.
-|
+access [*List[str]*] (Optional)::
 
-| reports_base_dir
-| No
-| str
-| The base directory where ReFrame reports will be saved to.
-|
+    List of scheduler directives to be passed in order to grant access to a given partition of the system.
+    For example, passing `[--account=<YOUR-ACCOUNT>]` will add `#SBATCH --account=<YOUR-ACCOUNT>` to the submit script if using SLURM.
 
-| input_dataset_base_dir
-| Yes
-| str
-| The base directory where input data can be found (if applicable)
-| None
+targets [*str | List[str]*] (Optional)::
 
-| output_app_dir
-| No
-| str
-| The base directory where the benchmarked application should write its outputs to.
-|
+    Specifies in which partition, platform and prog_environment run benchmarks on.
+    The syntax is `[partition:platform:prog_environment]`. Default values are supported by only putting `:`. For example `partition::prog_environment`. Default values are "default" for partition and prog_environment, and "builtin" for platform.
+    You can choose between providing this field OR indicating all `partitions`, `platform`, `prog_environments` fields.
 
-| targets
-| Yes
-| list[str] or str
-| Specifies in which partition, platform and prog_environment run benchmarks on.
-The syntax is `[partition:platform:prog_environment]`. Default values are supported by only putting `:`. For example `partition::prog_environment`. Default values are "default" for partition and prog_environment, and "builtin" for platform.
-Provide this field or all (partitions, platform, prog_environments) fields.
-| None
+partitions [*List[str]*] (Optional)::
 
-| platform
-| Yes
-| str
-| Platform to run the benchmark on, possible values are "Apptainer" and "builtin". Docker will soon be supported.
-| builtin
+    Partitions where the test can run on. Tests will run on the cartesian product of partitions and prog_environments, where environments are specified for the current partition on the ReFrame configuration.
+    Should not be provided if using the `targets` field.
 
-| partitions
-| Yes
-| List[str]
-| Partitions where the test can run on. Tests will run on the cartesian product of partitions and prog_environments, where environments are specified for the current partition on the ReFrame configuration.
-| []
+prog_environments [*List[str]*] (Optional)::
 
-| prog_environments
-| Yes
-| List[str]
-| Environments where the test can run on. Test will run with this programming environment if it is specified on the current partition on the ReFrame configuration.
-| []
+    Environments where the test can run on. Test will run with this programming environment if it is specified on the current partition on the ReFrame configuration.
+    Should not be provided if using the `targets` field.
 
-| containers
-| Yes
-| Dict[str,Container]
-| Dictionary specifying container type "Apptainer" or "Docker" (not yet supported), and container related information. More details on the `Container` object below.
-| {}
+platform [*str*] (Optional)::
+
+    Name of the platform to run the benchmark one.
+    Accepted values are : "apptainer","builtin". Defaults to "builtin".
+    Should not be provided if using the `targets` field.
+
+env_variables [*Dict[str,str]*] (Optional)::
+
+    key:value pairs for machine related environment variables. These variables will be set after the _init_ phase of ReFrame tests.
+
+reframe_base_dir [*str*]::
+
+    Directory where ReFrame will save its _stage_ and _output_ directories. If it does not exist, it will be created.
+
+reports_base_dir [*str*]::
+
+    Directory where the output reports should be exported to.
+
+input_dataset_base_dir [*str*] (Optional)::
+
+    Base directory where inputs can be found by ReFrame at the moment of job sumbission. Advanced configuration allows file transfers between data located under `input_user_dir` and this directory.
+    This directory should ideally be located in the same disk as where the jobs will run on, to avoid unexpected execution times.
+    Refer to xref:tutorial:advancedConfiguration.adoc[Advanced Configuration] for more information.
+
+input_user_dir [*str*] (Optional)::
+
+    Base directory where input data can be found before running tests. If provided, `input_dataset_base_dir` should be present too. It is used to copy `input_file_dependencies` from this directory to the `input_dataset_base_dir`.
+    Refer to xref:tutorial:advancedConfiguration.adoc[Advanced Configuration] for more information.
+
+output_app_dir [*str*]::
+
+    The base directory where the benchmarked application should write its outputs to.
+
+containers Dict[str,Container] (Optional)::
+
+    Specifies container type and platform related information. Keys correspond to the platform name (e.g. "apptainer" or "docker")
+
+    -image_base_dir [*str*]:::
+        Base directory where container images can be found in the system
+
+    -options[*List[str]*] (Optional):::
+        Options to add to the container execution command.
+
+    -cachedir [*str*] (Optional):::
+        Directory where the pulled images will be cached on.
+
+    -tmpdir [*str*] (Optional):::
+        Directory where temporary image files will be written.
+
+    -executable [*str*] (Optional):::
+        Base command to be used for pulling the image.
+        Defaults to the name of the container.
+        (e.g. If using Apptainer, one can provide `singulariy`. And the command for pulling an image that will be used will be `singularity pull ...`)
+
+[NOTE]
+====
+Using the Docker platform will soon be available.
+====
 
 
-|===
-
-
-The containers object is defined as follow
-
-[cols="2,1,1,3,1"]
-|===
-| Field name | Optional | type | description | Default value
-
-| cachedir
-| Yes
-| str
-| Directory where the pulled images will be cached on.
-| None
-
-| tmpdir
-| Yes
-| str
-| Directory where temporary image files will be written.
-| None
-
-| image_base_dir
-| No
-| str
-| Base directory where images can be found in the system
-| None
-
-| options
-| Yes
-| List[str]
-| Options to add to the container execution command.
-| None
-
-|===
-
-Below, an example of a machine configuration file can be found, for a machine called "my_machine".
+Below, an example of a complete machine configuration file can be found, for a machine called "my_machine".
 
 [source,json]
 ----
 {
-    "machine": "my_machine",
-    "targets":"production:builtin:hpcx",
+    "machine": "my_system",
     "execution_policy": "async",
+    "access":["--account=1234"],
+    "targets":"production:builtin:hpcx",
+    "env_variables":{ "MY_ENV_VAR":"ABCD" },
     "reframe_base_dir":"$PWD/build/reframe",
     "reports_base_dir":"$PWD/reports/",
     "input_dataset_base_dir":"$PWD/input/",
@@ -128,7 +111,10 @@ Below, an example of a machine configuration file can be found, for a machine ca
     "containers":{
         "apptainer":{
             "image_base_dir":"/data/images/",
-            "options":[ "--sharens", "--bind /opt/:/opt/" ]
+            "options":[ "--sharens", "--bind /opt/:/opt/" ],
+            "cachedir":"/data/images/chache/",
+            "tmpdir":"/data/images/tmp/",
+            "executable":"singularity"
         }
     }
 }
@@ -136,17 +122,53 @@ Below, an example of a machine configuration file can be found, for a machine ca
 
 Let's review step by step what the file defines.
 
-- `"machine":"my_machine"` indicates that the ReFrame config can be found as _my_machine.py_
-- `"targets":"production:builtin:hpcx"` tells reframe to run tests uniquely on the production partition with the builtin platform and the hpcx programming environment.
-- `"execution_policy":"async"` tells ReFrame to run tests asynchronously on available resources.
-- `"reframe_base_dir":"$PWD/build/reframe"` Reframe will use the _build/stage/_ folder and _build/output/_ folder of the current working directory for staging tests and storing the benchmarked application's standard output and errors.
-- `"reports_base_dir":"$PWD/reports/"` Means that the reframe reports will be found under the _reports/_ folder of the current working directory.
-- `"input_dataset_base_dir":"$PWD/input/"` Means that the framework should look for input somewhere under the _input/_ folder of the current working directory. The rest of the path is specified on the benchmark configuration.
-- `"output_app_dir":"$PWD/output/"` Means that the benchmarked application should write its output files under the _output/_ folder of the current working directory. The rest of the path is specified on the benchmark configuration.
+`"machine":"my_system"`::
+    indicates that the system where tests will run can be identified as "my_system". If no custom reframe configuration is provided, the framework will look for a configuration file named `my_system.py`.
+
+`"execution_policy":"async"`::
+    Tells ReFrame to run tests asynchronously on available resources.
+
+`"access":["--account=1234"]`::
+    Indicates that the scheduler should use "--account=1234" to connect to compute nodes for a given partition.
+    For example, if using SLURM, `#SBATCH --account=1234` will be added to the submition script.
+
+`"targets":"production:builtin:hpcx"`::
+    Tells reframe to run tests uniquely on the production partition with the builtin platform and the hpcx programming environment. These values should correspond to what's contained in the ReFrame configuration file.
+
+`"env_variables":{ "MY_ENV_VAR":"ABCD" }`::
+    ReFrame will set environment variable `MY_ENV_VAR` to have the `ABCD` value before tests are launched.
+
+`"reframe_base_dir":"$PWD/build/reframe"`::
+    Reframe will use the _build/stage/_ folder and _build/output/_ folder of the current working directory for staging tests and storing the benchmarked application's standard output and errors.
+
+`"reports_base_dir":"$PWD/reports/"`::
+    Means that the reframe reports will be found under the _reports/_ folder of the current working directory.
+
+`"input_dataset_base_dir":"$PWD/input/"`::
+    Means that the framework should look for input somewhere under the _input/_ folder of the current working directory. The rest of the path is specified on the benchmark configuration.
+
+`"output_app_dir":"$PWD/output/"`::
+    Means that the benchmarked application should write its output files under the _output/_ folder of the current working directory. The rest of the path is specified on the benchmark configuration.
 
 Concerning containers:
 
-- The `"apptainer"` key indicated that the application COULD be benchmarked using apptainer. Not necesserily that it will. If the `targets` field specifies the apptainer platform, then this field is mandatory.
-- `"image_base_dir":"/data/images"` indicates that the built apptainer images can be found somewhere under the _/data/images/ directory. The rest of the path is specified on the benchmark configuration.
-- `"options":"[ "--sharens", "--bind /opt/:/opt/" ]"` Tells ReFrame to add these options to the Apptainer execution command. For example, `mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/ ...`. Only machine related options should be specified here, more options can be defined in the benchmark configuration.
+`"apptainer"`::
+    The key name indicates that the application CAN be benchmarked using apptainer. Not necesserily that it will. If the `targets` field specifies the apptainer platform, then this field is mandatory. Otherwise if the `tagets` field specifies the built-in platform, there is no need to have this object.
 
+`"image_base_dir":"/data/images"`::
+    Indicates that the built apptainer images can be found somewhere under the _/data/images/ directory. The rest of the image's filepath is specified on the benchmark configuration.
+
+`"options":"[ "--sharens", "--bind /opt/:/opt/" ]"`::
+    Tells ReFrame to add these options to the Apptainer execution command. For example, `mpiexec -n 4 apptainer exec --sharens --bind /opt/:/opt/ ...`. Only machine related options should be specified here, more options can be defined in the benchmark configuration.
+
+
+`"cachedir":"/data/images/chache/"`::
+    Indicates that the container should cache images under the `/data/images/cache` directory.
+    For example, when using apptainer, this will overwrite the `APPTAINER_CACHEDIR` environment variable. link:https://apptainer.org/docs/user/main/build_env.html[Apptainer Build Environment]
+
+`"tmpdir":"/data/images/tmp/"`::
+    Indicates that the container should use the `/data/images/tmp` directory for temporary files.
+    For example, when using apptainer, this will overwrite the `APPTAINER_TMPDIR` environment variable. link:https://apptainer.org/docs/user/main/build_env.html[Apptainer Build Environment]
+
+`"executable":"singularity"`::
+    Tells the framework to use the `singularity pull ...` command for pulling images instead of `apptainer pull ...` .

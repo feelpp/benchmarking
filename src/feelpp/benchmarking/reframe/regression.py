@@ -1,8 +1,8 @@
 import reframe as rfm
-from feelpp.benchmarking.reframe.setup import ReframeSetup
+from feelpp.benchmarking.reframe.setup import ReframeSetup, DEBUG
+from feelpp.benchmarking.reframe.config.configReader import FileHandler
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
-from feelpp.benchmarking.reframe.outputs import OutputsHandler
 
 
 import shutil, os
@@ -14,9 +14,8 @@ class RegressionTest(ReframeSetup):
 
     @run_before('run')
     def initHandlers(self):
-        self.validation_handler = ValidationHandler(self.app_setup.reader.config.sanity)
-        self.scalability_handler = ScalabilityHandler(self.app_setup.reader.config.scalability)
-        self.outputs_handler = OutputsHandler(self.app_setup.reader.config.outputs,self.app_setup.reader.config.additional_files)
+        self.validation_handler = ValidationHandler(self.app_reader.config.sanity)
+        self.scalability_handler = ScalabilityHandler(self.app_reader.config.scalability)
 
     @run_after('run')
     def executionGuard(self):
@@ -43,13 +42,49 @@ class RegressionTest(ReframeSetup):
         self.perf_variables.update(
             self.scalability_handler.getCustomPerformanceVariables(self.perf_variables)
         )
-        self.perf_variables.update(
-            self.outputs_handler.getOutputs()
-        )
 
     @run_before('performance')
     def copyParametrizedFiles(self):
-        self.outputs_handler.copyParametrizedDescriptions(self.report_dir_path,self.hashcode)
+        FileHandler.copyResource(
+            self.app_reader.config.additional_files.parameterized_descriptions_filepath,
+            os.path.join(self.report_dir_path,"partials"),
+            self.hashcode
+        )
+
+    @run_before('performance')
+    def loadCustomLogs(self):
+        for custom_log_file in self.app_reader.config.additional_files.custom_logs:
+            if not os.path.exists(custom_log_file):
+                DEBUG(f"{custom_log_file} does not exist, continuing...")
+                continue
+            with open(custom_log_file,"r") as f:
+                self.custom_logs.append({
+                    "filename":os.path.basename(custom_log_file),
+                    "content":f.read()
+                })
+
+    @run_before("cleanup")
+    def removeDirectories(self):
+        if self.app_reader.config.scalability.clean_directory:
+            FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
+        if self.machine_reader.config.input_user_dir and self.app_reader.config.input_file_dependencies:
+            DEBUG("REMOVING INPUT FILE DEPENDENCIES...")
+            for input_dep in self.app_reader.config.input_file_dependencies.values():
+                location = os.path.join(self.machine_reader.config.input_dataset_base_dir,input_dep)
+                if os.path.isfile(location):
+                    os.remove(location)
+                elif os.path.isdir(location):
+                    shutil.rmtree(location)
+                DEBUG(f"\t DELETED {input_dep}")
+
+            #Delete empty dirs
+            for dirpath, dirnames, _ in os.walk(self.machine_reader.config.input_dataset_base_dir, topdown=False):
+                for dirname in dirnames:
+                    directory = os.path.join(dirpath,dirname)
+                    if not os.listdir(directory):
+                        os.rmdir(directory)
+                        DEBUG(f"Deleted empty directory: {directory}")
+
 
     @sanity_function
     def sanityCheck(self):

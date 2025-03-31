@@ -1,5 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 import os
+from pathlib import Path
+
 
 class TemplateRenderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
