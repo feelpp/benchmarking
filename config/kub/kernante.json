@@ -1,0 +1,111 @@
+{
+    "executable": "feelpp_kub_cem",
+    "output_directory": "{{machine.output_app_dir}}/kub/{{instance}}/{{use_case_name}}",
+    "use_case_name": "kernante",
+    "timeout":"0-00:5:0",
+    "resources":{
+        "tasks":"{{parameters.tasks.value}}",
+        "exclusive_access":true
+    },
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "url":"oras://ghcr.io/feelpp/ktirio-urban-building:master-sif",
+                "filepath":"{{machine.containers.apptainer.image_base_dir}}/kub.sif"
+            },
+            "input_dir":"/input_data",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}:{{platforms.apptainer.input_dir}}",
+                "--env OMP_NUM_THREADS=1"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}",
+            "append_app_option":[]
+        }
+    },
+    "remote_input_dependencies":{
+        "mesh":{"girder":{"file":"67adc5484c9ccbdde21a568e"},"destination":"kub/Kernante/mesh.msh"},
+        "gis":{"girder":{"file":"67adc5444c9ccbdde21a568b"},"destination":"kub/Kernante/gis.json"},
+        "weather":{"girder":{"file":"67adc5514c9ccbdde21a5697"},"destination":"kub/Kernante/weather.csv"},
+
+        "idealHeaters":{"girder":{"file":"67ceb83eda2d67521b36ac88"},"destination":"kub/idealHeaters.cfg"},
+        "sun_fmu":{"girder":{"file":"66c5adcab0e95728eb00fcd2"},"destination":"kub/simulators/Sun.fmu"},
+        "simulators":{"girder":{"item":"67cec10fda2d67521b36acc7"},"destination":"kub/"},
+        "scenarios":{"girder":{"item":"67b496894c9ccbdde21a5769"},"destination":"kub/"}
+    },
+    "input_file_dependencies":{
+        "simulators":"kub/simulators",
+        "simulators_cfg":"kub/idealHeaters.cfg",
+        "sun_fmu":"kub/simulators/Sun.fmu",
+        "gis":"kub/Kernante/gis.json",
+        "mesh":"kub/Kernante/mesh.msh",
+        "weather":"kub/Kernante/weather.csv",
+        "scenarios":"kub/scenarios_local"
+    },
+    "options": [
+        "--config-files {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.simulators_cfg}}",
+        "--cem.simulator.lod0.modelisation.maxfloors=10",
+
+        "--cem.simulator.sun.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.sun_fmu}}",
+
+        "--cem.gis.metadata.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.gis}}",
+        "--cem.mesh.lod0.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh}}",
+        "--cem.weather.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.weather}}",
+
+        "--cem.scenarios.filename={{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.scenarios}}/scenarios.json",
+
+        "--cem.instance.time.start={{fixed.time.start}}",
+        "--cem.instance.time.stop={{fixed.time.stop}}",
+        "--cem.instance.time.step={{fixed.time.step}}",
+
+        "--cem.instance.postprocess.export.visualization.enabled=false",
+        "--cem.instance.postprocess.export.report.enabled=false",
+        "--cem.instance.postprocess.export.outputs.csv.enabled=false",
+        "--cem.instance.postprocess.export.outputs.enabled=true",
+        "--cem.instance.solar_shading.enabled=false",
+        "--cem.instance.idealflows.enabled=true",
+
+        "--cem.database.directory {{output_directory}}",
+        "--directory {{output_directory}}"
+    ],
+    "additional_files":{
+        "custom_logs":[
+            "{{output_directory}}/np_{{parameters.tasks.value}}/logs/0-199/{{executable}}.INFO", "{{output_directory}}/np_{{parameters.tasks.value}}/logs/0-199/{{executable}}.WARNING",
+            "{{output_directory}}/np_{{parameters.tasks.value}}/logs/{{executable}}.INFO", "{{output_directory}}/np_{{parameters.tasks.value}}/logs/{{executable}}.WARNING"
+        ]
+    },
+    "scalability": {
+        "directory": "{{output_directory}}",
+        "clean_directory":true,
+        "stages": [
+            {
+                "name":"",
+                "filepath": "cem/instances/np_{{parameters.tasks.value}}/logs/timers.json",
+                "format": "json",
+                "variables_path":["*.timeElapsed.max","execute.subtimers.*.subtimers.*.timeElapsed.max","execute.subtimers.*.timeElapsed.max"]
+            },
+            {
+                "name":"",
+                "filepath": "cem/logs/timers.json",
+                "format": "json",
+                "variables_path":["*.timeElapsed.max","*.subtimers.*.subtimers.*.timeElapsed.max"]
+            }
+        ]
+    },
+    "sanity": {
+        "success": ["[ Stopping Feel++ ]"],
+        "error": ["Error"]
+    },
+    "fixed":{
+        "time":{ "start":0,"stop":86400,"step":3600,"season":"winter" }
+    },
+    "parameters": [
+        {
+            "name": "tasks",
+            "sequence":[1,4,8,16]
+        }
+    ]
+}
