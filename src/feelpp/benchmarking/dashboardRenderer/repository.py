@@ -1,8 +1,8 @@
 import os
-from component import NodeComponent, LeafComponent
-from utils import TreeUtils
-from controller import BaseControllerFactory, Controller
-from schemas.dashboardSchema import Metadata, ComponentMap, LeafMetadata
+from feelpp.benchmarking.dashboardRenderer.component import NodeComponent, LeafComponent
+from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
+from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata, ComponentMap, LeafMetadata
 
 class Repository:
     """ Base class for repositories.

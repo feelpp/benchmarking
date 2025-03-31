@@ -1,5 +1,5 @@
-from controller import BaseControllerFactory, Controller
-from schemas.dashboardSchema import Metadata, Template
+from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata, Template
 import os, json
 from itertools import permutations
 
