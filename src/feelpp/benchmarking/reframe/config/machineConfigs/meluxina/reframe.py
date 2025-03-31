@@ -42,7 +42,7 @@ site_configuration = {
     'environments': [
         {
             'name': 'default',
-            'modules': [' env/staging/2024.1', 'Apptainer/1.3.6-GCCcore-13.3.0', 'OpenMPI/5.0.3-GCC-13.3.0'],
+            'modules': [' env/staging/2023.1', 'Apptainer/1.3.1-GCCcore-12.3.0', 'OpenMPI/4.1.5-GCC-12.3.0'],
             'env_vars':[['PMIX_MCA_psec','^munge']],
             'target_systems': ['meluxina:cpu']
         }
