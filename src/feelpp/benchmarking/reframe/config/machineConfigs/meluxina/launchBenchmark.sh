@@ -20,6 +20,7 @@ while getopts "m:b:p:" opt; do
   esac
 done
 
+apptainer registry login --username ${GHCRIO_USER} --password ${GHCRIO_TOKEN} docker://ghcr.io
 
 feelpp-benchmarking-exec \
     -mc $MACHINE_CONFIG \
