@@ -43,6 +43,7 @@ site_configuration = {
         {
             'name': 'default',
             'modules': [' env/staging/2024.1', 'Apptainer/1.3.6-GCCcore-13.3.0', 'OpenMPI/5.0.3-GCC-13.3.0'],
+            'env_vars':[['PMIX_MCA_psec','^munge']],
             'target_systems': ['meluxina:cpu']
         }
     ]
