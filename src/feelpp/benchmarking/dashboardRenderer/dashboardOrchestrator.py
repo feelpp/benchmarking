@@ -1,7 +1,7 @@
-from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
-from feelpp.benchmarking.dashboardRenderer.repository import NodeComponentRepository, LeafComponentRepository
-from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema, ComponentMap
+from controller import BaseControllerFactory, Controller
+from repository import NodeComponentRepository, LeafComponentRepository
+from utils import TreeUtils
+from schemas.dashboardSchema import DashboardSchema, ComponentMap
 
 import os
 

@@ -1,5 +1,5 @@
-from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata, LeafTemplateData
+from controller import BaseControllerFactory, Controller
+from schemas.dashboardSchema import Metadata, Template
 import os, json
 from itertools import permutations
 
@@ -72,22 +72,26 @@ class NodeComponent(Component):
                 )
 
 class LeafComponent(Component):
-    def __init__(self, id:str , data_path: str, template_data:dict[str,str], parents: list[str]):
+    def __init__(self, id:str , data_path: str, templates:list[Template], parents: list[str]):
         self.id = id
         self.parents = parents
 
         self.initBaseController()
-        for data in template_data:
-            if data.action == "input":
-                with open(os.path.join(data_path,data.filename),"r") as f:
-                    if data.format == "json":
-                        data_dict = json.load(f)
-                        self.leaf_page_controller.updateData({data.prefix:data_dict} if data.prefix else data_dict)
+        for template in templates:
+            for data in template.data:
+                if data.action == "input":
+                    if not data.format:
+                        self.leaf_page_controller.updateData({data.prefix:data.data} if data.prefix else data.data)
                     else:
-                        raise NotImplementedError(f"Format {data.format} is supported")
-            else:
-                raise NotImplementedError(f"Action {data.action} is supported")
-
+                        with open(os.path.join(data_path,data.filename),"r") as f:
+                            if data.format == "json":
+                                data_dict = json.load(f)
+                                self.leaf_page_controller.updateData({data.prefix:data_dict} if data.prefix else data_dict)
+                            else:
+                                raise NotImplementedError(f"Format {data.format} is supported")
+                else:
+                    raise NotImplementedError(f"Action {data.action} is supported")
+        self.leaf_page_controller.updateData(dict(plugin_templates=[t.filepath for t in templates]))
 
 
     def initBaseController(self):
@@ -98,7 +102,7 @@ class LeafComponent(Component):
 
     def buildFilename(self):
         extension = self.leaf_page_controller.output_filename.split(".")[-1]
-        return f"{'_'.join([p.id for p in self.parents])}-{self.id}.{extension}"
+        return f"{'-'.join([p.id for p in self.parents])}-{self.id}.{extension}"
 
     def render(self,base_dir):
         perms = permutations(self.parents)

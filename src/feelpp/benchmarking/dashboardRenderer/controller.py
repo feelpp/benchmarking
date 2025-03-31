@@ -1,4 +1,4 @@
-from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
+from renderer import TemplateRenderer
 from pathlib import Path
 from datetime import datetime
 import os

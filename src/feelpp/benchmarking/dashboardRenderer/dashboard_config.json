@@ -23,11 +23,24 @@
                     "ThermalBridgesENISO10211": {
                         "path": "./reports/feelpp_toolbox_heat/discoverer/ThermalBridgesENISO10211",
                         "platform": "local",
-                        "template_data": [{
-                            "filename": "reframe_report.json",
-                            "prefix": "rfm",
-                            "format": "json",
-                            "action": "input"
+                        "templates":[{
+                            "filepath":"custom/reframeReport.adoc.j2",
+                            "data": [
+                                {
+                                    "filename": "reframe_report.json",
+                                    "prefix": "rfm",
+                                    "format": "json",
+                                    "action": "input"
+                                },
+                                {
+                                    "action":"input",
+                                    "data":{
+                                        "use_case":"ThermalBridgesENISO10211",
+                                        "application":"Feel++ Toolbox Heat",
+                                        "machine": "Discoverer"
+                                    }
+                                }
+                            ]
                         }]
                     }
                 }
@@ -37,21 +50,47 @@
                     "ThermalBridgesENISO10211": {
                         "path": "./reports/feelpp_toolbox_heat/gaya/ThermalBridgesENISO10211",
                         "platform": "local",
-                        "template_data": [{
-                            "filename": "reframe_report.json",
-                            "prefix": "rfm",
-                            "format": "json",
-                            "action": "input"
+                        "templates":[{
+                            "filepath":"custom/reframeReport.adoc.j2",
+                            "data": [
+                                {
+                                    "filename": "reframe_report.json",
+                                    "prefix": "rfm",
+                                    "format": "json",
+                                    "action": "input"
+                                },
+                                {
+                                    "action":"input",
+                                    "data":{
+                                        "use_case":"ThermalBridgesENISO10211",
+                                        "application":"Feel++ Toolbox Heat",
+                                        "machine": "Gaya"
+                                    }
+                                }
+                            ]
                         }]
                     },
                     "thermal_bridges_case_3": {
                         "path": "./reports/feelpp_toolbox_heat/gaya/thermal_bridges_case_3",
                         "platform": "local",
-                        "template_data": [{
-                            "filename": "reframe_report.json",
-                            "prefix": "rfm",
-                            "format": "json",
-                            "action": "input"
+                        "templates":[{
+                            "filepath":"custom/reframeReport.adoc.j2",
+                            "data": [
+                                {
+                                    "filename": "reframe_report.json",
+                                    "prefix": "rfm",
+                                    "format": "json",
+                                    "action": "input"
+                                },
+                                {
+                                    "action":"input",
+                                    "data":{
+                                        "use_case":"Thermal Bridges Case 3",
+                                        "application":"Feel++ Toolbox Heat",
+                                        "machine": "Gaya"
+                                    }
+                                }
+                            ]
                         }]
                     }
                 },
@@ -59,11 +98,24 @@
                     "HL_31": {
                         "path": "./reports/feelpp_toolbox_thermoelectric/gaya/HL_31",
                         "platform": "local",
-                        "template_data": [{
-                            "filename": "reframe_report.json",
-                            "prefix": "rfm",
-                            "format": "json",
-                            "action": "input"
+                        "templates":[{
+                            "filepath":"custom/reframeReport.adoc.j2",
+                            "data": [
+                                {
+                                    "filename": "reframe_report.json",
+                                    "prefix": "rfm",
+                                    "format": "json",
+                                    "action": "input"
+                                },
+                                {
+                                    "action":"input",
+                                    "data":{
+                                        "use_case":"HL 31",
+                                        "application":"Feel++ Toolbox Thermoelectric",
+                                        "machine": "Gaya"
+                                    }
+                                }
+                            ]
                         }]
                     }
                 },
@@ -71,11 +123,24 @@
                     "eye": {
                         "path": "./reports/feelpp_toolbox_heatfluid/gaya/eye",
                         "platform": "local",
-                        "template_data": [{
-                            "filename": "reframe_report.json",
-                            "prefix": "rfm",
-                            "format": "json",
-                            "action": "input"
+                        "templates":[{
+                            "filepath":"custom/reframeReport.adoc.j2",
+                            "data": [
+                                {
+                                    "filename": "reframe_report.json",
+                                    "prefix": "rfm",
+                                    "format": "json",
+                                    "action": "input"
+                                },
+                                {
+                                    "action":"input",
+                                    "data":{
+                                        "use_case":"Eye",
+                                        "application":"Feel++ Toolbox Heatfluid",
+                                        "machine": "Gaya"
+                                    }
+                                }
+                            ]
                         }]
                     }
                 },
@@ -83,11 +148,24 @@
                     "poznan": {
                         "path": "./reports/feelpp_kub_cem/gaya/poznan",
                         "platform": "local",
-                        "template_data": [{
-                            "filename": "reframe_report.json",
-                            "prefix": "rfm",
-                            "format": "json",
-                            "action": "input"
+                        "templates":[{
+                            "filepath":"custom/reframeReport.adoc.j2",
+                            "data": [
+                                {
+                                    "filename": "reframe_report.json",
+                                    "prefix": "rfm",
+                                    "format": "json",
+                                    "action": "input"
+                                },
+                                {
+                                    "action":"input",
+                                    "data":{
+                                        "use_case":"Poznan",
+                                        "application":"Ktirio Urban Buildings",
+                                        "machine": "Gaya"
+                                    }
+                                }
+                            ]
                         }]
                     }
                 }

@@ -1,8 +1,8 @@
 import os
-from feelpp.benchmarking.dashboardRenderer.component import NodeComponent, LeafComponent
-from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
-from feelpp.benchmarking.dashboardRenderer.controller import BaseControllerFactory, Controller
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata, ComponentMap, LeafMetadata
+from component import NodeComponent, LeafComponent
+from utils import TreeUtils
+from controller import BaseControllerFactory, Controller
+from schemas.dashboardSchema import Metadata, ComponentMap, LeafMetadata
 
 class Repository:
     """ Base class for repositories.
@@ -144,7 +144,7 @@ class LeafComponentRepository(Repository):
             self.add(LeafComponent(
                 f"{leaf_component_dir}",
                 os.path.join(leaf_config.path,leaf_component_dir),
-                leaf_config.template_data,
+                leaf_config.templates,
                 [self.getParentComponent(parent_id,other_repositories) for parent_id in parent_path]
             ))
 

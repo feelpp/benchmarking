@@ -1,0 +1,42 @@
+
+{% set ns = namespace(keys=[]) %}
+{% macro flatten_keys(d, prefix='') %}
+  {% for k, v in d.items() %}
+    {% set new_key = (prefix + '.' if prefix else '') + k %}
+    {% if v is mapping %}
+      {{ flatten_keys(v, new_key) }}
+    {% else %}
+      {% if new_key not in ns.keys %}
+        {% set ns.keys = ns.keys + [new_key] %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro recursive_get_value(d, parts) -%}
+  {% if parts | length == 0 %}{{ d }}{% else %}
+    {% set first = parts[0] %}
+    {% set rest = parts[1:] %}
+    {% if d is mapping and first in d %} {{ recursive_get_value(d[first], rest) }} {% else %} '' {% endif %}
+  {% endif %}
+{%- endmacro %}
+
+{% for testcase in run.testcases %} {{ flatten_keys(testcase.check_params) }} {% endfor %}
+
+++++
+<style>
+.scrollable {
+  overflow-x: auto;
+}
+</style>
+++++
+[.scrollable]
+--
+|===
+|hashcode | {{ ns.keys | join(' | ') }}
+
+{% for testcase in run.testcases %}
+|{{testcase.hash}}{% for header in ns.keys %} | {{recursive_get_value(testcase.check_params, header.split('.'))}}{% endfor %}
+{% endfor %}
+|===
+--
