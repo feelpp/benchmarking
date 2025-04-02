@@ -58,12 +58,15 @@ class BaseControllerFactory:
     }
 
     @classmethod
-    def create(cls, renderer_type: str) -> TemplateRenderer:
+    def create(cls, renderer_type: str, custom_templates_dir:str = None) -> TemplateRenderer:
         if renderer_type not in cls.DEFAULT_MV:
             raise ValueError(
                 f"Renderer type '{renderer_type}' not recognized. Valid options are: {', '.join(cls.DEFAULT_MV.keys())}."
             )
-        template_dir = os.path.join(Path(__file__).resolve().parent,"templates")
+        base_template_dir = os.path.join(Path(__file__).resolve().parent,"templates")
+        template_dir = [base_template_dir]
+        if custom_templates_dir:
+            template_dir+= [custom_templates_dir]
         renderer = TemplateRenderer(template_dir, cls.DEFAULT_MV[renderer_type]["template"])
 
         return Controller(renderer,cls.DEFAULT_MV[renderer_type]["data"].copy(),cls.DEFAULT_MV[renderer_type]["filename"])

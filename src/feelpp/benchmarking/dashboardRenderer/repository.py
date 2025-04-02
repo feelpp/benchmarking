@@ -44,7 +44,7 @@ class Repository:
 
 class NodeComponentRepository(Repository):
     """Class representing a collection of components"""
-    def __init__( self, id:str, components:dict[str,dict], metadata: Metadata ):
+    def __init__( self, id:str, components:dict[str,dict], metadata: Metadata, custom_templates_dir:str = None ):
         super().__init__(id)
         self.data: list[NodeComponent]
         self.metadata = metadata
@@ -52,7 +52,7 @@ class NodeComponentRepository(Repository):
         self.initBaseController(metadata)
 
         for component_id, component_metadata in components.items():
-            self.add(NodeComponent(component_id, component_metadata,self.id))
+            self.add(NodeComponent(component_id, component_metadata,self.id, custom_templates_dir))
 
     def initBaseController(self,metadata:Metadata):
         self.index_page_controller:Controller = BaseControllerFactory.create("index")
@@ -106,10 +106,10 @@ class NodeComponentRepository(Repository):
 
 
 class LeafComponentRepository(Repository):
-    def __init__(self, id, component_mapping:ComponentMap,other_repositories:list[Repository]):
+    def __init__(self, id, component_mapping:ComponentMap,other_repositories:list[Repository], custom_templates_dir:str = None ):
         super().__init__(id)
         self.data: list[LeafComponent]
-
+        self.custom_templates_dir = custom_templates_dir
         self.initLeaves(other_repositories,component_mapping)
 
     def initLeaves(self,other_repositories:list[Repository], d, path=[]):
@@ -145,7 +145,8 @@ class LeafComponentRepository(Repository):
                 f"{leaf_component_dir}",
                 os.path.join(leaf_config.path,leaf_component_dir),
                 leaf_config.templates,
-                [self.getParentComponent(parent_id,other_repositories) for parent_id in parent_path]
+                [self.getParentComponent(parent_id,other_repositories) for parent_id in parent_path],
+                self.custom_templates_dir
             ))
 
     def render(self,base_dir:str) -> None:

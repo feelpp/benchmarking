@@ -6,13 +6,13 @@ from pathlib import Path
 class TemplateRenderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
 
-    def __init__(self, template_path, template_filename):
+    def __init__(self, template_paths, template_filename):
         """ Initialize the template for the renderer
         Args:
-            template_path (str): The path to the Jinja2 template folder
+            template_path (list[str]): The paths to the Jinja2 template folders
             template_filename (str): The template filename
         """
-        self.env = Environment(loader=FileSystemLoader(template_path), trim_blocks=True, lstrip_blocks=True)
+        self.env = Environment(loader=FileSystemLoader(template_paths), trim_blocks=True, lstrip_blocks=True)
         self.setGlobals()
         self.setFilters()
         self.template = self.env.get_template(template_filename)

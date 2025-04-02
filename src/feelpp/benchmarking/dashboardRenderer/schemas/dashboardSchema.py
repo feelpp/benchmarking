@@ -44,7 +44,11 @@ class Metadata(BaseModel):
     display_name: str
     description: Optional[str] = ""
 
+class General(BaseModel):
+    templates_directory: Optional[str] = None
+
 class DashboardSchema(BaseModel):
+    general : Optional[General] = None
     component_map: ComponentMap
     components: Dict[str,Dict[str, Metadata]]
     views : Dict[str,Dict]

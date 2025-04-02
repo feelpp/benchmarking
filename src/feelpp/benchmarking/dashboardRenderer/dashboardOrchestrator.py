@@ -8,17 +8,17 @@ import os
 class DashboardOrchestrator:
     """ Serves as a repository orchestrator"""
     def __init__( self, components_config:DashboardSchema, title:str = "My Dashboard") -> None:
+        self.components_config = components_config.model_copy()
+
         self.home_page_controller:Controller = BaseControllerFactory.create("home")
         self.home_page_controller.updateData({"title":title})
 
-        self.components_config = components_config.model_copy()
-
         self.component_repositories:list[NodeComponentRepository] = [
-            NodeComponentRepository(repository_id, self.components_config.components[repository_id], metadata = repository_metadata)
+            NodeComponentRepository(repository_id, self.components_config.components[repository_id], metadata = repository_metadata, custom_templates_dir=components_config.general.templates_directory)
             for repository_id, repository_metadata in self.components_config.repositories.items()
         ]
 
-        self.leaf_component_repository:LeafComponentRepository = LeafComponentRepository("leaves", self.components_config.component_map.mapping,self.component_repositories)
+        self.leaf_component_repository:LeafComponentRepository = LeafComponentRepository("leaves", self.components_config.component_map.mapping,self.component_repositories, custom_templates_dir=components_config.general.templates_directory)
 
         self.initRepositoryViews(self.components_config.views,self.components_config.component_map)
 

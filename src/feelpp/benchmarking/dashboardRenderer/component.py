@@ -8,16 +8,16 @@ class Component:
         return f"<{self.id}>"
 
 class NodeComponent(Component):
-    def __init__(self, id:str, metadata: Metadata, parent_repository_id:str ) -> None:
+    def __init__(self, id:str, metadata: Metadata, parent_repository_id:str, custom_templates_dir:str = None ) -> None:
         self.id = id
-        self.initBaseController(metadata)
+        self.initBaseController(metadata,custom_templates_dir)
         self.parent_repository_id = parent_repository_id
         self.metadata = metadata
         self.views = {}
 
-    def initBaseController(self,metadata:Metadata):
+    def initBaseController(self,metadata:Metadata, custom_templates_dir:str = None ):
 
-        self.index_page_controller:Controller = BaseControllerFactory.create("index")
+        self.index_page_controller:Controller = BaseControllerFactory.create("index",custom_templates_dir)
         self.index_page_controller.updateData(dict(
             title = metadata.display_name,
             description = metadata.description,
@@ -72,11 +72,11 @@ class NodeComponent(Component):
                 )
 
 class LeafComponent(Component):
-    def __init__(self, id:str , data_path: str, templates:list[Template], parents: list[str]):
+    def __init__(self, id:str , data_path: str, templates:list[Template], parents: list[str], custom_templates_dir:str = None ):
         self.id = id
         self.parents = parents
 
-        self.initBaseController()
+        self.initBaseController(custom_templates_dir)
         for template in templates:
             for data in template.data:
                 if data.action == "input":
@@ -94,8 +94,8 @@ class LeafComponent(Component):
         self.leaf_page_controller.updateData(dict(plugin_templates=[t.filepath for t in templates]))
 
 
-    def initBaseController(self):
-        self.leaf_page_controller:Controller = BaseControllerFactory.create("leaf")
+    def initBaseController(self, custom_templates_dir:str = None ):
+        self.leaf_page_controller:Controller = BaseControllerFactory.create("leaf",custom_templates_dir)
         self.leaf_page_controller.updateData(dict(
             title = self.id
         ))
