@@ -12,7 +12,7 @@ on:
 jobs:
 
   build_wheel:
-    runs-on: self-gaya
+    runs-on: self-feelpp
     name: Build wheel
     if:  "!contains(github.event.head_commit.message, 'wheel skip')"
     steps:
@@ -36,7 +36,7 @@ jobs:
         path: dist/*.whl
 
   tests:
-    runs-on: self-gaya
+    runs-on: self-feelpp
     name: Integration Tests
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'tests skip')"
@@ -147,7 +147,7 @@ jobs:
           folder: public # The folder the action should deploy.
 
   deliver:
-    runs-on: self-gaya
+    runs-on: self-feelpp
     name: Build docker, tag and push
     steps:
     - uses: actions/checkout@v4
@@ -186,7 +186,7 @@ jobs:
         file: ./Dockerfile
 
   release:
-    runs-on: self-gaya
+    runs-on: self-feelpp
     name: Release
     needs: [tests]
     if: startsWith(github.ref ,'refs/tags/v')

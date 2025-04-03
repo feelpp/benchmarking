@@ -27,7 +27,7 @@ jobs:
 
     factory:
         name: HPC Systems Factory
-        runs-on: self-gaya
+        runs-on: self-feelpp
         outputs:
             matrix: ${{ steps.hpc-systems.outputs.matrix }}
         steps:
@@ -148,7 +148,7 @@ jobs:
                 path: ${{steps.parse_reports_path.outputs.reports_base_dir}}
 
     deploy:
-        runs-on: self-gaya
+        runs-on: self-feelpp
         needs: [benchmark,factory]
         name: Handle results and trigger rendering
         if: ${{ github.event.inputs.upload_id == '' && github.event.client_payload.upload_id == '' }}
@@ -202,7 +202,7 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.CR_PAT }}
 
     user-results:
-        runs-on: self-gaya
+        runs-on: self-feelpp
         needs: [benchmark,factory]
         name: Deploy the website to a specific folder
         if: ${{ github.event.inputs.upload_id != '' || github.event.client_payload.upload_id != '' }}
