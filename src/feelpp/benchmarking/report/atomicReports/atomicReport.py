@@ -108,7 +108,7 @@ class AtomicReport:
         if not os.path.exists(self.partials_dir):
             raise FileNotFoundError("Parametrized descriptions directory does not exist")
 
-        rel_move_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"))
+        rel_move_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename())
         move_dir = os.path.join(base_dir,rel_move_dir)
         if not os.path.exists(move_dir):
             os.makedirs(move_dir)
@@ -138,7 +138,7 @@ class AtomicReport:
                 if all(var not in check_vars for var in ["script","output_log","error_log"]):
                     continue
 
-                logs_rel_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename().replace("-","_").replace(":","_").replace("+","Z"),f"{testcase['hash']}.adoc")
+                logs_rel_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase['hash']}.adoc")
                 logs_filepath = os.path.join(base_dir,logs_rel_dir)
                 if not os.path.exists(os.path.dirname(logs_filepath)):
                     os.makedirs(os.path.dirname(logs_filepath))
@@ -160,7 +160,7 @@ class AtomicReport:
         Returns:
             str: The filename
         """
-        return f"{self.date}"
+        return f"{self.date.replace('-','_').replace(':','_').replace('+','Z')}"
 
     @staticmethod
     def flatten(nested_json, parent_key=''):
