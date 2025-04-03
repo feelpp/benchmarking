@@ -7,7 +7,7 @@ on:
 jobs:
     accepted:
         if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
-        runs-on: self-ubuntu-22.04
+        runs-on: self-feelpp
         env:
             GIRDER_API_KEY: ${{ secrets.GIRDER }}
         name: Move to production
@@ -63,7 +63,7 @@ jobs:
 
     denied:
         if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels.*.name, 'new-benchmark')
-        runs-on: self-ubuntu-22.04
+        runs-on: self-feelpp
         env:
             GIRDER_API_KEY: ${{ secrets.GIRDER }}
 
