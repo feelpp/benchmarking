@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 import shutil
-from argparse import ArgumentParser, RawTextHelpFormatter
+from argparse import ArgumentParser, RawTextHelpFormatter, REMAINDER
 
 
 class CustomHelpFormatter(RawTextHelpFormatter):
@@ -86,6 +86,8 @@ class Parser():
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
         options.add_argument('--website', '-w', action='store_true', help='Render reports, compile them and create the website.')
         options.add_argument('--dry-run', action='store_true', help='Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.')
+
+        self.parser.add_argument('reframe_args', nargs=REMAINDER, help='Arguments for ReFrame')
 
 
     def convertPathsToAbsolute(self):
