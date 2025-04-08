@@ -19,15 +19,14 @@ class MockMachineConfig:
 
 class MockParser:
     class MockArgs:
-        def __init__(self,dry_run,verbose,list):
+        def __init__(self,dry_run,verbose):
             self.dry_run = dry_run
             self.verbose = verbose
             self.custom_rfm_config = None
-            self.list = list
             self.reframe_args = ""
 
-    def __init__(self,dry_run= False,verbose=1, list=False):
-        self.args = self.MockArgs(dry_run= dry_run,verbose=verbose, list=list)
+    def __init__(self,dry_run= False,verbose=1):
+        self.args = self.MockArgs(dry_run= dry_run,verbose=verbose)
 
 
 
@@ -134,7 +133,6 @@ class TestCommandBuilder:
             f"-J time={timeout} "
             f"--perflogdir={os.path.join(machine_config.reframe_base_dir,'logs')} "
         )
-        expected_command += "-" + "v"*parser.args.verbose if parser.args.verbose else ""
-        expected_command += " --dry-run --exec-policy serial" if parser.args.dry_run else " -r"
+        expected_command += "--dry-run --exec-policy serial" if parser.args.dry_run else "-r"
 
         assert expected_command == cmd_builder.buildCommand(timeout)
