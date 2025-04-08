@@ -263,7 +263,7 @@ The script accepts the following options :
                           If not provided, result files will be located under the directory specified by the machine configuration.
     `--list-files`, (`-lf`)     List all benchmarking configuration file found. 
                           If this option is provided, the application will not run. Use it for validation.
-    `--verbose`, (`-v`)         Select Reframe's verbose level by specifying multiple v's. 
+    `--verbose`, (`-v`)         Select verbose level by specifying multiple v's. 
     `--help`, (`-h`)            Display help and quit program
     `--website`, (`-w`)         Render reports, compile them and create the website.
     `--dry-run`             Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.
