@@ -24,7 +24,7 @@ class MockParser:
             self.verbose = verbose
             self.custom_rfm_config = None
             self.list = list
-            self.reframe_args = None
+            self.reframe_args = ""
 
     def __init__(self,dry_run= False,verbose=1, list=False):
         self.args = self.MockArgs(dry_run= dry_run,verbose=verbose, list=list)

@@ -33,11 +33,8 @@ class CommandBuilder:
             Examples are --dry-run or -r
         """
         opts = []
-        if self.parser.args.dry_run or self.parser.args.list:
-            if self.parser.args.dry_run:
-                opts += ["--dry-run","--exec-policy serial"]
-            if self.parser.args.list:
-                opts += ["--list"]
+        if self.parser.args.dry_run:
+            opts += ["--dry-run","--exec-policy serial"]
         else:
             opts += ["-r"]
         return " ".join(opts)
@@ -67,5 +64,6 @@ class CommandBuilder:
             f'{self.buildExecutionMode()}'
         ]
         cmd = ' '.join(cmd)
-        cmd += ' ' + self.parser.args.reframe_args
+        if self.parser.args.reframe_args:
+            cmd += ' ' + self.parser.args.reframe_args
         return cmd
