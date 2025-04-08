@@ -105,7 +105,7 @@ jobs:
         GITHUB_OAUTH: ${{ secrets.CR_PAT_WORKFLOW }}
 
     - name: Install NPM dependencies
-      run: npm ci
+      run: npm ci --verbose
 
     - name: Download
       uses: actions/download-artifact@v4
