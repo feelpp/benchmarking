@@ -118,7 +118,7 @@ jobs:
                     -mc machine_config.json \
                     -bc ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }} \
                     -pc ${{ github.event.inputs.plots_config || github.event.client_payload.plots_config}} \
-                    -v
+                    -rfm="-v"
             env:
                 GIRDER_API_KEY: ${{ secrets.GIRDER }}
 
