@@ -86,7 +86,7 @@ class Parser():
         options.add_argument('--website', '-w', action='store_true', help='Render reports, compile them and create the website.')
         options.add_argument('--dry-run', action='store_true', help='Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.')
 
-        options.add_argument('--reframe-args', '-rfm', type=str, default="", help='Arguments for ReFrame')
+        self.parser.add_argument('--reframe-args', '-rfm', type=str, nargs="?", default="", help='Arguments for ReFrame')
 
 
     def convertPathsToAbsolute(self):
