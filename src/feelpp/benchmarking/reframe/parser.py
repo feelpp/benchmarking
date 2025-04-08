@@ -81,7 +81,7 @@ class Parser():
         options.add_argument('--exclude', '-e', type=str, nargs='+', action='extend', default=[], metavar='EXCLUDE', help='To use in combination with --dir, mentioned files will not be launched. \nOnly provide basenames to exclude.')
         options.add_argument('--move-results', "-mv", type=str, help='Directory to move the resulting files to. \nIf not provided, result files will be located under the directory specified by the machine configuration.', required=False, default=None)
         options.add_argument('--list-files', '-lf', action='store_true', help='List all benchmarking configuration file found. \nIf this option is provided, the application will not run. Use it for validation.')
-        options.add_argument('--verbose', '-v', action='count', default=0, help='Select Reframe\'s verbose level by specifying multiple v\'s. ')
+        options.add_argument('--verbose', '-v', action='count', default=0, help='Select verbose level by specifying multiple v\'s. ')
         options.add_argument('--help', '-h', action='help', help='Display help and quit program')
         options.add_argument('--website', '-w', action='store_true', help='Render reports, compile them and create the website.')
         options.add_argument('--dry-run', action='store_true', help='Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.')
