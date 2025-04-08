@@ -66,10 +66,6 @@ class CommandBuilder:
             f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             f'{self.buildExecutionMode()}'
         ]
-        if self.parser.args.reframe_args:
-            if self.parser.args.reframe_args[0] == "--":
-                cmd += self.parser.args.reframe_args[1:]
-            else:
-                cmd += self.parser.args.reframe_args
-        print(' '.join(cmd))
-        return ' '.join(cmd)
+        cmd = ' '.join(cmd)
+        cmd += ' ' + self.parser.args.reframe_args
+        return cmd
