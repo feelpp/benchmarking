@@ -33,11 +33,8 @@ class CommandBuilder:
             Examples are --dry-run or -r
         """
         opts = []
-        if self.parser.args.dry_run or self.parser.args.list:
-            if self.parser.args.dry_run:
-                opts += ["--dry-run","--exec-policy serial"]
-            if self.parser.args.list:
-                opts += ["--list"]
+        if self.parser.args.dry_run:
+            opts += ["--dry-run","--exec-policy serial"]
         else:
             opts += ["-r"]
         return " ".join(opts)
@@ -63,7 +60,9 @@ class CommandBuilder:
             f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
             f"{self.buildJobOptions(timeout)}",
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
-            f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             f'{self.buildExecutionMode()}'
         ]
-        return ' '.join(cmd)
+        cmd = ' '.join(cmd)
+        if self.parser.args.reframe_args:
+            cmd += ' ' + self.parser.args.reframe_args
+        return cmd

@@ -26,4 +26,4 @@ feelpp-benchmarking-exec \
     -mc $MACHINE_CONFIG \
     -bc $BENCHMARK_CONFIG \
     -pc $PLOTS_CONFIG \
-    -v
+    -rfm="-v"
