@@ -9,7 +9,7 @@ Before you start this hands-on exercise, you need to follow the steps below to s
 YOu must have set up _feelpp.benchmarking_ beforehand. If not, please follow the prerequisites section of this link:https://bench.feelpp.org/benchmarking/training/reframe/handsOn/exercise2.html[exercise]
 ====
 
-1. Load the required modules:
+- Load the required modules:
 
 [source,bash]
 ----
@@ -17,7 +17,7 @@ module load Python/3.12.3-GCCcore-13.3.0
 module load nodejs/20.13.1-GCCcore-13.3.0
 ----
 
-2. Source the existing Python virtual environment:
+- Source the existing Python virtual environment:
 
 Make sure you are located in the directory where you have set up _feelpp.benchmarking_.
 
@@ -493,7 +493,7 @@ heat.measures/values.csv::
 .Exercise: Specifying performance files
 [.exer#exer:12]
 ****
-Supposing that previous performance and output files will be located under `{{output_directory}}/{{instance}}/{{use_case_name}}`, construct the *scalability* field by providing the filepaths, the "tsv" format and "csv" for outputs, and a prefix for variables on each stage.
+Supposing that previous performance and output files will be located under `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}`, construct the *scalability* field by providing the filepaths, the "tsv" format and "csv" for outputs, and a prefix for variables on each stage.
 Also, set the corresponding units for the following columns: 
 
 - ksp-niter : iter
@@ -576,9 +576,9 @@ Use the *custom_variables* to export this total time in the ReFrame report.
 
 === Additional files
 
-The Heat toolbox builds some Asciidoc files containing the description of the current test. We can include this in the report. These files can be found in `{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc`.
+The Heat toolbox builds some Asciidoc files containing the description of the current test. We can include this in the report. These files can be found in `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}/heat.information.adoc`.
 
-Also, we can include some logfiles that are located under `{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.INFO` and `{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.WARNING`.
+Also, we can include some logfiles that are located under `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}/logs/{\{executable\}}.INFO` and `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}/logs/{\{executable\}}.WARNING`.
 
 .Exercise: Additional files
 [.exer#exer:14]

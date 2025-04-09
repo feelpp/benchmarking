@@ -7,7 +7,7 @@ pip3 install --upgrade pip
 pip3 install -r requirements.txt
 pip3 wheel --no-deps --wheel-dir dist .
 pip3 install dist/*.whl
-npm i
+npm ci
 source ./girder_deploy_config.sh
 if [[ $HEAD == *"new-benchmark"* ]]; then
     echo "Downloading Staging benchmarks"
