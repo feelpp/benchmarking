@@ -765,7 +765,7 @@ Before launching the benchmarks, we want to ensure that everything is set up cor
 By running this command, we should see a total of 12 tests.
 [source,bash]
 ----
-feelpp-benchmarking-exec -mc examples/ThermalBridges/karolina.json  -bc examples/ThermalBridges/thermal_bridges.json -v --dry-run --list
+feelpp-benchmarking-exec -mc examples/ThermalBridges/karolina.json  -bc examples/ThermalBridges/thermal_bridges.json --dry-run -rfm="-l -v"
 ----
 
 We can run it without the `--list` flag to generate SLURM scripts.
