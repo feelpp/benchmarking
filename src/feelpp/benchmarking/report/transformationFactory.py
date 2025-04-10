@@ -158,12 +158,14 @@ class TransformationStrategyFactory:
         }
         aggregations = plot_config.aggregations
 
+        variables = plot_config.names or plot_config.variables
+
         if plot_config.transformation == "performance":
-            return PerformanceStrategy(dimensions,aggregations,plot_config.variables)
+            return PerformanceStrategy(dimensions,aggregations,variables)
         elif plot_config.transformation == "speedup":
-            return SpeedupStrategy(dimensions,aggregations,plot_config.variables)
+            return SpeedupStrategy(dimensions,aggregations,variables)
         elif plot_config.transformation == "relative_performance":
-            return RelativePerformanceStrategy(dimensions,aggregations,plot_config.variables)
+            return RelativePerformanceStrategy(dimensions,aggregations,variables)
         else:
             raise NotImplementedError
 

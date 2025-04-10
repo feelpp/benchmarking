@@ -28,8 +28,8 @@ class Figure:
             list[dict[str,str]]: A list of dictionaries containing the csv strings and their corresponding titles.
             Schema: [{"title":str, "data":str}]
         """
-        df = self.transformation_strategy.calculate(df)
         df = self.renameColumns(df)
+        df = self.transformation_strategy.calculate(df)
         if isinstance(df.index,MultiIndex):
             return [{"title":key, "data":df.xs(key, level=0).to_csv()} for key in df.index.levels[0]]
         else:
@@ -42,8 +42,8 @@ class Figure:
         Returns:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
-        df = self.transformation_strategy.calculate(df)
         df = self.renameColumns(df)
+        df = self.transformation_strategy.calculate(df)
         if isinstance(df.index,MultiIndex):
             figure = self.createMultiindexFigure(df, **args)
         else:
@@ -54,7 +54,9 @@ class Figure:
     def renameColumns(self,df):
         if self.config.variables and self.config.names:
             assert len(self.config.variables) == len(self.config.names)
-            df = df.rename(columns = {var:name for var,name in zip(self.config.variables,self.config.names)})
+
+            df["performance_variable"] = df["performance_variable"].replace(self.config.variables, self.config.names)
+
 
         return df
 
