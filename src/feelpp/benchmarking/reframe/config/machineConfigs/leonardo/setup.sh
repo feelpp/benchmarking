@@ -5,7 +5,7 @@ saldo --dcgp -b
 echo "================================================"
 
 
-# !!!!LOAD PYTHON MODULE
+module load python/3.11.6--gcc--8.5.0
 
 python3 -m venv .venv
 source .venc/bin/activate
