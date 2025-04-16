@@ -1,8 +1,7 @@
 import pytest
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import Metadata
-from feelpp.benchmarking.dashboardRenderer.repository import NodeComponentRepository, LeafComponentRepository
-from feelpp.benchmarking.dashboardRenderer.component import NodeComponent
-from feelpp.benchmarking.dashboardRenderer.utils import TreeUtils
+from feelpp.benchmarking.dashboardRenderer.repository.node import NodeComponentRepository
+from feelpp.benchmarking.dashboardRenderer.repository.leaf import LeafComponentRepository
+from feelpp.benchmarking.dashboardRenderer.component.node import NodeComponent
 
 class TestNodeComponentRepository:
 
@@ -12,16 +11,16 @@ class TestNodeComponentRepository:
 
     def test_uniqueness(self):
         components_config = {
-            "a": Metadata(display_name = "A"),
-            "b": Metadata(display_name = "B"),
-            "c": Metadata(display_name = "C"),
-            "a": Metadata(display_name = "A"),
+            "a": None,
+            "b": None,
+            "c": None,
+            "a": None
         }
-        component_repository = NodeComponentRepository("test",components_config, Metadata(display_name="Test"))
+        component_repository = NodeComponentRepository("test",components_config)
         self.checkForDuplicates(component_repository)
         assert len([c for c in component_repository if c.id == "a"]) == 1
 
-        component_repository.add(NodeComponent(id = "b",metadata=Metadata(display_name="Other"),parent_repository_id="test"))
+        component_repository.add(NodeComponent(id = "b"))
         self.checkForDuplicates(component_repository)
         assert len([c for c in component_repository if c.id == "b"]) == 1
 
@@ -30,16 +29,16 @@ class TestNodeComponentRepository:
         """Test the initViews method with different view order permutations."""
 
         # --- Create Components in each repository ---
-        components_config_1 = {"A1": Metadata(display_name="A1"), "A2": Metadata(display_name="A2")}
-        components_config_2 = {"B1": Metadata(display_name="B1"), "B2": Metadata(display_name="B2")}
-        components_config_3 = {"C1": Metadata(display_name="C1"), "C2": Metadata(display_name="C2")}
-        components_config_4 = {"D1": Metadata(display_name="D1"), "D2": Metadata(display_name="D2")}
+        components_config_1 = {"A1": None, "A2": None}
+        components_config_2 = {"B1": None, "B2": None}
+        components_config_3 = {"C1": None, "C2": None}
+        components_config_4 = {"D1": None, "D2": None}
 
         # --- Create Repositories ---
-        repo1 = NodeComponentRepository("Repo1", components_config_1,Metadata(display_name="Repo 1"))
-        repo2 = NodeComponentRepository("Repo2", components_config_2,Metadata(display_name="Repo 2"))
-        repo3 = NodeComponentRepository("Repo3", components_config_3,Metadata(display_name="Repo 3"))
-        repo4 = NodeComponentRepository("Repo4", components_config_4, Metadata(display_name="Repo 4"))
+        repo1 = NodeComponentRepository("Repo1", components_config_1)
+        repo2 = NodeComponentRepository("Repo2", components_config_2)
+        repo3 = NodeComponentRepository("Repo3", components_config_3)
+        repo4 = NodeComponentRepository("Repo4", components_config_4)
 
         # Get the actual components from repositories
         component_A1 = repo1.get("A1")
@@ -80,7 +79,7 @@ class TestNodeComponentRepository:
         }
 
         # --- Run initViews on repo1 ---
-        leaves =  LeafComponentRepository("leaves",tree,repositories)
+        leaves =  LeafComponentRepository("leaves",tree)
         repo1.initViews(view_order, tree, repositories, leaves)
 
         # Ensure view key exists in components

@@ -19,15 +19,17 @@ class TreeUtils:
 
         def traverse(subtree, path):
             if isinstance(subtree, dict) and subtree:
-                for key, child in subtree.items():
-                    traverse(child, path + [key])
+                if all(isinstance(v, dict) for v in subtree.values()) or all(not isinstance(v, dict) for v in subtree.values()):
+                    for key, child in subtree.items():
+                        traverse(child, path + [key])
+                else:
+                    branches.append((path+["leaf"], subtree))
             else:
                 branches.append((path, subtree))
 
         traverse(tree, [])
 
         N = len(permutation)
-
         for path, leaf in branches:
             if len(path) != N:
                 raise ValueError(f"Branch {path} has {len(path)} levels but expected {N}.")

@@ -1,55 +1,75 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 from typing import List, Dict, Optional, Union
 
 
-class LeafTemplateData(BaseModel):
+class TemplateDataFile(BaseModel):
     prefix: Optional[str] = ""
     format: str = None
     action: Optional[str] = "input"
+    filepath: str
 
-class LeafTemplateDataFile(LeafTemplateData):
-    filename: str
+    @model_validator(mode="after")
+    def checkFormat(self):
+        if self.format is None:
+            self.format = self.filepath.split(".")[-1]
+        return self
 
-    @field_validator("format")
+class TemplateInfo(BaseModel):
+    template:str = None
+    data: Union[
+        List[Union[TemplateDataFile,Dict[str,str]]],
+        Union[TemplateDataFile,Dict[str,str]],
+    ]
+
+    @field_validator("data", mode="before")
     @classmethod
-    def checkFormat(cls,v):
-        if v is None:
-            raise ValueError("Format should be specified for template data files")
-        return v
+    def coerceData(cls, v):
+        # Normalize to list
+        if not isinstance(v, list):
+            v = [v]
+        # Try converting items with 'filepath' into TemplateDataFile
+        result = []
+        for item in v:
+            if isinstance(item, dict) and "filepath" in item:
+                result.append(TemplateDataFile(**item))
+            else:
+                result.append(item)
+        return result
 
-class LeafTemplateDataRaw(LeafTemplateData):
-    data : Dict[str,str]
-
-    @field_validator("format")
-    @classmethod
-    def checkFormat(cls,v):
-        if v is not None:
-            raise ValueError("Format should be None for raw template data")
-        return v
-
-class Template(BaseModel):
-    filepath:str
-    data: Optional[List[Union[LeafTemplateDataFile,LeafTemplateDataRaw]]] = []
 
 class LeafMetadata(BaseModel):
     path: Optional[str] = None
     platform: Optional[str] = "local"
-    templates:Optional[List[Template]] = []
+    template_info:Optional[Union[Dict[str,str],TemplateInfo]] = TemplateInfo(data = {})
+
 
 class ComponentMap(BaseModel):
     component_order: List[str]
     mapping: Dict[str,Dict]
 
-class Metadata(BaseModel):
-    display_name: str
-    description: Optional[str] = ""
-
-class General(BaseModel):
-    templates_directory: Optional[str] = None
 
 class DashboardSchema(BaseModel):
-    general : Optional[General] = None
     component_map: ComponentMap
-    components: Dict[str,Dict[str, Metadata]]
+    components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
     views : Dict[str,Dict]
-    repositories : Dict[str,Metadata]
+    repositories : Dict[str,Union[dict[str,str],TemplateInfo]]
+
+    @staticmethod
+    def castTemplateInfo(v):
+        for node, template_info in v.items():
+            if not isinstance(template_info,TemplateInfo):
+                v[node] = TemplateInfo(data=template_info)
+        return v
+
+    @field_validator("repositories",mode="after")
+    @classmethod
+    def castRepoTemplateInfo(cls,v):
+        return cls.castTemplateInfo(v)
+
+    @field_validator("components",mode="after")
+    @classmethod
+    def castNodeTemplateInfo(cls,v):
+        for repo, nodes in v.items():
+            v[repo] = cls.castTemplateInfo(nodes)
+        return v
+
