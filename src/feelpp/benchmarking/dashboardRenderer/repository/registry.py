@@ -45,6 +45,8 @@ class RepositoryRegistry:
         if self.leaf_repository and self.leaf_repository.has(id):
             return self.leaf_repository.get(id)
 
+        raise ValueError(f"Component {id} not found")
+
     def getRepositoryByComponentId(self, id:str) -> Repository:
         """ Get the repository containing a component by its ID.
         Args:
@@ -70,6 +72,8 @@ class RepositoryRegistry:
                 return repo
         if self.leaf_repository and self.leaf_repository.id == id:
             return self.leaf_repository
+
+        raise ValueError(f"Repository {id} not found")
 
     def __repr__(self) -> str:
         s = ""

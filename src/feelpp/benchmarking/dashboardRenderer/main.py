@@ -5,6 +5,6 @@ dashboard = Dashboard(
     {"title":"My Dashboard"}
 )
 
-dashboard.builder.repositories.printViews()
+dashboard.printViews()
 
 dashboard.render("docs/modules/ROOT")

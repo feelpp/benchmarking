@@ -19,3 +19,17 @@ class Dashboard:
 
     def render(self,base_path):
         self.builder.render(base_path)
+
+    def printViews(self,repository=None,component=None):
+        item = self.builder.repositories
+        if repository and component:
+            print(repository)
+            print("\t",component)
+            item = item.getRepository(repository).get(component)
+        elif repository:
+            print(repository)
+            item = item.getRepository(repository)
+        elif component:
+            print(component)
+            item = item.getComponent(component)
+        item.printViews()
