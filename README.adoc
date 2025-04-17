@@ -4,7 +4,12 @@
 
 = The {project} Project
 
-image:https://github.com/feelpp/benchmarking/workflows/CI/badge.svg[CI]
+[cols="3", options="noborder,autowidth"]
+|===
+| image:https://zenodo.org/badge/DOI/10.5281/zenodo.15013241.svg[DOI,link=https://doi.org/10.5281/zenodo.15013241] 
+| image:https://img.shields.io/github/v/release/feelpp/benchmarking.svg[GitHub Release,link=https://github.com/feelpp/benchmarking/releases/latest]
+| image:https://img.shields.io/github/actions/workflow/status/feelpp/benchmarking/ci.yml[GitHub Actions Workflow Status,link=https://github.com/feelpp/benchmarking/actions]
+|===
 
 The `feelpp.benchmarking` framework is designed to automate and facilitate the benchmarking process for any application. It enables hightly customized and flexible benchmarking, providing a pipeline that guides users from test execution to comprehensive report generation.
 The framework is built on top of link:https://reframe-hpc.readthedocs.io/en/stable/index.html[ReFrame-HPC] and leverages a modular configuration system based on three JSON files that define machine-specific options, benchmark parameters, and dashboard report figures.
@@ -284,7 +289,7 @@ The script accepts the following options :
                         If not provided, result files will be located under the directory specified by the machine configuration.
   `--list-files`, (`-lf`)     List all benchmarking configuration file found. 
                         If this option is provided, the application will not run. Use it for validation.
-  `--verbose`, (`-v`)         Select Reframe's verbose level by specifying multiple v's. 
+  `--verbose`, (`-v`)         Select verbose level by specifying multiple v's. 
   `--help`, (`-h`)            Display help and quit program
   `--website`, (`-w`)         Render reports, compile them and create the website.
   `--dry-run`             Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.

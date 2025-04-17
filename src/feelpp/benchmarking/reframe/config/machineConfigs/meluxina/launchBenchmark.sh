@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
-module load env/staging/2023.1
-module load Apptainer/1.2.4-GCCcore-12.3.0
+# module load env/staging/2023.1
+module load Apptainer/1.3.6-GCCcore-13.3.0
 
 export GIRDER_API_KEY=$GIRDER_API_KEY
 
@@ -20,9 +20,10 @@ while getopts "m:b:p:" opt; do
   esac
 done
 
+apptainer registry login --username ${GHCRIO_USER} --password ${GHCRIO_TOKEN} docker://ghcr.io
 
 feelpp-benchmarking-exec \
     -mc $MACHINE_CONFIG \
     -bc $BENCHMARK_CONFIG \
     -pc $PLOTS_CONFIG \
-    -v
+    -rfm="-v"
