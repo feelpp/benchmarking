@@ -49,6 +49,7 @@ class ComponentMap(BaseModel):
 
 
 class DashboardSchema(BaseModel):
+    dashboard_metadata:Optional[Union[dict[str,str],TemplateInfo]] = TemplateInfo(data={})
     component_map: ComponentMap
     components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
     views : Dict[str,Dict]
@@ -59,6 +60,14 @@ class DashboardSchema(BaseModel):
         for node, template_info in v.items():
             if not isinstance(template_info,TemplateInfo):
                 v[node] = TemplateInfo(data=template_info)
+        return v
+
+
+    @field_validator("dashboard_metadata",mode="after")
+    @classmethod
+    def castDashboardMeta(cls,v):
+        if not isinstance(v,TemplateInfo):
+            return TemplateInfo(data=v)
         return v
 
     @field_validator("repositories",mode="after")

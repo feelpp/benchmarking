@@ -16,8 +16,7 @@ class ReportArgParser():
     def addArgs(self):
         """ Add arguments to the parser """
         self.parser.add_argument("--config-file", "-c", type=str, help="Path to the JSON config file", default="./reports/website_config.json")
-        self.parser.add_argument("--remote-download-dir", "-do", type=str, help="Path to the output directory where remote reports will be downloaded", default="reports")
-        self.parser.add_argument("--modules-path", "-m", type=str, help="Path to the modules directory where reports will be rendered", default="./docs/modules/ROOT/pages")
+        self.parser.add_argument("--module-path", "-m", type=str, help="Path to the modules directory where reports will be rendered", default="./docs/modules/ROOT")
         self.parser.add_argument("--overview-config", "-oc", type=str, help="Path to the overview configuration file", default=None),
         self.parser.add_argument("--plot-configs", "-pc", type=str, nargs='+',default=[], action='extend', help="Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports")
         self.parser.add_argument("--patch-reports","-pr", type=str, nargs='+',default=[], action='extend', help="Id of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)")
@@ -45,7 +44,7 @@ class ReportArgParser():
 
     def checkDirectoriesExist(self):
         """ Check that directories passed as arguments exist in the filesystem"""
-        for filepath in [self.args.config_file, self.args.modules_path, self.args.antora_basepath]:
+        for filepath in [self.args.config_file, self.args.module_path, self.args.antora_basepath]:
             if not os.path.exists(filepath):
                 raise FileNotFoundError(f"File not found ({filepath})")
 
@@ -56,8 +55,7 @@ class ReportArgParser():
     def normalizePaths(self):
         """Normalize paths passed as arguments"""
         self.args.config_file = os.path.normpath(self.args.config_file)
-        self.args.remote_download_dir = os.path.normpath(self.args.remote_download_dir)
-        self.args.modules_path = os.path.normpath(self.args.modules_path)
+        self.args.module_path = os.path.normpath(self.args.module_path)
         if self.args.overview_config:
             self.args.overview_config = os.path.normpath(self.args.overview_config)
         self.args.plot_configs = [os.path.normpath(plot_config) for plot_config in self.args.plot_configs]

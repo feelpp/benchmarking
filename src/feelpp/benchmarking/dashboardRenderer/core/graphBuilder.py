@@ -37,8 +37,7 @@ class ComponentGraphBuilder:
         pages_dir = os.path.join(base_dir,"pages")
 
         if clean:
-            if (input(f"Directory {pages_dir} will be removed, are you sure? [y/n]")).lower() in ["yes", "y"]:
-                shutil.rmtree(pages_dir)
+            shutil.rmtree(pages_dir)
 
         self.view.render(pages_dir)
 

@@ -1,15 +1,21 @@
 from feelpp.benchmarking.dashboardRenderer.core.graphBuilder import ComponentGraphBuilder
 from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory
-from schemas.dashboardSchema import DashboardSchema, TemplateInfo
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema
 import json
+from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
+
 
 class Dashboard:
-    def __init__(self,components_config_filepath:str, template_data:dict = {}):
+    def __init__(self,components_config_filepath:str, plugins:dict = {}):
+        self.updatePlugins(plugins)
         components_config = self.loadConfig(components_config_filepath)
         self.builder = ComponentGraphBuilder(
             components_config,
-            ViewFactory.create("home",TemplateInfo(data=template_data))
+            ViewFactory.create("home",components_config.dashboard_metadata)
         )
+
+    def updatePlugins(self,plugins):
+        TemplateRenderer.plugins.update(plugins)
 
     def loadConfig(self,filepath):
         with open(filepath,"r") as f:
