@@ -30,4 +30,4 @@ class LeafComponent(Component):
             parent_ids = ",".join([ f"{perm[0].parent_repository.id}-{'-'.join([p.id for p in perm])}" for perm in perms ])
         ))
 
-        self.view.render(base_dir,self.id)
+        self.view.render(base_dir,f"{self.id}.adoc")
