@@ -5,6 +5,7 @@ from datetime import datetime
 
 class TemplateRenderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
+    plugins = {}
 
     def __init__(self, template_paths, template_filename, template_data:dict={}):
         """ Initialize the template for the renderer
@@ -18,6 +19,7 @@ class TemplateRenderer:
         self.template = self.env.get_template(template_filename)
         self.template_data = template_data
 
+
     def render(self, output_filepath, data={}):
         """ Render the JSON file to an AsciiDoc file using a Jinja2 template and the given data"""
 
@@ -29,11 +31,16 @@ class TemplateRenderer:
     def setGlobals(self):
         """ Set environment globals """
         self.env.globals.update(zip=zip)
+        self.env.globals.update(self.plugins)
 
     def setFilters(self):
         """ Set environment filters """
         self.env.filters["stripquotes"] = self.stripQuotes
         self.env.filters["inttouniquestr"] = self.intToUniqueStr
+
+    @classmethod
+    def addPlugin(cls,plugin_name,plugin):
+        cls.plugins[plugin_name] = plugin
 
     @staticmethod
     def stripQuotes(value):
