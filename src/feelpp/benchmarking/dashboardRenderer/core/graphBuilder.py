@@ -5,6 +5,7 @@ from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory, View
 from feelpp.benchmarking.dashboardRenderer.repository.leaf import LeafComponentRepository
 from feelpp.benchmarking.dashboardRenderer.repository.coordinator import RepositoryCoordinator
 import os
+import shutil
 
 class ComponentGraphBuilder:
     def __init__(self, components_config:DashboardSchema, view:View) -> None:
@@ -32,8 +33,12 @@ class ComponentGraphBuilder:
             LeafComponentRepository("leaves", self.components_config.component_map.mapping)
         )
 
-    def render(self,base_dir:str) -> None:
+    def render(self,base_dir:str, clean=False) -> None:
         pages_dir = os.path.join(base_dir,"pages")
+
+        if clean:
+            if (input(f"Directory {pages_dir} will be removed, are you sure? [y/n]")).lower() in ["yes", "y"]:
+                shutil.rmtree(pages_dir)
 
         self.view.render(pages_dir)
 

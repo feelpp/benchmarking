@@ -2,10 +2,13 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from pathlib import Path
 from datetime import datetime
+from feelpp.benchmarking.dashboardRenderer.plugins.figures.controller import Controller
 
 class TemplateRenderer:
     """ Base Class to render the JSON files to AsciiDoc files using Jinja2 templates"""
-    plugins = {}
+    plugins = {
+        "FiguresController":Controller
+    }
 
     def __init__(self, template_paths, template_filename, template_data:dict={}):
         """ Initialize the template for the renderer
@@ -30,13 +33,11 @@ class TemplateRenderer:
 
     def setGlobals(self):
         """ Set environment globals """
-        self.env.globals.update(zip=zip)
         self.env.globals.update(self.plugins)
 
     def setFilters(self):
         """ Set environment filters """
         self.env.filters["stripquotes"] = self.stripQuotes
-        self.env.filters["inttouniquestr"] = self.intToUniqueStr
 
     @classmethod
     def addPlugin(cls,plugin_name,plugin):
@@ -47,15 +48,6 @@ class TemplateRenderer:
         if isinstance(value,str):
             return value.strip('"')
         return value
-
-    @staticmethod
-    def intToUniqueStr(n):
-        s = []
-        while n:
-            n, r = divmod(n - 1, 26)
-            s.append(chr(65 + r))
-        return "".join(reversed(s))
-
 
 
 class BaseRendererFactory:

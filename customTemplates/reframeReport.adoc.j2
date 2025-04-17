@@ -26,15 +26,6 @@
 {% include "parameterTable.adoc.j2"%}
 {% endfor %}
 
-++++
-<style>
-{%include "css/figures.css" %}
-</style>
-
-{%include "figures.html.j2" %}
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script type="text/javascript">
-{%include "js/figureHelpers.js"%}
-</script>
-++++
+{% with figures_df = reframeRunsToDf(rfm.runs), plots = plots%}
+    {%include "figures.adoc.j2" %}
+{% endwith %}
