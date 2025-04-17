@@ -1,12 +1,12 @@
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.component.node import NodeComponent
-from feelpp.benchmarking.dashboardRenderer.views.node import NodeComponentRepositoryView, NodeComponentView
+from feelpp.benchmarking.dashboardRenderer.views.base import View, ViewFactory
 
 import os
 
 class NodeComponentRepository(Repository):
     """ Repository for Node Components. """
-    def __init__(self,id, components:dict[str,dict],view:NodeComponentRepositoryView) -> None:
+    def __init__(self,id, components:dict[str,dict],view:View) -> None:
         """
         Args:
             id (str): Unique identifier for the repository.
@@ -17,7 +17,7 @@ class NodeComponentRepository(Repository):
         self.view = view
 
         for component_id, node_template_info in components.items():
-            self.add(NodeComponent(component_id,self,NodeComponentView(component_id,node_template_info)))
+            self.add(NodeComponent(component_id,self,ViewFactory.create("node",node_template_info,component_id=component_id)))
 
     def printViews(self) -> None:
         """ Print the views of all components in the repository. """

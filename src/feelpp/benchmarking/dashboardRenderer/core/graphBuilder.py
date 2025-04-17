@@ -1,14 +1,13 @@
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema, ComponentMap
 from feelpp.benchmarking.dashboardRenderer.repository.registry import RepositoryRegistry
 from feelpp.benchmarking.dashboardRenderer.repository.node import NodeComponentRepository
-from feelpp.benchmarking.dashboardRenderer.views.node import NodeComponentRepositoryView
-from feelpp.benchmarking.dashboardRenderer.views.home import HomeView
+from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory, View
 from feelpp.benchmarking.dashboardRenderer.repository.leaf import LeafComponentRepository
 from feelpp.benchmarking.dashboardRenderer.repository.coordinator import RepositoryCoordinator
 import os
 
 class ComponentGraphBuilder:
-    def __init__(self, components_config:DashboardSchema, view:HomeView) -> None:
+    def __init__(self, components_config:DashboardSchema, view:View) -> None:
         self.components_config = components_config.model_copy()
         self.view = view
         self.repositories = RepositoryRegistry()
@@ -25,7 +24,7 @@ class ComponentGraphBuilder:
                 NodeComponentRepository(
                     repository_id,
                     self.components_config.components[repository_id],
-                    NodeComponentRepositoryView(repository_id,repository_template_info)
+                    ViewFactory.create("node",repository_template_info,component_id=repository_id)
                 )
             )
 

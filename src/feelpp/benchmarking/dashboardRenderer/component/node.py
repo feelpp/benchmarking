@@ -1,12 +1,12 @@
 from feelpp.benchmarking.dashboardRenderer.component.base import Component
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from typing import Self
-from feelpp.benchmarking.dashboardRenderer.views.node import NodeComponentView
+from feelpp.benchmarking.dashboardRenderer.views.base import View
 import os
 
 class NodeComponent(Component):
     """ Class representing a node component"""
-    def __init__(self, id:str, parent_repository:Repository, view:NodeComponentView) -> None:
+    def __init__(self, id:str, parent_repository:Repository, view:View) -> None:
         """
         Args:
             id (str): The ID of the node component.

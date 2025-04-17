@@ -1,7 +1,7 @@
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.component.leaf import LeafComponent
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import LeafMetadata
-from feelpp.benchmarking.dashboardRenderer.views.leaf import LeafComponentView
+from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory
 import os
 
 class LeafLoader:
@@ -48,11 +48,7 @@ class LocalLeafLoader(LeafLoader):
         for leaf_component_dir in os.listdir(self.location):
             repository.add(LeafComponent(
                 leaf_component_dir,repository,parent_ids,
-                LeafComponentView(
-                    leaf_component_dir,
-                    self.template_info,
-                    os.path.join(self.location,leaf_component_dir)
-                )
+                ViewFactory.create("leaf", self.template_info, os.path.join(self.location,leaf_component_dir), leaf_component_dir )
             ))
 
 

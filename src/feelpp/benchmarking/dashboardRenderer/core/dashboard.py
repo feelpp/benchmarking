@@ -1,5 +1,5 @@
 from feelpp.benchmarking.dashboardRenderer.core.graphBuilder import ComponentGraphBuilder
-from feelpp.benchmarking.dashboardRenderer.views.home import HomeView
+from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory
 from schemas.dashboardSchema import DashboardSchema, TemplateInfo
 import json
 
@@ -9,7 +9,7 @@ class Dashboard:
         components_config = self.loadConfig(components_config_filepath)
         self.builder = ComponentGraphBuilder(
             components_config,
-            HomeView(TemplateInfo(data=template_data))
+            ViewFactory.create("home",TemplateInfo(data=template_data))
         )
 
     def loadConfig(self,filepath):

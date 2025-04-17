@@ -1,12 +1,12 @@
 from feelpp.benchmarking.dashboardRenderer.component.base import Component
-from feelpp.benchmarking.dashboardRenderer.views.leaf import LeafComponentView
+from feelpp.benchmarking.dashboardRenderer.views.base import View
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 
 from itertools import permutations
 
 class LeafComponent(Component):
     """"Class that represents a leaf node in a tree structure."""
-    def __init__(self, item_name:str, parent_repository:Repository, parent_ids:list[str], view:LeafComponentView) -> None:
+    def __init__(self, item_name:str, parent_repository:Repository, parent_ids:list[str], view:View) -> None:
         """
         Args:
             id (str): The ID of the leaf component.
