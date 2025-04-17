@@ -2,7 +2,8 @@ from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.component.leaf import LeafComponent
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import LeafMetadata
 from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory
-import os
+from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
+import os, tempfile
 
 class LeafLoader:
     """ Abstract class for loading leaf components. """
@@ -51,6 +52,32 @@ class LocalLeafLoader(LeafLoader):
                 ViewFactory.create("leaf", self.template_info, os.path.join(self.location,leaf_component_dir), leaf_component_dir )
             ))
 
+class GirderLeafLoader(LeafLoader):
+    """ Loader for leaf components on Girder."""
+    def __init__(self,location,template_info) -> None:
+        """"
+        Args:
+            location (str): The local directory containing leaf components.
+        Raises:
+            FileNotFoundError: If the specified location does not exist.
+        """
+        super().__init__(location,template_info)
+
+
+    def load(self,repository:Repository, parent_ids:list[str]) -> None:
+        """
+        Download and load remote (Girder) leaf components into the repository.
+        Args:
+            repository (Repository): The repository to load components into.
+            parent_ids (list[str]): List of parent IDs for the components.
+        """
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            girder_handler = GirderHandler(tmpdir)
+            girder_handler.downloadFolder(self.location)
+            local_loader = LocalLeafLoader(tmpdir,self.template_info)
+            local_loader.load(repository,parent_ids)
+
 
 class LeafLoaderFactory:
     """ Factory class for creating leaf loaders. """
@@ -71,6 +98,8 @@ class LeafLoaderFactory:
 
         if leaf_config.platform == "local":
             return LocalLeafLoader(leaf_config.path,leaf_config.template_info)
+        elif leaf_config.platform == "girder":
+            return GirderLeafLoader(leaf_config.path,leaf_config.template_info)
         else:
             raise NotImplementedError("Remote locations not yet implemented")
 
