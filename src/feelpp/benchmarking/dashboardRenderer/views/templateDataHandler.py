@@ -4,24 +4,31 @@ import json, os
 from typing import Union
 
 class DataHandler:
-    def extractData(self, data: Union[TemplateDataFile, dict]) -> dict:
+    def extractData(self, data: Union[TemplateDataFile, dict], partials:dict = {}) -> dict:
         raise NotImplementedError("Pure virtual method")
 
 class TemplateDataFileHandler(DataHandler):
     def __init__(self,template_data_dir:str = None):
         self.template_data_dir = template_data_dir
 
-    def extractData(self, data: TemplateDataFile) -> dict:
+    def extractData(self, data: TemplateDataFile, partials:dict = {}) -> dict:
         filepath = os.path.join(self.template_data_dir,data.filepath) if self.template_data_dir else data.filepath
-        with open(filepath,"r") as f:
-            if data.format == "json":
-                template_data = json.load(f)
-        if data.prefix:
-            return {data.prefix: template_data}
-        return template_data
+        if data.action == "input":
+            with open(filepath,"r") as f:
+                if data.format == "json":
+                    template_data = json.load(f)
+            if data.prefix:
+                return {data.prefix: template_data}
+            return template_data
+        elif data.action == "copy":
+            if not os.path.exists(filepath):
+                raise FileNotFoundError(f"{filepath} does not exist")
+            partials[data.prefix] = filepath
+            return {}
+
 
 class DictDataHandler(DataHandler):
-    def extractData(self, data: dict) -> dict:
+    def extractData(self, data: dict, partials:dict = {}) -> dict:
         return data
 
 class TemplateDataHandlerFactory:

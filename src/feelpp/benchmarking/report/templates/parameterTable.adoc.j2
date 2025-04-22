@@ -33,10 +33,10 @@
 [.scrollable]
 --
 |===
-|hashcode | {{ ns.keys | join(' | ') }}
+|hashcode | {{ ns.keys | join(' | ') }} {% if descriptions %}| partials {% endif %}
 
 {% for testcase in run.testcases %}
-|{{testcase.hash}}{% for header in ns.keys %} | {{recursive_get_value(testcase.check_params, header.split('.'))}}{% endfor %}
+|{{testcase.hash}}{% for header in ns.keys %} | {{recursive_get_value(testcase.check_params, header.split('.'))}}{% endfor %} {% if descriptions %} | xref:{{descriptions}}/{{testcase.hash}}.adoc[Description] {% endif %}
 {% endfor %}
 
 |===

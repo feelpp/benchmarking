@@ -2,6 +2,7 @@ from feelpp.benchmarking.dashboardRenderer.component.base import Component
 from feelpp.benchmarking.dashboardRenderer.views.base import View
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateDataFile
+import os
 
 from itertools import permutations
 
@@ -30,8 +31,11 @@ class LeafComponent(Component):
         self.view.updateTemplateData(dict(
             parent_ids = ",".join([ f"{perm[0].parent_repository.id}-{'-'.join([p.id for p in perm])}" for perm in perms ])
         ))
+        leaf_dir = os.path.join(base_dir,self.id)
 
-        self.view.render(base_dir,f"{self.id}.adoc")
+        self.view.copyPartials(leaf_dir,os.path.join(base_dir,".."))
+
+        self.view.render(leaf_dir)
 
     def patchTemplateInfo(self,patch, prefix):
         self.view.updateTemplateData(TemplateDataFile(prefix=prefix,filepath=patch))

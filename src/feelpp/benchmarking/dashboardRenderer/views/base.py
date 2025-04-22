@@ -1,5 +1,5 @@
 from typing import Union
-import os
+import os, shutil
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateInfo,TemplateDataFile
 from feelpp.benchmarking.dashboardRenderer.renderer import BaseRendererFactory
 from feelpp.benchmarking.dashboardRenderer.views.templateDataHandler import TemplateDataHandlerFactory
@@ -15,6 +15,7 @@ class View:
         ) -> None:
         self.renderer = self.initRenderer(base_template_type,template_info.template)
         self.out_filename = out_filename
+        self.partials = {}
         self.updateTemplateData(base_template_data)
         if template_info.template:
             self.addExtraTemplate(template_info.template)
@@ -37,8 +38,15 @@ class View:
     def updateTemplateData(self,data:Union[TemplateDataFile,dict],template_data_dir:str = None):
         assert hasattr(self,"renderer") and self.renderer is not None
         handler = TemplateDataHandlerFactory.getHandler(type(data),template_data_dir)
-        template_data = handler.extractData(data)
+        template_data = handler.extractData(data,self.partials)
         self.renderer.template_data.update(template_data)
+
+    def copyPartials(self,base_dir:str,pages_dir:str) -> None:
+
+        for prefix, path in self.partials.items():
+            local_partial_path = os.path.join(base_dir,prefix)
+            shutil.copytree(path, local_partial_path)
+            self.updateTemplateData({prefix:os.path.relpath(local_partial_path,pages_dir)})
 
     def render(self,output_dirpath,filename = None):
         filename = filename or self.out_filename
@@ -73,7 +81,7 @@ class ViewFactory:
             ),
             leaf = dict(
                 base_template_data = dict( title = component_id ),
-                filename = None
+                filename = "leaf.adoc",
             )
         )
         if component_type not in template_type_map:
