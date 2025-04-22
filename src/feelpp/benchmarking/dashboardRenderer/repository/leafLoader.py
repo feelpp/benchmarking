@@ -74,6 +74,7 @@ class GirderLeafLoader(LeafLoader):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             girder_handler = GirderHandler(tmpdir)
+            print("SINGLETON ID ", id(girder_handler))
             girder_handler.downloadFolder(self.location)
             local_loader = LocalLeafLoader(tmpdir,self.template_info)
             local_loader.load(repository,parent_ids)

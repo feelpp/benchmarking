@@ -1,8 +1,8 @@
-from feelpp.benchmarking.dashboardRenderer.handlers.download import DownloadHandler
+from feelpp.benchmarking.dashboardRenderer.handlers.download import DownloadHandler, SingletonMeta
 import girder_client
 import os
 
-class GirderHandler(DownloadHandler):
+class GirderHandler(DownloadHandler, metaclass=SingletonMeta):
     def __init__(self, download_base_dir):
         """ Initialize the Girder handler """
         super().__init__(download_base_dir = download_base_dir)
