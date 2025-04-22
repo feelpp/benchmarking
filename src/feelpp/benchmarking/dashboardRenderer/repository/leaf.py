@@ -1,6 +1,6 @@
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import ComponentMap, LeafMetadata
-from feelpp.benchmarking.dashboardRenderer.repository.loadLoader import LeafLoaderFactory
+from feelpp.benchmarking.dashboardRenderer.repository.leafLoader import LeafLoaderFactory
 
 import os
 
