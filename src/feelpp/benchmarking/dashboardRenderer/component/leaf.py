@@ -33,6 +33,10 @@ class LeafComponent(Component):
         ))
         leaf_dir = os.path.join(base_dir,self.id)
 
+        self.view.updateTemplateData(dict(
+            self_relpath = os.path.relpath(leaf_dir,os.path.join(base_dir,"..")),
+        ))
+
         self.view.copyPartials(leaf_dir,os.path.join(base_dir,".."))
 
         self.view.render(leaf_dir)

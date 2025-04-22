@@ -28,12 +28,14 @@ class TemplateRenderer:
 
         new_data = self.template_data.copy()
         new_data.update(data)
+        new_data.update({"self_dirpath":os.path.dirname(output_filepath)})
         with open(output_filepath, 'w') as f:
             f.write(self.template.render(new_data))
 
     def setGlobals(self):
         """ Set environment globals """
         self.env.globals.update(self.plugins)
+        self.env.globals["renderTemplate"] = self.renderTemplate
 
     def setFilters(self):
         """ Set environment filters """
@@ -49,6 +51,13 @@ class TemplateRenderer:
             return value.strip('"')
         return value
 
+    def renderTemplate(self,template_path, data, destination):
+        template = self.env.get_template(template_path)
+        dest_dir = os.path.dirname(destination)
+        if not os.path.isdir(dest_dir):
+            os.makedirs(dest_dir)
+        with open(destination, 'w') as f:
+            f.write(template.render(data))
 
 class BaseRendererFactory:
     DEFAULT_MV = {
