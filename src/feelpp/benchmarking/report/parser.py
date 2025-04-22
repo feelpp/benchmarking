@@ -18,9 +18,10 @@ class ReportArgParser():
         self.parser.add_argument("--config-file", "-c", type=str, help="Path to the JSON config file", default="./reports/website_config.json")
         self.parser.add_argument("--module-path", "-m", type=str, help="Path to the modules directory where reports will be rendered", default="./docs/modules/ROOT")
         self.parser.add_argument("--overview-config", "-oc", type=str, help="Path to the overview configuration file", default=None),
+
         self.parser.add_argument("--plot-configs", "-pc", type=str, nargs='+',default=[], action='extend', help="Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports")
         self.parser.add_argument("--patch-reports","-pr", type=str, nargs='+',default=[], action='extend', help="Id of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)")
-        self.parser.add_argument("--save-patches","-sp", action='store_true', help="If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.")
+
         self.parser.add_argument("--antora-basepath", required=False, type=str, default=".", help="Path to the base directory where the antora environment is set (package.json and site.yml)")
         self.parser.add_argument("--website","-w", action='store_true', help="Compile documentation and start HTTP server with benchmark reports")
         self.parser.add_argument('--help', '-h', action='help', help='Display help and quit program')
@@ -34,11 +35,8 @@ class ReportArgParser():
                 splitted_patch = patch_report.split(":")
                 if len(splitted_patch) != 4:
                     raise ValueError(f"The ID syntaxt is incorrect ({patch_report})")
-                machine, app, use_case, date = splitted_patch
-                if "latest" in [machine,app,use_case]:
+                if "latest" in splitted_patch[:-1]:
                     raise ValueError("Latest not accepted for that component")
-                if machine == "all":
-                    raise ValueError("The machine component patch does not support the 'all' keyworkd")
 
             self.args.patch_reports = [patch_report.split(":") for patch_report in self.args.patch_reports]
 

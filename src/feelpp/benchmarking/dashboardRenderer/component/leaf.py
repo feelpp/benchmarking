@@ -1,6 +1,7 @@
 from feelpp.benchmarking.dashboardRenderer.component.base import Component
 from feelpp.benchmarking.dashboardRenderer.views.base import View
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateDataFile
 
 from itertools import permutations
 
@@ -31,3 +32,6 @@ class LeafComponent(Component):
         ))
 
         self.view.render(base_dir,f"{self.id}.adoc")
+
+    def patchTemplateInfo(self,patch, prefix):
+        self.view.updateTemplateData(TemplateDataFile(prefix=prefix,filepath=patch))
