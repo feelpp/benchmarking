@@ -36,7 +36,7 @@
 |hashcode | {{ ns.keys | join(' | ') }} | {% if descriptions %}|  {% endif %}
 
 {% for testcase in run.testcases %}
-{%set _ = renderTemplate("logs.adoc.j2",{"script":testcase.script,"error_log":testcase.check_vars.error_log,"output_log":testcase.check_vars.output_log,"custom_logs":testcase.check_vars.custom_logs}, self_dirpath+"/logs/"+testcase.hash+".adoc") %}
+{%set _ = renderTemplate("logs.adoc.j2",{"script":testcase.check_vars.script,"error_log":testcase.check_vars.error_log,"output_log":testcase.check_vars.output_log,"custom_logs":testcase.check_vars.custom_logs}, self_dirpath+"/logs/"+testcase.hash+".adoc") %}
 |{{testcase.hash}}{% for header in ns.keys %} | {{recursive_get_value(testcase.check_params, header.split('.'))}}{% endfor %} | xref:{{self_relpath}}/logs/{{testcase.hash}}.adoc[logs] {% if descriptions %} | xref:{{descriptions}}/{{testcase.hash}}.adoc[Description] {% endif %}
 {% endfor %}
 
