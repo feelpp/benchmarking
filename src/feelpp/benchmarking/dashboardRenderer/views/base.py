@@ -36,7 +36,7 @@ class View:
 
     def updateTemplateData(self,data:Union[TemplateDataFile,dict],template_data_dir:str = None):
         assert hasattr(self,"renderer") and self.renderer is not None
-        handler = TemplateDataHandlerFactory.getHandler(data,template_data_dir)
+        handler = TemplateDataHandlerFactory.getHandler(type(data),template_data_dir)
         template_data = handler.extractData(data)
         self.renderer.template_data.update(template_data)
 

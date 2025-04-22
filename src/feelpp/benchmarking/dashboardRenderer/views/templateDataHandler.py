@@ -26,10 +26,10 @@ class DictDataHandler(DataHandler):
 
 class TemplateDataHandlerFactory:
     @staticmethod
-    def getHandler(data: Union[TemplateDataFile, dict],template_data_dir:str = None) -> DataHandler:
-        if isinstance(data, TemplateDataFile):
+    def getHandler(data_type: type, template_data_dir:str = None) -> DataHandler:
+        if data_type is TemplateDataFile:
             return TemplateDataFileHandler(template_data_dir)
-        elif isinstance(data, dict):
+        elif data_type is dict:
             return DictDataHandler()
         else:
             raise NotImplementedError("Unsupported data type for template data.")
