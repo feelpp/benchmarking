@@ -1,0 +1,60 @@
+= Continuous benchmarking
+
+It is possible to configure a workflow for _feelpp.benchmarking_ to continuously benchmark an application.
+This will allow users to:
+
+- Centralize benchmark results in a dashboard
+- Connect the CB pipeline to an existing CI pipeline
+- Ensure non-regression and analyse the performance over time
+- Compare the performance of different versions of the application
+
+== Launching a benchmark
+
+Currently, the workflow is not directly available from _feelpp.benchmarking_. However, a template repository is coming soon to help users set up the workflow.
+
+In order to have this workflow running, self-hosted runners for your machines are required. And one "default" runner is needed to orchestrate launching the application on different machines.
+
+image::benchmark_workflow.jpg[Benchmark workflow]
+
+1. The workflow takes as input: the benchmark configurations paths, a list of machines to run, and optionally a Girder ID to updload the website to (more data management platorms will be supported in the future).
+
+2. In a default runner (can even be a GitHub hosted runner), machine specification files are read and filtered by the given machine name list input. This allows to launch the application on multiple machines. Then, a "Matrix" is created to later tell the workflow what runners to launch.
+
+3. Then, only desired machine configurations are uploaded as GitHub artifacts.
+
+4. On each HPC system, the machine configuration is downloaded.
+
+5. A Python environment is then set up, depending on the system. (e.g. loading necessary modules, creating the python virtual environment, downloading `feelpp-benchmarking`).
+
+6. _feelpp.benchmarking_ launches all parametrized tests using the `feelpp-benchmarking-exec` command.
+
+7. When benchmarks are done, results are uploaded as GitHub artifacts in order to communicate them with the default runner.
+
+8. The default runner then collects all results and uploads them to the data management platform.
+
+9. If a custom remote ID is provided to upload the dashboard to, the dashboard is uploaded to the data management platform. Otherwise, a pull request tagged with `new-benchmark` is created to preview the results. We do the preview with Netlify.
+
+[NOTE]
+====
+This workflow requires setting up the Girder data management platform so that it contains to following folders: `staging`, `production`, `denied`.
+====
+
+
+== Deploying the dashboard
+
+GitHub pages can be configured to have a persistent dashboard containing benchmarks. But we want to have only pertinent benchmarks on this publicly available dashboard. To do so, the following workflow is proposed.
+
+image::dashboard_workflow.jpg[Dashboard workflow]
+
+1. When a pull request tagged with `new-benchmark` is closed, the deploy.yml workflow is launched.
+
+2. If the pull request is closed, all benchmarks present on the `staging/` folder are moved to the `denied` folder (on the data management platform).
+
+3. If the pull request is merged, staging and production dashboard configuration files are downloaded.
+
+4. Both configuration files are merged, so that staging benchmarks are added to the production dashboard.
+
+5. The new dashboard configuration is uploaded, and staging benchmarks are moved to production.
+
+6. This will trigger the GitHub pages deployment, having all production benchmarks.
+

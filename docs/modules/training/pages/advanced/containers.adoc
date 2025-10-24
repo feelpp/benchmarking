@@ -1,0 +1,113 @@
+= Configuring containers in _feelpp.benchmarking_
+
+A good practice for guaranteeing reproducibility of an application is to containerize it. This way, the application can be run in the same environment across different systems. _feelpp.benchmarking_ supports the use of containers to run benchmarks.
+
+
+== Specifying container platforms in ReFrame system settings.
+
+The first step to supporting containers, is to modify ReFrame's system configuration.
+This can be simply done by adding the following lines to your system partition configuration:
+
+[source,json]
+----
+"container_platforms":[{ "type": "Apptainer" }]
+----
+
+Multiple container runtimes are supported:
+
+- Docker
+- Singularity
+- Apptainer
+- Sarus
+- Shifter
+
+NOTE: Custom modules and environment variables can be specified in this field.
+
+
+== Configuring containers in the Machine Specifications file
+
+The next step is to configure the container settings in the machine specifications file.
+
+_feelpp.benchmarking_'s machine specification interface is equiped with a container field that allows you to specify common directory paths, options and some settings for executing benchmarks in containers.
+
+
+
+.Container settings in the Machine Specification file
+[.examp#examp:10]
+****
+[source,json]
+----
+"containers":{
+    "apptainer":{
+        "image_base_dir":"/data/my_images/",
+        "options":[ "--bind /opt/:/opt/" ],
+        "cachedir": "/tmp/apptainer_cache",
+        "tmpdir": "/tmp/apptainer_tmp"
+    }
+}
+----
+****
+
+`containers` is a dictionary containing the container runtime name as the key and the settings as value. The settings include:
+
+- `image_base_dir`: The base directory where the container images are stored, or will be stored.
+- `options`: A list of options to pass to the container execution command.
+- `executable`: If the command used for pulling images is different from the default, it can be specified here.
+- `cachedir`: The directory where the container cache is stored.
+- `tmpdir`: The directory where container temporary files are stored.
+
+CAUTION: At the moment, only the `apptainer` container is supported. Support for other container runtimes will be added in future releases.
+
+== Configuring containers in the Benchmark Specification file
+
+Concerning the benchmark specification file, the container settings are specified in the `platform` field.
+
+This field will containg all possible platform configurations, including the built-in (local). However, it is the machine configuration file that will determine where tests will be executed, by specifying it in the `targets` field.
+
+
+
+
+.Platform settings in the Benchmark Specification file
+[.examp#examp:11]
+****
+[source,json]
+----
+"platforms": {
+    "apptainer":{
+        "image": {
+            "url":"oras://ghcr.io/feelpp/my_image:master-sif",
+            "filepath":"{{machine.containers.apptainer.image_base_dir}}/my_image.sif"
+        },
+        "input_dir":"/input_data",
+        "options": [
+            "--home {{machine.output_app_dir}}",
+            "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
+            "--env OMP_NUM_THREADS=1"
+        ],
+        "append_app_option":[]
+    },
+    "builtin":{
+        "input_dir":"{{machine.input_dataset_base_dir}}",
+        "append_app_option":[]
+    }
+}
+----
+
+This example will first pull the `oras://ghcr.io/feelpp/my_image:master-sif` image and store it in the `{{machine.containers.apptainer.image_base_dir}}/my_image.sif` directory. Then, ReFrame will launch tests as:
+
+[source,bash]
+----
+apptainer exec --home /path/to/output --bind /path/to/input_data/:/input_data --env OMP_NUM_THREADS=1 data/my_images/my_image.sif ...
+----
+
+****
+
+Let's break down the `platforms` field:
+
+- `apptainer`: The container runtime name. Must match the name specified in the machine configuration file.
+- `image`: The image field contains the path where the container image can, or will be, be found. If the URL is specified, the image will be pulled and stored in `filepath`.
+- `input_dir`: The directory where input data is stored in the container.
+- `options`: A list of options to pass to the container execution command.
+- `append_app_option`: A list of options to append to the application command. This allows customizing the application execution depending on the platform.
+
+NOTE: Image pulling will be done ONCE, and usually from a head node.

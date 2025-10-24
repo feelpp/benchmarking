@@ -15,7 +15,7 @@ class CommandBuilder:
         return Path(__file__).resolve().parent
 
     def buildConfigFilePath(self):
-        return f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.machine}.py'
+        return self.parser.args.custom_rfm_config or f'{self.getScriptRootDir() / "config/machineConfigs" / self.machine_config.machine }/reframe.py'
 
     def buildRegressionTestFilePath(self):
         return f'{self.getScriptRootDir() / "regression.py"}'
@@ -32,10 +32,12 @@ class CommandBuilder:
         """Write the ReFrame execution flag depending on the parser arguments.
             Examples are --dry-run or -r
         """
+        opts = []
         if self.parser.args.dry_run:
-            return "--dry-run --exec-policy serial"
+            opts += ["--dry-run","--exec-policy serial"]
         else:
-            return "-r"
+            opts += ["-r"]
+        return " ".join(opts)
 
     def buildJobOptions(self,timeout):
         #TODO: Generalize (only workf for slurm ?)
@@ -58,7 +60,9 @@ class CommandBuilder:
             f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
             f"{self.buildJobOptions(timeout)}",
             f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
-            f'{"-"+"v"*self.parser.args.verbose  if self.parser.args.verbose else ""}',
             f'{self.buildExecutionMode()}'
         ]
-        return ' '.join(cmd)
+        cmd = ' '.join(cmd)
+        if self.parser.args.reframe_args:
+            cmd += ' ' + self.parser.args.reframe_args
+        return cmd

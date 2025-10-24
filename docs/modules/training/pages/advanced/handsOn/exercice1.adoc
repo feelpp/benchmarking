@@ -1,0 +1,1212 @@
+= Benchmarking a Feel++ toolboxes on Karolina
+
+Before you start this hands-on exercise, you need to follow the steps below to set up your environment in Karolina.
+
+== Pre-requisites
+
+[IMPORTANT]
+====
+YOu must have set up _feelpp.benchmarking_ beforehand. If not, please follow the prerequisites section of this link:https://bench.feelpp.org/benchmarking/training/reframe/handsOn/exercise2.html[exercise]
+====
+
+- Load the required modules:
+
+[source,bash]
+----
+module load Python/3.12.3-GCCcore-13.3.0
+module load nodejs/20.13.1-GCCcore-13.3.0
+----
+
+- Source the existing Python virtual environment:
+
+Make sure you are located in the directory where you have set up _feelpp.benchmarking_.
+
+[source,bash]
+----
+source .venv/bin/activate
+----
+
+== The Feel++ Heat Transfer toolbox
+
+In this exercice, we will benchmark the *thermal bridges* use case using of the Feel++ Heat transfer toolbox on Karolina.
+
+===  What is Feel++ ?
+
+"Feel++ is an Open-Source C++ library which allows to solve a large range of partial differential equations using Galerkin methods, e.g. finite element method, spectral element method, discontinuous Galerkin methods or reduced basis methods."
+-- https://docs.feelpp.org/home/index.html[Feel++ Documentation]
+
+You can find more information on the Heat Transfer toolbox in this link:https://docs.feelpp.org/toolboxes/latest/heat/index.html[link]
+
+=== What is The Thermal Bridges benchmark
+
+The benchmark known as "thermal bridges" is an example of an application that
+enables us to validate numerical simulation tools using Feel++. We have developed tests based on the ISO 10211:2017 standard, which provides methodologies for evaluating thermal bridges in building construction.
+
+Thermal bridges are areas within a building envelope where heat flow is different compared to adjacent areas, often resulting in increased heat loss or unwanted condensation. The standard is intended to ensure that thermal bridges simulation are accurately computed.
+
+At the mathematical level, this application requires finding the numerical solution of an elliptic linear PDE (i.e. the heat equation). We employ a finite element method based on continuous Lagrange Finite Element of order 1,2 and 3 (denoted by P1,P2,P3). And we analyzed the execution time of the main components of the simulation.
+
+Below, is an image showing the geometry and materials of the input mesh used in this benchmark.
+
+image::thermalBridgesMaterials.png[Thermal Bridges Materials]
+
+The following image shows an example of the mesh partitioning, which is done beforehand.
+
+image::thermalBridgesPartitioning.png[Thermal Bridges Partitioning]
+
+== Modifying Karlina's specification file
+
+As this benchmark is a little bit different than what we did in the previous exercices. The machine specifications file needs to be adapted.
+
+
+.Exercise: Using Apptainer
+[.exer#exer:1]
+****
+
+Start with copying this template
+
+[source,json]
+----
+{
+"machine": "karolina",
+"targets":["<TODO>"],
+"execution_policy": "async",
+"reports_base_dir":"",
+"input_dataset_base_dir":"",
+"reframe_base_dir":"",
+"output_app_dir":"",
+"access":[
+    "--account=dd-24-88",
+    "--mem=200G",
+    "--reservation=dd-24-88_2025-03-26T14:30:00_2025-03-26T17:00:00_40_qcpu"
+],
+"containers":<TODO>
+}
+----
+
+For now, complete only the *targets* and *containers* field considering the follwing:
+
+- We will benchmark applications using Apptainer, on the qcpu partition and the default environment.
+- Container images should be placed under `/scratch/project/dd-24-88/benchmarking/inputdata/images/`
+
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"targets":["qcpu:apptainer:default"],
+"containers":{
+    "apptainer":{
+        "image_base_dir":"/scratch/project/dd-24-88/benchmarking/inputdata/images",
+        "options":[]
+    }
+}
+}
+----
+
+====
+
+
+
+.Exercise: I/O Base Directories
+[.exer#exer:2]
+****
+
+Modify the remaining fields with the directory paths considering the following:
+
+- All input files will be placed under `/scratch/project/dd-24-88/benchmarking/inputdata/`
+- As multiple participants will execute tests having the same IDs, every output directory should be user dependent.
+- We should use the scratch file system for the benchmarked application I/O.
+- There is a `participants` folder under `/scratch/project/dd-24-88/benchmarking/`, but user-dependent directories are not yet created.
+
+****
+
+TIP: You can use the `$USER` environment variable.
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"reports_base_dir":"$PWD/reports",
+"input_dataset_base_dir":"/scratch/project/dd-24-88/benchmarking/inputdata",
+"reframe_base_dir":"/scratch/project/dd-24-88/benchmarking/participants/$USER/reframe",
+"output_app_dir":"/scratch/project/dd-24-88/benchmarking/participants/$USER",
+}
+----
+
+In theory, the `output_app_dir` directory should exist before launching the applicaiton, but we can use a little trick to let _feelpp.benchmarking_ create this directory : we set `"reframe_base_dir":"/scratch/project/dd-24-88/benchmarking/participants/$USER/reframe"` so that ReFrame creates the directory before running the tests.
+====
+
+
+NOTE: You can see that under access, we have specified `--mem=200G`. This is actually just a bug workaround concerning SLURM configuration on Karolina.
+
+== Application setup
+
+We will benchmark this use case using a SIF image. The image is already located in Karolina, under `/scratch/project/dd-24-88/benchmarking/inputdata/images/feelpp-noble.sif`.
+
+And the Feel++ toolbox can be executed inside the container using `feelpp_toolbox_heat`.
+
+Start by creating a benchmark specification file, we will add fields to it on each exercice.
+
+
+.Exercise: Basic setup
+[.exer#exer:3]
+****
+Set the *executable*, *use_case_name*, and *timeout* fields, considering that each test case should not take more than 10 minutes.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"executable": "feelpp_toolbox_heat",
+"use_case_name": "ThermalBridges",
+"timeout":"0-00:10:00",
+}
+----
+====
+
+
+.Exercise: The platforms field
+[.exer#exer:4]
+****
+Create a *platforms* field specifying container related information needed by _feelpp.benchmarking_.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"platforms": {
+    "apptainer":{
+        "image": {
+            "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
+        },
+        "input_dir":"/input_data",
+        "options": [
+            "--home {{machine.output_app_dir}}",
+            "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
+            "--env OMP_NUM_THREADS=1"
+        ],
+        "append_app_option":[]
+    }
+}
+}
+----
+====
+
+.Exercise: The builtin platforms
+[.exer#exer:5]
+****
+Suppose that this application is also installed on the system. How would you set up the benchmark specifications so that we can benchmark both the container and the built-in cases ?
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+Add a builtin field to the platforms field. Now other fields can access input data directory based on the machine defined platform, using `{{platforms.{{machine.platform}}.input_dir}}`
+
+[source,json]
+----
+"builtin":{
+    "input_dir":"{{machine.input_dataset_base_dir}}",
+    "append_app_option":[]
+}
+----
+====
+
+
+== Input data
+
+The shared folder `/scratch/project/dd-24-88/benchmarking/inputdata/ThermalBridges/` contains all necessary input dependencies for the application.
+It is structured as follows:
+
+* `ThermalBridges/`
+** `M1/` : mesh level 1
+** `M2/`: mesh level 2
+** `gamg.cfg` : configuration file for the Generalized Geometric-Algebraic MultiGrid solver
+
+Each mesh folder contains a collection of partitionned meshes that use a Feel++ in-house format (JSON+HDF5).
+The partitionned files are named `case3_p*.h5` and `case3_p*.json`, where * is the number of partitions.
+
+NOTE: Running the test cases for the FEM order P3 and the mesh level 3 can take some time, so we will not use them in this session.
+
+The following table shows the statistics on meshes and number of degrees of freedom with respect to the finite element approximation.
+
+image::mesh_stats.png[Mesh statistics]
+
+
+=== Resources
+
+.Exercise: Resources
+[.exer#exer:6]
+****
+Create a *parameter* and add a *resources* field in order to execute tests using 32, 64 and 128 tasks.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"resources":{
+    "tasks":"{{parameters.tasks.value}}",
+},
+"parameters": [
+    {
+        "name":"tasks",
+        "sequence":[32,64,128]
+    }
+]
+}
+----
+====
+
+=== Parameters
+
+
+.Exercise: Parameters
+[.exer#exer:7]
+****
+We want to evaluate how the mesh detail and the FEM order impact the solutions, and the performance of the application. Add the necessary parameters to evaluate this, considering available input data, and considering that the order takes the values P1 and P2.
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"parameters": [
+    {
+        "name":"tasks",
+        "sequence":[32,64,128]
+    },
+    {
+        "name":"mesh",
+        "sequence":["M1","M2"]
+    },
+    {
+        "name":"discretization",
+        "sequence":["P1","P2"]
+    }
+]
+}
+----
+====
+
+=== Memory
+
+After some debugging, we have noticed that tests for the different mesh - discretization parameter combinations require different amounts of memory.
+
+
+.Exercise: Memory
+[.exer#exer:8]
+****
+Modify *parameters* and *resources* to ensure the following :
+
+- The case M1 - P1 needs 100GB of RAM
+- The case M2 - P1 needs 200GB of RAM
+- The cases P2 - M1 and P2 - M2 need 300GB of RAM.
+****
+
+NOTE: *qcpu* nodes have 256GB of available memory.
+
+.Memory Solution 1
+[%collapsible.proof]
+====
+We can directly specify the parameter combinations inside a parameter, as a sequence.
+[source,json]
+----
+{
+"resources":{
+    "tasks":"{{parameters.tasks.value}}",
+    "exclusive_access":true,
+    "memory":"{{parameters.geometry.memory.value}}"
+},
+"parameters": [
+    {
+        "name":"tasks",
+        "sequence":[32,64,128]
+    },
+    {
+        "name":"geometry",
+        "sequence":[
+            {"mesh":"M1", "discretization":"P1", "memory":100},
+            {"mesh":"M2", "discretization":"P1", "memory":200},
+            {"mesh":"M1", "discretization":"P2", "memory":300},
+            {"mesh":"M2", "discretization":"P2", "memory":300},
+        ]
+    }
+]
+}
+----
+====
+
+.Memory Solution 2
+[%collapsible.proof]
+====
+We can use parameter conditions, this way we do not need to specify all possible combinations.
+[source,json]
+----
+{
+"resources":{
+    "tasks":"{{parameters.tasks.value}}",
+    "exclusive_access":true,
+    "memory":"{{parameters.memory.value}}"
+},
+"parameters": [
+    {
+        "name":"tasks",
+        "sequence":[32,64,128]
+    },
+    {
+        "name":"mesh",
+        "sequence":["M1","M2"]
+    },
+    {
+        "name":"discretization",
+        "sequence":["P1","P2"]
+    },
+    {
+        "name":"memory",
+        "sequence":[100, 200, 300],
+        "conditions":{
+            "100": [ { "discretization": ["P1"], "mesh": ["M1"] } ],
+            "200": [ { "discretization": ["P1"], "mesh": ["M2"] } ],
+            "300": [ { "discretization": ["P2"] } ]
+        }
+    }
+]
+}
+----
+====
+
+=== Setting input paths
+
+Now that the parameters are set, and we understand how the input data is structured, we can proceed to specifying the input files for each test case.
+
+
+
+.Exercise: Input dependencies
+[.exer#exer:9]
+****
+Add an *input_file_dependencies* field to specify the *mesh_json* and *mesh_hdf5* dependencies of all tests, using the parameter values and fields from the machine specification.
+
+Remember that all files under *input_file_dependencies*, if relative, should be relative to *input_dataset_base_dir*.
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"input_file_dependencies":{
+    "solver_cfg":"ThermalBridges/gamg.cfg",
+    "mesh_json":"ThermalBridges/{{parameters.mesh.value}}/case3_p{{parameters.tasks.value}}.json",
+    "mesh_hdf5":"ThermalBridges/{{parameters.mesh.value}}/case3_p{{parameters.tasks.value}}.h5"
+}
+}
+----
+====
+
+.Exercise: Using custom fields
+[.exer#exer:10]
+****
+We have set the solver configuration file dependency. However, we might want to change this value in the future, but not parameterize it. So, you can create a custom field to set the solver name, and inject its value to the *input_file_dependencies* field.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"variables":{
+    "solver":"gamg"
+},
+"input_file_dependencies":{
+    "solver_cfg":"ThermalBridges/{{variables.solver}}.cfg",
+}
+}
+----
+====
+
+== Outputs
+
+For this session, we require all application outputs to be written on a user-dependent directory.
+
+.Exercise: Setting an output_directory field
+[.exer#exer:11]
+****
+Using machine specifications, define an *output_directory* that will be used to refactor all filepaths concerning output files.
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"output_directory": "{{machine.output_app_dir}}/ThermalBridges"
+}
+----
+====
+
+=== Application outputs
+
+The toolbox exports the following files, depending on the specified output directory passed as an argument.
+
+The files have a special format, that we will call "tsv". It is actually supported in _feelpp.benchmarking_. Use this format for scalability files.
+
+heat.scalibility.HeatConstructor.data::
+    Contains the following columns: "initMaterialProperties","initMesh","initFunctionSpaces", "initPostProcess","graph","matrixVector","algebraicOthers"
+
+heat.scalibility.HeatPostProcessing.data::
+    Contains only this column: "exportResults"
+
+heat.scalibility.HeatSolve.data::
+    Contains the columns: "algebraic-assembly","algebraic-solve", "ksp-niter"
+
+heat.measures/values.csv::
+    - Contains these columns for heat-flows "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma"
+    - And these columns for temperature: "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature", "Points_beta_max_field_temperature", "Points_beta_min_field_temperature"
+
+
+.Exercise: Specifying performance files
+[.exer#exer:12]
+****
+Supposing that previous performance and output files will be located under `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}`, construct the *scalability* field by providing the filepaths, the "tsv" format and "csv" for outputs, and a prefix for variables on each stage.
+Also, set the corresponding units for the following columns: 
+
+- ksp-niter : iter
+- Outputs: C
+- Execution times: s
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"scalability": {
+    "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+    "clean_directory":true,
+    "stages": [
+        {
+            "name": "Constructor",
+            "filepath": "heat.scalibility.HeatConstructor.data",
+            "format": "tsv"
+        },
+        {
+            "name": "PostProcessing",
+            "filepath": "heat.scalibility.HeatPostProcessing.data",
+            "format": "tsv"
+        },
+        {
+            "name": "Solve",
+            "filepath": "heat.scalibility.HeatSolve.data",
+            "format": "tsv",
+            "units":{
+                "*":"s",
+                "ksp-niter":"iter"
+            }
+        },
+        {
+            "name":"Outputs",
+            "filepath": "heat.measures/values.csv",
+            "format": "csv",
+            "units":{
+                "*":"W"
+            }
+        }
+    ]
+}
+}
+----
+====
+
+.Exercise: Custom variables
+[.exer#exer:13]
+****
+We want to analyse the total time taken by the whole application. However, this time is not exported in any file. This time can be composed as the sum of the columns "Constructor_init","Solve_solve", and "PostProcessing_exportResults".
+
+Use the *custom_variables* to export this total time in the ReFrame report.
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"scalability":{
+    "custom_variables": [
+        {
+            "name":"Total",
+            "columns":["Constructor_init","Solve_solve","PostProcessing_exportResults" ],
+            "op":"sum",
+            "unit":"s"
+        }
+    ]
+}
+}
+----
+====
+
+
+=== Additional files
+
+The Heat toolbox builds some Asciidoc files containing the description of the current test. We can include this in the report. These files can be found in `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}/heat.information.adoc`.
+
+Also, we can include some logfiles that are located under `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}/logs/{\{executable\}}.INFO` and `{\{output_directory\}}/{\{instance\}}/{\{use_case_name\}}/logs/{\{executable\}}.WARNING`.
+
+.Exercise: Additional files
+[.exer#exer:14]
+****
+Build the *additional_files* field, using the *parameterized_descriptions_filepath* and *custom_logs* fields, to include all these files in the report
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc",
+        "custom_logs":[
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.WARNING"
+        ]
+    }
+}
+----
+====
+
+== Options
+
+Now that necessary fields are set, we should set the application options depending on the parameter values.
+
+[source,json]
+----
+{
+"options": [
+    "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg","{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solver_cfg}}",
+    "--directory {{output_directory}}/{{instance}}",
+    "--repository.case {{use_case_name}}",
+    "--heat.scalability-save=1",
+    "--repository.append.np 0",
+    "--case.discretization {{parameters.discretization.value}}",
+    "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh_json}}\" }'"
+]
+}
+----
+
+== Summary
+
+.Complete benchmark specification
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "executable": "feelpp_toolbox_heat",
+    "use_case_name": "ThermalBridges",
+    "timeout":"0-00:10:00",
+    "output_directory": "{{machine.output_app_dir}}/ThermalBridges",
+    "resources":{
+        "tasks":"{{parameters.tasks.value}}",
+        "exclusive_access":true,
+        "memory":"{{parameters.memory.value}}"
+    },
+
+    "input_file_dependencies":{
+        "solver_cfg":"ThermalBridges/{{fixed.solver}}.cfg",
+        "mesh_json":"ThermalBridges/{{parameters.mesh.value}}/case3_p{{parameters.tasks.value}}.json",
+        "mesh_hdf5":"ThermalBridges/{{parameters.mesh.value}}/case3_p{{parameters.tasks.value}}.h5"
+    },
+
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
+            },
+            "input_dir":"/input_data",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
+                "--env OMP_NUM_THREADS=1"
+            ],
+            "append_app_option":[]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}",
+            "append_app_option":[]
+        }
+    },
+    "options": [
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg","{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solver_cfg}}",
+        "--directory {{output_directory}}/{{instance}}",
+        "--repository.case {{use_case_name}}",
+        "--heat.scalability-save=1",
+        "--repository.append.np 0",
+        "--case.discretization {{parameters.discretization.value}}",
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh_json}}\" }'"
+    ],
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc",
+        "custom_logs":[
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.WARNING"
+        ]
+    },
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "clean_directory":true,
+        "stages": [
+            {
+                "name": "Constructor",
+                "filepath": "heat.scalibility.HeatConstructor.data",
+                "format": "tsv"
+            },
+            {
+                "name": "PostProcessing",
+                "filepath": "heat.scalibility.HeatPostProcessing.data",
+                "format": "tsv"
+            },
+            {
+                "name": "Solve",
+                "filepath": "heat.scalibility.HeatSolve.data",
+                "format": "tsv",
+                "units":{
+                    "*":"s",
+                    "ksp-niter":"iter"
+                }
+            },
+            {
+                "name":"Outputs",
+                "filepath": "heat.measures/values.csv",
+                "format": "csv",
+                "units":{
+                    "*":"W"
+                }
+            }
+        ],
+        "custom_variables": [
+            {
+                "name":"Total",
+                "columns":["Constructor_init","Solve_solve","PostProcessing_exportResults" ],
+                "op":"sum",
+                "unit":"s"
+            }
+        ]
+    },
+    "sanity": { "success": [], "error": [] },
+
+    "fixed":{
+        "solver":"gamg"
+    },
+
+    "parameters": [
+        {
+            "name":"tasks",
+            "sequence":[32,64,128]
+        },
+        {
+            "name":"mesh",
+            "sequence":["M1","M2"]
+        },
+        {
+            "name":"discretization",
+            "sequence":["P1","P2"]
+        },
+        {
+            "name":"memory",
+            "sequence":[100, 200, 300],
+            "conditions":{
+                "100": [ { "discretization": ["P1"], "mesh": ["M1"] } ],
+                "200": [ { "discretization": ["P1"], "mesh": ["M2"] } ],
+                "300": [ { "discretization": ["P2"] } ]
+            }
+        }
+    ]
+}
+----
+====
+
+=== Verification
+
+Before launching the benchmarks, we want to ensure that everything is set up correctly. For this, we can use:
+
+- The `--list` flag to list all tests that will be executed.
+- The `--dry-run` flag to verify that input dependencies are found, and to take a quick look to the generated SLURM scripts.
+
+By running this command, we should see a total of 12 tests.
+[source,bash]
+----
+feelpp-benchmarking-exec -mc examples/ThermalBridges/karolina.json  -bc examples/ThermalBridges/thermal_bridges.json --dry-run -rfm="-l -v"
+----
+
+We can run it without the `--list` flag to generate SLURM scripts.
+
+
+== Plots
+
+=== Measure validation
+
+First, we are interested in seeing how computed measures (solutions) behave depending on the mesh refinement and the discretization used. What we expect to happen, is that the more refined the mesh is, and the bigger the FEM order parameter, the closer the solutions will be to the actual expected value.
+
+.Exercise: Heat Flux measures convergence analysis
+[.exer#exer:15]
+****
+Using the following template, create a figure description of a scatter plot, equipped with a slider, to be able to visualize the convergence of Heat Flows measures.
+
+TIP: All performance variables are stored in a column accessible by the plot config, called `performance_variable`.
+
+[source,json]
+----
+{
+"plots": [
+    {
+        "title": "",
+        "plot_types": [ "" ],
+        "transformation": "performance",
+        "variables": [ ],
+        "names": [ ],
+        "xaxis": { "parameter": "", "label": "" },
+        "yaxis": { "label": " " },
+        "color_axis":{ "parameter": "", "label":"" },
+        "secondary_axis":{ "parameter": "", "label": "" },
+        "aggregations":[ {"column":"","agg":""} ]
+    }
+]
+}
+----
+
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+"plots": [
+    {
+        "title": "Validation measures (Heat flux)",
+        "plot_types": [ "scatter" ],
+        "transformation": "performance",
+        "variables": [
+            "Outputs_Normal_Heat_Flux_alpha", "Outputs_Normal_Heat_Flux_beta", "Outputs_Normal_Heat_Flux_gamma"
+        ],
+        "names": [
+            "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma"
+        ],
+        "xaxis": {
+            "parameter": "mesh",
+            "label": "mesh levels"
+        },
+        "yaxis": {
+            "label": "Heat flow [W]"
+        },
+        "color_axis":{
+            "parameter": "discretization",
+            "label":"Discretization"
+        },
+        "secondary_axis":{
+            "parameter": "performance_variable",
+            "label": "Measures"
+        },
+        "aggregations":[ {"column":"tasks","agg":"max"} ]
+    }
+]
+}
+----
+====
+
+
+.Exercise: Temperature measures convergence analysis
+[.exer#exer:16]
+****
+Repeat the previous exercice to reproduce the same figure, but for temperature measures.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Validation measures (Temperatures)",
+    "plot_types": [ "scatter" ],
+    "transformation": "performance",
+    "variables": [
+        "Outputs_Points_alpha_max_field_temperature", "Outputs_Points_alpha_min_field_temperature",
+        "Outputs_Points_beta_max_field_temperature", "Outputs_Points_beta_min_field_temperature"
+    ],
+    "names": [
+        "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature",
+        "Points_beta_max_field_temperature", "Points_beta_min_field_temperature"
+    ],
+    "xaxis": {
+        "parameter": "mesh",
+        "label": "mesh levels"
+    },
+    "yaxis": {
+        "label": "Temperature [C°]"
+    },
+    "color_axis":{
+        "parameter": "discretization",
+        "label":"Discretization"
+    },
+    "secondary_axis":{
+        "parameter": "performance_variable",
+        "label": "Measures"
+    },
+    "aggregations":[ {"column":"tasks","agg":"max"} ]
+}
+----
+
+====
+
+
+=== Analyzing execution times
+
+Now, we want to compare the time taken by the different steps of the application, and see how they scale depending on the number of tasks they run on.
+
+
+
+
+.Exercise: Visualizing stages performance
+[.exer#exer:17]
+****
+Compare the execution time of the `Cosntructor_init`, `Solve_algebraic-assembly`, `Solve_algebraic-solve` and `PostProcessing_exportResults`, depending on the mesh size and the number of tasks. We want only to analyze the first discretization order.
+
+TIP: Use `stacked_bar` and `grouped_bar` plot_types.
+
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Performance (P1)",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "performance",
+    "variables": [
+        "Constructor_init",
+        "Solve_algebraic-assembly",
+        "Solve_algebraic-solve",
+        "PostProcessing_exportResults"
+    ],
+    "names": [
+        "Preprocessing",
+        "Algebraic assembly",
+        "Algebraic solve",
+        "Postprocess"
+    ],
+    "xaxis": {
+        "parameter": "tasks",
+        "label": "Number of tasks"
+    },
+    "secondary_axis": {
+        "parameter": "mesh",
+        "label": "Mesh level"
+    },
+    "yaxis": {
+        "label": "execution time (s)"
+    },
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "aggregations":[
+        {"column":"performance_variable", "agg":"sum"},
+        {"column":"discretization","agg":"filter:P1"}
+    ]
+}
+----
+====
+
+.Exercise: Strong scaling
+[.exer#exer:18]
+****
+Construct a plot to analyze the speedup of each application stage, for the second FEM order. Also include the total execution time.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Speedup (P2)",
+    "plot_types": [ "scatter" ],
+    "transformation": "speedup",
+    "variables": [
+        "Constructor_init",
+        "Solve_algebraic-assembly",
+        "Solve_algebraic-solve",
+        "PostProcessing_exportResults",
+        "Total"
+    ],
+    "names": [
+        "Preprocessing",
+        "Algebraic assembly",
+        "Algebraic solve",
+        "Postprocess",
+        "Total"
+    ],
+    "xaxis": {
+        "parameter": "tasks",
+        "label": "Number of tasks"
+    },
+    "secondary_axis": {
+        "parameter": "mesh",
+        "label": "Mesh level"
+    },
+    "yaxis": {
+        "label": "Speedup"
+    },
+    "color_axis":{
+        "parameter":"performance_variable",
+        "label":"Performance variable"
+    },
+    "aggregations":[
+        {"column":"discretization","agg":"filter:P2"}
+    ]
+}
+----
+====
+
+=== Other performance variables
+
+
+.Exercise: Analyzing the number of iterations of the GMRES method
+[.exer#exer:19]
+****
+The `Solve_ksp-niter` performance variable contains the number of iterations taken by the GMRES method to converge. We want to compare this number of iterations between the chosen number of tasks, the mesh size and the discretization order.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title":"Number of iterations of GMRES",
+    "plot_types":["scatter"],
+    "transformation":"performance",
+    "variables":["Solve_ksp-niter"],
+    "names":[],
+    "xaxis":{
+        "parameter":"tasks",
+        "label":"Number of tasks"
+    },
+    "yaxis":{
+        "label":"Number of iterations"
+    },
+    "color_axis":{
+        "parameter":"mesh",
+        "label":"Mesh"
+    },
+    "secondary_axis":{
+        "parameter":"discretization",
+        "label":"Discretization"
+    },
+    "aggregations":[
+        {"column":"performance_variable","agg":"filter:Solve_ksp-niter"}
+    ]
+}
+----
+====
+
+
+=== Multi-parameter figures (optional)
+
+We sometimes want to have all of the benchmarked information shown in the same figure. But this is quite difficult to do in a simple line plot if we have more than 2 parameters.
+For this, _feelpp.benchmarking_ support some multi-parametric figures, such as surface and 3D scatter plots, parallelcoordinates plots and sunburst charts. These, take an additional field on the plot configuration: the *extra_axes* field.
+
+
+
+.Exercise: Parallelcoorinates
+[.exer#exer:20]
+****
+Using the `parallelcoordinates` plot type, show which Mesh-discretization-memory values where actually executed.
+****
+
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Parameters",
+    "plot_types": [ "parallelcoordinates" ],
+    "transformation": "performance",
+    "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+    "xaxis": { "parameter": "tasks", "label": "Tasks" },
+    "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+    "yaxis": { "label": "execution time (s)"},
+    "color_axis": {"parameter":"performance_variable", "label":"Step"},
+    "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+}
+----
+====
+
+
+.Exercise: Sunburst chart
+[.exer#exer:21]
+****
+Using the `sunburst` plot type, show the time taken by different application stages for all parameter combinations.
+****
+
+.Solution
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "title": "Application Performance",
+    "plot_types": [ "sunburst","scatter3d" ],
+    "transformation": "performance",
+    "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+    "xaxis": { "parameter": "tasks", "label": "Tasks" },
+    "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+    "yaxis": { "label": "execution time (s)"},
+    "color_axis": {"parameter":"performance_variable", "label":"Step"},
+    "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+}
+----
+====
+
+
+
+
+.Complete plot configuration
+[%collapsible.proof]
+====
+[source,json]
+----
+{
+    "plots": [
+        {
+            "title": "Validation measures (Heat flux)",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "variables": [ "Outputs_Normal_Heat_Flux_alpha", "Outputs_Normal_Heat_Flux_beta", "Outputs_Normal_Heat_Flux_gamma" ],
+            "names": [ "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma" ],
+            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+            "yaxis": { "label": "Heat flow [W]" },
+            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+            "secondary_axis":{ "parameter": "performance_variable", "label": "Measures" },
+            "aggregations":[ {"column":"tasks","agg":"max"} ]
+        },
+        {
+            "title": "Validation measures (Temperatures)",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "variables": [ "Outputs_Points_alpha_max_field_temperature", "Outputs_Points_alpha_min_field_temperature", "Outputs_Points_beta_max_field_temperature", "Outputs_Points_beta_min_field_temperature" ],
+            "names": [ "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature", "Points_beta_max_field_temperature", "Points_beta_min_field_temperature" ],
+            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+            "yaxis": { "label": "Temperature [C°]" },
+            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+            "secondary_axis":{ "parameter": "performance_variable", "label": "Measures" },
+            "aggregations":[ {"column":"tasks","agg":"max"} ]
+        },
+        {
+            "title": "Performance (P1)",
+            "plot_types": [ "stacked_bar", "grouped_bar" ],
+            "transformation": "performance",
+            "variables": [ "Constructor_init", "Solve_algebraic-assembly", "Solve_algebraic-solve", "PostProcessing_exportResults" ],
+            "names": [ "Preprocessing", "Algebraic assembly", "Algebraic solve", "Postprocess" ],
+            "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+            "yaxis": { "label": "execution time (s)" },
+            "color_axis":{ "parameter":"performance_variable", "label":"Performance variable" },
+            "aggregations":[
+                {"column":"performance_variable", "agg":"sum"},
+                {"column":"discretization","agg":"filter:P1"}
+            ]
+        },
+        {
+            "title": "Speedup (P2)",
+            "plot_types": [ "scatter" ],
+            "transformation": "speedup",
+            "variables": [ "Constructor_init", "Solve_algebraic-assembly", "Solve_algebraic-solve", "PostProcessing_exportResults", "Total" ],
+            "names": [ "Preprocessing", "Algebraic assembly", "Algebraic solve", "Postprocess", "Total" ],
+            "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+            "yaxis": { "label": "Speedup" },
+            "color_axis":{ "parameter":"performance_variable", "label":"Performance variable" },
+            "aggregations":[
+                {"column":"discretization","agg":"filter:P2"}
+            ]
+        },
+        {
+            "title":"Number of iterations of GMRES",
+            "plot_types":["scatter"],
+            "transformation":"performance",
+            "variables":["Solve_ksp-niter"],
+            "names":[],
+            "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+            "yaxis":{ "label":"Number of iterations" },
+            "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+            "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+            "aggregations":[
+                {"column":"performance_variable","agg":"filter:Solve_ksp-niter"}
+            ]
+        },
+        {
+            "title": "Parameters",
+            "plot_types": [ "parallelcoordinates" ],
+            "transformation": "performance",
+            "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+            "xaxis": { "parameter": "tasks", "label": "Tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+            "yaxis": { "label": "execution time (s)"},
+            "color_axis": {"parameter":"performance_variable", "label":"Step"},
+            "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+        },
+        {
+            "title": "Application Performance",
+            "plot_types": [ "sunburst","scatter3d" ],
+            "transformation": "performance",
+            "variables": ["Constructor_init", "Solve_solve", "PostProcessing_exportResults" ],
+            "xaxis": { "parameter": "tasks", "label": "Tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh" },
+            "yaxis": { "label": "execution time (s)"},
+            "color_axis": {"parameter":"performance_variable", "label":"Step"},
+            "extra_axes": [ { "parameter": "discretization", "label": "Discretization" }]
+        }
+    ]
+}
+----
+====

@@ -51,7 +51,7 @@ def jsonConfigMerge_cli():
     return 0
 
 
-def upldateStageConfig_cli():
+def updateStageConfig_cli():
     """Upload new staged benchmarks to production and update production config"""
     parser = ArgumentParser()
     parser.add_argument("--stage_config", '-stag', required = True, type=str, help="File path of the stage configuration file")

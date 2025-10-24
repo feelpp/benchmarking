@@ -1,0 +1,37 @@
+= Remote Input Files
+
+It is possible to download input files for your application from a remote location.
+This is useful when input files are not yet available on the system where the benchmark is executed, and for users to not have to manually upload the files.
+
+To use remote input files, you can use the `remote_input_dependencies` field in the Benchmark Specification file.
+
+The `remote_input_dependencies` field is a dictionary containing a custom name as the key and a `RemoteData` object as a value.
+
+The RemoteData object can be constructed using the following syntax:
+
+[source,json]
+----
+{
+    // File, folder or item
+    "my_data_management_platform": { "file": "my_id" },
+    // The path to download the files to
+    "destination": "/path/to/destination"
+}
+----
+
+
+.Using remote input files in the Benchmark Specification file
+[.examp#examp:2]
+****
+
+[source,json]
+----
+"remote_input_dependencies":{
+    "my_input_file": { "girder":{"file":"abcdefg123456"},"destination":"/path/to/destination.txt"}
+}
+----
+
+This example will download the file with the ID `abcdefg123456` from the Girder platform and store it as `/path/to/destination.txt`.
+****
+
+Finally, the destination path can be accessed by other fields using the `{{remote_input_dependencies.my_input_file.destination}}` syntax.

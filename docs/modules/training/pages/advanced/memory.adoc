@@ -1,0 +1,118 @@
+= Memory management
+
+_feelpp.benchmarking_ supports specifying the total memory required by your application under the `resources` field. Using the system's available memory per node, the framework will ensure that the necessary resources are allocated for each test to run.
+
+The system's available memory per node should be specified in ReFrame's System settings file, in GB, under an `extra.memory_per_node` field the partition configuration.
+
+.Available Memory per Node in ReFrame system settings
+[.examp#examp:5]
+****
+[source,json]
+----
+"partitions":[{
+    "extras":{
+        "memory_per_node":256
+    }
+}]
+----
+****
+
+== Specifying memory in resources
+
+If the memory requirements by your application are independent of the specified parameter space, users can simply specify the memory requirements (in GB) in the `resources` field of the Benchmark Specification file.
+
+.Static memory requirements
+[.examp#examp:6]
+****
+[source,json]
+----
+"resources": {
+    "tasks": 128,
+    "memory": 1024
+}
+----
+
+If the system has 256GB of availabe memory per node, and 128 tasks per node. The above configuration will still execute the application with 128 tasks, but will distribute the tasks on 4 nodes: 32 tasks per node. This way, the application will use 256GB of memory per node, under the assumption that good partitioning is used.
+
+****
+
+TIP: Specify a little less memory than the available memory per node to avoid swapping.
+
+== Parameter dependent memory specifications
+
+The `memory` field can be parametrized. This is quite useful if your application requires different memory for different parameter values. For example, if you want to compare the application's performance for different mesh sizes.
+
+.Dynamic memory requirements
+[.examp#examp:7]
+****
+
+Let's suppose that you want to benchmark an application using 3 different mesh resolutions: M1, M2, M3.
+
+The benchmark specification will then have the following parameter
+
+[source,json]
+----
+{
+"parameters":[
+    {
+        "name":"mesh",
+        "sequence":["M1", "M2", "M3"]
+    }
+]
+}
+----
+
+However, these mesh resolutions require the following memory to be free: 512GB, 1024GB, 2048GB respectively.
+
+Then, we should create an additional parameter and set its value in the `resources` field.:
+
+[source,json]
+----
+{
+"resources":{
+    "tasks":128,
+    "memory": "{{parameters.memory.value}}"
+},
+"parameters":[
+    {
+        "name":"memory",
+        "sequence":[512, 1024, 2048]
+    },
+    {
+        "name":"mesh",
+        "sequence":["M1", "M2", "M3"]
+    }
+]
+}
+----
+
+But... doing just this will create 9 tests (3x3) and we do not want to run the same test with different memory values. To avoid this, we should constrain the memory parameter to be dependent on the mesh parameter:
+
+[source,json]
+----
+{
+"resources":{
+    "tasks":128,
+    "memory": "{{parameters.memory.value}}"
+},
+"parameters":[
+    {
+        "name":"memory",
+        "sequence":[512, 1024, 2048]
+    },
+    {
+        "name":"mesh",
+        "sequence":["M1", "M2", "M3"],
+        "conditions":{
+            "M1":[{"memory":[512]}],
+            "M2":[{"memory":[1024]}],
+            "M3":[{"memory":[2048]}]
+        }
+    }
+]
+}
+----
+
+The previous configuration will ensure that the case M1 will be run with 512GB of memory, M2 with 1024GB, and M3 with 2048GB.
+
+****

@@ -1,4 +1,4 @@
-import json, os
+import json, os, shutil
 from feelpp.benchmarking.report.atomicReports.model import AtomicReportModel
 from feelpp.benchmarking.report.atomicReports.view import AtomicReportView
 from feelpp.benchmarking.report.atomicReports.controller import AtomicReportController
@@ -20,8 +20,8 @@ class AtomicReport:
             partials_dir (str): The directory path where parametric descriptions of the use case can be found (usually comes with the reframe report). Pass None if non-existent
         """
         data = self.parseJson(reframe_report_json)
-        self.plots_config_path = plot_config_json
-        self.plots_config = self.parseJson(plot_config_json)
+        self.plots_config_path = plot_config_json or os.path.join(os.path.dirname(reframe_report_json),"plots.json")
+        self.plots_config = self.parseJson(plot_config_json) if plot_config_json else []
         self.partials_dir = partials_dir
 
         self.filepath = reframe_report_json
@@ -108,22 +108,23 @@ class AtomicReport:
         if not os.path.exists(self.partials_dir):
             raise FileNotFoundError("Parametrized descriptions directory does not exist")
 
-        move_dir = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename()).replace("-","_").replace(":","_").replace("+","Z")
+        rel_move_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename())
+        move_dir = os.path.join(base_dir,rel_move_dir)
         if not os.path.exists(move_dir):
             os.makedirs(move_dir)
 
         case_description_filename="description.adoc"
         if os.path.exists(os.path.join(self.partials_dir,case_description_filename)):
-            os.rename(os.path.join(self.partials_dir,case_description_filename), os.path.join(move_dir,case_description_filename))
-            self.description_path =  os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),case_description_filename)
+            shutil.copy2(os.path.join(self.partials_dir,case_description_filename), os.path.join(move_dir,case_description_filename))
+            self.description_path =  os.path.join(base_dir.split("/")[-1],rel_move_dir,case_description_filename)
 
         for description_filename in os.listdir(self.partials_dir):
             description_file_basename = os.path.basename(description_filename)
             description_file_basename_splitted = description_file_basename.split(".")[0]
 
             if description_file_basename_splitted in self.hash_param_map:
-                os.rename(os.path.join(self.partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
-                self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(os.path.relpath(move_dir,start="./docs/modules/ROOT/pages"),description_file_basename)
+                shutil.copy2(os.path.join(self.partials_dir,description_filename), os.path.join(move_dir,description_file_basename))
+                self.hash_param_map[description_file_basename_splitted]["partial_filepath"] = os.path.join(base_dir.split("/")[-1],rel_move_dir,description_file_basename)
 
     def createLogReports(self,base_dir, renderer):
         """ Render the reframe logs (output, error, script) for each testcase
@@ -137,17 +138,19 @@ class AtomicReport:
                 if all(var not in check_vars for var in ["script","output_log","error_log"]):
                     continue
 
-                logs_filepath = os.path.join(base_dir,self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase['hash']}.adoc").replace("-","_").replace(":","_").replace("+","Z")
+                logs_rel_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase['hash']}.adoc")
+                logs_filepath = os.path.join(base_dir,logs_rel_dir)
                 if not os.path.exists(os.path.dirname(logs_filepath)):
                     os.makedirs(os.path.dirname(logs_filepath))
 
-                self.hash_param_map[testcase["hash"]]["logs_filepath"] = os.path.relpath(logs_filepath,start="./docs/modules/ROOT/pages")
+                self.hash_param_map[testcase["hash"]]["logs_filepath"] = os.path.join(base_dir.split("/")[-1],logs_rel_dir)
                 renderer.render(
                     logs_filepath,
                     dict(
                         script = check_vars.get("script"),
                         output_log = check_vars.get("output_log"),
-                        error_log = check_vars.get("error_log")
+                        error_log = check_vars.get("error_log"),
+                        custom_logs = check_vars.get("custom_logs",[])
                     )
                 )
 
@@ -157,7 +160,7 @@ class AtomicReport:
         Returns:
             str: The filename
         """
-        return f"{self.date}"
+        return f"{self.date.replace('-','_').replace(':','_').replace('+','Z')}"
 
     @staticmethod
     def flatten(nested_json, parent_key=''):

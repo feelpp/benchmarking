@@ -6,11 +6,11 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-'feelpp.benchmarking' = ['reframe/config/machineConfigs/hpc.env']
+'feelpp.benchmarking' = ['report/templates/**','report/figures/templates/**','scripts/data/*','scripts/data/website_images/*']
 
 [project]
-name = "benchmarking"
-version = "0.0.1"
+name = "feelpp-benchmarking"
+version = "3.0.5"
 description="The Feel++ Benchmarking Project"
 readme = "README.md"
 authors = [
@@ -32,10 +32,17 @@ classifiers = [
 ]
 
 dependencies = [
+  "setuptools==66.1.1",
   "traitlets",
   "tabulate",
   "girder-client",
-  "pydantic"
+  "pydantic",
+  "ReFrame-HPC==4.6.3",
+  "plotly",
+  "Jinja2",
+  "numpy",
+  "pandas",
+  "IPython"
 ]
 
 [project.urls]
@@ -46,14 +53,12 @@ Issues = "https://github.com/feelpp/benchmarking/issues"
 test = ["pytest"]
 
 [project.scripts]
-render-benchmarks = "feelpp.benchmarking.report.__main__:main_cli"
-execute-benchmark = "feelpp.benchmarking.reframe.__main__:main_cli"
-girder-download = "feelpp.benchmarking.scripts.girder:download_cli"
-girder-upload = "feelpp.benchmarking.scripts.girder:upload_cli"
-girder-move = "feelpp.benchmarking.scripts.girder:move_cli"
-hpc-dispatch = "feelpp.benchmarking.scripts.hpcSystems:hpcSystemDispatcher_cli"
+feelpp-benchmarking-render = "feelpp.benchmarking.report.__main__:main_cli"
+feelpp-benchmarking-exec = "feelpp.benchmarking.reframe.__main__:main_cli"
+feelpp-girder = "feelpp.benchmarking.scripts.girder:main_cli"
 merge-json-configs = "feelpp.benchmarking.scripts.misc:jsonConfigMerge_cli"
-update-stage-config = "feelpp.benchmarking.scripts.misc:upldateStageConfig_cli"
+update-stage-config = "feelpp.benchmarking.scripts.misc:updateStageConfig_cli"
+feelpp-antora = "feelpp.benchmarking.scripts.antora:main_cli"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

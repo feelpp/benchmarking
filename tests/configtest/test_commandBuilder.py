@@ -22,6 +22,8 @@ class MockParser:
         def __init__(self,dry_run,verbose):
             self.dry_run = dry_run
             self.verbose = verbose
+            self.custom_rfm_config = None
+            self.reframe_args = ""
 
     def __init__(self,dry_run= False,verbose=1):
         self.args = self.MockArgs(dry_run= dry_run,verbose=verbose)
@@ -75,7 +77,8 @@ class TestCommandBuilder:
         """Tests the buildConfigFilePath method of the CommandBuilder"""
         cfg_filepath = cmd_builder.buildConfigFilePath()
         assert cfg_filepath.endswith(".py")
-        assert os.path.basename(cfg_filepath) == f"{machine_config.machine}.py"
+        assert os.path.basename(cfg_filepath) == f"reframe.py"
+        assert os.path.dirname(cfg_filepath).split("/")[-1] == machine_config.machine
 
 
     def test_createReportFolder(self,cmd_builder,machine_config):
@@ -120,7 +123,7 @@ class TestCommandBuilder:
 
         expected_command = (
             "reframe "
-            f"-C {cmd_builder.getScriptRootDir()}/config/machineConfigs/{machine_config.machine}.py "
+            f"-C {cmd_builder.getScriptRootDir()}/config/machineConfigs/{machine_config.machine}/reframe.py "
             f"-c {cmd_builder.getScriptRootDir()}/regression.py "
             f"-S report_dir_path={machine_config.reports_base_dir}/{executable}/{use_case}/{machine_config.machine}/{cmd_builder.current_date} "
             f"--system={machine_config.machine} "
@@ -130,7 +133,6 @@ class TestCommandBuilder:
             f"-J time={timeout} "
             f"--perflogdir={os.path.join(machine_config.reframe_base_dir,'logs')} "
         )
-        expected_command += "-" + "v"*parser.args.verbose if parser.args.verbose else ""
-        expected_command += " --dry-run --exec-policy serial" if parser.args.dry_run else " -r"
+        expected_command += "--dry-run --exec-policy serial" if parser.args.dry_run else "-r"
 
         assert expected_command == cmd_builder.buildCommand(timeout)
