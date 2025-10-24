@@ -5,7 +5,7 @@ from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
 from feelpp.benchmarking.reframe.reporting import WebsiteConfig
 from feelpp.benchmarking.reframe.commandBuilder import CommandBuilder
-from feelpp.benchmarking.report.config.handlers import GirderHandler
+from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 
 def main_cli():
     parser = Parser()
