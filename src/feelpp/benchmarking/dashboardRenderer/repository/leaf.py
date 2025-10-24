@@ -39,7 +39,8 @@ class LeafComponentRepository(Repository):
 
     def render(self,base_dir:str) -> None:
         leaves_dir = os.path.join(base_dir,self.id)
-
+        if not os.path.isdir(leaves_dir):
+            os.mkdir(leaves_dir)
         for leaf in self.data:
             leaf.render(leaves_dir)
 
