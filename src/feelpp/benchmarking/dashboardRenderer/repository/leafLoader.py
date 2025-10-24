@@ -3,7 +3,7 @@ from feelpp.benchmarking.dashboardRenderer.component.leaf import LeafComponent
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import LeafMetadata
 from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
-import os, tempfile
+import os, tempfile, warnings
 
 class LeafLoader:
     """ Abstract class for loading leaf components. """
@@ -36,8 +36,10 @@ class LocalLeafLoader(LeafLoader):
         """
         super().__init__(location,template_info)
 
+        if not location:
+            return
         if not os.path.exists(location):
-            raise FileNotFoundError(f"{location} does not contain any files")
+            warnings.warn(f"{location} does not contain any files")
 
     def load(self,repository:Repository, parent_ids:list[str]) -> None:
         """
@@ -46,6 +48,8 @@ class LocalLeafLoader(LeafLoader):
             repository (Repository): The repository to load components into.
             parent_ids (list[str]): List of parent IDs for the components.
         """
+        if not self.location or not os.path.isdir(self.location):
+            return
         for leaf_component_dir in os.listdir(self.location):
             repository.add(LeafComponent(
                 leaf_component_dir,repository,parent_ids,
@@ -95,7 +99,7 @@ class LeafLoaderFactory:
             NotImplementedError: If the platform is not supported.
         """
         if leaf_config.path is None:
-            raise ValueError("Leaf path is not defined")
+            warnings.warn("Leaf path is not defined")
 
         if leaf_config.platform == "local":
             return LocalLeafLoader(leaf_config.path,leaf_config.template_info)
