@@ -79,14 +79,13 @@ class AtomicReport:
                 hash = testcase["hashcode"]
                 #Hotfix for adding actual resources:
                 check_params = testcase["check_params"]
-                check_vars = testcase["check_vars"]
                 #add test status
                 check_params["result"] = testcase.get("result")
                 #Add test total run time
                 check_params["time_total"] = testcase.get("time_total")
                 for resource in ["num_nodes","num_tasks_per_node","num_tasks"]:
                     if resource not in check_params:
-                        check_params[resource] = check_vars.get(resource)
+                        check_params[resource] = testcase.get(resource)
 
                 hash_param_map[hash] = {"check_params":check_params}
 
@@ -134,8 +133,7 @@ class AtomicReport:
         """
         for run in self.runs:
             for testcase in run["testcases"]:
-                check_vars = testcase["check_vars"]
-                if all(var not in check_vars for var in ["script","output_log","error_log"]):
+                if all(var not in testcase for var in ["script","output_log","error_log"]):
                     continue
 
                 logs_rel_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase["hashcode"]}.adoc")
@@ -147,10 +145,10 @@ class AtomicReport:
                 renderer.render(
                     logs_filepath,
                     dict(
-                        script = check_vars.get("script"),
-                        output_log = check_vars.get("output_log"),
-                        error_log = check_vars.get("error_log"),
-                        custom_logs = check_vars.get("custom_logs",[])
+                        script = testcase.get("script"),
+                        output_log = testcase.get("output_log"),
+                        error_log = testcase.get("error_log"),
+                        custom_logs = testcase.get("custom_logs",[])
                     )
                 )
 

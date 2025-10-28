@@ -46,6 +46,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     use_case = variable(str,value=app_reader.config.use_case_name)
     platform = variable(str, value=machine_reader.config.platform)
+    check_params = variable(list)
 
     execution_policy = variable(str,value=machine_reader.config.execution_policy)
 
@@ -70,6 +71,11 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_after('init')
     def pruneParameterSpace(self):
         self.parameter_handler.pruneParameterSpace(self)
+
+        param_names = []
+        for param_config in self.parameter_handler.parameters_config:
+            param_names.append(param_config.name)
+        self.check_params = param_names
 
 
     @run_after('setup')
