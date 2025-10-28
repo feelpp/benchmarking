@@ -76,7 +76,7 @@ class AtomicReport:
         hash_param_map = {}
         for run in data["runs"]:
             for testcase in run["testcases"]:
-                hash = testcase["hash"]
+                hash = testcase["hashcode"]
                 #Hotfix for adding actual resources:
                 check_params = testcase["check_params"]
                 check_vars = testcase["check_vars"]
@@ -138,12 +138,12 @@ class AtomicReport:
                 if all(var not in check_vars for var in ["script","output_log","error_log"]):
                     continue
 
-                logs_rel_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase['hash']}.adoc")
+                logs_rel_dir = os.path.join(self.machine_id,self.application_id,self.use_case_id,self.filename(),f"{testcase["hashcode"]}.adoc")
                 logs_filepath = os.path.join(base_dir,logs_rel_dir)
                 if not os.path.exists(os.path.dirname(logs_filepath)):
                     os.makedirs(os.path.dirname(logs_filepath))
 
-                self.hash_param_map[testcase["hash"]]["logs_filepath"] = os.path.join(base_dir.split("/")[-1],logs_rel_dir)
+                self.hash_param_map[testcase["hashcode"]]["logs_filepath"] = os.path.join(base_dir.split("/")[-1],logs_rel_dir)
                 renderer.render(
                     logs_filepath,
                     dict(
