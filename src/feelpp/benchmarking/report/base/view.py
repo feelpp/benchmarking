@@ -1,4 +1,4 @@
-from feelpp.benchmarking.reframe.config.configSchemas import Plot
+from feelpp.benchmarking.report.config.configPlots import Plot
 from feelpp.benchmarking.report.figures.figureFactory import FigureFactory
 
 class View:
