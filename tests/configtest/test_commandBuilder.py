@@ -131,7 +131,7 @@ class TestCommandBuilder:
             f"--prefix={machine_config.reframe_base_dir} "
             f"--report-file={str(os.path.join(report_folder_path,'reframe_report.json'))} "
             f"-J time={timeout} "
-            f"--perflogdir={os.path.join(machine_config.reframe_base_dir,'logs')} "
+            f"--perflogdir=logs "
         )
         expected_command += "--dry-run --exec-policy serial" if parser.args.dry_run else "-r"
 
