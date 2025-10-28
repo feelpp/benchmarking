@@ -18,7 +18,7 @@ class AtomicReportModel(Model):
         processed_data = []
 
         for i,testcase in enumerate(runs[0]["testcases"]): #TODO: support multiple runs
-            if not testcase["perfvars"]:
+            if not testcase["perfvalues"]:
                 tmp_dct = {
                     "performance_variable": "",
                     "value": None,
@@ -41,9 +41,9 @@ class AtomicReportModel(Model):
                 processed_data.append(tmp_dct)
                 continue
 
-            for perfvar in testcase["perfvars"]:
+            for name,perfvar in testcase["perfvalues"]:
                 tmp_dct = {}
-                tmp_dct["performance_variable"] = perfvar["name"]
+                tmp_dct["performance_variable"] = name.split(":")[-1]
                 tmp_dct["value"] = float(perfvar["value"])
                 tmp_dct["unit"] = perfvar["unit"]
                 tmp_dct["reference"] = float(perfvar["reference"]) if perfvar["reference"] else np.nan

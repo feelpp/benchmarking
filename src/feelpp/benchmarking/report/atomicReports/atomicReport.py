@@ -40,7 +40,7 @@ class AtomicReport:
         self.hash_param_map = self.createHashParamMap(data)
         self.description_path = None
 
-        self.empty = all(testcase["perfvars"]==None for run in data["runs"] for testcase in run["testcases"])
+        self.empty = all(testcase["perfvalues"]==None for run in data["runs"] for testcase in run["testcases"])
 
         self.model = AtomicReportModel(self.runs)
 
