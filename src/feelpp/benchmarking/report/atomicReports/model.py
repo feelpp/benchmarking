@@ -18,7 +18,7 @@ class AtomicReportModel(Model):
         processed_data = []
 
         for i,testcase in enumerate(runs[0]["testcases"]): #TODO: support multiple runs
-            if not testcase["perfvalues"]:
+            if "perfvalues" not in testcase or not testcase["perfvalues"] or testcase["perfvalues"] == {}:
                 tmp_dct = {
                     "performance_variable": "",
                     "value": None,
@@ -29,8 +29,8 @@ class AtomicReportModel(Model):
                     "status": None,
                     "absolute_error": None,
                     "testcase_time_run": testcase["time_run"],
-                    "environment":testcase["environment"],
-                    "platform":testcase["platform"]
+                    "environment":testcase["environ"] if "environ" in testcase else "",
+                    "platform":testcase["platform"] if "platform" in testcase else ""
                 }
                 for dim, v in testcase["check_params"].items():
                     if isinstance(v,dict):
@@ -41,19 +41,19 @@ class AtomicReportModel(Model):
                 processed_data.append(tmp_dct)
                 continue
 
-            for name,perfvar in testcase["perfvalues"]:
+            for name,perfvars in testcase["perfvalues"].items():
                 tmp_dct = {}
                 tmp_dct["performance_variable"] = name.split(":")[-1]
-                tmp_dct["value"] = float(perfvar["value"])
-                tmp_dct["unit"] = perfvar["unit"]
-                tmp_dct["reference"] = float(perfvar["reference"]) if perfvar["reference"] else np.nan
-                tmp_dct["thres_lower"] = float(perfvar["thres_lower"]) if perfvar["thres_lower"] else np.nan
-                tmp_dct["thres_upper"] = float(perfvar["thres_upper"]) if perfvar["thres_upper"] else np.nan
+                tmp_dct["value"] = float(perfvars[0])
+                tmp_dct["unit"] = perfvars[4]
+                tmp_dct["reference"] = float(perfvars[1]) if perfvars[1] else np.nan
+                tmp_dct["thres_lower"] = float(perfvars[2]) if perfvars[2] else np.nan
+                tmp_dct["thres_upper"] = float(perfvars[3]) if perfvars[3] else np.nan
                 tmp_dct["status"] = tmp_dct["thres_lower"] <= tmp_dct["value"] <= tmp_dct["thres_upper"] if not np.isnan(tmp_dct["thres_lower"]) and not np.isnan(tmp_dct["thres_upper"]) else np.nan
                 tmp_dct["absolute_error"] = np.abs(tmp_dct["value"] - tmp_dct["reference"])
                 tmp_dct["testcase_time_run"] = testcase["time_run"]
-                tmp_dct["environment"] = testcase["environment"]
-                tmp_dct["platform"] = testcase["platform"] if "platform" in testcase else np.nan
+                tmp_dct["environment"] = testcase["environ"] if "environ" in testcase else ""
+                tmp_dct["platform"] = testcase["platform"] if "platform" in testcase else ""
 
                 for dim, v in testcase["check_params"].items():
                     if isinstance(v,dict):
