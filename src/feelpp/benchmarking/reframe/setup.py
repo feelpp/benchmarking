@@ -46,6 +46,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     use_case = variable(str,value=app_reader.config.use_case_name)
     platform = variable(str, value=machine_reader.config.platform)
+    check_params = variable(dict)
 
     execution_policy = variable(str,value=machine_reader.config.execution_policy)
 
@@ -70,6 +71,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_after('init')
     def pruneParameterSpace(self):
         self.parameter_handler.pruneParameterSpace(self)
+
 
 
     @run_after('setup')
@@ -112,6 +114,13 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             for subparameter in subparameters:
                 self.app_reader.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
                 self.machine_reader.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
+
+    @run_before('run')
+    def setCheckParams(self):
+        params = {}
+        for param_name,subparameters in self.parameter_handler.nested_parameter_keys.items():
+            params[param_name] = getattr(self,param_name)
+        self.check_params = params
 
     @run_before('run')
     def copyInputFileDependencies(self):

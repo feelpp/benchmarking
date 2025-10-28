@@ -27,8 +27,8 @@ class MachineConfig(BaseModel):
     targets:Optional[Union[str,List[str]]] = None
     active: Optional[bool] = True
     execution_policy:Optional[Literal["serial","async"]] = "serial"
-    reframe_base_dir:str
-    reports_base_dir:str
+    reframe_base_dir:Optional[str] = "./reframe/"
+    reports_base_dir: Optional[str] = "./reports/"
     input_dataset_base_dir:Optional[str] = None
     input_user_dir:Optional[str] = None
     output_app_dir:str

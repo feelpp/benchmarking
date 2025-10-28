@@ -1,6 +1,6 @@
 """ Tests related to plots configuration """
 import pytest
-from feelpp.benchmarking.reframe.config.configPlots import Plot, Aggregation, PlotAxis
+from feelpp.benchmarking.report.config.configPlots import Plot, Aggregation, PlotAxis
 from pydantic import ValidationError
 
 class TestAggregation:
