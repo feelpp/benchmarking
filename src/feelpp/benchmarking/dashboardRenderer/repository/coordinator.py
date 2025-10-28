@@ -108,13 +108,13 @@ class RepositoryCoordinator:
                 leaf.addParent( self.repository_registry.getComponent(parent_id) )
 
 
-    def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str):
+    def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
         if not targets: #No target specified -> Select latest (by filename order).
             if len(patches) > 1:
                 raise ValueError("When no patch reports are provided, plot configuration should be of length one")
             latest_leaf = max(self.repository_registry.leaf_repository, key = lambda report : report.id.split("-")[-1])
             print(f"Latest target: {latest_leaf.id}")
-            latest_leaf.patchTemplateInfo(patches[0], prefix)
+            latest_leaf.patchTemplateInfo(patches[0], prefix,save)
         else:
             for i, target in enumerate(targets):
                 leaves_to_patch = self.repository_registry.leaf_repository
@@ -132,4 +132,4 @@ class RepositoryCoordinator:
                     patch = patches[i] if len(targets) == len(patches) else patches[0] if len(patches) == 1 else None
                     if not patch:
                         raise ValueError("Patches not must either be of length 1 or the same length as targets")
-                    leaf_to_patch.patchTemplateInfo(patch, prefix)
+                    leaf_to_patch.patchTemplateInfo(patch, prefix,save)

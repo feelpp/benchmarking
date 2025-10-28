@@ -41,5 +41,13 @@ class LeafComponent(Component):
 
         self.view.render(leaf_dir)
 
-    def patchTemplateInfo(self,patch, prefix):
+    def patchTemplateInfo(self,patch, prefix,save):
+        if save:
+            with open(patch,"r") as f:
+                patch_content = f.read()
+            template_data_files = [d for d in self.view.template_info.data if isinstance(d,TemplateDataFile) and d.prefix and d.prefix == prefix ]
+            if len(template_data_files) == 1:
+                filepath = template_data_files[0].filepath
+            with open(os.path.join(self.view.template_data_dir, filepath), "w") as f:
+                f.write(patch_content)
         self.view.updateTemplateData(TemplateDataFile(prefix=prefix,filepath=patch))

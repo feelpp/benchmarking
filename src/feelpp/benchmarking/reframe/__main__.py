@@ -3,7 +3,7 @@ from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader, FileHandler
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
-from feelpp.benchmarking.reframe.reporting import WebsiteConfig
+from feelpp.benchmarking.reframe.reporting import WebsiteConfigCreator
 from feelpp.benchmarking.reframe.commandBuilder import CommandBuilder
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 
@@ -27,7 +27,7 @@ def main_cli():
 
     os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.machine_config
 
-    website_config = WebsiteConfig(machine_reader.config.reports_base_dir)
+    website_config = WebsiteConfigCreator(machine_reader.config.reports_base_dir)
 
     for config_filepath in parser.args.benchmark_config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath

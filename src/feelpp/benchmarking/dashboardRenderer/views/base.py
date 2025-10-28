@@ -17,6 +17,8 @@ class View:
         self.out_filename = out_filename
         self.partials = {}
         self.updateTemplateData(base_template_data)
+        self.template_info = template_info
+        self.template_data_dir = template_data_dir
         if template_info.template:
             self.addExtraTemplate(template_info.template)
 

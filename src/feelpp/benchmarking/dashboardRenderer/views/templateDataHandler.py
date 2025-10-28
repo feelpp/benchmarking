@@ -21,9 +21,8 @@ class TemplateDataFileHandler(DataHandler):
                 return {data.prefix: template_data}
             return template_data
         elif data.action == "copy":
-            if not os.path.exists(filepath):
-                raise FileNotFoundError(f"{filepath} does not exist")
-            partials[data.prefix] = filepath
+            if os.path.exists(filepath):
+                partials[data.prefix] = filepath
             return {}
 
 

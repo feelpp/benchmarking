@@ -39,5 +39,5 @@ class Dashboard:
             item = item.getComponent(component)
         item.printViews()
 
-    def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str):
-        self.builder.coordinator.patchTemplateInfo(patches,targets,prefix)
+    def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
+        self.builder.coordinator.patchTemplateInfo(patches,targets,prefix,save)

@@ -21,6 +21,7 @@ class ReportArgParser():
 
         self.parser.add_argument("--plot-configs", "-pc", type=str, nargs='+',default=[], action='extend', help="Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports")
         self.parser.add_argument("--patch-reports","-pr", type=str, nargs='+',default=[], action='extend', help="Id of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)")
+        self.parser.add_argument("--save-patches","-sp", required=False, action="store_true", default=False, help="Wether to replace existing plots with patches, to be used along --plot-configs")
 
         self.parser.add_argument("--antora-basepath", required=False, type=str, default=".", help="Path to the base directory where the antora environment is set (package.json and site.yml)")
         self.parser.add_argument("--website","-w", action='store_true', help="Compile documentation and start HTTP server with benchmark reports")
