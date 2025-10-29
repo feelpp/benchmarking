@@ -13,11 +13,9 @@ class ReframeReport:
             testcases = []
             for testcase in run["testcases"]:
                 perfvar_df =  pd.DataFrame.from_dict(testcase["perfvalues"])
-                perfvar_df = perfvar_df.iloc[:1,:]
-                perfvar_df.rename(columns={c:c.split(":")[-1] for c in perfvar_df.columns},inplace=True)
-                perfvar_df = perfvar_df.rename(columns={c:f"perfvalues.{c}" for c in perfvar_df})
-
-
+                perfvar_df = perfvar_df.rename(index={0:"value",1:"reference",2:"low_threshold",3:"up_threshold",4:"unit",5:"result"})
+                perfvar_df = perfvar_df.T.reset_index().rename(columns={"index":"perfvalue"})
+                perfvar_df[["system","partition","perfvalue"]] = perfvar_df["perfvalue"].str.split(":",expand=True)
                 testcase_df = pd.DataFrame.from_dict(testcase,orient="index").T.drop(columns=["perfvalues","check_params"]+list(testcase["check_params"].keys()))
                 testcase_df = testcase_df.rename(columns={c:f"testcases.{c}" for c in testcase_df})
                 param_dict = {}
@@ -34,4 +32,5 @@ class ReframeReport:
 
             testcases_df = pd.concat(testcases,axis=0)
             runs_dfs.append(pd.concat([testcases_df,run_df.loc[run_df.index.repeat(perfvar_df.shape[0])].reset_index(drop=True)],axis=1))
+        pd.concat(runs_dfs,axis=0).to_csv("ex.csv")
         return pd.concat(runs_dfs,axis=0)

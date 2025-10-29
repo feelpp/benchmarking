@@ -4,7 +4,8 @@
         "plot_types":["scatter"],
         "transformation":"performance",
         "xaxis":{ "parameter":"n", "label":"N" },
-        "yaxis": {"label":"Execution time (s)", "parameter":"perfvalues.elapsed"},
-        "color_axis":{"parameter":"method","label":"Method"}
+        "yaxis": {"label":"Execution time (s)", "parameter":"value"},
+        "color_axis":{"parameter":"method","label":"Method"},
+        "aggregations":[{"column":"perfvalue","agg":"filter:elapsed"}]
     }
 ]
