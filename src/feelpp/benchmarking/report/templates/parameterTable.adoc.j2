@@ -32,12 +32,13 @@
 ++++
 [.scrollable]
 --
+[cols="^1,^2,{% for _ in ns.keys %}<3,{% endfor %}<3{% if descriptions %},<3{% endif %}", options="header"]
 |===
-|hashcode | {{ ns.keys | join(' | ') }} | {% if descriptions %}|  {% endif %}
+| |hashcode | {{ ns.keys | join(' | ') }} | {% if descriptions %}|  {% endif %}
 
 {% for testcase in run.testcases %}
 {%set _ = renderTemplate("logs.adoc.j2",{"script":testcase.script,"error_log":testcase.error_log,"output_log":testcase.output_log,"custom_logs":testcase.custom_logs}, self_dirpath+"/logs/"+testcase.hashcode+".adoc") %}
-|{{testcase.hashcode}}{% for header in ns.keys %} | {{recursive_get_value(testcase.check_params, header.split('.'))}}{% endfor %} | xref:{{self_relpath}}/logs/{{testcase.hashcode}}.adoc[logs] {% if descriptions %} | xref:{{descriptions}}/{{testcase.hashcode}}.adoc[Description] {% endif %}
+|{% if testcase.result == 'pass' %}🟢{% else %}🔴{% endif %}|{{testcase.hashcode}}{% for header in ns.keys %} | {{recursive_get_value(testcase.check_params, header.split('.'))}}{% endfor %} | xref:{{self_relpath}}/logs/{{testcase.hashcode}}.adoc[logs] {% if descriptions %} | xref:{{descriptions}}/{{testcase.hashcode}}.adoc[Description] {% endif %}
 {% endfor %}
 
 
