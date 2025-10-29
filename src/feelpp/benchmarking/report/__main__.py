@@ -23,7 +23,7 @@ def main_cli():
     dashboard.printViews()
 
 
-    dashboard.render(parser.args.module_path,clean=True)
+    dashboard.render(parser.args.module_path,clean=parser.args.reset_docs)
 
     if parser.args.website:
         os.chdir(parser.args.antora_basepath)

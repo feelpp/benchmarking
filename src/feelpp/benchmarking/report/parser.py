@@ -19,6 +19,8 @@ class ReportArgParser():
         self.parser.add_argument("--module-path", "-m", type=str, help="Path to the modules directory where reports will be rendered", default="./docs/modules/ROOT")
         self.parser.add_argument("--overview-config", "-oc", type=str, help="Path to the overview configuration file", default=None),
 
+        self.parser.add_argument("--reset-docs","-rm",action='store_true',help="Reset all benchmarks on the website. This will delete and recreate all files created from templates. If false, new files will be appended to the website.")
+
         self.parser.add_argument("--plot-configs", "-pc", type=str, nargs='+',default=[], action='extend', help="Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports")
         self.parser.add_argument("--patch-reports","-pr", type=str, nargs='+',default=[], action='extend', help="Id of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)")
         self.parser.add_argument("--save-patches","-sp", required=False, action="store_true", default=False, help="Wether to replace existing plots with patches, to be used along --plot-configs")
