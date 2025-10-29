@@ -168,7 +168,7 @@ class ConfigFile(BaseModel):
                 for inner in outer.sequence[0].keys():
                     parameter_names.append(f"{outer.name}.{inner}")
 
-        parameter_names += [outer.name for outer in self.parameters if outer] + ["performance_variable"]
+        parameter_names += [outer.name for outer in self.parameters if outer] + ["perfvalue","value"]
         for plot in self.plots:
             for ax in [plot.xaxis,plot.secondary_axis,plot.yaxis,plot.color_axis]:
                 if ax and ax.parameter:
