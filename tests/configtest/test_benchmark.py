@@ -2,7 +2,7 @@
 import pytest
 from feelpp.benchmarking.reframe.config.configSchemas import Sanity,CustomVariable,Scalability,Resources,Image,Platform,AdditionalFiles,ConfigFile
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
-from feelpp.benchmarking.report.config.configPlots import Plot
+from feelpp.benchmarking.dashboardRenderer.schemas.ConfigPlots import Plot
 from pydantic import ValidationError
 
 
