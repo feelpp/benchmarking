@@ -1,10 +1,14 @@
 from typing import Union
+from datetime import datetime
 import os, shutil
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateInfo,TemplateDataFile
 from feelpp.benchmarking.dashboardRenderer.renderer import BaseRendererFactory
 from feelpp.benchmarking.dashboardRenderer.views.templateDataHandler import TemplateDataHandlerFactory
 
 class View:
+
+    plugins = {}
+
     def __init__(
             self,
             base_template_type:str,
@@ -13,12 +17,18 @@ class View:
             base_template_data:dict = {},
             out_filename:str = None
         ) -> None:
-        self.renderer = self.initRenderer(base_template_type,template_info.template)
-        self.out_filename = out_filename
         self.partials = {}
+        self.renderer = self.initRenderer(base_template_type,template_info.template)
+
+
+        self.template_data = {}
         self.updateTemplateData(base_template_data)
+
+        self.out_filename = out_filename
         self.template_info = template_info
         self.template_data_dir = template_data_dir
+
+
         if template_info.template:
             self.addExtraTemplate(template_info.template)
 
@@ -33,15 +43,16 @@ class View:
         return renderer
 
     def addExtraTemplate(self,template):
-        if "extra_templates" not in self.renderer.template_data:
-            self.renderer.template_data["extra_templates"] = []
-        self.renderer.template_data["extra_templates"].append(os.path.basename(template))
+        if "extra_templates" not in self.template_data:
+            self.template_data["extra_templates"] = []
+        self.template_data["extra_templates"].append(os.path.basename(template))
 
     def updateTemplateData(self,data:Union[TemplateDataFile,dict],template_data_dir:str = None):
         assert hasattr(self,"renderer") and self.renderer is not None
         handler = TemplateDataHandlerFactory.getHandler(type(data),template_data_dir)
         template_data = handler.extractData(data,self.partials)
-        self.renderer.template_data.update(template_data)
+        self.template_data.update(template_data)
+        self.processPlugins()
 
     def copyPartials(self,base_dir:str,pages_dir:str) -> None:
 
@@ -57,8 +68,11 @@ class View:
         if not os.path.isdir(output_dirpath):
             os.mkdir(output_dirpath)
 
-        self.renderer.render(os.path.join(output_dirpath,filename))
+        self.renderer.render(os.path.join(output_dirpath,filename),self.template_data)
 
+    def processPlugins(self):
+        for pluginName, plugin in self.plugins.items():
+            self.template_data.update({pluginName:plugin.process(self.template_data)})
 
 class ViewFactory:
     @staticmethod
@@ -70,19 +84,30 @@ class ViewFactory:
     ):
         template_type_map = dict(
             home = dict(
-                base_template_data = dict(),
+                base_template_data = dict(
+                    title = "My Dashboard",
+                    datetime = datetime.strftime(datetime.now(),format="%Y-%m-%d:%H:%M:%S")
+                ),
                 filename = "index.adoc",
             ),
             node = dict(
                 base_template_data = dict(
-                    self_id = component_id,
+                    title = "Default Repository",
+                    description = "Default Description",
+                    self_id = component_id or "default_repository",
                     parent_ids = "dashboard_index",
-                    card_image = f"ROOT:{component_id}.jpg"
+                    card_image = f"ROOT:{component_id}.jpg" if component_id else "ROOT:default-image.jpg",
                 ),
                 filename = "index.adoc"
             ),
             leaf = dict(
-                base_template_data = dict( title = component_id ),
+                base_template_data = dict(
+                    title = component_id or "Default Leaf",
+                    self_id = "default_leaf",
+                    parent_ids = "dashboard_index",
+                    description = "Default Leaf Description",
+                    card_image = "ROOT:default-image.jpg"
+                ),
                 filename = "leaf.adoc",
             )
         )
@@ -96,3 +121,10 @@ class ViewFactory:
             template_type_map[component_type]["base_template_data"],
             template_type_map[component_type]["filename"]
         )
+
+
+class PreRenderPlugin:
+    """Interface for a plugin
+    Uses the view template data to parse it and store it using the plugin name"""
+    def process(self, template_data: dict) -> dict:
+        raise NotImplementedError

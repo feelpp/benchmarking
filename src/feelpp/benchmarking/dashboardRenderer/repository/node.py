@@ -32,3 +32,13 @@ class NodeComponentRepository(Repository):
 
         for node in self.data:
             node.render(repository_dir,self.id)
+
+    def upstreamView(self,
+                    dataCb = lambda parent_id, component_id ,component_data : component_data.update({parent_id:component_id}),
+                    leafCb = lambda leaves_info : [leaf_data.update({parent_id:leaf_id}) for (parent_id, leaf_id, leaf_data) in leaves_info] ):
+        for node in self.data:
+            node.upstreamView(dataCb=dataCb,leafCb=leafCb)
+
+        node_results = [node.view.template_data for node in self.data]
+        combined = dataCb("repository",self.id, node_results)
+        self.view.updateTemplateData(combined)

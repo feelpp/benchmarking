@@ -1,8 +1,12 @@
 import pandas as pd
 
 
-class ReframeReport:
-
+class ReframeReportPlugin:
+    @staticmethod
+    def process(template_data):
+        if "rfm" in template_data:
+            return ReframeReportPlugin.runsToDf(template_data["rfm"]["runs"])
+        return pd.DataFrame()
 
     @staticmethod
     def runsToDf(runs):
@@ -36,3 +40,25 @@ class ReframeReport:
             runs_dfs.append(pd.concat([testcases_df,run_df.loc[run_df.index.repeat(perfvar_df.shape[0])].reset_index(drop=True)],axis=1))
         pd.concat(runs_dfs,axis=0).to_csv("ex.csv")
         return pd.concat(runs_dfs,axis=0)
+
+    @staticmethod
+    def mergetLeafData( leaves_info ):
+        dfs = []
+        for parent_id, leaf_id, leaf_data in leaves_info:
+            leaf_df = leaf_data["reframe_runs_df"].copy()
+            leaf_df[parent_id] = leaf_id
+            dfs.append(leaf_df)
+        return {"merged_df": pd.concat(dfs, axis=0, ignore_index=True)}
+
+    @staticmethod
+    def mergeComponentData( parent_id, component_id, children_data ):
+        dfs = []
+        for child in children_data:
+            dfs.append(child["merged_df"])
+        if not dfs:
+            return {}
+
+        combined = pd.concat(dfs, axis=0, ignore_index=True)
+        if parent_id and component_id:
+            combined[parent_id] = component_id
+        return {"merged_df": combined}

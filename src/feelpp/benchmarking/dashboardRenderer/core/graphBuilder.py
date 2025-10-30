@@ -36,7 +36,7 @@ class ComponentGraphBuilder:
     def render(self,base_dir:str, clean=False) -> None:
         pages_dir = os.path.join(base_dir,"pages")
 
-        if clean:
+        if clean and os.path.isdir(pages_dir):
             shutil.rmtree(pages_dir)
 
         self.view.render(pages_dir)
@@ -45,3 +45,13 @@ class ComponentGraphBuilder:
             node_repository.render(pages_dir)
 
         self.repositories.leaf_repository.render(pages_dir)
+
+    def upstreamView(self,
+                    dataCb = lambda parent_id, component_id ,component_data : component_data.update({parent_id:component_id}),
+                    leafCb = lambda leaves_info : [leaf_data.update({parent_id:leaf_id}) for (parent_id, leaf_id, leaf_data) in leaves_info] ):
+
+        for node_repository in self.repositories.node_repositories:
+            node_repository.upstreamView(dataCb,leafCb)
+
+        repository_results = [repo.view.template_data for repo in self.repositories.node_repositories]
+        self.view.updateTemplateData(dataCb(None,None,repository_results))

@@ -56,3 +56,27 @@ class NodeComponent(Component):
                     parent_id = f"{parent_id}-{self.id}",
                     views = children_views
                 )
+
+    def upstreamView( self,views:dict[str,dict[Self,dict]] = None,
+                      dataCb = lambda parent_id, component_id ,component_data : component_data.update({parent_id:component_id}),
+                      leafCb = lambda leaves_info : [leaf_data.update({parent_id:leaf_id}) for (parent_id, leaf_id, leaf_data) in leaves_info] ):
+
+        views = self.views if views is None else views
+
+        if not isinstance(views, dict):
+            return
+
+        child_results = []
+
+        for _, childrenViews in views.items():
+            for child_node, child_views in childrenViews.items():
+                if isinstance(child_views, dict):
+                    child_node.upstreamView(child_views, dataCb, leafCb)
+                    child_results.append(child_node.view.template_data)
+                elif isinstance(child_views, list):
+                    result = leafCb([(l.parent_repository.id,l.id,l.view.template_data) for l in  child_views])
+                    child_results.append(result)
+
+        if child_results:
+            combined = dataCb(self.parent_repository.id, self.id, child_results)
+            self.view.updateTemplateData(combined)

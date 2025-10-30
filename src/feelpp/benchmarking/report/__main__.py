@@ -3,7 +3,7 @@ from feelpp.benchmarking.report.parser import ReportArgParser
 
 import os, subprocess
 
-from feelpp.benchmarking.report.plugins.reframeReport import ReframeReport
+from feelpp.benchmarking.report.plugins.reframeReport import ReframeReportPlugin
 
 
 def main_cli():
@@ -13,7 +13,7 @@ def main_cli():
     dashboard = Dashboard(
         parser.args.config_file,
         plugins={
-            "reframeRunsToDf":ReframeReport.runsToDf
+            "reframe_runs_df":ReframeReportPlugin
         }
     )
 
@@ -22,6 +22,7 @@ def main_cli():
 
     dashboard.printViews()
 
+    dashboard.upstreamView(dataCb = ReframeReportPlugin.mergeComponentData,leafCb = ReframeReportPlugin.mergetLeafData)
 
     dashboard.render(parser.args.module_path,clean=parser.args.reset_docs)
 
@@ -29,5 +30,3 @@ def main_cli():
         os.chdir(parser.args.antora_basepath)
         subprocess.run(["npm","run","antora"])
         subprocess.run(["npm","run","start"])
-
-main_cli()
