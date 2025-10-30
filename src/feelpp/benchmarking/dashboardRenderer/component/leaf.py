@@ -25,11 +25,14 @@ class LeafComponent(Component):
             raise ValueError(f"{parent} is already a parent of {self}")
         self.parents.append(parent)
 
+    def getPermParentIdsStr(self):
+        perms = permutations(self.parents)
+        return ",".join([ f"{perm[0].parent_repository.id}-{'-'.join([p.id for p in perm])}" for perm in perms ])
+
     def render(self,base_dir:str):
 
-        perms = permutations(self.parents)
         self.view.updateTemplateData(dict(
-            parent_ids = ",".join([ f"{perm[0].parent_repository.id}-{'-'.join([p.id for p in perm])}" for perm in perms ])
+            parent_ids = self.getPermParentIdsStr()
         ))
         leaf_dir = os.path.join(base_dir,self.id)
 

@@ -58,6 +58,7 @@ class NodeComponent(Component):
                 )
 
     def upstreamView( self,views:dict[str,dict[Self,dict]] = None,
+                        parent_id = None,
                       dataCb = lambda parent_id, component_id ,component_data : component_data.update({parent_id:component_id}),
                       leafCb = lambda leaves_info : [leaf_data.update({parent_id:leaf_id}) for (parent_id, leaf_id, leaf_data) in leaves_info] ):
 
@@ -71,12 +72,12 @@ class NodeComponent(Component):
         for _, childrenViews in views.items():
             for child_node, child_views in childrenViews.items():
                 if isinstance(child_views, dict):
-                    child_node.upstreamView(child_views, dataCb, leafCb)
+                    child_node.upstreamView(child_views, f"{parent_id}-{self.id}", dataCb, leafCb)
                     child_results.append(child_node.view.template_data)
                 elif isinstance(child_views, list):
-                    result = leafCb([(l.parent_repository.id,l.id,l.view.template_data) for l in  child_views])
+                    result = leafCb(f"{parent_id}-{self.id}-{child_node.id}",[(l.id,l.view.template_data) for l in  child_views])
                     child_results.append(result)
 
         if child_results:
-            combined = dataCb(self.parent_repository.id, self.id, child_results)
+            combined = dataCb(self.parent_repository.id, f"{parent_id}-{self.id}", child_results)
             self.view.updateTemplateData(combined)

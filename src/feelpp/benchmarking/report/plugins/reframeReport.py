@@ -38,27 +38,38 @@ class ReframeReportPlugin:
 
             testcases_df = pd.concat(testcases,axis=0)
             runs_dfs.append(pd.concat([testcases_df,run_df.loc[run_df.index.repeat(perfvar_df.shape[0])].reset_index(drop=True)],axis=1))
-        pd.concat(runs_dfs,axis=0).to_csv("ex.csv")
         return pd.concat(runs_dfs,axis=0)
 
     @staticmethod
-    def mergetLeafData( leaves_info ):
+    def mergetLeafData( parent_id, leaves_info ):
         dfs = []
-        for parent_id, leaf_id, leaf_data in leaves_info:
+        for leaf_id, leaf_data in leaves_info:
             leaf_df = leaf_data["reframe_runs_df"].copy()
-            leaf_df[parent_id] = leaf_id
+            leaf_df["report"] = leaf_id
             dfs.append(leaf_df)
-        return {"merged_df": pd.concat(dfs, axis=0, ignore_index=True)}
+        return {"aggregated_data":{parent_id: pd.concat(dfs, axis=0, ignore_index=True)}}
 
     @staticmethod
-    def mergeComponentData( parent_id, component_id, children_data ):
-        dfs = []
-        for child in children_data:
-            dfs.append(child["merged_df"])
-        if not dfs:
-            return {}
+    def mergeComponentData(parent_id, component_id, children_data):
+        aggregated = {}
 
-        combined = pd.concat(dfs, axis=0, ignore_index=True)
-        if parent_id and component_id:
-            combined[parent_id] = component_id
-        return {"merged_df": combined}
+        for child in children_data:
+            child_agg = child.get("aggregated_data", {})
+            for child_key, df in child_agg.items():
+                # Preserve full hierarchical key as-is
+                if child_key not in aggregated:
+                    aggregated[child_key] = df.copy()
+                else:
+                    # If same full key exists, concatenate instead of overwrite
+                    aggregated[child_key] = pd.concat(
+                        [aggregated[child_key], df], axis=0, ignore_index=True
+                    )
+
+        # Combine all into one merged view for this component
+        if aggregated:
+            combined = pd.concat(aggregated.values(), axis=0, ignore_index=True)
+            if component_id:
+                combined[parent_id] = component_id
+                aggregated[component_id] = combined
+
+        return {"aggregated_data": aggregated}

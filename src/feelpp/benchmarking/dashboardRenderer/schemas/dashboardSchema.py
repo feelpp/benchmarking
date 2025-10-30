@@ -52,7 +52,7 @@ class DashboardSchema(BaseModel):
     dashboard_metadata:Optional[Union[dict[str,str],TemplateInfo]] = TemplateInfo(data={})
     component_map: ComponentMap
     components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
-    views : Dict[str,Dict]
+    views : Dict[str,Union[Dict,str]]
     repositories : Dict[str,Union[dict[str,str],TemplateInfo]]
 
     @staticmethod
