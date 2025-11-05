@@ -46,12 +46,15 @@ class ComponentGraphBuilder:
 
         self.repositories.leaf_repository.render(pages_dir)
 
-    def upstreamView(self,
-                    dataCb = lambda parent_id, component_id ,component_data : component_data.update({parent_id:component_id}),
-                    leafCb = lambda leaves_info : [leaf_data.update({parent_id:leaf_id}) for (parent_id, leaf_id, leaf_data) in leaves_info] ):
+    def upstreamView(self):
+
+        agg_children_data = {}
 
         for node_repository in self.repositories.node_repositories:
-            node_repository.upstreamView(dataCb,leafCb)
+            node_repository.upstreamView()
+            agg_children_data[node_repository.id] = node_repository.view.template_data
 
-        repository_results = [repo.view.template_data for repo in self.repositories.node_repositories]
-        self.view.updateTemplateData(dataCb(None,None,repository_results))
+        self.view.updateTemplateData({"children": agg_children_data})
+
+        # repository_results = [repo.view.template_data for repo in self.repositories.node_repositories]
+        # self.view.updateTemplateData(dataCb(None,None,repository_results))

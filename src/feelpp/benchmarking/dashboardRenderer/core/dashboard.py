@@ -42,7 +42,5 @@ class Dashboard:
     def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
         self.builder.coordinator.patchTemplateInfo(patches,targets,prefix,save)
 
-    def upstreamView(self,
-                     dataCb = lambda component,component_data : component_data,
-                     leafCb = lambda leaves : [leaf.view.template_data for leaf in leaves] ):
-        self.builder.upstreamView(dataCb,leafCb)
+    def upstreamView(self):
+        self.builder.upstreamView()

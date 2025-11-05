@@ -47,29 +47,11 @@ class ReframeReportPlugin:
             leaf_df = leaf_data["reframe_runs_df"].copy()
             leaf_df["report"] = leaf_id
             dfs.append(leaf_df)
-        return {"aggregated_data":{parent_id: pd.concat(dfs, axis=0, ignore_index=True)}}
+        return pd.concat(dfs, axis=0, ignore_index=True)
 
     @staticmethod
-    def mergeComponentData(parent_id, component_id, children_data):
-        aggregated = {}
-
-        for child in children_data:
-            child_agg = child.get("aggregated_data", {})
-            for child_key, df in child_agg.items():
-                # Preserve full hierarchical key as-is
-                if child_key not in aggregated:
-                    aggregated[child_key] = df.copy()
-                else:
-                    # If same full key exists, concatenate instead of overwrite
-                    aggregated[child_key] = pd.concat(
-                        [aggregated[child_key], df], axis=0, ignore_index=True
-                    )
-
-        # Combine all into one merged view for this component
-        if aggregated:
-            combined = pd.concat(aggregated.values(), axis=0, ignore_index=True)
-            if component_id:
-                combined[parent_id] = component_id
-                aggregated[component_id] = combined
-
-        return {"aggregated_data": aggregated}
+    def mergeComponentData(parent_id, component_id, children_data, repo_name=None):
+        combined_df = pd.concat(children_data, axis=0, ignore_index=True)
+        combined_df["parent"] = parent_id
+        combined_df["component"] = component_id
+        return combined_df
