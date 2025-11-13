@@ -75,7 +75,7 @@ class GraphNode:
         return leaves
 
     def clone(self) -> "GraphNode":
-        new_comp = GraphNode(self.id, self.view)
+        new_comp = GraphNode(self.id, self.view.clone() if self.view else None)
         new_comp.repository = self.repository
         new_comp.children = set()
         return new_comp

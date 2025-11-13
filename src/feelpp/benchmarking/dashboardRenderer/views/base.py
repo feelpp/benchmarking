@@ -1,6 +1,7 @@
 from typing import Union
 from datetime import datetime
 import os, shutil
+from copy import deepcopy
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateInfo,TemplateDataFile
 from feelpp.benchmarking.dashboardRenderer.renderer import BaseRendererFactory
 from feelpp.benchmarking.dashboardRenderer.views.templateDataHandler import TemplateDataHandlerFactory
@@ -34,6 +35,19 @@ class View:
 
         for data in template_info.data:
             self.updateTemplateData(data,template_data_dir)
+
+    def clone(self):
+        cloned_view = self.__class__.__new__(self.__class__)
+
+        cloned_view.renderer = self.renderer
+        cloned_view.template_info = self.template_info
+        cloned_view.template_data_dir = self.template_data_dir
+        cloned_view.out_filename = self.out_filename
+        cloned_view.partials = self.partials.copy()
+
+        cloned_view.template_data = deepcopy(self.template_data)
+
+        return cloned_view
 
     def initRenderer(self,base_template_type,template = None):
         renderer = BaseRendererFactory.create(
