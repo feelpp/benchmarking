@@ -41,9 +41,6 @@ class ReframeReportPlugin:
 
         df = df.copy()
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
-
-        perfvalues = sorted(df["perfvalue"].dropna().unique()) if "perfvalue" in df.columns else []
-
         summaries = []
         for date, group in df.groupby("date"):
             entry = {
@@ -53,12 +50,6 @@ class ReframeReportPlugin:
                 "num_failures": group["runs.num_failures"].max(),
                 "result": "pass" if (group["result"] == "pass").all() else "fail",
             }
-
-            for pv in perfvalues:
-                mask = group["perfvalue"] == pv
-                vals = pd.to_numeric(group.loc[mask, "value"], errors="coerce").dropna()
-                entry[pv] = vals.max() if not vals.empty else None
-
             summaries.append(entry)
 
         summary_df = pd.DataFrame(summaries)
@@ -80,6 +71,15 @@ class ReframeReportPlugin:
                     perfvar_df = perfvar_df.rename(index={0:"value",1:"reference",2:"low_threshold",3:"up_threshold",4:"unit",5:"result"})
                     perfvar_df = perfvar_df.T.reset_index().rename(columns={"index":"perfvalue"})
                     perfvar_df[["system","partition","perfvalue"]] = perfvar_df["perfvalue"].str.split(":",expand=True)
+                else:
+                    perfvar_df = pd.DataFrame([{
+                        "system": testcase.get("system", None), "partition": testcase.get("partition", None),
+                        "perfvalue": None,
+                        "value": None, "reference": None, "low_threshold": None, "up_threshold": None, "unit": None,
+                        "result": testcase.get("result", None)
+                    }])
+
+
                 testcase_df = pd.DataFrame.from_dict(testcase,orient="index").T.drop(columns=["perfvalues","check_params"]+list(testcase["check_params"].keys()))
                 testcase_df = testcase_df.rename(columns={c:f"testcases.{c}" for c in testcase_df})
                 param_dict = {}
