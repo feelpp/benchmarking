@@ -10,16 +10,25 @@ class ReframeReportPlugin:
 
     @staticmethod
     def aggregator(node_id, repository_type, template_data, child_results):
-        own = template_data.get("reframe_runs_df", None)
-        dfs = [df for df in child_results if df is not None]
-        if own is not None:
-            dfs.append(own)
-        if not dfs:
-            return None
-        df = pd.concat(dfs, ignore_index=True)
-        if repository_type:
-            df[repository_type] = node_id
-        return df
+        child_dfs = [c.get("data") for c in child_results if c and "data" in c]
+        own_df = template_data.get("reframe_runs_df")
+        if own_df is not None:
+            if repository_type == "leaves":
+                own_df["date"] = pd.to_datetime(template_data["title"],format="%Y_%m_%dT%H_%M_%S")
+            child_dfs.append(own_df)
+
+        if not child_dfs:
+            merged = None
+        else:
+            merged = pd.concat(child_dfs, ignore_index=True)
+            if repository_type:
+                merged[repository_type] = node_id
+
+        return {
+            "data": merged,
+            "repository_type":repository_type,
+            "children_repositories": {c.get("repository_type") for c in child_results}
+        }
 
 
     @staticmethod

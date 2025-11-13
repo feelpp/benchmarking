@@ -125,7 +125,7 @@ class GraphNode:
             self.view.template_data,
             child_results
         )
-        self.view.template_data["aggregated_data"] = result
+        self.view.template_data["aggregated"] = result
         return result
 
 

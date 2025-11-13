@@ -17,8 +17,8 @@ class TemplateDataFile(BaseModel):
 class TemplateInfo(BaseModel):
     template:str = None
     data: Union[
-        List[Union[TemplateDataFile,Dict[str,str]]],
-        Union[TemplateDataFile,Dict[str,str]],
+        List[Union[TemplateDataFile,Dict]],
+        Union[TemplateDataFile,Dict],
     ]
 
     @field_validator("data", mode="before")
