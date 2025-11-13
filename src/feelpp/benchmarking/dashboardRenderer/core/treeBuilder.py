@@ -93,3 +93,29 @@ class ComponentTree(TreeNode):
     def render(self,base_path):
         super().render(base_path,None,renderLeaves=False)
         self.leaf_repository.render(base_path,self.id)
+
+    def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
+        if not targets: #No target specified -> Select latest (by filename order).
+            if len(patches) > 1:
+                raise ValueError("When no patch reports are provided, plot configuration should be of length one")
+            latest_leaf = max(self.leaf_repository, key = lambda report : report.id.split("-")[-1])
+            print(f"Latest target: {latest_leaf.id}")
+            latest_leaf.patchTemplateInfo(patches[0], prefix,save)
+        else:
+            for i, target in enumerate(targets):
+                leaves_to_patch = self.leaf_repository
+                for depth_i, component in enumerate(target):
+                    if len(leaves_to_patch) == 0 :
+                        raise ValueError(f"Component {component} not found")
+                    if component == "all":
+                        leaves_to_patch = leaves_to_patch
+                    elif component == "latest":
+                        leaves_to_patch = [max(leaves_to_patch, key = lambda leaf : leaf.id.split("-")[-1])]
+                    else:
+                        leaves_to_patch = list(filter(lambda leaf: leaf.id.split("-")[depth_i] == component, leaves_to_patch))
+
+                for leaf_to_patch in leaves_to_patch:
+                    patch = patches[i] if len(targets) == len(patches) else patches[0] if len(patches) == 1 else None
+                    if not patch:
+                        raise ValueError("Patches not must either be of length 1 or the same length as targets")
+                    leaf_to_patch.patchTemplateInfo(patch, prefix,save)

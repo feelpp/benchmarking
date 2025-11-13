@@ -4,8 +4,6 @@ from feelpp.benchmarking.dashboardRenderer.views.base import View
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateDataFile
 import os
 
-from itertools import permutations
-
 class LeafComponent(GraphNode):
     """"Class that represents a leaf node in a tree structure."""
     def __init__(self, item_name:str, parent_repository:Repository, parent_ids:list[str], view:View) -> None:

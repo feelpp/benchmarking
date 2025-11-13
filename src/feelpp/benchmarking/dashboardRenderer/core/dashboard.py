@@ -10,6 +10,7 @@ class Dashboard:
         components_config = self.loadConfig(components_config_filepath)
 
         self.tree = ComponentTree( components_config )
+
     def updatePlugins(self,plugins):
         View.plugins.update(plugins)
 
@@ -29,5 +30,5 @@ class Dashboard:
 
         self.tree.render(pages_dir)
 
-    # def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
-    #     self.builder.coordinator.patchTemplateInfo(patches,targets,prefix,save)
+    def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
+        self.tree.patchTemplateInfo(patches,targets,prefix,save)
