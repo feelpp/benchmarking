@@ -1,8 +1,9 @@
 
 == Overview
 
-{{aggregated["data"]}}
-
+{% if "leaves" in aggregated["children_repositories"] %}
+{%include "reportSummaryTable.adoc.j2" %}
+{% endif %}
 
 {% for repository_type in aggregated["children_repositories"] %}
     {% if plots and repository_type in plots %}
@@ -10,6 +11,5 @@
     {% with figures_df = aggregated.get("data"), plots = plots.get(repository_type,None)%}
         {%include "figures.adoc.j2" %}
     {% endwith %}
-
     {% endif %}
 {% endfor %}

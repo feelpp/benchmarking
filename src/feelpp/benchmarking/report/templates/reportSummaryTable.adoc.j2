@@ -1,0 +1,20 @@
+
+{% set perf_columns = aggregated["summary"].columns.tolist() | reject("in", ["date","num_cases","result","num_runs","num_failures"]) | list %}
+
+++++
+<style>
+.scrollable {
+  overflow-x: auto;
+}
+</style>
+++++
+[.scrollable]
+[cols="^1,^2,^1,^1,^1{% for _ in perf_columns %},^1{% endfor %}", options="header"]
+|===
+| | Date | # Runs | # Test Cases | # Failures {% for pv in perf_columns %} | {{ pv }}{% endfor %}
+
+{% for row in aggregated["summary"].to_dict(orient="records") %}
+|{% if row["result"] == "pass" %}🟢{% else %}🔴{% endif %} | {{ row["date"] }} | {{ row["num_runs"] }} | {{ row["num_cases"] }} | {{ row["num_failures"] }}{% for pv in perf_columns %} | {{ "%.4f"|format(row[pv]) if row[pv] is not none else "-" }}{% endfor %}
+{% endfor %}
+
+|===

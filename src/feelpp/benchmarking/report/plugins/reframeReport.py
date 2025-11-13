@@ -27,8 +27,43 @@ class ReframeReportPlugin:
         return {
             "data": merged,
             "repository_type":repository_type,
-            "children_repositories": {c.get("repository_type") for c in child_results}
+            "children_repositories": {c.get("repository_type") for c in child_results},
+            "summary":ReframeReportPlugin.summarizeReports(merged)
         }
+
+    @staticmethod
+    def summarizeReports(df: pd.DataFrame):
+        if df is None or df.empty:
+            return pd.DataFrame()
+
+        if "date" not in df.columns:
+            return pd.DataFrame()
+
+        df = df.copy()
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+
+        perfvalues = sorted(df["perfvalue"].dropna().unique()) if "perfvalue" in df.columns else []
+
+        summaries = []
+        for date, group in df.groupby("date"):
+            entry = {
+                "date": date,
+                "num_runs": group["leaves"].nunique() if "leaves" in group.columns else len(group),
+                "num_cases": group["runs.num_cases"].max(),
+                "num_failures": group["runs.num_failures"].max(),
+                "result": "pass" if (group["result"] == "pass").all() else "fail",
+            }
+
+            for pv in perfvalues:
+                mask = group["perfvalue"] == pv
+                vals = pd.to_numeric(group.loc[mask, "value"], errors="coerce").dropna()
+                entry[pv] = vals.max() if not vals.empty else None
+
+            summaries.append(entry)
+
+        summary_df = pd.DataFrame(summaries)
+        summary_df = summary_df.sort_values("date", ascending=False).reset_index(drop=True)
+        return summary_df
 
 
     @staticmethod
