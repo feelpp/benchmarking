@@ -7,41 +7,41 @@
         "applications": {"use_cases":"machines"}
     },
     "repositories":{
-        "machines": { "title": "Supercomputers", "description": "Systems" },
-        "applications": { "title": "Applications", "description": "Applications" },
-        "use_cases":{"title":"Use Cases", "description":"Use Cases"}
+        "machines": { "title": "Supercomputers", "description": "Systems","card_type":"machine"},
+        "applications": { "title": "Applications", "description": "Applications","card_type":"application"},
+        "use_cases":{"title":"Use Cases", "description":"Use Cases","card_type":"usecase"}
     },
     "components": {
         "machines":{
             "gaya": {
                 "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2",
-                "data":[ { "title": "gaya", "description": "", "nodes":"6","cores_per_node":"128"} ]
+                "data":[ { "title": "gaya", "description": "", "nodes":"6","cores_per_node":"128", "card_type":"machine"} ]
             },
             "discoverer": {
                 "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2",
-                "data":[ { "title": "Discoverer", "description": "", "nodes":"100","cores_per_node":"128"} ]
+                "data":[ { "title": "Discoverer", "description": "", "nodes":"100","cores_per_node":"128","card_type":"machine"} ]
             }
         },
         "applications":{
             "sortingApp": {
                 "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
-                "data":[{ "title": "sortingApp", "description": "", "card_image":"fa-solid fa-arrow-up-wide-short" }]
+                "data":[{ "title": "sortingApp", "description": "", "card_image":"fa-solid fa-arrow-up-wide-short","card_type":"application" }]
             },
             "fibonacci": {
                 "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
-                "data":[{"title": "fibonacci", "description": "", "card_image":"fa-solid fa-fan"}]
+                "data":[{"title": "fibonacci", "description": "", "card_image":"fa-solid fa-fan","card_type":"application" }]
             },
             "matrixvector": {
                 "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
-                "data":[{"title": "matrixvector", "description": "","card_image":"fa-solid fa-table-list" }]
+                "data":[{"title": "matrixvector", "description": "","card_image":"fa-solid fa-table-list","card_type":"application" }]
             },
             "parallelSum": {
                 "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
-                "data":[{"title": "parallelSum", "description": "","card_image":"fa-solid fa-plus" }]
+                "data":[{"title": "parallelSum", "description": "","card_image":"fa-solid fa-plus","card_type":"application" }]
             }
         },
         "use_cases":{
-            "multiplication": { "title":"multiplication" }
+            "multiplication": { "title":"multiplication", "description":"Multiplication", "card_image":"fa-solid fa-times","card_type":"usecase" }
         }
 
     },
