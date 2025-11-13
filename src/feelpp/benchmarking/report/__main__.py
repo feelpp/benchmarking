@@ -12,15 +12,16 @@ def main_cli():
 
     dashboard = Dashboard(
         parser.args.config_file,
-        plugins={
-            "reframe_runs_df":ReframeReportPlugin
-        }
+        plugins=[ ReframeReportPlugin ]
     )
 
     if parser.args.plot_configs:
         dashboard.patchTemplateInfo(parser.args.plot_configs, parser.args.patch_reports, "plots", parser.args.save_patches)
 
     dashboard.print()
+
+
+    dashboard.tree.upstreamViewData(ReframeReportPlugin.aggregator)
     dashboard.render(parser.args.module_path,clean=parser.args.reset_docs)
 
     if parser.args.website:

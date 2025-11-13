@@ -7,7 +7,7 @@ from feelpp.benchmarking.dashboardRenderer.views.templateDataHandler import Temp
 
 class View:
 
-    plugins = {}
+    plugins = []
 
     def __init__(
             self,
@@ -71,8 +71,8 @@ class View:
         self.renderer.render(os.path.join(output_dirpath,filename),self.template_data)
 
     def processPlugins(self):
-        for pluginName, plugin in self.plugins.items():
-            self.template_data.update({pluginName:plugin.process(self.template_data)})
+        for plugin in self.plugins:
+            self.template_data.update(plugin.process(self.template_data))
 
 class ViewFactory:
     @staticmethod

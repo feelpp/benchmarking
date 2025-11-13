@@ -5,8 +5,22 @@ class ReframeReportPlugin:
     @staticmethod
     def process(template_data):
         if "rfm" in template_data:
-            return ReframeReportPlugin.runsToDf(template_data["rfm"]["runs"])
-        return pd.DataFrame()
+            return {"reframe_runs_df" : ReframeReportPlugin.runsToDf(template_data["rfm"]["runs"])}
+        return {"reframe_runs_df" : pd.DataFrame() }
+
+    @staticmethod
+    def aggregator(node_id, repository_type, template_data, child_results):
+        own = template_data.get("reframe_runs_df", None)
+        dfs = [df for df in child_results if df is not None]
+        if own is not None:
+            dfs.append(own)
+        if not dfs:
+            return None
+        df = pd.concat(dfs, ignore_index=True)
+        if repository_type:
+            df[repository_type] = node_id
+        return df
+
 
     @staticmethod
     def runsToDf(runs):

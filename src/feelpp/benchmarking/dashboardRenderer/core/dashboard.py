@@ -5,14 +5,14 @@ from feelpp.benchmarking.dashboardRenderer.views.base import View
 
 
 class Dashboard:
-    def __init__(self,components_config_filepath:str, plugins:dict = {}):
+    def __init__(self,components_config_filepath:str, plugins:list = []):
         self.updatePlugins(plugins)
         components_config = self.loadConfig(components_config_filepath)
 
         self.tree = ComponentTree( components_config )
 
     def updatePlugins(self,plugins):
-        View.plugins.update(plugins)
+        View.plugins.extend(plugins)
 
     def loadConfig(self,filepath):
         with open(filepath,"r") as f:

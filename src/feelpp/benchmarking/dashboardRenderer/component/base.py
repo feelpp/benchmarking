@@ -116,6 +116,19 @@ class GraphNode:
 
             child.render(component_dir,new_parent_id,renderLeaves)
 
+
+    def upstreamViewData(self, aggregator:Callable):
+        child_results = [ child.upstreamViewData(aggregator) for child in self.children ]
+        result = aggregator(
+            self.id,
+            self.repository.id if self.repository else None,
+            self.view.template_data,
+            child_results
+        )
+        self.view.template_data["aggregated_data"] = result
+        return result
+
+
 class TreeNode(GraphNode):
     def __init__(self,id:str, view: View, parent:Optional["GraphNode"] = None) -> None:
         super().__init__(id,view,{parent} if parent else set())
