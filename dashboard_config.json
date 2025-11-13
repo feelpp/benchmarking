@@ -1,294 +1,108 @@
 {
-    "dashboard_metadata":{
-        "title":"Feel++ Benchmarks"
+    "dashboard_metadata": {
+        "title": "feelpp.benchmarking"
     },
     "views": {
-        "machines": {
-            "applications": "use_cases",
-            "use_cases": "applications"
-        },
-        "applications": {
-            "use_cases": "machines"
-        },
-        "use_cases": {
-            "applications": "machines"
-        }
+        "machines": {"applications":"use_cases","use_cases":"applications"},
+        "applications": {"use_cases":"machines"}
     },
-    "component_map": {
-        "component_order": [
-            "machines",
-            "applications",
-            "use_cases"
-        ],
-        "mapping": {
-            "discoverer": {
-                "feelpp_toolbox_heat": {
-                    "ThermalBridgesENISO10211": {
-                        "path": "./reports/feelpp_toolbox_heat/discoverer/ThermalBridgesENISO10211",
-                        "platform": "local",
-                        "template_info":{
-                            "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
-                            "data": [
-                                {
-                                    "filepath": "reframe_report.json",
-                                    "prefix": "rfm"
-                                },
-                                {
-                                    "filepath":"plots.json",
-                                    "prefix":"plots"
-                                },
-                                {
-                                    "filepath":"partials/",
-                                    "action":"copy",
-                                    "prefix":"descriptions"
-                                },
-                                {
-                                    "use_case":"ThermalBridgesENISO10211",
-                                    "application":"Feel++ Toolbox Heat",
-                                    "machine": "Discoverer"
-                                }
-                            ]
-                        }
-                    }
-                }
-            },
-            "gaya": {
-                "feelpp_toolbox_heat": {
-                    "ThermalBridgesENISO10211": {
-                        "path": "./reports/feelpp_toolbox_heat/gaya/ThermalBridgesENISO10211",
-                        "platform": "local",
-                        "template_info":{
-                            "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
-                            "data": [
-                                {
-                                    "filepath": "reframe_report.json",
-                                    "prefix": "rfm"
-                                },
-                                {
-                                    "filepath":"plots.json",
-                                    "prefix":"plots"
-                                },
-                                {
-                                    "use_case":"ThermalBridgesENISO10211",
-                                    "application":"Feel++ Toolbox Heat",
-                                    "machine": "Gaya"
-                                }
-                            ]
-                        }
-                    },
-                    "thermal_bridges_case_3": {
-                        "path": "./reports/feelpp_toolbox_heat/gaya/thermal_bridges_case_3",
-                        "platform": "local",
-                        "template_info":{
-                            "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
-                            "data": [
-                                {
-                                    "filepath": "reframe_report.json",
-                                    "prefix": "rfm"
-                                },
-                                {
-                                    "filepath":"plots.json",
-                                    "prefix":"plots"
-                                },
-                                {
-                                    "use_case":"Thermal Bridges Case 3",
-                                    "application":"Feel++ Toolbox Heat",
-                                    "machine": "Gaya"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "feelpp_toolbox_thermoelectric": {
-                    "HL_31": {
-                        "path": "./reports/feelpp_toolbox_thermoelectric/gaya/HL_31",
-                        "platform": "local",
-                        "template_info":{
-                            "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
-                            "data": [
-                                {
-                                    "filepath": "reframe_report.json",
-                                    "prefix": "rfm"
-                                },
-                                {
-                                    "filepath":"plots.json",
-                                    "prefix":"plots"
-                                },
-                                {
-                                    "use_case":"HL 31",
-                                    "application":"Feel++ Toolbox Thermoelectric",
-                                    "machine": "Gaya"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "feelpp_toolbox_heatfluid": {
-                    "eye": {
-                        "path": "./reports/feelpp_toolbox_heatfluid/gaya/eye",
-                        "platform": "local",
-                        "template_info":{
-                            "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
-                            "data": [
-                                {
-                                    "filepath": "reframe_report.json",
-                                    "prefix": "rfm"
-                                },
-                                {
-                                    "filepath":"plots.json",
-                                    "prefix":"plots"
-                                },
-                                {
-                                    "use_case":"Eye",
-                                    "application":"Feel++ Toolbox Heatfluid",
-                                    "machine": "Gaya"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "feelpp_kub_cem": {
-                    "poznan": {
-                        "path": "./reports/feelpp_kub_cem/gaya/poznan",
-                        "platform": "local",
-                        "template_info":{
-                            "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
-                            "data": [
-                                {
-                                    "filepath": "reframe_report.json",
-                                    "prefix": "rfm"
-                                },
-                                {
-                                    "filepath":"plots.json",
-                                    "prefix":"plots"
-                                },
-                                {
-                                    "use_case":"Poznan",
-                                    "application":"Ktirio Urban Buildings",
-                                    "machine": "Gaya"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "repositories": {
-        "machines": {
-            "data":{
-                "title": "Supercomputers",
-                "description": "EuroHPC systems"
-            }
-        },
-        "applications": {
-            "title": "Applications",
-            "description": "Feel++ applications"
-        },
-        "use_cases": {
-            "data":{
-                "title": "Use Cases",
-                "description": "Simulation Use Cases"
-            }
-        }
+    "repositories":{
+        "machines": { "title": "Supercomputers", "description": "Systems" },
+        "applications": { "title": "Applications", "description": "Applications" },
+        "use_cases":{"title":"Use Cases", "description":"Use Cases"}
     },
     "components": {
-        "machines": {
-            "discoverer": {
-                "title": "Discoverer",
-                "description": "Sofia, Bulgaria"
-            },
+        "machines":{
             "gaya": {
-                "title": "Gaya",
-                "description": "Strasbourg, France"
+                "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2",
+                "data":[ { "title": "gaya", "description": "", "nodes":"6","cores_per_node":"128"} ]
             },
-            "meluxina": {
-                "title": "MeluXina",
-                "description": "Bissen, Luxembourg"
-            },
-            "lumi": {
-                "title": "Lumi",
-                "description": "Kajaani, Finland"
-            },
-            "karolina": {
-                "title": "Karolina",
-                "description": "Ostrava, Czech Republic"
+            "discoverer": {
+                "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2",
+                "data":[ { "title": "Discoverer", "description": "", "nodes":"100","cores_per_node":"128"} ]
             }
         },
-        "use_cases": {
-            "ThermalBridgesENISO10211": {
-                "title": "ThermalBridgesENISO10211",
-                "description": ""
+        "applications":{
+            "sortingApp": {
+                "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+                "data":[{ "title": "sortingApp", "description": "", "card_image":"fa-solid fa-arrow-up-wide-short" }]
             },
-            "busbar2d": {
-                "title": "Busbar 2D",
-                "description": "Busbar 2D simulation"
+            "fibonacci": {
+                "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+                "data":[{"title": "fibonacci", "description": "", "card_image":"fa-solid fa-fan"}]
             },
-            "busbar3d": {
-                "title": "Busbar 3D",
-                "description": "Busbar 3D simulation"
+            "matrixvector": {
+                "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+                "data":[{"title": "matrixvector", "description": "","card_image":"fa-solid fa-table-list" }]
             },
-            "thermal_bridges_case_1": {
-                "title": "Thermal Bridges Case 1",
-                "description": "Thermal bridges case 1 simulation"
-            },
-            "thermal_bridges_case_2": {
-                "title": "Thermal Bridges Case 2",
-                "description": "Thermal bridges case 2 simulation"
-            },
-            "thermal_bridges_case_3": {
-                "title": "Thermal Bridges Case 3",
-                "description": "Thermal bridges case 3 simulation"
-            },
-            "thermal_bridges_case_4": {
-                "title": "Thermal Bridges Case 4",
-                "description": "Thermal bridges case 4 simulation"
-            },
-            "laminar2d": {
-                "title": "Laminar 2D",
-                "description": "Laminar 2D simulation"
-            },
-            "laminar3d": {
-                "title": "Laminar 3D",
-                "description": "Laminar 3D simulation"
-            },
-            "quarter_turn_3d": {
-                "title": "Quarter Turn 3D",
-                "description": "Quarter Turn 3D simulation"
-            },
-            "HL_31": {
-                "title": "HL-31",
-                "description": "HL-31"
-            },
-            "poznan": {
-                "title": "Poznan",
-                "description": "Poznan, Poland"
-            },
-            "eye": {
-                "title": "Eye",
-                "description": "steady aqueous humor (AH) flow in the posterior and anterior chambers of the human eyeball, coupled with the overall heat transfer"
+            "parallelSum": {
+                "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+                "data":[{"title": "parallelSum", "description": "","card_image":"fa-solid fa-plus" }]
             }
         },
-        "applications": {
-            "feelpp_toolbox_heat": {
-                "title": "Feel++ heat toolbox",
-                "description": "Feel++ heat toolbox"
-            },
-            "feelpp_toolbox_electric": {
-                "title": "Feel++ electric toolbox",
-                "description": "Feel++ electric toolbox"
-            },
-            "feelpp_toolbox_heatfluid": {
-                "title": "Feel++ Heat Fluid toolbox",
-                "description": "Feel++ Heat Fluid toolbox"
-            },
-            "feelpp_toolbox_thermoelectric": {
-                "title": "Feel++ Thermo-electric toolbox",
-                "description": "Feel++ Thermo-electric toolbox"
-            },
-            "feelpp_kub_cem": {
-                "title": "KUB",
-                "description": "Ktirio Urban Buildings"
+        "use_cases":{
+            "multiplication": { "title":"multiplication" }
+        }
+
+    },
+    "component_map": {
+        "component_order": [ "machines", "applications", "use_cases" ],
+        "mapping": {
+            "gaya": {
+                "sortingApp": {
+                    "path": "./reports/sortingApp/sorting/gaya",
+                    "platform": "local",
+                    "template_info": {
+                        "template": "./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+                        "data": [
+                            { "filepath": "reframe_report.json", "prefix": "rfm" },
+                            { "filepath": "plots.json", "prefix": "plots" },
+                            { "filepath": "partials/", "action": "copy", "prefix": "descriptions" },
+                            { "application": "sortingApp", "machine": "gaya" }
+                        ]
+                    }
+                },
+                "fibonacci": {
+                    "path": "./reports/fibonacci/Fibonacci/gaya",
+                    "platform": "local",
+                    "template_info": {
+                        "template": "./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+                        "data": [
+                            { "filepath": "reframe_report.json", "prefix": "rfm" },
+                            { "filepath": "plots.json", "prefix": "plots" },
+                            { "filepath": "partials/", "action": "copy", "prefix": "descriptions" },
+                            { "application": "fibonacci", "machine": "gaya" }
+                        ]
+                    }
+                },
+                "matrixvector": {
+                    "multiplication":{
+                        "path": "./reports/matrixvector/Multiplication/gaya",
+                        "platform": "local",
+                        "template_info": {
+                            "template": "./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+                            "data": [
+                                { "filepath": "reframe_report.json", "prefix": "rfm" },
+                                { "filepath": "plots.json", "prefix": "plots" },
+                                { "filepath": "partials/", "action": "copy", "prefix": "descriptions" },
+                                { "application": "matrixvector", "machine": "gaya", "use_case":"multiplication"}
+                            ]
+                        }
+                    }
+                },
+                "parallelSum": {
+                    "path": "./reports/parallelSum/parallel_sum/gaya",
+                    "platform": "local",
+                    "template_info": {
+                        "template": "./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+                        "data": [
+                            { "filepath": "reframe_report.json", "prefix": "rfm" },
+                            { "filepath": "plots.json", "prefix": "plots" },
+                            { "filepath": "partials/", "action": "copy", "prefix": "descriptions" },
+                            { "application": "parallelSum", "machine": "gaya" }
+                        ]
+                    }
+                }
             }
         }
     }
