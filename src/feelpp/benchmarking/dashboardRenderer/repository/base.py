@@ -1,4 +1,4 @@
-from feelpp.benchmarking.dashboardRenderer.component.base import Component
+from feelpp.benchmarking.dashboardRenderer.component.base import GraphNode
 
 class Repository:
     """ Base class for repositories.
@@ -9,7 +9,7 @@ class Repository:
         Args:
             id (str): The id of the repository
         """
-        self.data:list[Component] = []
+        self.data:list[GraphNode] = []
         self.id:str = id
 
     def __iter__(self) -> iter:
@@ -18,7 +18,7 @@ class Repository:
     def __repr__(self) -> str:
         return f"< {self.id} : [{', '.join([str(d) for d in self.data])}] >"
 
-    def add(self, item:Component) -> None:
+    def add(self, item:GraphNode) -> None:
         """ Add an item to the repository, ensuring it is unique
         Args:
             item (object): The component to add
@@ -26,7 +26,7 @@ class Repository:
         if item not in self.data and item.id not in [x.id for x in self.data]:
             self.data.append(item)
 
-    def get(self, id:str) -> Component:
+    def get(self, id:str) -> GraphNode:
         """ Get an item by its id
         Args:
             id (str): The id of the item to get
@@ -43,7 +43,7 @@ class Repository:
         """
         return id in [x.id for x in self.data]
 
-    def __getitem__(self,index:int) -> Component:
+    def __getitem__(self,index:int) -> GraphNode:
         return self.data[index]
 
     def __len__(self):

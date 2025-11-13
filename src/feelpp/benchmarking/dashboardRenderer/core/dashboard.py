@@ -1,7 +1,6 @@
-from feelpp.benchmarking.dashboardRenderer.core.graphBuilder import ComponentGraphBuilder
-from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory
+from feelpp.benchmarking.dashboardRenderer.core.treeBuilder import ComponentTree
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema
-import json
+import json, os, shutil
 from feelpp.benchmarking.dashboardRenderer.views.base import View
 
 
@@ -9,11 +8,8 @@ class Dashboard:
     def __init__(self,components_config_filepath:str, plugins:dict = {}):
         self.updatePlugins(plugins)
         components_config = self.loadConfig(components_config_filepath)
-        self.builder = ComponentGraphBuilder(
-            components_config,
-            ViewFactory.create("home",components_config.dashboard_metadata)
-        )
 
+        self.tree = ComponentTree( components_config )
     def updatePlugins(self,plugins):
         View.plugins.update(plugins)
 
@@ -22,25 +18,16 @@ class Dashboard:
             components_config = DashboardSchema(**json.load(f))
         return components_config
 
+    def print(self):
+        self.tree.print()
+
     def render(self,base_path,clean=False):
-        self.builder.render(base_path,clean)
+        pages_dir = os.path.join(base_path,"pages")
 
-    def printViews(self,repository=None,component=None):
-        item = self.builder.repositories
-        if repository and component:
-            print(repository)
-            print("\t",component)
-            item = item.getRepository(repository).get(component)
-        elif repository:
-            print(repository)
-            item = item.getRepository(repository)
-        elif component:
-            print(component)
-            item = item.getComponent(component)
-        item.printViews()
+        if clean and os.path.isdir(pages_dir):
+            shutil.rmtree(pages_dir)
 
-    def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
-        self.builder.coordinator.patchTemplateInfo(patches,targets,prefix,save)
+        self.tree.render(pages_dir)
 
-    def upstreamView(self):
-        self.builder.upstreamView()
+    # def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
+    #     self.builder.coordinator.patchTemplateInfo(patches,targets,prefix,save)

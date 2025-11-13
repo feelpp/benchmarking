@@ -12,50 +12,6 @@ class TreeUtils:
         return tree_list
 
 
-    @staticmethod
-    def permuteTreeLevels(tree, permutation):
-        """Permute the levels of an N-level nested dictionary tree"""
-        branches = []
-
-        def traverse(subtree, path):
-            if isinstance(subtree, dict) and subtree:
-                if all(isinstance(v, dict) for v in subtree.values()) or all(not isinstance(v, dict) for v in subtree.values()):
-                    for key, child in subtree.items():
-                        traverse(child, path + [key])
-                else:
-                    branches.append((path+["leaf"], subtree))
-            else:
-                branches.append((path, subtree))
-
-        traverse(tree, [])
-
-        N = len(permutation)
-        for path, leaf in branches:
-            if len(path) != N:
-                raise ValueError(f"Branch {path} has {len(path)} levels but expected {N}.")
-
-        new_branches = []
-        for path, leaf in branches:
-            new_path = [None] * N
-            for new_level, old_level in enumerate(permutation):
-                new_path[new_level] = path[old_level]
-            new_branches.append((new_path, leaf))
-
-        new_tree = {}
-        for path, leaf in new_branches:
-            current = new_tree
-            for key in path[:-1]:
-                if key not in current:
-                    current[key] = {}
-
-                elif not isinstance(current[key], dict):
-                    raise ValueError(f"Conflict encountered at key '{key}' while rebuilding the tree.")
-                current = current[key]
-
-            current[path[-1]] = leaf
-
-        return new_tree
-
     def mergeDicts(a, b):
         """Recursively merge dictionaries a and b."""
         result = a.copy()
@@ -65,3 +21,55 @@ class TreeUtils:
             else:
                 result[key] = value
         return result
+
+    @staticmethod
+    def permuteTree(root, perm, permuteLeaves=False):
+        def collect_paths(node, path=[]):
+            path = path + [node]
+            if node.isLeaf():
+                return [path]
+
+            paths = []
+            for c in node.children:
+                paths.extend(collect_paths(c, path))
+            return paths
+
+        leaf_paths = collect_paths(root)
+
+        new_root = root.clone()
+
+        for path in leaf_paths:
+            path_below_root = path[1:]  # exclude root
+            if not path_below_root:
+                continue
+
+            # If we don't want to permute leaves, exclude the last node from permutation
+            if not permuteLeaves:
+                fixed_leaf = path_below_root[-1]
+                path_to_permute = path_below_root[:-1]
+            else:
+                fixed_leaf = None
+                path_to_permute = path_below_root
+
+            parent_node = new_root
+            current_level = {child.id: child for child in new_root.children}
+
+            # Build permuted path
+            for idx in perm:
+                if idx >= len(path_to_permute):
+                    continue  # skip missing levels
+
+                orig_node = path_to_permute[idx]
+                node_found = current_level.get(orig_node.id)
+                if node_found is None:
+                    node_found = orig_node.clone()
+                    parent_node.addChild(node_found)
+
+                parent_node = node_found
+                current_level = {child.id: child for child in node_found.children}
+
+            if not permuteLeaves and fixed_leaf is not None:
+                if fixed_leaf.id not in {c.id for c in parent_node.children}:
+                    parent_node.addChild(fixed_leaf)
+
+        return new_root

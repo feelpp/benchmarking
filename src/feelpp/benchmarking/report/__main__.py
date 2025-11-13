@@ -20,9 +20,7 @@ def main_cli():
     if parser.args.plot_configs:
         dashboard.patchTemplateInfo(parser.args.plot_configs, parser.args.patch_reports, "plots", parser.args.save_patches)
 
-    dashboard.printViews()
-
-    dashboard.upstreamView()
+    dashboard.print()
     dashboard.render(parser.args.module_path,clean=parser.args.reset_docs)
 
     if parser.args.website:
