@@ -1,6 +1,6 @@
 
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateInfo,TemplateDataFile
-import json, os
+import json, os, warnings
 from typing import Union
 
 class DataHandler:
@@ -14,6 +14,9 @@ class TemplateDataFileHandler(DataHandler):
     def extractData(self, data: TemplateDataFile, partials:dict = {}) -> dict:
         filepath = os.path.join(self.template_data_dir,data.filepath) if self.template_data_dir else data.filepath
         if data.action == "input":
+            if not os.path.exists(filepath):
+                warnings.warn(f"{filepath} does not exist. Skipping")
+                return {data.prefix}
             with open(filepath,"r") as f:
                 if data.format == "json":
                     template_data = json.load(f)
