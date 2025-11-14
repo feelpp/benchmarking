@@ -1,7 +1,7 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
-from feelpp.benchmarking.dashboardRenderer.schemas.ConfigPlots import Plot
+from feelpp.benchmarking.dashboardRenderer.schemas.configPlots import Plot
 import os, re
 
 class Sanity(BaseModel):
