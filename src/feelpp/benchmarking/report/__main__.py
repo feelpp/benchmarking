@@ -3,8 +3,13 @@ from feelpp.benchmarking.report.parser import ReportArgParser
 
 import os, subprocess
 
+import feelpp.benchmarking
 from feelpp.benchmarking.report.plugins.reframeReport import ReframeReportPlugin
 
+class VersionPlugin:
+    @staticmethod
+    def process(template_data):
+        return {"feelpp_benchmarking_version":feelpp.benchmarking.__version__}
 
 def main_cli():
     parser = ReportArgParser()
@@ -12,7 +17,7 @@ def main_cli():
 
     dashboard = Dashboard(
         parser.args.config_file,
-        plugins=[ ReframeReportPlugin ]
+        plugins=[ ReframeReportPlugin,VersionPlugin ]
     )
 
     if parser.args.plot_configs:
