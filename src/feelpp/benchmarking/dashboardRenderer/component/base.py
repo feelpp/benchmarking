@@ -105,7 +105,8 @@ class GraphNode:
             component_dir = os.path.join(base_dir,self.id)
             self.view.updateTemplateData(dict(
                 parent_ids = parent_id,
-                self_id = new_parent_id
+                self_id_path = new_parent_id,
+                self_id = self.id
             ))
 
 

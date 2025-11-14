@@ -108,7 +108,7 @@ class ViewFactory:
                 base_template_data = dict(
                     title = "Default Repository",
                     description = "Default Description",
-                    self_id = component_id or "default_repository",
+                    self_id_path = component_id or "default_repository",
                     parent_ids = "dashboard_index",
                     card_image = f"ROOT:{component_id}.jpg" if component_id else "ROOT:default-image.jpg",
                 ),
@@ -117,7 +117,7 @@ class ViewFactory:
             leaf = dict(
                 base_template_data = dict(
                     title = component_id or "Default Leaf",
-                    self_id = "default_leaf",
+                    self_id_path = "default_leaf",
                     parent_ids = "dashboard_index",
                     description = "Default Leaf Description",
                     card_image = "ROOT:default-image.jpg"
