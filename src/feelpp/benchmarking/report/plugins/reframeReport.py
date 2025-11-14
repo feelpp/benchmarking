@@ -50,11 +50,11 @@ class ReframeReportPlugin:
         if repository_type == "leaves":
             return leaf_summary.sort_values("date", ascending=False).reset_index().set_index("date")
 
-        repo_summary = leaf_summary.groupby("repo_value").agg(
+        repo_summary = leaf_summary.sort_values("date", ascending=False).groupby("repo_value").agg(
             num_runs=("num_runs", "sum"),
             num_cases=("num_cases", "sum"),
             num_failures=("num_failures", "sum"),
-            result=("result", lambda x: "pass" if (x == "pass").all() else "fail"),
+            result=("result", "first")
         )
 
         return repo_summary.reset_index().rename(columns={"repo_value": repository_type}).set_index(repository_type)
