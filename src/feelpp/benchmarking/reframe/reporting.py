@@ -31,9 +31,9 @@ class WebsiteConfigCreator:
                     "use_cases": { "applications": "machines" }
                 },
                 repositories={
-                    "machines": { "title": "Supercomputers", "description": "Systems" },
-                    "applications": { "title": "Applications", "description": "Applications" },
-                    "use_cases": { "title": "Use Cases", "description": "Use Cases" }
+                    "machines": { "title": "Supercomputers", "description": "Systems","card_type":"machine" },
+                    "applications": { "title": "Applications", "description": "Applications","card_type":"application" },
+                    "use_cases": { "title": "Use Cases", "description": "Use Cases","card_type":"usecase" }
                 },
                 components={
                     "machines":{},
