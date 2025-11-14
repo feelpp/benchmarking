@@ -22,7 +22,7 @@ class TemplateDataFile(BaseModel):
         return self
 
 class TemplateInfo(BaseModel):
-    template:str = None
+    template:Optional[str] = None
     data: Union[
         List[Union[TemplateDataFile,Dict]],
         Union[TemplateDataFile,Dict],
@@ -72,15 +72,21 @@ class TemplateDefaults(BaseModel):
     @classmethod
     def castRepoTemplateInfo(cls,v):
         if not isinstance(v,TemplateInfo):
-            return TemplateInfo(data=v.get("data",[]), template = v.get("template",None))
-        return v
+            if "data" in v:
+                v = TemplateInfo(data=v.get("data",[]), template = v.get("template",None))
+            else:
+                v = TemplateInfo(data = v)
+            return v
 
     @field_validator("components",mode="after")
     @classmethod
     def castNodeTemplateInfo(cls,v):
         for node, template_info in v.items():
             if not isinstance(v,TemplateInfo):
-                v[node] = TemplateInfo(data=template_info.get("data",[]), template = template_info.get("template",None))
+                if "data" in template_info:
+                    v[node] = TemplateInfo(data=template_info.get("data",[]), template = template_info.get("template",None))
+                else:
+                    v[node] = TemplateInfo(data = template_info)
         return v
 
 
@@ -134,7 +140,6 @@ class DashboardSchema(BaseModel):
                 if component_repo in self.template_defaults.components:
                     template = self.template_defaults.components[component_repo].template or template
                     component_data.data += self.template_defaults.components[component_repo].data
-
                 if not component_data.template:
                     component_data.template = template
 
