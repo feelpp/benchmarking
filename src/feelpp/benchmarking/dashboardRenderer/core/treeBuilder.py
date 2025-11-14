@@ -14,7 +14,7 @@ class ComponentTree(TreeNode):
         self.levels = components_config.component_map.component_order
 
         self.repositories = self.createRepositories(components_config.repositories)
-        self.leaf_repository = LeafComponentRepository("leaves",components_config.component_map.mapping)
+        self.leaf_repository = LeafComponentRepository("leaves",components_config.component_map.mapping, components_config.template_defaults.leaves)
 
         self.buildTree(components_config)
 

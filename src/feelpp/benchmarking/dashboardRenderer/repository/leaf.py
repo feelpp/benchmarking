@@ -1,12 +1,12 @@
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import ComponentMap, LeafMetadata
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import ComponentMap, LeafMetadata,TemplateInfo
 from feelpp.benchmarking.dashboardRenderer.repository.leafLoader import LeafLoaderFactory
 
 import os
 
 class LeafComponentRepository(Repository):
     """ Repository for Leaf Components. """
-    def __init__(self, id:str, component_mapping:ComponentMap) -> None:
+    def __init__(self, id:str, component_mapping:ComponentMap, default_template_info: TemplateInfo = None) -> None:
         """
         Args:
             id (str): Unique identifier for the repository.
@@ -14,6 +14,10 @@ class LeafComponentRepository(Repository):
         """
         super().__init__(id)
         for leaf_config, parent_ids in self.collectMetadata(component_mapping):
+            if default_template_info:
+                if not leaf_config.template_info.template:
+                    leaf_config.template_info.template = default_template_info.template
+                leaf_config.template_info.data += default_template_info.data
             LeafLoaderFactory.create(leaf_config).load(self, parent_ids)
 
     @staticmethod

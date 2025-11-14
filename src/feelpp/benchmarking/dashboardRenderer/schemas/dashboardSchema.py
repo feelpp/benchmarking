@@ -2,6 +2,13 @@ from pydantic import BaseModel, field_validator, model_validator
 from typing import List, Dict, Optional, Union
 
 
+def castTemplateInfo(v):
+    for node, template_info in v.items():
+        if not isinstance(template_info,TemplateInfo):
+            v[node] = TemplateInfo(data=template_info)
+    return v
+
+
 class TemplateDataFile(BaseModel):
     prefix: Optional[str] = ""
     format: str = None
@@ -40,12 +47,41 @@ class TemplateInfo(BaseModel):
 class LeafMetadata(BaseModel):
     path: Optional[str] = None
     platform: Optional[str] = "local"
-    template_info:Optional[Union[Dict[str,str],TemplateInfo]] = TemplateInfo(data = {})
+    template_info:Optional[Union[Dict,TemplateInfo]] = TemplateInfo(data = {})
+
+
+    @field_validator("template_info",mode="after")
+    @classmethod
+    def castNodeTemplateInfo(cls,v):
+        if not isinstance(v,TemplateInfo):
+            return TemplateInfo(data=v)
+        return v
 
 
 class ComponentMap(BaseModel):
     component_order: List[str]
     mapping: Dict[str,Dict]
+
+class TemplateDefaults(BaseModel):
+    repositories: Optional[Union[Dict,TemplateInfo]] = TemplateInfo(data = {})
+    components: Optional[Union[Dict[str,Union[Dict,TemplateInfo]], TemplateInfo]] = {}
+    leaves: Optional[Union[Dict,TemplateInfo]] = TemplateInfo(data = {})
+
+
+    @field_validator("repositories","leaves",mode="after")
+    @classmethod
+    def castRepoTemplateInfo(cls,v):
+        if not isinstance(v,TemplateInfo):
+            return TemplateInfo(data=v.get("data",[]), template = v.get("template",None))
+        return v
+
+    @field_validator("components",mode="after")
+    @classmethod
+    def castNodeTemplateInfo(cls,v):
+        for node, template_info in v.items():
+            if not isinstance(v,TemplateInfo):
+                v[node] = TemplateInfo(data=template_info.get("data",[]), template = template_info.get("template",None))
+        return v
 
 
 class DashboardSchema(BaseModel):
@@ -54,14 +90,7 @@ class DashboardSchema(BaseModel):
     components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
     views : Dict[str,Union[Dict,str]]
     repositories : Dict[str,Union[dict[str,str],TemplateInfo]]
-
-    @staticmethod
-    def castTemplateInfo(v):
-        for node, template_info in v.items():
-            if not isinstance(template_info,TemplateInfo):
-                v[node] = TemplateInfo(data=template_info)
-        return v
-
+    template_defaults: Optional[TemplateDefaults] = TemplateDefaults()
 
     @field_validator("dashboard_metadata",mode="after")
     @classmethod
@@ -73,12 +102,40 @@ class DashboardSchema(BaseModel):
     @field_validator("repositories",mode="after")
     @classmethod
     def castRepoTemplateInfo(cls,v):
-        return cls.castTemplateInfo(v)
+        return castTemplateInfo(v)
 
     @field_validator("components",mode="after")
     @classmethod
     def castNodeTemplateInfo(cls,v):
         for repo, nodes in v.items():
-            v[repo] = cls.castTemplateInfo(nodes)
+            v[repo] = castTemplateInfo(nodes)
         return v
 
+    @model_validator(mode="after")
+    def setTemplateDefaults(self):
+
+        #Validate that all components keys are existing repositories
+        for k in self.template_defaults.components:
+            if k not in ["all"] + list(self.repositories.keys()):
+                raise ValueError(f"Template defaults: {k} does not exist in repositories")
+
+        for repo, repo_data in self.repositories.items():
+            if not repo_data.template:
+                repo_data.template = self.template_defaults.repositories.template
+            repo_data.data += self.template_defaults.repositories.data
+
+        for component_repo, components in self.components.items():
+            for component_id, component_data in components.items():
+                template = None
+                if "all" in self.template_defaults.components:
+                    template = self.template_defaults.components["all"].template
+                    component_data.data += self.template_defaults.components["all"].data
+
+                if component_repo in self.template_defaults.components:
+                    template = self.template_defaults.components[component_repo].template or template
+                    component_data.data += self.template_defaults.components[component_repo].data
+
+                if not component_data.template:
+                    component_data.template = template
+
+        return self
