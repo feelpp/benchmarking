@@ -24,37 +24,40 @@ class ReframeReportPlugin:
             if repository_type:
                 merged[repository_type] = node_id
 
+        children_repositories = {c.get("repository_type") for c in child_results}
+
         return {
             "data": merged,
             "repository_type":repository_type,
-            "children_repositories": {c.get("repository_type") for c in child_results},
-            "summary":ReframeReportPlugin.summarizeReports(merged)
+            "children_repositories": children_repositories,
+            "summary":[ReframeReportPlugin.summarizeReports(merged,child_repo_type) for child_repo_type in children_repositories]
         }
 
     @staticmethod
-    def summarizeReports(df: pd.DataFrame):
-        if df is None or df.empty:
+    def summarizeReports(df: pd.DataFrame, repository_type):
+        if df is None or df.empty or not repository_type:
             return pd.DataFrame()
 
-        if "date" not in df.columns:
-            return pd.DataFrame()
+        leaf_summary = df.groupby("leaves").agg(
+            num_runs=("runs.run_index", lambda x: x.max() + 1),
+            date=("date", "first"),
+            num_cases=("runs.num_cases", "first"),
+            num_failures=("runs.num_failures", "first"),
+            result=("result", lambda x: "pass" if (x == "pass").all() else "fail"),
+            repo_value=(repository_type, "first"),
+        )
 
-        df = df.copy()
-        df["date"] = pd.to_datetime(df["date"], errors="coerce")
-        summaries = []
-        for date, group in df.groupby("date"):
-            entry = {
-                "date": date,
-                "num_runs": group["leaves"].nunique() if "leaves" in group.columns else len(group),
-                "num_cases": group["runs.num_cases"].max(),
-                "num_failures": group["runs.num_failures"].max(),
-                "result": "pass" if (group["result"] == "pass").all() else "fail",
-            }
-            summaries.append(entry)
+        if repository_type == "leaves":
+            return leaf_summary.sort_values("date", ascending=False).reset_index().set_index("date")
 
-        summary_df = pd.DataFrame(summaries)
-        summary_df = summary_df.sort_values("date", ascending=False).reset_index(drop=True)
-        return summary_df
+        repo_summary = leaf_summary.groupby("repo_value").agg(
+            num_runs=("num_runs", "sum"),
+            num_cases=("num_cases", "sum"),
+            num_failures=("num_failures", "sum"),
+            result=("result", lambda x: "pass" if (x == "pass").all() else "fail"),
+        )
+
+        return repo_summary.reset_index().rename(columns={"repo_value": repository_type}).set_index(repository_type)
 
 
     @staticmethod

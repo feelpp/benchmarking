@@ -11,10 +11,10 @@
 {%for repo_table in aggregated["summary"]%}
 
 [.scrollable]
-[cols="1,2,1,1,1", options="header"]
+[cols="^1,^2,^1,^1,^1{% for _ in perf_columns %},^1{% endfor %}", options="header"]
 |===
 
-| | {{repo_table.index.name.upper()}} | # Runs | # Test Cases | # Failures
+| | Date | # Runs | # Test Cases | # Failures
 {% for row in repo_table.reset_index().to_dict(orient="records") %}
 |{% if row["result"] == "pass" %}🟢{% else %}🔴{% endif %} | {{ row[repo_table.index.name] }} | {{ row["num_runs"] }} | {{ row["num_cases"] }} | {{ row["num_failures"] }}
 {% endfor %}
