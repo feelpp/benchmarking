@@ -10,6 +10,21 @@ class WebsiteConfigCreator:
         else:
             self.config = dict(
                 dashboard_metadata = {"title":"feelpp.benchmarking"},
+                template_defaults = {
+                    "leaves":{
+                        "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+                        "data":[
+                            { "filepath": "reframe_report.json", "prefix": "rfm" },
+                            { "filepath":"plots.json", "prefix":"plots" },
+                            { "filepath":"partials/", "action":"copy", "prefix":"descriptions" }
+                        ]
+                    },
+                    "components":{
+                        "machines":{"card_type":"machine"},
+                        "applications":{"card_type":"application"},
+                        "use_cases":{"card_type":"usecase"}
+                    }
+                },
                 views = {
                     "machines": { "applications": "use_cases", "use_cases": "applications" },
                     "applications": { "use_cases": "machines" },
@@ -41,15 +56,7 @@ class WebsiteConfigCreator:
         self.config["component_map"]["mapping"][machine][application][use_case] = {
             "path":report_itempath,
             "platform":"local",
-            "template_info":{ #TODO: WARNING THIS WILL BREAK IF EXECUTED ELSEWHERE...
-                "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
-                "data":[
-                    { "filepath": "reframe_report.json", "prefix": "rfm" },
-                    { "filepath":"plots.json", "prefix":"plots" },
-                    { "filepath":"partials/", "action":"copy", "prefix":"descriptions" },
-                    { "use_case":use_case, "application":application, "machine": machine }
-                ]
-            }
+            "template_info":{ "use_case":use_case, "application":application, "machine": machine }
         }
 
     def updateMachine(self,machine):
