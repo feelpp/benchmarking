@@ -30,7 +30,7 @@ class ReframeReportPlugin:
             "data": merged,
             "repository_type":repository_type,
             "children_repositories": children_repositories,
-            "summary":[ReframeReportPlugin.summarizeReports(merged,child_repo_type) for child_repo_type in children_repositories]
+            "summary":{child_repo_type : ReframeReportPlugin.summarizeReports(merged,child_repo_type) for child_repo_type in children_repositories}
         }
 
     @staticmethod

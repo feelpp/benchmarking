@@ -106,7 +106,8 @@ class GraphNode:
             self.view.updateTemplateData(dict(
                 parent_ids = parent_id,
                 self_id_path = new_parent_id,
-                self_id = self.id
+                self_id = self.id,
+                self_repo_type = self.repository.id if self.repository else None
             ))
 
 

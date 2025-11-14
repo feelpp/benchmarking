@@ -8,13 +8,13 @@
 
 
 
-{%for repo_table in aggregated["summary"]%}
+{%for child_repo_type,repo_table in aggregated["summary"].items()%}
 
 [.scrollable]
 [cols="^1,^2,^1,^1,^1{% for _ in perf_columns %},^1{% endfor %}", options="header"]
 |===
 
-| | Date | # Runs | # Test Cases | # Failures
+| *{{ child_repo_type }}* | Date | # Runs | # Test Cases | # Failures
 {% for row in repo_table.reset_index().to_dict(orient="records") %}
 |{% if row["result"] == "pass" %}🟢{% else %}🔴{% endif %} | {{ row[repo_table.index.name] }} | {{ row["num_runs"] }} | {{ row["num_cases"] }} | {{ row["num_failures"] }}
 {% endfor %}
