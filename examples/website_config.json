@@ -1,0 +1,87 @@
+{
+    "dashboard_metadata": {
+        "template": "./src/feelpp/benchmarking/report/templates/dashboardOverview.adoc.j2",
+        "data":[
+            {"title": "feelpp.benchmarking"}
+        ]
+    },
+    "views": {
+        "machines": {"applications":"use_cases","use_cases":"applications"},
+        "applications": {"use_cases":"machines"}
+    },
+    "template_defaults":{
+        "repositories":{
+            "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+            "data":[{"filepath":"./reports/overview.json","prefix":"plots"}]
+        },
+        "components":{
+            "all":{
+                "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+                "data":{"filepath":"./reports/overview.json","prefix":"plots"}
+            },
+            "machines":{
+                "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2"
+            }
+        },
+        "leaves":{
+            "template": "./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+            "data": [
+                { "filepath": "reframe_report.json", "prefix": "rfm" },
+                { "filepath": "plots.json", "prefix": "plots" },
+                { "filepath": "partials/", "action": "copy", "prefix": "descriptions" }
+            ]
+        }
+    },
+    "repositories":{
+        "machines": {"title": "Supercomputers", "description": "Systems","card_type":"machine"},
+        "applications": {"title": "Applications", "description": "Applications","card_type":"application"},
+        "use_cases":{"title":"Use Cases", "description":"Use Cases","card_type":"usecase"}
+    },
+    "components": {
+        "machines":{
+            "gaya": { "title": "gaya", "description": "", "nodes":"6","cores_per_node":"128", "card_type":"machine"},
+            "discoverer": { "title": "Discoverer", "description": "", "nodes":"100","cores_per_node":"128","card_type":"machine"}
+        },
+        "applications":{
+            "sortingApp": { "title": "sortingApp", "description": "", "card_image":"fa-solid fa-arrow-up-wide-short","card_type":"application" },
+            "fibonacci": {"title": "fibonacci", "description": "", "card_image":"fa-solid fa-fan","card_type":"application"},
+            "matrixvector": {"title": "matrixvector", "description": "","card_image":"fa-solid fa-table-list","card_type":"application" },
+            "parallelSum": {"title": "parallelSum", "description": "","card_image":"fa-solid fa-plus","card_type":"application" }
+        },
+        "use_cases":{
+            "multiplication": {"title":"multiplication", "description":"Multiplication", "card_image":"fa-solid fa-times","card_type":"usecase"}
+        }
+
+    },
+    "component_map": {
+        "component_order": [ "machines", "applications", "use_cases" ],
+        "mapping": {
+            "gaya": {
+                "sortingApp": {
+                    "path": "./reports/sortingApp/sorting/gaya",
+                    "template_info": { "application": "sortingApp", "machine": "gaya" }
+                },
+                "fibonacci": {
+                    "path": "./reports/fibonacci/Fibonacci/gaya",
+                    "template_info": { "application": "fibonacci", "machine": "gaya" }
+                },
+                "matrixvector": {
+                    "multiplication":{
+                        "path": "./reports/matrixvector/Multiplication/gaya",
+                        "template_info": { "application": "matrixvector", "machine": "gaya", "use_case":"multiplication"}
+                    }
+                },
+                "parallelSum": {
+                    "path": "./reports/parallelSum/parallel_sum/gaya",
+                    "template_info": { "application": "parallelSum", "machine": "gaya" }
+                }
+            },
+            "discoverer":{
+                "fibonacci": {
+                    "path": "./reports/fibonacci/Fibonacci/discoverer",
+                    "template_info": { "application": "fibonacci", "machine": "discoverer" }
+                }
+            }
+        }
+    }
+}
