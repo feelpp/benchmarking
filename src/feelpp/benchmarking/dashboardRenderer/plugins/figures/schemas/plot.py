@@ -12,7 +12,7 @@ class Aggregation(BaseModel):
     @field_validator("agg", mode="before")
     @classmethod
     def checkAgg(cls, v):
-        if v not in ["sum","mean","min","max"] and not v.startswith("filter:"):
+        if v not in ["sum","mean","min","max","first","count","nunique"] and not v.startswith("filter:"):
             raise NotImplementedError(f"Aggregation method {v} is not implemented.")
         return v
 

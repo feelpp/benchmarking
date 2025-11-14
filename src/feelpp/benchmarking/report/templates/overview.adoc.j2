@@ -4,10 +4,20 @@
 {% include "summaryTable.adoc.j2" %}
 
 {% for repository_type in aggregated["children_repositories"] %}
-    {% if plots and repository_type in plots %}
 
-    {% with figures_df = aggregated.get("data"), plots = plots.get(repository_type,{}).get(self_id_path,{})%}
-        {%include "figures.adoc.j2" %}
-    {% endwith %}
+    {% if plots %}
+
+    {% set plots_by_child_repo = plots.get(repository_type,{}) %}
+
+    {% for key,key_plots in plots_by_child_repo.items() %}
+
+        {%if self_id in key.split("|") %}
+
+            {% with figures_df = aggregated.get("data"), plots = key_plots%}
+                {%include "figures.adoc.j2" %}
+            {% endwith %}
+
+        {% endif %}
+    {% endfor %}
     {% endif %}
 {% endfor %}
