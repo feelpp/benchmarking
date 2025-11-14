@@ -1,0 +1,24 @@
+
+== Overview
+
+=== Latest benchmarks
+
+{%set df = aggregated["data"].groupby("leaves").agg({
+    "date":"first",
+    "runs.num_failures": "max",
+    "machines":"first",
+    "applications":"first",
+    "use_cases":"first"
+}).reset_index(drop=True).sort_values("date",ascending=False).head(15) %}
+
+
+
+[cols="^1,^2,^1,^1,^1, options="header"]
+|===
+
+| Status | Date | machine | application | Use Case
+{% for row in df.to_dict(orient="records") %}
+|{% if row["runs.num_failures"] == 0 %}🟢{% else %}🔴{% endif %} | {{ row["date"] }} | {{ row["machines"] }} | {{ row["applications"] }} | {{ row["use_cases"] }}
+{% endfor %}
+
+|===
