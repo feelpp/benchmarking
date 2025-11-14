@@ -54,7 +54,7 @@ class LeafMetadata(BaseModel):
     @classmethod
     def castNodeTemplateInfo(cls,v):
         if not isinstance(v,TemplateInfo):
-            return TemplateInfo(data=v)
+            return TemplateInfo(data=v.get("data",[]),template=v.get("template",""))
         return v
 
 

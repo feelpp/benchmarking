@@ -14,10 +14,9 @@ class LeafComponentRepository(Repository):
         """
         super().__init__(id)
         for leaf_config, parent_ids in self.collectMetadata(component_mapping):
-            if default_template_info:
-                if not leaf_config.template_info.template:
-                    leaf_config.template_info.template = default_template_info.template
-                leaf_config.template_info.data += default_template_info.data
+            if not leaf_config.template_info.template:
+                leaf_config.template_info.template = default_template_info.template
+            leaf_config.template_info.data += default_template_info.data
             LeafLoaderFactory.create(leaf_config).load(self, parent_ids)
 
     @staticmethod
