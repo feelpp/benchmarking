@@ -59,7 +59,7 @@ class LeafMetadata(BaseModel):
 
 
 class ComponentMap(BaseModel):
-    component_order: List[str]
+    component_order: Optional[List[str]] = None
     mapping: Dict[str,Dict]
 
 class TemplateDefaults(BaseModel):
@@ -92,12 +92,50 @@ class TemplateDefaults(BaseModel):
 
 class DashboardSchema(BaseModel):
     dashboard_metadata:Optional[Union[dict[str,str],TemplateInfo]] = TemplateInfo(data={})
-    component_map: ComponentMap
+    component_map: Union[ComponentMap,Dict]
     components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
     views : Optional[Dict[str,Union[Dict,str]]] = None
-    repositories : Dict[str,Union[dict[str,str],TemplateInfo]]
+    repositories : Optional[Dict[str,Union[dict[str,str],TemplateInfo]]] = None
     template_defaults: Optional[TemplateDefaults] = TemplateDefaults()
 
+    @model_validator(mode="after")
+    def inferRepositories(self):
+        if self.repositories is None:
+            self.repositories = {}
+            for repo_name in self.components:
+                self.repositories[repo_name] = TemplateInfo(data={"title":repo_name.title()})
+        return self
+
+    @field_validator("component_map",mode="after")
+    @classmethod
+    def coerceComponentMap(cls,v):
+        if isinstance(v,dict) and "mapping" not in v:
+            v = ComponentMap(mapping=v)
+        return v
+
+    @model_validator(mode="after")
+    def inferOrder(self):
+        if self.component_map.component_order is not None:
+            return self
+
+        mapping = self.component_map.mapping
+        order = []
+        def find_order_level(d, level=0):
+            if not isinstance(d, dict) or not d:
+                return
+            for key in d.keys():
+                # Find the first matching component key at this level
+                for comp_name in self.components.keys():
+                    if key in d and comp_name not in order:
+                        order.append(comp_name)
+                # Recurse into the first child for deeper levels
+                first_child = next(iter(d.values()))
+                find_order_level(first_child, level + 1)
+                break  # only need first branch
+
+        find_order_level(mapping)
+        self.component_map.component_order = order
+        return self
 
     @model_validator(mode="after")
     def setDefaultViews(self):
