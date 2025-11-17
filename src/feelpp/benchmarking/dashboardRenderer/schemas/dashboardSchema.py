@@ -54,7 +54,7 @@ class LeafMetadata(BaseModel):
     @classmethod
     def castNodeTemplateInfo(cls,v):
         if not isinstance(v,TemplateInfo):
-            if "data" in v:
+            if "data" in v or "template" in v:
                 v = TemplateInfo(data=v.get("data",[]), template = v.get("template",None))
             else:
                 v = TemplateInfo(data = v)
@@ -75,7 +75,7 @@ class TemplateDefaults(BaseModel):
     @classmethod
     def castRepoTemplateInfo(cls,v):
         if not isinstance(v,TemplateInfo):
-            if "data" in v:
+            if "data" in v or "template" in v:
                 v = TemplateInfo(data=v.get("data",[]), template = v.get("template",None))
             else:
                 v = TemplateInfo(data = v)
@@ -86,7 +86,7 @@ class TemplateDefaults(BaseModel):
     def castNodeTemplateInfo(cls,v):
         for node, template_info in v.items():
             if not isinstance(v,TemplateInfo):
-                if "data" in template_info:
+                if "data" in template_info or "template" in template_info:
                     v[node] = TemplateInfo(data=template_info.get("data",[]), template = template_info.get("template",None))
                 else:
                     v[node] = TemplateInfo(data = template_info)
