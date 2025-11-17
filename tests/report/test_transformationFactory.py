@@ -71,7 +71,11 @@ class MockDataframe:
 class TestSimpleStrategies:
     """Tests for strategies with simple confiugurations (just xaxis)"""
 
-    plot_config = PlotConfigMocker( xaxis=AxisMocker(parameter="xaxis",label="x") )
+    plot_config = PlotConfigMocker(
+        xaxis=AxisMocker(parameter="xaxis",label="x"),
+        color_axis=AxisMocker(parameter="performance_variable",label="c"),
+        yaxis=AxisMocker(parameter="value",label="v")
+    )
     mock_data = MockDataframe("simple").df
 
     def getCalculatedDf(self,transformation):
@@ -125,7 +129,8 @@ class TestComplexStrategies:
     plot_config = PlotConfigMocker(
         xaxis=AxisMocker(parameter="xaxis",label="x"),
         secondary_axis=AxisMocker(parameter="secondary_axis",label="secondary"),
-        color_axis=AxisMocker(parameter="color_axis",label="color")
+        color_axis=AxisMocker(parameter="color_axis",label="color"),
+        yaxis=AxisMocker(parameter="value",label="v")
     )
     mock_data = MockDataframe("multi").df
 
