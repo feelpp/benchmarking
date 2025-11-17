@@ -1,8 +1,6 @@
 """ Tests for the configSchemas module """
 import pytest
 from feelpp.benchmarking.reframe.config.configSchemas import Sanity,CustomVariable,Scalability,Resources,Image,Platform,AdditionalFiles,ConfigFile
-from feelpp.benchmarking.reframe.config.configParameters import Parameter
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot
 from pydantic import ValidationError
 
 
@@ -62,26 +60,26 @@ class TestConfigFile:
     def test_plotAxisValidation(self):
         """ Tests that plot axis parameters matches actual config parameters"""
         self.initDefaultConfigFile(
-            parameters=[Parameter(**{"name":"param1","sequence":[]}),Parameter(**{"name":"param2","sequence":[]})],
-            plots=[Plot(**{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"param2","label":"sec"}})]
+            parameters=[{"name":"param1","sequence":[]},{"name":"param2","sequence":[]}],
+            plots=[{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"param2","label":"sec"}}]
         )
 
         with pytest.raises(ValidationError,match="Parameter not found"):
             self.initDefaultConfigFile(
-                parameters=[Parameter(**{"name":"param1","sequence":[]}),Parameter(**{"name":"param2","sequence":[]})],
-                plots=[Plot(**{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"unkownParam","label":"sec"}})]
+                parameters=[{"name":"param1","sequence":[]},{"name":"param2","sequence":[]}],
+                plots=[{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"unkownParam","label":"sec"}}]
             )
 
             self.initDefaultConfigFile(
-                parameters=[Parameter(**{"name":"param1","sequence":[{"subparam1":"x","subparam2":"y"}]})],
-                plots=[Plot(**{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1.subparam1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"param1.subparam2","label":"sec"}})]
+                parameters=[{"name":"param1","sequence":[{"subparam1":"x","subparam2":"y"}]}],
+                plots=[{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1.subparam1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"param1.subparam2","label":"sec"}}]
             )
 
 
         with pytest.raises(ValidationError,match="Parameter not found"):
             self.initDefaultConfigFile(
-                parameters=[Parameter(**{"name":"param1","sequence":[{"subparam1":"x","subparam2":"y"}]})],
-                plots=[Plot(**{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1.subparam1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"param1.unown","label":"sec"}})]
+                parameters=[{"name":"param1","sequence":[{"subparam1":"x","subparam2":"y"}]}],
+                plots=[{"title":"title","transformation":"performance","plot_types":["scatter"],"names":[],"xaxis":{"parameter":"param1.subparam1","label":"x"},"yaxis":{"label":"y"},"secondary_axis":{"parameter":"param1.unown","label":"sec"}}]
             )
 
 

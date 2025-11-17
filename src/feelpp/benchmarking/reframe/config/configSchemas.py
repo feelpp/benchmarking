@@ -1,7 +1,7 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot
+from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot, PlotAxis
 import os, re
 
 class Sanity(BaseModel):
@@ -116,6 +116,13 @@ class RemoteData(BaseRemoteData):
             raise ValueError("A remote data platform should be specified, valid options are ['girder'] ")
         return self
 
+class DefaultPlotYAxis(PlotAxis):
+    parameter: Optional[str] = "value"
+    label: Optional[str] = "Value"
+
+class DefaultPlot(Plot):
+    yaxis: Optional[DefaultPlotYAxis] = DefaultPlotYAxis()
+
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
@@ -131,7 +138,7 @@ class ConfigFile(BaseModel):
     sanity: Optional[Sanity] = Sanity()
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
-    plots: Optional[List[Plot]] = []
+    plots: Optional[List[DefaultPlot]] = []
 
     model_config = ConfigDict( extra='allow' )
     def __getattr__(self, item):
