@@ -1,5 +1,5 @@
 from typing import Literal, Union, Optional, List, Dict
-from pydantic import BaseModel, field_validator, model_validator, RootModel
+from pydantic import BaseModel, field_validator, model_validator
 
 class PlotAxis(BaseModel):
     parameter: str

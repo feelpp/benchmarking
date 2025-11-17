@@ -1,6 +1,6 @@
 """ Tests related to plots configuration """
 import pytest
-from feelpp.benchmarking.dashboardRenderer.schemas.configPlots import Plot, Aggregation, PlotAxis
+from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot, Aggregation, PlotAxis
 from pydantic import ValidationError
 
 class TestAggregation:
@@ -19,7 +19,7 @@ class TestPlot:
     def test_checkValidAxis(self):
         """ Tests that the axis is correctly validated"""
 
-        plot = Plot(title="t",plot_types=["scatter"],transformation="performance",xaxis=PlotAxis(parameter="param",label="x"),yaxis=PlotAxis(label="y"))
+        plot = Plot(title="t",plot_types=["scatter"],transformation="performance",xaxis=PlotAxis(parameter="param",label="x"),yaxis=PlotAxis(label="y",parameter="y"))
         assert plot.xaxis.parameter
 
         with pytest.raises(ValidationError):
