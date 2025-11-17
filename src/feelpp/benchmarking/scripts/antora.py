@@ -1,7 +1,7 @@
 import os,subprocess,shutil,glob
 from argparse import ArgumentParser
 from datetime import datetime
-from feelpp.benchmarking.dashboardRenderer.renderer import Renderer
+from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
 from pathlib import Path
 
 def initGit():
@@ -49,10 +49,10 @@ def init(args):
         f.write(f"* xref:ROOT:index.adoc[{args.project_title}]")
 
     #Create antora component version descriptor
-    Renderer(script_data_path,"antora.yml.j2").render( "./docs/antora.yml", dict( project_name = args.project_name, project_title = args.project_title ) )
+    TemplateRenderer(script_data_path,"antora.yml.j2").render( "./docs/antora.yml", dict( project_name = args.project_name, project_title = args.project_title ) )
 
     #Create antora playbook
-    Renderer(script_data_path,"site.yml.j2").render( "./site.yml", dict( project_name = args.project_name, project_title = args.project_title ) )
+    TemplateRenderer(script_data_path,"site.yml.j2").render( "./site.yml", dict( project_name = args.project_name, project_title = args.project_title ) )
 
 def main_cli():
     parser = ArgumentParser(prog="feelpp-antora")
