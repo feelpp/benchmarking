@@ -3,7 +3,7 @@ from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader, FileHandler
 from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
 from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
-from feelpp.benchmarking.reframe.reporting import WebsiteConfigCreator
+from feelpp.benchmarking.report.websiteConfigcreator import WebsiteConfigCreator
 from feelpp.benchmarking.reframe.commandBuilder import CommandBuilder
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 

@@ -9,10 +9,13 @@ class WebsiteConfigCreator:
                 self.config = json.load(cfg)
         else:
             self.config = dict(
-                dashboard_metadata = {"title":"feelpp.benchmarking"},
+                dashboard_metadata = {
+                    "template": os.path.abspath(os.path.join(__file__,"../templates/dashboardOverview.adoc.j2")),
+                    "data":{"title":"feelpp.benchmarking"}
+                },
                 template_defaults = {
                     "leaves":{
-                        "template":"./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+                        "template":os.path.abspath(os.path.join(__file__,"../templates/reframeReport.adoc.j2")),
                         "data":[
                             { "filepath": "reframe_report.json", "prefix": "rfm" },
                             { "filepath":"plots.json", "prefix":"plots" },
@@ -21,17 +24,17 @@ class WebsiteConfigCreator:
                     },
                     "components":{
                         "all":{
-                            "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+                            "template": os.path.abspath(os.path.join(__file__,"../templates/overview.adoc.j2")),
                         },
                         "machines":{
-                            "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2",
+                            "template": os.path.abspath(os.path.join(__file__,"../templates/machineOverview.adoc.j2")),
                             "data":{"card_type":"machine"}
                         },
                         "applications":{"card_type":"application"},
                         "use_cases":{"card_type":"usecase"}
                     },
                     "repositories":{
-                        "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2"
+                        "template": os.path.abspath(os.path.join(__file__,"../templates/overview.adoc.j2"))
                     },
                 },
                 views = {
