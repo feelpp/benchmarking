@@ -123,20 +123,17 @@ class DashboardSchema(BaseModel):
 
         mapping = self.component_map.mapping
         order = []
-        def find_order_level(d, level=0):
+        def findOrder(d):
             if not isinstance(d, dict) or not d:
                 return
-            for key in d.keys():
-                # Find the first matching component key at this level
-                for comp_name in self.components.keys():
-                    if key in d and comp_name not in order:
-                        order.append(comp_name)
-                # Recurse into the first child for deeper levels
-                first_child = next(iter(d.values()))
-                find_order_level(first_child, level + 1)
-                break  # only need first branch
+            for key, value in d.items():
+                for repo_type, components in self.components.items():
+                    if key in components and repo_type not in order:
+                        order.append(repo_type)
+                findOrder(value)
 
-        find_order_level(mapping)
+
+        findOrder(mapping)
         self.component_map.component_order = order
         return self
 
