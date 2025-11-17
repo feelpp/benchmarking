@@ -20,10 +20,19 @@ class WebsiteConfigCreator:
                         ]
                     },
                     "components":{
-                        "machines":{"card_type":"machine"},
+                        "all":{
+                            "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
+                        },
+                        "machines":{
+                            "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2",
+                            "data":{"card_type":"machine"}
+                        },
                         "applications":{"card_type":"application"},
                         "use_cases":{"card_type":"usecase"}
-                    }
+                    },
+                    "repositories":{
+                        "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2"
+                    },
                 },
                 views = {
                     "machines": { "applications": "use_cases" },
