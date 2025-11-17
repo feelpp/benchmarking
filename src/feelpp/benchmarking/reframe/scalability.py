@@ -41,7 +41,7 @@ class TsvExtractor(Extractor):
     def _extractVariables(self):
         content = self._getFileContent()
         #WARNING: This assumes that index is in column 0
-        columns = re.sub("\s+"," ",content[0].replace("# ","")).strip().split(" ")
+        columns = re.sub(r"\s+"," ",content[0].replace("# ","")).strip().split(" ")
         vars = sn.extractall_s(
             patt=rf'^{self.index}[\s]+' + r'([0-9e\-\+\.]+)[\s]+'*(len(columns)-1),
             string="\n".join(content[1:]),
