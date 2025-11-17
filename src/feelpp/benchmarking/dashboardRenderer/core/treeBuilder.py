@@ -61,7 +61,7 @@ class ComponentTree(TreeNode):
                 continue
             leaf.addParent(parent)
 
-        view_orders = TreeUtils.treeToLists(components_config.views)
+        view_orders = TreeUtils.dictTreeToLists(components_config.views)
         for view_order in view_orders:
             view_perm = [self.levels.index(v) for v in view_order]
             view_tree: TreeNode = TreeUtils.permuteTree(tmp_tree,view_perm)

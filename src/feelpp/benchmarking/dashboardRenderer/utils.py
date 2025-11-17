@@ -1,12 +1,12 @@
 class TreeUtils:
 
     @staticmethod
-    def treeToLists(tree, prefix=[]):
+    def dictTreeToLists(tree, prefix=[]):
         tree_list = []
         for k, v in tree.items():
             new_prefix = prefix + [k]
             if isinstance(v, dict):
-                tree_list.extend(TreeUtils.treeToLists(v, new_prefix))
+                tree_list.extend(TreeUtils.dictTreeToLists(v, new_prefix))
             else:
                 tree_list.append(new_prefix + [v])
         return tree_list
