@@ -120,8 +120,13 @@ class DefaultPlotYAxis(PlotAxis):
     parameter: Optional[str] = "value"
     label: Optional[str] = "Value"
 
+class DefaultColorAxis(PlotAxis):
+    parameter: Optional[str] = "perfvalue"
+    label: Optional[str] = "Performance Variables"
+
 class DefaultPlot(Plot):
     yaxis: Optional[DefaultPlotYAxis] = DefaultPlotYAxis()
+    color_axis: Optional[DefaultColorAxis] = DefaultColorAxis()
 
 class ConfigFile(BaseModel):
     executable: str
