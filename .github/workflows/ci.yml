@@ -51,8 +51,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        uv sync --no-dev
-        uv pip install pytest
+        uv sync --extra test
         uv pip install dist/*.whl
 
     - name: Unit tests
