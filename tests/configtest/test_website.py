@@ -1,7 +1,7 @@
 """ Tests for the feelpp.benchmarking.reframe.reporting module """
 import tempfile, os, json
 import pytest
-from feelpp.benchmarking.reframe.reporting import WebsiteConfigCreator
+from feelpp.benchmarking.report.websiteConfigcreator import WebsiteConfigCreator
 
 @pytest.mark.parametrize(("config","empty_config"),[
     (WebsiteConfigCreator(basepath="./tests/data/non_existent_configs"), True),
