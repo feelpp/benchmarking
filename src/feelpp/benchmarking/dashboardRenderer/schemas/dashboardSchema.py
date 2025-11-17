@@ -54,7 +54,10 @@ class LeafMetadata(BaseModel):
     @classmethod
     def castNodeTemplateInfo(cls,v):
         if not isinstance(v,TemplateInfo):
-            return TemplateInfo(data=v.get("data",[]),template=v.get("template",""))
+            if "data" in v:
+                v = TemplateInfo(data=v.get("data",[]), template = v.get("template",None))
+            else:
+                v = TemplateInfo(data = v)
         return v
 
 
@@ -76,7 +79,7 @@ class TemplateDefaults(BaseModel):
                 v = TemplateInfo(data=v.get("data",[]), template = v.get("template",None))
             else:
                 v = TemplateInfo(data = v)
-            return v
+        return v
 
     @field_validator("components",mode="after")
     @classmethod
