@@ -29,6 +29,7 @@ class ComponentTree(TreeNode):
         mapping = components_config.component_map.mapping
         components = components_config.components
         max_depth = len(self.levels)
+
         repo_map = {r.id : r for r in self.repositories}
 
         def _buildSubtree(parent_node: TreeNode, subtree: dict, depth:int = 0):
@@ -50,7 +51,8 @@ class ComponentTree(TreeNode):
                     _buildSubtree(child_node,node_data, depth + 1 )
 
         tmp_tree = TreeNode("tmp",None)
-        _buildSubtree(tmp_tree,mapping)
+        if max_depth > 0:
+            _buildSubtree(tmp_tree,mapping)
         leaf:GraphNode
         for leaf in self.leaf_repository:
             parent:TreeNode = tmp_tree
@@ -63,7 +65,7 @@ class ComponentTree(TreeNode):
 
         view_orders = TreeUtils.dictTreeToLists(components_config.views)
         for view_order in view_orders:
-            view_perm = [self.levels.index(v) for v in view_order]
+            view_perm = [self.levels.index(v) for v in view_order if self.levels]
             view_tree: TreeNode = TreeUtils.permuteTree(tmp_tree,view_perm)
             parent_repository_id = view_order[0]
 
@@ -92,6 +94,7 @@ class ComponentTree(TreeNode):
 
     def render(self,base_path):
         super().render(base_path,None,renderLeaves=False)
+        print(self.id)
         self.leaf_repository.render(base_path,self.id)
 
     def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
