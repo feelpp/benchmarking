@@ -5,6 +5,7 @@
 
 === Latest benchmarks
 
+{% if "leaves" in aggregated["data"] %}
 {%set df = aggregated["data"].groupby("leaves").agg({
     "date":"first",
     "runs.num_failures": "max",
@@ -24,3 +25,4 @@
 {% endfor %}
 
 |===
+{% endif %}

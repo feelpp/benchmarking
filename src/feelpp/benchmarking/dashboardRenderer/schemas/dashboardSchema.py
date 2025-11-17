@@ -94,9 +94,22 @@ class DashboardSchema(BaseModel):
     dashboard_metadata:Optional[Union[dict[str,str],TemplateInfo]] = TemplateInfo(data={})
     component_map: ComponentMap
     components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
-    views : Dict[str,Union[Dict,str]]
+    views : Optional[Dict[str,Union[Dict,str]]] = None
     repositories : Dict[str,Union[dict[str,str],TemplateInfo]]
     template_defaults: Optional[TemplateDefaults] = TemplateDefaults()
+
+
+    @model_validator(mode="after")
+    def setDefaultViews(self):
+        if self.views is None:
+            current_views = {}
+            self.views = current_views
+            current_views = self.component_map.component_order[-1]
+            for key in reversed(self.component_map.component_order[:-1]):
+                current_views = {key: current_views}
+            self.views = current_views
+        return self
+
 
     @field_validator("dashboard_metadata",mode="after")
     @classmethod
