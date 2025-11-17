@@ -6,13 +6,24 @@
 === Latest benchmarks
 
 {% if "leaves" in aggregated["data"] %}
-{%set df = aggregated["data"].groupby("leaves").agg({
+{% set agg = {
     "date":"first",
-    "runs.num_failures": "max",
-    "machines":"first",
-    "applications":"first",
-    "use_cases":"first"
-}).reset_index(drop=True).sort_values("date",ascending=False).head(15) %}
+    "runs.num_failures": "max"
+} %}
+
+{% if "machines" in aggregated["data"].columns %}
+{%set agg = dict(agg,**{"machines":"first"}) %}
+{% endif %}
+
+{% if "applications" in aggregated["data"].columns %}
+{%set agg = dict(agg,**{"applications":"first"}) %}
+{% endif %}
+
+{% if "use_cases" in aggregated["data"].columns %}
+{%set agg = dict(agg,**{"use_cases":"first"}) %}
+{% endif %}
+
+{%set df = aggregated["data"].groupby("leaves").agg(agg).reset_index(drop=True).sort_values("date",ascending=False).head(15) %}
 
 
 
