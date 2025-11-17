@@ -26,7 +26,7 @@ class TestWebsiteConfig:
         """ Tests the updateExecutionMapping method """
         config.updateExecutionMapping("test_app", "test_mach", "test_uc", "test_itempath")
 
-        mapping = config.config["component_map"]["mapping"]
+        mapping = config.config["component_map"]
 
         assert "test_mach" in mapping
         assert "test_app" in mapping["test_mach"]

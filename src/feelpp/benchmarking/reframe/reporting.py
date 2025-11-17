@@ -26,9 +26,8 @@ class WebsiteConfigCreator:
                     }
                 },
                 views = {
-                    "machines": { "applications": "use_cases", "use_cases": "applications" },
-                    "applications": { "use_cases": "machines" },
-                    "use_cases": { "applications": "machines" }
+                    "machines": { "applications": "use_cases" },
+                    "applications": { "use_cases": "machines" }
                 },
                 repositories={
                     "machines": { "title": "Supercomputers", "description": "Systems","card_type":"machine" },
@@ -40,20 +39,17 @@ class WebsiteConfigCreator:
                     "use_cases":{},
                     "applications":{}
                 },
-                component_map=dict(
-                    component_order = ["machines","applications","use_cases"],
-                    mapping = {}
-                )
+                component_map=dict()
             )
 
     def updateExecutionMapping(self,application, machine,use_case, report_itempath):
-        if machine not in self.config["component_map"]["mapping"]:
-            self.config["component_map"]["mapping"][machine] = {}
+        if machine not in self.config["component_map"]:
+            self.config["component_map"][machine] = {}
 
-        if application not in self.config["component_map"]["mapping"][machine]:
-            self.config["component_map"]["mapping"][machine][application] = {}
+        if application not in self.config["component_map"][machine]:
+            self.config["component_map"][machine][application] = {}
 
-        self.config["component_map"]["mapping"][machine][application][use_case] = {
+        self.config["component_map"][machine][application][use_case] = {
             "path":report_itempath,
             "platform":"local",
             "template_info":{ "use_case":use_case, "application":application, "machine": machine }
@@ -62,19 +58,19 @@ class WebsiteConfigCreator:
     def updateMachine(self,machine):
         if machine not in self.config["components"]["machines"]:
             self.config["components"]["machines"][machine] = {
-                "title":machine, "description":""
+                "title":machine.title(), "description":""
             }
 
     def updateUseCase(self,use_case):
         if use_case not in self.config["components"]["use_cases"]:
             self.config["components"]["use_cases"][use_case] = {
-                "title":use_case, "description":""
+                "title":use_case.title(), "description":""
             }
 
     def updateApplication(self,application):
         if application not in self.config["components"]["applications"]:
             self.config["components"]["applications"][application] = {
-                "title":application, "description":""
+                "title":application.title(), "description":""
             }
 
     def save(self):
