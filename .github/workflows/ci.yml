@@ -84,7 +84,7 @@ jobs:
     - name: Check files
       run: | #TODO: check if not empty (maybe)
         nb_rfm_report_files=$(ls -1q reports/parallelSum/parallel_sum/default|wc -l)
-        nb_doc_reports=$(ls -1q docs/modules/ROOT/pages/reports/|wc -l)
+        nb_doc_reports=$(ls -1q docs/modules/ROOT/pages/leaves/|wc -l)
         if [ "$nb_rfm_report_files" -ne 1 ] || [ "$nb_doc_reports" -ne 1 ]; then
           echo "Reports where not rendered."
           exit 1
