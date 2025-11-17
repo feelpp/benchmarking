@@ -1,7 +1,7 @@
 import os,subprocess,shutil,glob
 from argparse import ArgumentParser
 from datetime import datetime
-from feelpp.benchmarking.report.renderer import Renderer
+from feelpp.benchmarking.dashboardRenderer.renderer import Renderer
 from pathlib import Path
 
 def initGit():

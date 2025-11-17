@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.figures.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure, HeatmapFigure, SunburstFigure, Scatter3DFigure, Surface3DFigure, ParallelcoordinatesFigure, MarkedScatterFigure
+from feelpp.benchmarking.dashboardRenderer.plugins.figures.figureFactory import FigureFactory, ScatterFigure, TableFigure, StackedBarFigure, GroupedBarFigure, HeatmapFigure, SunburstFigure, Scatter3DFigure, Surface3DFigure, ParallelcoordinatesFigure, MarkedScatterFigure
 from test_transformationFactory import PlotConfigMocker
 import pytest
 

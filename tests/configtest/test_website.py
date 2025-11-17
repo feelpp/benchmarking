@@ -1,15 +1,15 @@
 """ Tests for the feelpp.benchmarking.reframe.reporting module """
 import tempfile,os,json
 import pytest
-from feelpp.benchmarking.reframe.reporting import WebsiteConfig
+from feelpp.benchmarking.reframe.reporting import WebsiteConfigCreator
 
 @pytest.mark.parametrize(("config","empty_config"),[
-    (WebsiteConfig(basepath="./tests/data/non_exsistent_configs"), True),
-    (WebsiteConfig(basepath="./tests/data/configs"), False),
+    (WebsiteConfigCreator(basepath="./tests/data/non_exsistent_configs"), True),
+    (WebsiteConfigCreator(basepath="./tests/data/configs"), False),
 ]
 )
 class TestWebisteConfig:
-    """ Tests for the WebsiteConfig class"""
+    """ Tests for the WebsiteConfigCreator class"""
 
     def test_init(self,config,empty_config):
         """Tests the class initialization

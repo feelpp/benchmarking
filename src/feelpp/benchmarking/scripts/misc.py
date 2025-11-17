@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 import glob, json, copy, os
-from feelpp.benchmarking.report.config.handlers import GirderHandler
+from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 
 def mergeDicts(dict1, dict2):
     """Recursively merges two dictionaries."""
