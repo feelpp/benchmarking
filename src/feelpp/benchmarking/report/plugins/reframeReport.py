@@ -100,19 +100,3 @@ class ReframeReportPlugin:
             testcases_df = pd.concat(testcases,axis=0)
             runs_dfs.append(pd.concat([testcases_df,run_df.loc[run_df.index.repeat(perfvar_df.shape[0])].reset_index(drop=True)],axis=1))
         return pd.concat(runs_dfs,axis=0)
-
-    @staticmethod
-    def mergetLeafData( parent_id, leaves_info ):
-        dfs = []
-        for leaf_id, leaf_data in leaves_info:
-            leaf_df = leaf_data["reframe_runs_df"].copy()
-            leaf_df["report"] = leaf_id
-            dfs.append(leaf_df)
-        return pd.concat(dfs, axis=0, ignore_index=True)
-
-    @staticmethod
-    def mergeComponentData(parent_id, component_id, children_data, repo_name=None):
-        combined_df = pd.concat(children_data, axis=0, ignore_index=True)
-        combined_df["parent"] = parent_id
-        combined_df["component"] = component_id
-        return combined_df
