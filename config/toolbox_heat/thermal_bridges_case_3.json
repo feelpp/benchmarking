@@ -5,7 +5,7 @@
     "timeout":"0-00:10:00",
     "resources":{
         "tasks":"{{parameters.resources.tasks.value}}",
-        "exclusive_access":"{{parameters.resources.exclusive_access.value}}",
+        "exclusive_access":true,
         "memory":"{{parameters.memory.value}}"
     },
     "input_file_dependencies":{
@@ -99,10 +99,6 @@
                 {
                     "name":"tasks",
                     "sequence": [32,64,128,256]
-                },
-                {
-                    "name":"exclusive_access",
-                    "repeat":{"value":true,"count":10}
                 }
             ]
         },
