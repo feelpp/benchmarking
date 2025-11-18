@@ -13,7 +13,6 @@ class VersionPlugin:
 
 def main_cli():
     parser = ReportArgParser()
-    parser.printArgs()
 
     dashboard = Dashboard(
         parser.args.config_file,
@@ -22,7 +21,6 @@ def main_cli():
 
     if parser.args.plot_configs:
         dashboard.patchTemplateInfo(parser.args.plot_configs, parser.args.patch_reports, "plots", parser.args.save_patches)
-
     dashboard.print()
 
 

@@ -1,17 +1,21 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
 from feelpp.benchmarking.reframe.parser import CustomHelpFormatter
-import os, shutil
+from feelpp.benchmarking.reframe.config.configSchemas import DefaultPlot
+import os, shutil, json
 
 
 #TODO: Factorize with feelpp.reframe parser
 class ReportArgParser():
     """ Class for parsing and validating command-line arguments for the report module"""
-    def __init__(self):
+    def __init__(self,print_args=True):
         self.parser = ArgumentParser(formatter_class=CustomHelpFormatter, add_help=False,description="Render benchmarking reports")
         self.addArgs()
         self.args = self.parser.parse_args()
         self.validate()
         self.normalizePaths()
+        if print_args:
+            self.printArgs()
+        self.parsePlotConfigs()
 
     def addArgs(self):
         """ Add arguments to the parser """
@@ -60,6 +64,24 @@ class ReportArgParser():
         if self.args.overview_config:
             self.args.overview_config = os.path.normpath(self.args.overview_config)
         self.args.plot_configs = [os.path.normpath(plot_config) for plot_config in self.args.plot_configs]
+
+
+    def parsePlotConfigs(self):
+        """Parses the plot configurations using schemas"""
+        new_configs = []
+        for plot_config in self.args.plot_configs:
+            with open (plot_config,"r") as f:
+                plot_config_content = json.load(f)
+                if isinstance(plot_config_content,dict):
+                    if "plots" not in plot_config_content:
+                        raise ValueError("Plot configuration is a dictionary and does not contains the 'plots' key. Provide a list instead.")
+                    plot_config_content = plot_config_content["plots"]
+
+                if not isinstance(plot_config_content,list):
+                    raise ValueError("Plot configuration is not a list.")
+                new_configs.append([DefaultPlot(**d).model_dump() for d in plot_config_content ])
+        self.args.plot_configs = new_configs
+
 
 
     def printArgs(self):

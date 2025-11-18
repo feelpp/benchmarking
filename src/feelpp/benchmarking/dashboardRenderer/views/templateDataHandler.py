@@ -18,8 +18,11 @@ class TemplateDataFileHandler(DataHandler):
                 warnings.warn(f"{filepath} does not exist. Skipping")
                 return {}
             with open(filepath,"r") as f:
+                content = f.read()
                 if data.format == "json":
-                    template_data = json.load(f)
+                    if not content:
+                        content = "{}"
+                    template_data = json.loads(content)
             if data.prefix:
                 return {data.prefix: template_data}
             return template_data
@@ -41,4 +44,4 @@ class TemplateDataHandlerFactory:
         elif data_type is dict:
             return DictDataHandler()
         else:
-            raise NotImplementedError("Unsupported data type for template data.")
+            raise NotImplementedError(f"Unsupported data type for template data : {data_type}")

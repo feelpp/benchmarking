@@ -2,7 +2,7 @@ from feelpp.benchmarking.dashboardRenderer.component.base import GraphNode
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.views.base import View
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateDataFile
-import os
+import os,warnings,json
 
 class LeafComponent(GraphNode):
     """"Class that represents a leaf node in a tree structure."""
@@ -44,11 +44,22 @@ class LeafComponent(GraphNode):
 
     def patchTemplateInfo(self,patch, prefix,save):
         if save:
-            with open(patch,"r") as f:
-                patch_content = f.read()
             template_data_files = [d for d in self.view.template_info.data if isinstance(d,TemplateDataFile) and d.prefix and d.prefix == prefix ]
-            if len(template_data_files) == 1:
+
+            if len(template_data_files) > 1:
+                warnings.warn(f"More than one file having prefix {prefix} found. First occurence will be overwritten")
+
+            filepath = None
+            if len(template_data_files) == 0:
+                warnings.warn(f"No data files with {prefix} found in {self.id}. Saving this patch will not be possible.")
+            else:
                 filepath = template_data_files[0].filepath
-            with open(os.path.join(self.view.template_data_dir, filepath), "w") as f:
-                f.write(patch_content)
-        self.view.updateTemplateData(TemplateDataFile(prefix=prefix,filepath=patch))
+                format = template_data_files[0].format
+
+            if filepath:
+                with open(os.path.join(self.view.template_data_dir, filepath), "w") as f:
+                    if format == "json":
+                        json.dump(patch,f)
+                    else:
+                        f.write(patch)
+        self.view.updateTemplateData({prefix:patch})
