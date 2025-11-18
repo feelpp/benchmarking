@@ -61,7 +61,6 @@ jobs:
                                     https://api.github.com/orgs/feelpp/actions/runners
                             )
                 all_runners=$(echo $all_runners | jq -r '.runners')
-                echo $all_runners;
                 available_systems="[]"
 
                 while read -r system; do
