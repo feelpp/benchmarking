@@ -3,327 +3,166 @@
         {
             "title": "Validation measures (Heat flux)",
             "plot_types": [ "scatter" ],
-            "transformation": "performance",
-            "variables": [
-                "Outputs_Normal_Heat_Flux_alpha", "Outputs_Normal_Heat_Flux_beta", "Outputs_Normal_Heat_Flux_gamma"
-            ],
-            "names": [
-                "Normal_Heat_Flux_alpha", "Normal_Heat_Flux_beta", "Normal_Heat_Flux_gamma"
-            ],
-            "xaxis": {
-                "parameter": "mesh",
-                "label": "mesh levels"
-            },
-            "yaxis": {
-                "label": "Heat flow [W]"
-            },
-            "color_axis":{
-                "parameter": "discretization",
-                "label":"Discretization"
-            },
+            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+            "yaxis": { "label": "Heat flow [W]" },
+            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
             "secondary_axis":{
-                "parameter": "performance_variable",
-                "label": "Measures"
+                "parameter": "perfvalue",
+                "label": "Measures",
+                "filter": [
+                    {"Outputs_Normal_Heat_Flux_alpha":"Alpha"},
+                    {"Outputs_Normal_Heat_Flux_beta":"Beta"},
+                    {"Outputs_Normal_Heat_Flux_gamma":"Gamma"}
+                ]
             },
             "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
         },
         {
-            "title": "Validation measures (Temperatures)",
+            "title": "Validation measures (Temperatures )",
             "plot_types": [ "scatter" ],
-            "transformation": "performance",
-            "variables": [
-                "Outputs_Points_alpha_max_field_temperature", "Outputs_Points_alpha_min_field_temperature",
-                "Outputs_Points_beta_max_field_temperature", "Outputs_Points_beta_min_field_temperature"
-            ],
-            "names": [
-                "Points_alpha_max_field_temperature", "Points_alpha_min_field_temperature",
-                "Points_beta_max_field_temperature", "Points_beta_min_field_temperature"
-            ],
-            "xaxis": {
-                "parameter": "mesh",
-                "label": "mesh levels"
-            },
-            "yaxis": {
-                "label": "Temperature [C°]"
-            },
-            "color_axis":{
-                "parameter": "discretization",
-                "label":"Discretization"
-            },
+            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+            "yaxis": { "label": "Temperature [C°]" },
+            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
             "secondary_axis":{
-                "parameter": "performance_variable",
-                "label": "Measures"
+                "parameter": "perfvalue",
+                "label": "Measures",
+                "filter":[
+                    {"Outputs_Points_alpha_max_field_temperature":"Alpha (max)"},
+                    {"Outputs_Points_alpha_min_field_temperature":"Alpha (min)"},
+                    {"Outputs_Points_beta_max_field_temperature":"Beta (max)"},
+                    {"Outputs_Points_beta_min_field_temperature":"Beta (min)"}
+                ]
             },
             "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
         },
         {
             "title": "Performance (P1)",
             "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [
-                "Preprocessing",
-                "Algebraic assembly",
-                "Algebraic solve",
-                "Postprocess"
-            ],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "mesh",
-                "label": "Mesh level"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
+            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
             "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+                "parameter":"perfvalue",
+                "label":"Performance Variable",
+                "filter":[
+                    {"Constructor_init":"Preprocessing"},
+                    {"Solve_algebraic-assembly":"Algebraic assembly"},
+                    {"Solve_algebraic-solve":"Algebraic solve"},
+                    {"PostProcessing_exportResults":"Postprocess"}
+                ]
             },
-            "aggregations":[
-                {"column":"performance_variable", "agg":"sum"},
-                {"column":"discretization","agg":"filter:P1"}
-            ]
+            "yaxis": { "label": "execution time (s)" },
+            "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
         },
         {
             "title": "Speedup (P1)",
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve",
-                "PostProcessing_exportResults",
-                "Total"
-            ],
-            "names": [
-                "Preprocessing",
-                "Algebraic assembly",
-                "Algebraic solve",
-                "Postprocess",
-                "Total"
-            ],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "mesh",
-                "label": "Mesh level"
-            },
-            "yaxis": {
-                "label": "Speedup"
-            },
+            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
             "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+                "parameter":"perfvalue",
+                "label":"Performance Variable",
+                "filter":[
+                    {"Constructor_init":"Preprocessing"},
+                    {"Solve_algebraic-assembly":"Algebraic assembly"},
+                    {"Solve_algebraic-solve":"Algebraic solve"},
+                    {"PostProcessing_exportResults":"Postprocess"}
+                ]
             },
-            "aggregations":[
-                {"column":"performance_variable", "agg":"sum"}
-            ]
+            "yaxis": { "label": "Speedup" },
+            "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
         },
         {
             "title": "Performance (P2)",
             "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [
-                "Preprocessing",
-                "Algebraic assembly",
-                "Algebraic solve",
-                "Postprocess"
-            ],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "mesh",
-                "label": "Mesh level"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
+            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
             "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+                "parameter":"perfvalue",
+                "label":"Performance Variable",
+                "filter":[
+                    {"Constructor_init":"Preprocessing"},
+                    {"Solve_algebraic-assembly":"Algebraic assembly"},
+                    {"Solve_algebraic-solve":"Algebraic solve"},
+                    {"PostProcessing_exportResults":"Postprocess"}
+                ]
             },
-            "aggregations":[
-                {"column":"discretization","agg":"filter:P2"}
-            ]
+            "yaxis": { "label": "execution time (s)" },
+            "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
         },
         {
             "title": "Speedup (P2)",
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve",
-                "PostProcessing_exportResults",
-                "Total"
-            ],
-            "names": [
-                "Preprocessing",
-                "Algebraic assembly",
-                "Algebraic solve",
-                "Postprocess",
-                "Total"
-            ],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "mesh",
-                "label": "Mesh level"
-            },
-            "yaxis": {
-                "label": "Speedup"
-            },
+            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
             "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+                "parameter":"perfvalue",
+                "label":"Performance Variable",
+                "filter":[
+                    {"Constructor_init":"Preprocessing"},
+                    {"Solve_algebraic-assembly":"Algebraic assembly"},
+                    {"Solve_algebraic-solve":"Algebraic solve"},
+                    {"PostProcessing_exportResults":"Postprocess"}
+                ]
             },
-            "aggregations":[
-                {"column":"discretization","agg":"filter:P2"}
-            ]
+            "yaxis": { "label": "Speedup" },
+            "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
         },
         {
             "title": "Performance (P3)",
             "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [
-                "Preprocessing",
-                "Algebraic assembly",
-                "Algebraic solve",
-                "Postprocess"
-            ],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "mesh",
-                "label": "Mesh level"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
+            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
             "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+                "parameter":"perfvalue",
+                "label":"Performance Variable",
+                "filter":[
+                    {"Constructor_init":"Preprocessing"},
+                    {"Solve_algebraic-assembly":"Algebraic assembly"},
+                    {"Solve_algebraic-solve":"Algebraic solve"},
+                    {"PostProcessing_exportResults":"Postprocess"}
+                ]
             },
-            "aggregations":[
-                {"column":"discretization","agg":"filter:P3"}
-            ]
+            "yaxis": { "label": "execution time (s)" },
+            "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
         },
         {
             "title": "Speedup (P3)",
             "plot_types": [ "scatter" ],
             "transformation": "speedup",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "Solve_algebraic-solve",
-                "PostProcessing_exportResults",
-                "Total"
-            ],
-            "names": [
-                "Preprocessing",
-                "Algebraic assembly",
-                "Algebraic solve",
-                "Postprocess",
-                "Total"
-            ],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "mesh",
-                "label": "Mesh level"
-            },
-            "yaxis": {
-                "label": "Speedup"
-            },
+            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
             "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+                "parameter":"perfvalue",
+                "label":"Performance Variable",
+                "filter":[
+                    {"Constructor_init":"Preprocessing"},
+                    {"Solve_algebraic-assembly":"Algebraic assembly"},
+                    {"Solve_algebraic-solve":"Algebraic solve"},
+                    {"PostProcessing_exportResults":"Postprocess"}
+                ]
             },
-            "aggregations":[
-                {"column":"discretization","agg":"filter:P3"}
-            ]
+            "yaxis": { "label": "Speedup" },
+            "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
         },
         {
             "title": "Algebraic-solve execution time",
             "plot_types": [ "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "Solve_algebraic-solve"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "resources.tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
-            "color_axis":{
-                "parameter":"mesh",
-                "label":"Mesh"
-            },
-            "secondary_axis":{
-                "parameter":"discretization",
-                "label":"Discretization"
-            },
-            "aggregations":[
-                {"column":"performance_variable","agg":"filter:Solve_algebraic-solve"}
-            ]
+            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+            "yaxis": { "label": "execution time (s)" },
+            "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+            "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+            "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_algebraic-solve"} ]
         },
         {
             "title":"Number of iterations of GMRES",
             "plot_types":["scatter"],
-            "transformation":"performance",
-            "variables":["Solve_ksp-niter"],
-            "names":[],
-            "xaxis":{
-                "parameter":"resources.tasks",
-                "label":"Number of tasks"
-            },
-            "yaxis":{
-                "label":"Number of iterations"
-            },
-            "color_axis":{
-                "parameter":"mesh",
-                "label":"Mesh"
-            },
-            "secondary_axis":{
-                "parameter":"discretization",
-                "label":"Discretization"
-            },
-            "aggregations":[
-                {"column":"performance_variable","agg":"filter:Solve_ksp-niter"}
-            ]
+            "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
+            "yaxis":{ "label":"Number of iterations" },
+            "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+            "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+            "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
         }
     ]
 }
