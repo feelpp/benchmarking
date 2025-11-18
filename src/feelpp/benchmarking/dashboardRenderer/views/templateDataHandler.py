@@ -16,7 +16,7 @@ class TemplateDataFileHandler(DataHandler):
         if data.action == "input":
             if not os.path.exists(filepath):
                 warnings.warn(f"{filepath} does not exist. Skipping")
-                return {data.prefix}
+                return {}
             with open(filepath,"r") as f:
                 if data.format == "json":
                     template_data = json.load(f)

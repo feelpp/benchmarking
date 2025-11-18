@@ -102,10 +102,16 @@ def main_cli():
         )
         #===============================================#
 
-        # ============== LAUNCH REFRAME =======================#
-        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
-        exit_code = subprocess.run(reframe_cmd, shell=True)
-        #======================================================#
+        try:
+            # ============== LAUNCH REFRAME =======================#
+            reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
+            exit_code = subprocess.run(reframe_cmd, shell=True)
+            #======================================================#
+        finally:
+            if not os.path.exists(os.path.join(report_folder_path,"reframe_report.json")):
+                if os.path.exists(os.path.join(report_folder_path,"plots.json")):
+                    os.remove(os.path.join(report_folder_path,"plots.json"))
+                os.rmdir(report_folder_path)
 
         # ================== MOVE RESULTS (OPTION)============#
         if parser.args.move_results:
