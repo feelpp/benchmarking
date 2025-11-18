@@ -3,7 +3,13 @@ from pydantic import BaseModel, field_validator, model_validator
 
 class PlotAxis(BaseModel):
     parameter: str
-    label:str
+    label:Optional[str] = None
+
+    @model_validator(mode="after")
+    def defaultLabel(self):
+        if self.label is None:
+            self.label = self.parameter.title()
+        return self
 
 class Aggregation(BaseModel):
     column: str
