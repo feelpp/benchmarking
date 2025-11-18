@@ -8,12 +8,13 @@ class AxisMocker:
     def __init__(self, label="",parameter=""):
         self.label = label
         self.parameter = parameter
+        self.filter = []
 
 class PlotConfigMocker:
     def __init__(
         self, transformation="",aggregations = [],
         xaxis = AxisMocker(), secondary_axis= AxisMocker(), color_axis=AxisMocker(),
-        variables = [], plot_types = [], layout_modifiers = None, title = "", yaxis = AxisMocker(), extra_axes = []
+        plot_types = [], layout_modifiers = None, title = "", yaxis = AxisMocker(), extra_axes = []
     ):
         self.transformation = transformation
         self.xaxis = xaxis
@@ -21,7 +22,6 @@ class PlotConfigMocker:
         self.color_axis = color_axis
         self.yaxis = yaxis
         self.aggregations = aggregations
-        self.variables = variables
         self.plot_types = plot_types
         self.layout_modifiers = layout_modifiers
         self.title = title
