@@ -52,6 +52,8 @@ class TransformationStrategy:
 
 
     def filterAndRename(self,df,axis):
+        if not axis:
+            return
         col = axis.parameter
         filters = {}
         for f in axis.filter:
@@ -79,6 +81,8 @@ class PerformanceStrategy(TransformationStrategy):
         self.updateDimensions(df)
 
         for axis_name, axis in self.dimensions.items():
+            if not axis:
+                continue
             if axis_name == "extra_axes":
                 for ax in axis:
                     df = self.filterAndRename(df,ax)
