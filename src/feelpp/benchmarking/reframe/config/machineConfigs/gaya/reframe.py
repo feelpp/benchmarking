@@ -15,7 +15,7 @@ site_configuration = {
                     'environs': ['default','hpcx'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
-                        "export PATH=/opt/apptainer/v1.3.5/apptainer/bin/:$PATH"
+                        "export PATH=/opt/apptainer/latest/bin/:$PATH"
                     ],
                     'processor': {
                         'num_cpus': 128
@@ -50,7 +50,7 @@ site_configuration = {
                     'environs': ['default','hpcx'],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
-                        "export PATH=/opt/apptainer/v1.3.5/apptainer/bin/:$PATH"
+                        "export PATH=/opt/apptainer/latest/bin/:$PATH"
                     ],
                     'processor': {
                         'num_cpus': 128
@@ -95,7 +95,7 @@ site_configuration = {
                     ],
                     'prepare_cmds': [
                         'source /etc/profile.d/modules.sh',
-                        "export PATH=/opt/apptainer/v1.3.5/apptainer/bin/:$PATH"
+                        "export PATH=/opt/apptainer/latest/bin/:$PATH"
                     ],
                     'processor': {
                         'num_cpus': 32
