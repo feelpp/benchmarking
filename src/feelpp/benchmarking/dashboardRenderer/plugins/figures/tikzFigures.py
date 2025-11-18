@@ -41,7 +41,7 @@ class TikzFigure(Figure):
         Returns:
             str: latex file content where containing multiple pgfplots figures, for each value of secondary axis
         """
-        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"]
+        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
         anim_dim_values = df.index.get_level_values(secondary_axis).unique().values
         return self.renderer.template.render(
             xaxis = self.config.xaxis,

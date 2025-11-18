@@ -37,7 +37,7 @@ class PlotlyFigure(Figure):
         """
         frames = []
         ranges=[]
-        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"]
+        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
         anim_dimension_values = df.index.get_level_values(secondary_axis).unique().values
 
         for dim in anim_dimension_values:
@@ -128,10 +128,10 @@ class PlotlyMarkedScatter(PlotlyFigure):
         self.colors = ["red","blue","green","orange","purple","brown","pink","gray","cyan","magenta","yellow","darkblue","darkred","darkgreen","darkorange","darkpurple","darkbrown","darkpink","darkgray","darkcyan","darkmagenta","darkyellow","lightblue","lightred","lightgreen","lightorange","lightpurple","lightbrown","lightpink","lightgray","lightcyan","lightmagenta","lightyellow","black"]
 
         if len(self.transformation_strategy.dimensions["extra_axes"])>0:
-            self.mark_axis = self.transformation_strategy.dimensions["extra_axes"][0]
+            self.mark_axis = self.transformation_strategy.dimensions["extra_axes"][0].parameter
             self.mark_axis_label = self.config.extra_axes[0].label
         else:
-            self.mark_axis = self.transformation_strategy.dimensions["secondary_axis"]
+            self.mark_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
             self.mark_axis_label = self.config.secondary_axis.label if self.mark_axis else self.config.color_axis.label if self.config.color_axis else ""
 
     def createMultiindexFigure(self, df):
@@ -263,8 +263,8 @@ class PlotlyStackedBarFigure(PlotlyFigure):
             Returns:
                 go.Figure. Containing a stacked and grouped bar traces for a multiindex dataframe
         """
-        xaxis = self.transformation_strategy.dimensions["xaxis"]
-        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"]
+        xaxis = self.transformation_strategy.dimensions["xaxis"].parameter
+        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
 
         fig = px.bar(
             df.reset_index().astype({
@@ -444,10 +444,10 @@ class Plotly3DFigure(PlotlyFigure):
     def __init__(self, plot_config, transformation_strategy):
         super().__init__(plot_config, transformation_strategy)
         if len(self.transformation_strategy.dimensions["extra_axes"])>0:
-            self.y_axis = self.transformation_strategy.dimensions["extra_axes"][0]
+            self.y_axis = self.transformation_strategy.dimensions["extra_axes"][0].parameter
             self.y_axis_label = self.config.extra_axes[0].label
         else:
-            self.y_axis = self.transformation_strategy.dimensions["secondary_axis"]
+            self.y_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
             self.y_axis_label = self.config.secondary_axis.label if self.y_axis else self.config.color_axis.label if self.config.color_axis else ""
 
     def createMultiindexFigure(self, df):
@@ -489,7 +489,7 @@ class PlotlyScatter3DFigure(Plotly3DFigure):
         """
         return [
             go.Scatter3d(
-                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"]),
+                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"].parameter),
                 y=df.index.get_level_values(self.y_axis),
                 z=df[col],
                 mode='markers', name=col
@@ -511,7 +511,7 @@ class PlotlySurface3DFigure(Plotly3DFigure):
         """
         return [
             go.Mesh3d(
-                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"]),
+                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"].parameter),
                 y=df.index.get_level_values(self.y_axis),
                 z=df[col],
                 opacity=0.5, name=col

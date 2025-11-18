@@ -4,6 +4,29 @@ from pydantic import BaseModel, field_validator, model_validator
 class PlotAxis(BaseModel):
     parameter: str
     label:Optional[str] = None
+    filter:Optional[Union[str,list[str],dict[str,str],list[dict[str,str]]]] = []
+
+    @field_validator("filter",mode="after")
+    @classmethod
+    def parseFilter(cls,v):
+        # Case: val  → [{val: val}]
+        if isinstance(v, str):
+            return [{v: v}]
+
+        # Case: [val]  → [{val: val}]
+        if isinstance(v, list) and all(isinstance(i, str) for i in v):
+            return [{i: i} for i in v]
+
+        # Case: {val: custom}  → [{val: custom}]
+        if isinstance(v, dict):
+            return [v]
+
+        # Case: [{val:custom}, {val2:custom2}]  → unchanged
+        if isinstance(v, list) and all(isinstance(i, dict) for i in v):
+            return v
+
+        raise ValueError("Invalid filter format")
+
 
     @model_validator(mode="after")
     def defaultLabel(self):
