@@ -22,7 +22,7 @@ class ReframeReportPlugin:
         else:
             merged = pd.concat(child_dfs, ignore_index=True)
             if repository_type:
-                merged[repository_type] = node_id
+                merged = merged.assign(**{repository_type: node_id})
 
         children_repositories = {c.get("repository_type") for c in child_results}
 
