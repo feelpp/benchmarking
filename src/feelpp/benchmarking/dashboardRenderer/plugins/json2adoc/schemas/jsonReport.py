@@ -26,15 +26,6 @@ class PlotNode(ReportNode):
     type: Literal["plot"]
     plot: Plot
 
-    @model_validator(mode="before")
-    @classmethod
-    def coercePlot( cls, values ):
-        if isinstance(values,dict):
-            if "plot" not in values:
-                return {"plot": values, "type":"plot"}
-        return values
-
-
 Node = Union[TextNode, "SectionNode", PlotNode]
 
 class SectionNode(ReportNode):
