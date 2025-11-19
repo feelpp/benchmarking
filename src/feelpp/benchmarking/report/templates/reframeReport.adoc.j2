@@ -26,6 +26,6 @@
 {% include "parameterTable.adoc.j2"%}
 {% endfor %}
 
-{% with figures_df = reframe_runs_df, plots = plots%}
-    {%include "figures.adoc.j2" %}
+{% with dataframe = reframe_runs_df, config = plots%}
+    {%include "jsonReport.adoc.j2" %}
 {% endwith %}

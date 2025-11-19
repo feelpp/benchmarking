@@ -1,0 +1,51 @@
+{% macro render_plot(figures_df, plot) %}
+{% with figures_df=figures_df, plots=[plot.model_dump()] %}
+    {% include "figures.adoc.j2"%}
+{% endwith %}
+{% endmacro %}
+
+
+{% macro render_section(section) %}
+== {{ section.title }}
+
+{% for child in section.content %}
+{% if child.type == "text" %}
+{{ child.text }}
+{% elif child.type == "plot" %}
+{{ render_plot(dataframe, child.plot) }}
+{% elif child.type == "section" %}
+{{ render_section(child) }}
+{% endif %}
+{% endfor %}
+{% endmacro %}
+
+
+{% set json_report_controller = JsonReportController(config) %}
+
+{{ json_report_controller.generateMetadata() }}
+
+++++
+<style>
+{% include "css/figures.css" %}
+</style>
+++++
+
+{% for contentNode in json_report_controller.generateReport() %}
+
+{% if contentNode.type == "plot" %}
+{{render_plot(dataframe,contentNode.plot)}}
+{% elif contentNode.type == "text" %}
+{{ contentNode.text }}
+{% elif contentNode.type == "section" %}
+{{ render_section(contentNode) }}
+{% endif %}
+
+{% endfor %}
+
+
+++++
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script type="text/javascript">
+{% include "js/figureHelpers.js" %}
+</script>
+++++
