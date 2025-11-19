@@ -1,5 +1,5 @@
 from typing import Literal, Union, Optional, List, Dict, Annotated
-from pydantic import ValidationError, BaseModel, field_validator, model_validator, Field
+from pydantic import ValidationError, BaseModel, field_validator, model_validator, Field, ConfigDict
 from datetime import datetime
 from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot
 
@@ -10,8 +10,7 @@ class Metadata(BaseModel):
     description: Optional[str] = None
     docdatetime: Optional[str] = datetime.now().strftime("%Y_%m_%dT%H%M%S")
 
-    class Config:
-        extra = "allow"
+    model_config = ConfigDict( extra='allow' )
 
 
 class ReportNode(BaseModel):
