@@ -6,10 +6,6 @@ from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import P
 
 
 class Metadata(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    docdatetime: Optional[str] = datetime.now().strftime("%Y_%m_%dT%H%M%S")
-
     model_config = ConfigDict( extra='allow' )
 
 
