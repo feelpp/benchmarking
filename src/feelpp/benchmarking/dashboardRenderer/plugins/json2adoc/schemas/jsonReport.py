@@ -48,3 +48,14 @@ class JsonReportSchema(BaseModel):
             return values
         else:
             raise TypeError(f"Expected dict or list at root, got {type(values)}")
+
+    def flattenContent(self, content = None) -> list[Node]:
+        flattened = []
+        if content is None:
+            content = self.content
+        for node in content:
+            if node.type == "section":
+                flattened += self.flattenContent(node.content)
+            else:
+                flattened.append(node)
+        return flattened

@@ -2,6 +2,7 @@ from pydantic import BaseModel, field_validator, model_validator, RootModel, Con
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot, PlotAxis
+from feelpp.benchmarking.dashboardRenderer.plugins.json2adoc.schemas.jsonReport import JsonReportSchema
 import os, re
 
 class Sanity(BaseModel):
@@ -143,7 +144,7 @@ class ConfigFile(BaseModel):
     sanity: Optional[Sanity] = Sanity()
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
-    plots: Optional[List[DefaultPlot]] = []
+    json_report: Optional[JsonReportSchema] = JsonReportSchema()
 
     model_config = ConfigDict( extra='allow' )
     def __getattr__(self, item):
@@ -181,7 +182,10 @@ class ConfigFile(BaseModel):
                     parameter_names.append(f"{outer.name}.{inner}")
 
         parameter_names += [outer.name for outer in self.parameters if outer] + ["perfvalue","value"]
-        for plot in self.plots:
+        for reportNode in self.json_report.flattenContent():
+            if reportNode.type != "plot":
+                continue
+            plot = reportNode.plot
             for ax in [plot.xaxis,plot.secondary_axis,plot.yaxis,plot.color_axis]:
                 if ax and ax.parameter:
                     assert ax.parameter in parameter_names, f"Parameter not found {ax.parameter} in {parameter_names}"

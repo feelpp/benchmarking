@@ -121,17 +121,12 @@ class ConfigReader:
     def __init__(self, config_paths, schema, name, dry_run=False, additional_readers = []):
         """
         Args:
-            config_paths (str | list[str]) : Path to the config JSON file. If a list is provided, files will be merged.
+            config_paths (str | list[str] | list[dict[str,str]]) : Path to the config JSON file. If a list is provided, files will be merged. If a list of dict is provided, files will be prefixed by the key in the schema
         """
         self.schema = schema
-        self.context = {
-            "dry_run":dry_run
-        }
+        self.context = { "dry_run":dry_run }
         if config_paths:
-            self.config = self.load(
-                config_paths if type(config_paths) == list else [config_paths],
-                schema
-            )
+            self.config = self.load( self.prepareConfigs(config_paths), schema )
         self.name = name
         self.original_config = self.config.model_copy()
         self.processor = TemplateProcessor()
@@ -139,7 +134,22 @@ class ConfigReader:
             self.updateConfig(TemplateProcessor.flattenDict(additional_reader.config,additional_reader.name))
         self.updateConfig()
 
-    def load(self,config_paths, schema):
+    def prepareConfigs(self,config_paths):
+        if isinstance(config_paths, str):
+            return [{"":config_paths}]
+
+        if isinstance(config_paths, list) and all(isinstance(v, str) for v in config_paths):
+            return [{"":v} for v in config_paths]
+
+        if isinstance(config_paths,dict):
+            return [config_paths]
+
+        if isinstance(config_paths, list) and all(isinstance(v, dict) for v in config_paths):
+            return config_paths
+
+        raise ValueError(f"Config paths are incorrectly formatted: {config_paths}")
+
+    def load(self,config_paths, schema: BaseModel):
         """ Loads the JSON file and checks if the file exists.
         Args:
             config_paths (list[str]) : Paths to the config JSON files to merge
@@ -149,9 +159,14 @@ class ConfigReader:
         """
         self.config = {}
         for config in config_paths:
-            assert os.path.exists(os.path.abspath(config)), f"Cannot find config file {config}"
-            with open(config, "r") as cfg:
-                self.config.update(json.load(cfg, cls=JSONWithCommentsDecoder))
+            prefix = list(config.keys())[0]
+            config_path = list(config.values())[0]
+            assert os.path.exists(os.path.abspath(config_path)), f"Cannot find config file {config_path}"
+            with open(config_path, "r") as cfg:
+                if prefix and prefix != "":
+                    self.config.update({ prefix: json.load(cfg, cls=JSONWithCommentsDecoder)} )
+                else:
+                    self.config.update(json.load(cfg, cls=JSONWithCommentsDecoder))
 
         self.config = schema.model_validate(self.config, context=self.context)
 

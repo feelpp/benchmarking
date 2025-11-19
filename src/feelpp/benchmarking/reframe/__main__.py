@@ -33,9 +33,9 @@ def main_cli():
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
 
 
-        configs = [config_filepath]
+        configs = [{"":config_filepath}]
         if parser.args.plots_config:
-            configs += [parser.args.plots_config]
+            configs += [{"json_report":parser.args.plots_config}]
         app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
 
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
@@ -91,8 +91,8 @@ def main_cli():
 
 
         #============ CREATING RESULT ITEM ================#
-        with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
-            f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
+        with open(os.path.join(report_folder_path,"report.json"),"w") as f:
+            f.write(json.dumps(app_reader.config.json_report.model_dump()))
 
         #Copy use case description if existant
         FileHandler.copyResource(
@@ -109,8 +109,8 @@ def main_cli():
             #======================================================#
         finally:
             if not os.path.exists(os.path.join(report_folder_path,"reframe_report.json")):
-                if os.path.exists(os.path.join(report_folder_path,"plots.json")):
-                    os.remove(os.path.join(report_folder_path,"plots.json"))
+                if os.path.exists(os.path.join(report_folder_path,"report.json")):
+                    os.remove(os.path.join(report_folder_path,"report.json"))
                 os.rmdir(report_folder_path)
 
         # ================== MOVE RESULTS (OPTION)============#
@@ -118,7 +118,7 @@ def main_cli():
             if not os.path.exists(parser.args.move_results):
                 os.makedirs(parser.args.move_results)
             os.rename(os.path.join(report_folder_path,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
-            os.rename(os.path.join(report_folder_path,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
+            os.rename(os.path.join(report_folder_path,"report.json"),os.path.join(parser.args.move_results,"report.json"))
         #======================================================#
 
     if parser.args.website:
