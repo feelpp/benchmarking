@@ -3,108 +3,143 @@ from feelpp.benchmarking.dashboardRenderer.component.leaf import LeafComponent
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import LeafMetadata
 from feelpp.benchmarking.dashboardRenderer.views.base import ViewFactory
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateInfo
 import os, tempfile, warnings
+from typing import Dict, List
 
 class LeafLoader:
-    """ Abstract class for loading leaf components. """
-    def __init__(self, location:str,template_info) -> None:
+    """
+    Abstract base class defining the interface for loading leaf components.
+
+    Derived classes must implement the `load` method to define the specific
+    mechanism for retrieving components (e.g., from local disk, a remote server).
+    """
+    def __init__( self, location:str, template_info:TemplateInfo ) -> None:
         """
         Args:
-            location (str): The location of the leaf components.
+            location (str): The source location of the leaf components (e.g., a file path or a Girder path).
+            template_info (Dict[str, Any]): Information about the view template to be used when creating the LeafComponent's view.
         """
         self.location = location
         self.template_info = template_info
 
-    def load(self,repository:Repository,parent_ids:list[str]) -> None:
+    def load( self, repository:Repository, parent_ids:List[str] ) -> None:
         """
         Load leaf components into the repository.
+
+        This is a pure virtual method that must be implemented by concrete subclasses.
+
         Args:
-            repository (Repository): The repository to load components into.
-            parent_ids (list[str]): List of parent IDs for the components.
+            repository (Repository): The repository instance to load components into.
+            parent_ids (List[str]): List of parent IDs for the components, establishing a hierarchy.
+
+        Raises:
+            NotImplementedError: If the method is not implemented in a derived class.
         """
         raise NotImplementedError("Pure virtual method, must be implemented in derived classes.")
 
 
 class LocalLeafLoader(LeafLoader):
-    """ Loader for local leaf components. """
-    def __init__(self, location:str, template_info) -> None:
+    """
+    Concrete loader for leaf components residing on the local filesystem.
+    It assumes that the components are organized in subdirectories within the specified location.
+    """
+    def __init__(self, location:str, template_info: TemplateInfo) -> None:
         """
         Args:
-            location (str): The local directory containing leaf components.
-        Raises:
-            FileNotFoundError: If the specified location does not exist.
+            location (Optional[str]): The local directory containing leaf components.
+            template_info (Dict[str, Any]): Information about the view template.
+        Warns:
+            UserWarning: If the specified location does not exist, but only if location is provided.
         """
-        super().__init__(location,template_info)
+        super().__init__( location, template_info )
 
         if not location:
             return
-        if not os.path.exists(location):
+        if not os.path.exists( location ):
             warnings.warn(f"{location} does not contain any files")
 
     def load(self,repository:Repository, parent_ids:list[str]) -> None:
         """
         Load local leaf components (in the filesystem) into the repository.
+        It iterates over subdirectories in the `self.location`, treating each as a separate leaf component, and uses the `ViewFactory` to create a view for it.
+
         Args:
             repository (Repository): The repository to load components into.
-            parent_ids (list[str]): List of parent IDs for the components.
+            parent_ids (List[str]): List of parent IDs for the components.
         """
-        if not self.location or not os.path.isdir(self.location):
+        if not self.location or not os.path.isdir( self.location ):
             return
-        for leaf_component_dir in os.listdir(self.location):
-            repository.add(LeafComponent(
+        for leaf_component_dir in os.listdir( self.location ):
+            repository.add( LeafComponent(
                 leaf_component_dir,repository,parent_ids,
-                ViewFactory.create("leaf", self.template_info, os.path.join(self.location,leaf_component_dir), leaf_component_dir )
-            ))
+                ViewFactory.create( "leaf", self.template_info, os.path.join( self.location, leaf_component_dir ), leaf_component_dir )
+            ) )
 
 class GirderLeafLoader(LeafLoader):
-    """ Loader for leaf components on Girder."""
-    def __init__(self,location,template_info) -> None:
+    """
+    Concrete loader for leaf components hosted on a remote Girder server.
+
+    It uses a temporary directory to download the remote content and then delegates
+    the actual loading process to a LocalLeafLoader instance.
+    """
+    def __init__( self, location:str, template_info: TemplateInfo ) -> None:
         """"
         Args:
-            location (str): The local directory containing leaf components.
-        Raises:
-            FileNotFoundError: If the specified location does not exist.
+            location (str): The Girder folder ID or path containing leaf components.
+            template_info (Dict[str, Any]): Information about the view template.
         """
-        super().__init__(location,template_info)
+        super().__init__( location, template_info )
 
 
-    def load(self,repository:Repository, parent_ids:list[str]) -> None:
+    def load( self, repository:Repository, parent_ids:List[str] ) -> None:
         """
         Download and load remote (Girder) leaf components into the repository.
+
+        The process involves:
+        1. Creating a temporary local directory.
+        2. Initializing `GirderHandler` to download the remote folder specified by `self.location` into the temporary directory.
+        3. Instantiating a `LocalLeafLoader` to load files from the temporary directory.
+        4. Executing the local loader's `load` method.
+
         Args:
             repository (Repository): The repository to load components into.
-            parent_ids (list[str]): List of parent IDs for the components.
+            parent_ids (List[str]): List of parent IDs for the components.
         """
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            girder_handler = GirderHandler(tmpdir)
-            print("SINGLETON ID ", id(girder_handler))
-            girder_handler.downloadFolder(self.location)
-            local_loader = LocalLeafLoader(tmpdir,self.template_info)
-            local_loader.load(repository,parent_ids)
+            girder_handler = GirderHandler( tmpdir )
+            girder_handler.downloadFolder( self.location )
+            local_loader = LocalLeafLoader( tmpdir, self.template_info )
+            local_loader.load( repository, parent_ids )
 
 
 class LeafLoaderFactory:
-    """ Factory class for creating leaf loaders. """
+    """
+    Factory class for creating concrete LeafLoader instances.
+
+    It abstracts the creation logic, allowing the application to request a loader based purely on the configuration metadata.
+    """
     @staticmethod
-    def create(leaf_config: LeafMetadata) -> LeafLoader:
+    def create( leaf_config: LeafMetadata ) -> LeafLoader:
         """
-        Create a leaf loader based on the configuration.
+        Create a leaf loader based on the configuration metadata.
+        It inspects the `platform` field in the configuration to decide whether to return a `LocalLeafLoader` or a `GirderLeafLoader`.
+
         Args:
-            leaf_config (LeafMetadata): The configuration for the leaf component.
+            leaf_config (LeafMetadata): The configuration containing the 'platform' ("local" or "girder") and 'path' to the leaf components.
         Returns:
-            LeafLoader: An instance of a leaf loader.
+            LeafLoader: An instance of the concrete leaf loader.
         Raises:
-            ValueError: If the path is not defined in the configuration.
-            NotImplementedError: If the platform is not supported.
+            NotImplementedError: If the specified platform is not recognized.
         """
         if leaf_config.path is None:
             warnings.warn("Leaf path is not defined")
 
         if leaf_config.platform == "local":
-            return LocalLeafLoader(leaf_config.path,leaf_config.template_info)
+            return LocalLeafLoader( leaf_config.path, leaf_config.template_info )
         elif leaf_config.platform == "girder":
-            return GirderLeafLoader(leaf_config.path,leaf_config.template_info)
+            return GirderLeafLoader( leaf_config.path, leaf_config.template_info )
         else:
             raise NotImplementedError("Remote locations not yet implemented")
 
