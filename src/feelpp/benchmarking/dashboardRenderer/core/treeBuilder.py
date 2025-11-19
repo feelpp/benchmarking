@@ -94,7 +94,7 @@ class ComponentTree(TreeNode):
 
     def render(self,base_path):
         super().render(base_path,None,renderLeaves=False)
-        self.leaf_repository.render(base_path,self.id)
+        self.leaf_repository.render(base_path)
 
     def patchTemplateInfo(self,patches:list[str],targets:str,prefix:str,save:bool):
         if not targets: #No target specified -> Select latest (by filename order).
