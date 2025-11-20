@@ -40,18 +40,13 @@ function downloadBlob(blob, filename) {
     URL.revokeObjectURL(url);
 }
 
-
-
-function switchTab(figureIndex, tabIndex) {
-    let subfigures = document.querySelectorAll(`[id^="subfig_${figureIndex}_"]`);
-    subfigures.forEach(subfig => {
+function switchTab(button, tabIndex) {
+    const figureContainer = button.closest('.figure-container');
+    figureContainer.querySelectorAll('.subfigure-container').forEach(subfig => {
         subfig.classList.remove('active');
         subfig.classList.add('inactive');
     });
-
-    let activeSubfig = document.getElementById(`subfig_${figureIndex}_${tabIndex}`);
-    if(activeSubfig){
-        activeSubfig.classList.remove('inactive');
-        activeSubfig.classList.add('active');
-    }
+    const activeSubfig = figureContainer.querySelector(`.subfigure-container[data-subfigure='${tabIndex}']`);
+    activeSubfig.classList.add('active');
+    activeSubfig.classList.remove('inactive');
 }

@@ -7,14 +7,15 @@
     <div class='tabs-container'>
     {% for plot_type in figure.plot_types %}
     {% set plot_type_i = loop.index %}
-        <button class='figure-tab' onclick='switchTab({{figure_i}},{{plot_type_i}})' >{{plot_type}}</button>
+        <button class='figure-tab' onclick='switchTab(this, {{plot_type_i}})'>{{plot_type}}</button>
     {% endfor %}
     </div>
     {% endif %}
 
     {% for subfigure in figure.subfigures %}
     {% set subfigure_i = loop.index %}
-      <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" id="subfig_{{ figure_i }}_{{ loop.index }}">
+      <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" data-subfigure="{{loop.index}}">
+
         <div class='export-container'>
         {% for export in subfigure.exports %}
             <button onclick='downloadData({{export.data | tojson | stripquotes}},"download.zip")' >
