@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict
+from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict, ValidationError
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot, PlotAxis
@@ -127,11 +127,51 @@ class DefaultColorAxis(PlotAxis):
     label: Optional[str] = "Performance Variables"
 
 class DefaultPlot(Plot):
-    yaxis: Optional[DefaultPlotYAxis] = DefaultPlotYAxis()
-    color_axis: Optional[DefaultColorAxis] = DefaultColorAxis()
+    yaxis: DefaultPlotYAxis = DefaultPlotYAxis()
+    color_axis: DefaultColorAxis = DefaultColorAxis()
 
-class DefaultPlotNode(PlotNode):
-    plot: DefaultPlot
+class JsonReportSchemaWithDefaults(JsonReportSchema):
+
+    @model_validator(mode="before")
+    @classmethod
+    def applyDefaultPlots(cls, values):
+        """
+        Automatically merges JSON plot items with DefaultPlot.
+        """
+
+        if not values:
+            return values
+
+        if isinstance(values, list):
+            new_content = []
+            for item in values:
+                try:
+                    node = { "type": "plot", "plot": DefaultPlot.model_validate(item) }
+                except ValidationError:
+                    node = item
+                new_content.append(node)
+
+            return {"content": new_content}
+
+        elif isinstance(values, dict):
+            if "content" in values and isinstance(values["content"], list):
+                new_content = []
+                for item in values["content"]:
+                    if isinstance(item, dict) and item.get("type") == "plot":
+                        item = {
+                            "type": "plot",
+                            "plot": DefaultPlot.model_validate(item["plot"])
+                        }
+                    elif isinstance(item, dict) and item.get("type") == "section":
+                        item = cls.applyDefaultPlots(item)
+                    new_content.append(item)
+
+                values["content"] = new_content
+
+            return values
+
+        else:
+            raise TypeError(f"Expected dict or list at root, got {type(values)}")
 
 class ConfigFile(BaseModel):
     executable: str
@@ -148,7 +188,7 @@ class ConfigFile(BaseModel):
     sanity: Optional[Sanity] = Sanity()
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
-    json_report: Optional[Union[JsonReportSchema,List[DefaultPlotNode]]] = JsonReportSchema()
+    json_report: Optional[Union[JsonReportSchemaWithDefaults,List[DefaultPlot]]] = JsonReportSchemaWithDefaults()
 
     model_config = ConfigDict( extra='allow' )
     def __getattr__(self, item):
@@ -156,45 +196,13 @@ class ConfigFile(BaseModel):
             return self.model_extra[item]
         raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
 
-
-
     @field_validator("json_report", mode="before")
     @classmethod
-    def fillPlotDefaults(cls, v):
-        """
-        Recursively traverse json_report content and convert all plot dicts into
-        DefaultPlotNode with yaxis/color_axis defaults filled.
-        """
-        def recursiveFill(node):
-            if isinstance(node, dict):
-                t = node.get("type")
-                if t == "plot":
-                    plot_dict = node.get("plot", {})
-                    if "yaxis" not in plot_dict or plot_dict["yaxis"] is None:
-                        plot_dict["yaxis"] = DefaultPlotYAxis()
-                    if "color_axis" not in plot_dict or plot_dict["color_axis"] is None:
-                        plot_dict["color_axis"] = DefaultColorAxis()
-                    node["plot"] = plot_dict
-                    return DefaultPlotNode.model_validate(node)
-                elif t == "section":
-                    content = node.get("content", [])
-                    node["content"] = [recursiveFill(n) for n in content]
-                    return SectionNode.model_validate(node)
-                elif t == "text":
-                    return TextNode.model_validate(node)
-                else:
-                    return node
-            elif isinstance(node, (PlotNode, SectionNode, TextNode)):
-                return node
-            else:
-                return node
-
+    def coerce_report(cls, v):
+        if not v:
+            return JsonReportSchemaWithDefaults()
         if isinstance(v, list):
-            return [recursiveFill(n) for n in v]
-        elif isinstance(v, dict):
-            content = v.get("content", [])
-            v["content"] = [recursiveFill(n) for n in content]
-            return v
+            return JsonReportSchemaWithDefaults.model_validate(v)
         return v
 
     @field_validator("timeout",mode="before")
@@ -226,9 +234,6 @@ class ConfigFile(BaseModel):
                     parameter_names.append(f"{outer.name}.{inner}")
 
         parameter_names += [outer.name for outer in self.parameters if outer] + ["perfvalue","value"]
-
-        if isinstance(self.json_report, list):
-            self.json_report = JsonReportSchema.model_validate(self.json_report)
 
         for reportNode in self.json_report.flattenContent():
             if reportNode.type != "plot":
