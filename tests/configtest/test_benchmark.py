@@ -37,7 +37,7 @@ class TestConfigFile:
             sanity=sanity,
             parameters=parameters,
             platforms=platforms,
-            plots=plots,
+            json_report=plots,
             resources=resources
         )
 
