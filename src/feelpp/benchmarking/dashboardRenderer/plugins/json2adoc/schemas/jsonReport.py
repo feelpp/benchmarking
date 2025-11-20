@@ -35,6 +35,9 @@ class JsonReportSchema(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def coerceListInput( cls, values ):
+        if not values:
+            return {"metadata": Metadata(), "content": []}
+
         if isinstance(values, list):
             content = []
             for item in values:

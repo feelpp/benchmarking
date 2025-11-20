@@ -18,7 +18,7 @@ class WebsiteConfigCreator:
                         "template":os.path.abspath(os.path.join(__file__,"../templates/reframeReport.adoc.j2")),
                         "data":[
                             { "filepath": "reframe_report.json", "prefix": "rfm" },
-                            { "filepath":"plots.json", "prefix":"plots" },
+                            { "filepath":"report.json", "prefix":"report" },
                             { "filepath":"partials/", "action":"copy", "prefix":"descriptions" }
                         ]
                     },

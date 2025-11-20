@@ -144,7 +144,7 @@ class ConfigFile(BaseModel):
     sanity: Optional[Sanity] = Sanity()
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
-    json_report: Optional[JsonReportSchema] = JsonReportSchema()
+    json_report: Optional[Union[JsonReportSchema,List[DefaultPlot]]] = JsonReportSchema()
 
     model_config = ConfigDict( extra='allow' )
     def __getattr__(self, item):
@@ -182,6 +182,10 @@ class ConfigFile(BaseModel):
                     parameter_names.append(f"{outer.name}.{inner}")
 
         parameter_names += [outer.name for outer in self.parameters if outer] + ["perfvalue","value"]
+
+        if isinstance(self.json_report, list):
+            self.json_report = JsonReportSchema.model_validate(self.json_report)
+
         for reportNode in self.json_report.flattenContent():
             if reportNode.type != "plot":
                 continue
