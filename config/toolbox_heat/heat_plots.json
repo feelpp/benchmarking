@@ -1,168 +1,312 @@
 {
-    "plots": [
+    "title": "Feel++ Toolbox Thermal Bridges Case 3 Benchmark Report",
+    "description": "Detailed performance and validation metrics for the Feel++ Toolbox simulation of Heat Thermal Bridges Case 3, analyzing accuracy and parallel scalability.",
+    "content": [
         {
-            "title": "Validation measures (Heat flux)",
-            "plot_types": [ "scatter" ],
-            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
-            "yaxis": { "label": "Heat flow [W]" },
-            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
-            "secondary_axis":{
-                "parameter": "perfvalue",
-                "label": "Measures",
-                "filter": [
-                    {"Outputs_Normal_Heat_Flux_alpha":"Alpha"},
-                    {"Outputs_Normal_Heat_Flux_beta":"Beta"},
-                    {"Outputs_Normal_Heat_Flux_gamma":"Gamma"}
-                ]
-            },
-            "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
+            "type": "section",
+            "title": "Case Overview",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "This report analyzes the performance and accuracy of the Feel++ Toolbox when simulating the standard Heat Thermal Bridges Case 3, a critical benchmark in thermal analysis. The study evaluates convergence against mesh levels and parallel efficiency across various polynomial discretizations."
+                },
+                {
+                    "type": "image",
+                    "src": "https://docs.feelpp.org/toolboxes/latest/heat/_images/ISO_10211_2007/iso10211-2007-thermal-bridge-3d.png",
+                    "caption": "ISO 10211 thermal bridge geometry mesh.",
+                    "alt": "Thermal bridge geometry"
+                }
+            ]
         },
         {
-            "title": "Validation measures (Temperatures )",
-            "plot_types": [ "scatter" ],
-            "xaxis": { "parameter": "mesh", "label": "mesh levels" },
-            "yaxis": { "label": "Temperature [C°]" },
-            "color_axis":{ "parameter": "discretization", "label":"Discretization" },
-            "secondary_axis":{
-                "parameter": "perfvalue",
-                "label": "Measures",
-                "filter":[
-                    {"Outputs_Points_alpha_max_field_temperature":"Alpha (max)"},
-                    {"Outputs_Points_alpha_min_field_temperature":"Alpha (min)"},
-                    {"Outputs_Points_beta_max_field_temperature":"Beta (max)"},
-                    {"Outputs_Points_beta_min_field_temperature":"Beta (min)"}
-                ]
-            },
-            "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
+            "type": "section",
+            "title": "Mathematical Formulation",
+            "content": [
+                {
+                    "type":"text",
+                    "text":"This simulation solves the steady state heat equation which can be represented by the partial differential equation (PDE):"
+                },
+                {
+                    "type": "latex",
+                    "latex": "\\nabla \\cdot (k \\nabla T) = 0, \\quad \\text{where } \\begin{cases} T &\\text{is the temperature} \\\\ k &\\text{is the thermal conductivity} \\end{cases}"
+                }
+            ]
         },
         {
-            "title": "Performance (P1)",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-            "color_axis":{
-                "parameter":"perfvalue",
-                "label":"Performance Variable",
-                "filter":[
-                    {"Constructor_init":"Preprocessing"},
-                    {"Solve_algebraic-assembly":"Algebraic assembly"},
-                    {"Solve_algebraic-solve":"Algebraic solve"},
-                    {"PostProcessing_exportResults":"Postprocess"}
-                ]
-            },
-            "yaxis": { "label": "execution time (s)" },
-            "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+            "type": "section",
+            "title": "Validation Analysis",
+            "content": [
+                {
+                    "type": "section",
+                    "title": "Heat Flux Convergence",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Validation measures (Heat flux)",
+                                "plot_types": [ "scatter" ],
+                                "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+                                "yaxis": { "label": "Heat flow [W]" },
+                                "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+                                "secondary_axis":{
+                                    "parameter": "perfvalue",
+                                    "label": "Measures",
+                                    "filter": [
+                                        {"Outputs_Normal_Heat_Flux_alpha":"Alpha"},
+                                        {"Outputs_Normal_Heat_Flux_beta":"Beta"},
+                                        {"Outputs_Normal_Heat_Flux_gamma":"Gamma"}
+                                    ]
+                                },
+                                "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "The validation plot for heat flux demonstrates solution convergence across increasing mesh levels (refinement) for different finite element discretizations (P1, P2, P3). Consistency in heat flow values across methods validates the numerical model."
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "Temperature Validation",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Validation measures (Temperatures)",
+                                "plot_types": [ "scatter" ],
+                                "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+                                "yaxis": { "label": "Temperature [°C]" },
+                                "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+                                "secondary_axis":{
+                                    "parameter": "perfvalue",
+                                    "label": "Measures",
+                                    "filter":[
+                                        {"Outputs_Points_alpha_max_field_temperature":"Alpha (max)"},
+                                        {"Outputs_Points_alpha_min_field_temperature":"Alpha (min)"},
+                                        {"Outputs_Points_beta_max_field_temperature":"Beta (max)"},
+                                        {"Outputs_Points_beta_min_field_temperature":"Beta (min)"}
+                                    ]
+                                },
+                                "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "Temperature validation metrics, including maximum and minimum values at key points (alpha and beta), show the expected stable behavior as the mesh is refined. This confirms the accuracy of the thermal solution."
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "title": "Speedup (P1)",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-            "color_axis":{
-                "parameter":"perfvalue",
-                "label":"Performance Variable",
-                "filter":[
-                    {"Constructor_init":"Preprocessing"},
-                    {"Solve_algebraic-assembly":"Algebraic assembly"},
-                    {"Solve_algebraic-solve":"Algebraic solve"},
-                    {"PostProcessing_exportResults":"Postprocess"}
-                ]
-            },
-            "yaxis": { "label": "Speedup" },
-            "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+            "type": "section",
+            "title": "Parallel Performance and Scaling",
+            "content": [
+                {
+                    "type": "section",
+                    "title": "P1 Discretization Performance",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Performance (P1)",
+                                "plot_types": [ "stacked_bar", "grouped_bar" ],
+                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                "color_axis":{
+                                    "parameter":"perfvalue",
+                                    "label":"Performance Variable",
+                                    "filter":[
+                                        {"Constructor_init":"Preprocessing"},
+                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                        {"Solve_algebraic-solve":"Algebraic solve"},
+                                        {"PostProcessing_exportResults":"Postprocess"}
+                                    ]
+                                },
+                                "yaxis": { "label": "execution time (s)" },
+                                "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+                            }
+                        },
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Speedup (P1)",
+                                "plot_types": [ "scatter" ],
+                                "transformation": "speedup",
+                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                "color_axis":{
+                                    "parameter":"perfvalue",
+                                    "label":"Performance Variable",
+                                    "filter":[
+                                        {"Constructor_init":"Preprocessing"},
+                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                        {"Solve_algebraic-solve":"Algebraic solve"},
+                                        {"PostProcessing_exportResults":"Postprocess"}
+                                    ]
+                                },
+                                "yaxis": { "label": "Speedup" },
+                                "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "The performance analysis for P1 discretization measures execution time across various simulation stages (Preprocessing, Assembly, Solve, Postprocess) as the number of tasks increases. The speedup plot indicates strong scaling efficiency for the P1 method, with the algebraic solve phase typically dominating total execution time."
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "P2 Discretization Performance",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Performance (P2)",
+                                "plot_types": [ "stacked_bar", "grouped_bar" ],
+                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                "color_axis":{
+                                    "parameter":"perfvalue",
+                                    "label":"Performance Variable",
+                                    "filter":[
+                                        {"Constructor_init":"Preprocessing"},
+                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                        {"Solve_algebraic-solve":"Algebraic solve"},
+                                        {"PostProcessing_exportResults":"Postprocess"}
+                                    ]
+                                },
+                                "yaxis": { "label": "execution time (s)" },
+                                "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
+                            }
+                        },
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Speedup (P2)",
+                                "plot_types": [ "scatter" ],
+                                "transformation": "speedup",
+                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                "color_axis":{
+                                    "parameter":"perfvalue",
+                                    "label":"Performance Variable",
+                                    "filter":[
+                                        {"Constructor_init":"Preprocessing"},
+                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                        {"Solve_algebraic-solve":"Algebraic solve"},
+                                        {"PostProcessing_exportResults":"Postprocess"}
+                                    ]
+                                },
+                                "yaxis": { "label": "Speedup" },
+                                "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "Similar performance and speedup trends are observed for the higher-order P2 discretization. While P2 offers higher accuracy per degree of freedom, the time complexity, particularly in the assembly phase, is higher, which is reflected in the execution time charts."
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "P3 Discretization Performance",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Performance (P3)",
+                                "plot_types": [ "stacked_bar", "grouped_bar" ],
+                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                "color_axis":{
+                                    "parameter":"perfvalue",
+                                    "label":"Performance Variable",
+                                    "filter":[
+                                        {"Constructor_init":"Preprocessing"},
+                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                        {"Solve_algebraic-solve":"Algebraic solve"},
+                                        {"PostProcessing_exportResults":"Postprocess"}
+                                    ]
+                                },
+                                "yaxis": { "label": "execution time (s)" },
+                                "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
+                            }
+                        },
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Speedup (P3)",
+                                "plot_types": [ "scatter" ],
+                                "transformation": "speedup",
+                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                "color_axis":{
+                                    "parameter":"perfvalue",
+                                    "label":"Performance Variable",
+                                    "filter":[
+                                        {"Constructor_init":"Preprocessing"},
+                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                        {"Solve_algebraic-solve":"Algebraic solve"},
+                                        {"PostProcessing_exportResults":"Postprocess"}
+                                    ]
+                                },
+                                "yaxis": { "label": "Speedup" },
+                                "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "For the P3 discretization, parallel efficiency and speedup are analyzed. This section highlights the trade-offs between increased computational cost (due to higher polynomial order) and achieving optimal parallel scaling on multi-core resources."
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "title": "Performance (P2)",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-            "color_axis":{
-                "parameter":"perfvalue",
-                "label":"Performance Variable",
-                "filter":[
-                    {"Constructor_init":"Preprocessing"},
-                    {"Solve_algebraic-assembly":"Algebraic assembly"},
-                    {"Solve_algebraic-solve":"Algebraic solve"},
-                    {"PostProcessing_exportResults":"Postprocess"}
-                ]
-            },
-            "yaxis": { "label": "execution time (s)" },
-            "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
+            "type": "section",
+            "title": "Solver Metrics",
+            "content": [
+                {
+                    "type": "plot",
+                    "plot": {
+                        "title": "Algebraic-solve execution time",
+                        "plot_types": [ "grouped_bar" ],
+                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                        "yaxis": { "label": "execution time (s)" },
+                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_algebraic-solve"} ]
+                    }
+                },
+                {
+                    "type": "plot",
+                    "plot": {
+                        "title":"Number of iterations of GMRES",
+                        "plot_types":["scatter"],
+                        "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
+                        "yaxis":{ "label":"Number of iterations" },
+                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "To understand the parallel scalability, two key solver metrics are presented: the absolute execution time for the algebraic solve step and the number of iterations required by the GMRES solver. Stable or decreasing iteration counts with mesh refinement and strong scaling in solve time are essential indicators of an efficient preconditioner and solver configuration."
+                }
+            ]
         },
         {
-            "title": "Speedup (P2)",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-            "color_axis":{
-                "parameter":"perfvalue",
-                "label":"Performance Variable",
-                "filter":[
-                    {"Constructor_init":"Preprocessing"},
-                    {"Solve_algebraic-assembly":"Algebraic assembly"},
-                    {"Solve_algebraic-solve":"Algebraic solve"},
-                    {"PostProcessing_exportResults":"Postprocess"}
-                ]
-            },
-            "yaxis": { "label": "Speedup" },
-            "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
-        },
-        {
-            "title": "Performance (P3)",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-            "color_axis":{
-                "parameter":"perfvalue",
-                "label":"Performance Variable",
-                "filter":[
-                    {"Constructor_init":"Preprocessing"},
-                    {"Solve_algebraic-assembly":"Algebraic assembly"},
-                    {"Solve_algebraic-solve":"Algebraic solve"},
-                    {"PostProcessing_exportResults":"Postprocess"}
-                ]
-            },
-            "yaxis": { "label": "execution time (s)" },
-            "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
-        },
-        {
-            "title": "Speedup (P3)",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-            "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-            "color_axis":{
-                "parameter":"perfvalue",
-                "label":"Performance Variable",
-                "filter":[
-                    {"Constructor_init":"Preprocessing"},
-                    {"Solve_algebraic-assembly":"Algebraic assembly"},
-                    {"Solve_algebraic-solve":"Algebraic solve"},
-                    {"PostProcessing_exportResults":"Postprocess"}
-                ]
-            },
-            "yaxis": { "label": "Speedup" },
-            "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
-        },
-        {
-            "title": "Algebraic-solve execution time",
-            "plot_types": [ "grouped_bar" ],
-            "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-            "yaxis": { "label": "execution time (s)" },
-            "color_axis":{ "parameter":"mesh", "label":"Mesh" },
-            "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
-            "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_algebraic-solve"} ]
-        },
-        {
-            "title":"Number of iterations of GMRES",
-            "plot_types":["scatter"],
-            "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
-            "yaxis":{ "label":"Number of iterations" },
-            "color_axis":{ "parameter":"mesh", "label":"Mesh" },
-            "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
-            "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
+            "type": "section",
+            "title": "Summary",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "This comprehensive analysis provides insight into the validation accuracy and parallel efficiency of the Feel++ simulation for the Heat Thermal Bridges Case 3. The results highlight effective scaling up to the P3 discretization and the robust convergence behavior of the numerical scheme."
+                }
+            ]
         }
     ]
 }
