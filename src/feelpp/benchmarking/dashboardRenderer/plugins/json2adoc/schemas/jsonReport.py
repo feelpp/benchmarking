@@ -4,11 +4,6 @@ from datetime import datetime
 from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot
 
 
-
-class Metadata(BaseModel):
-    model_config = ConfigDict( extra='allow' )
-
-
 class ReportNode(BaseModel):
     type:str
 
@@ -29,14 +24,17 @@ class SectionNode(ReportNode):
     content: List[Node]
 
 class JsonReportSchema(BaseModel):
-    metadata: Optional[Metadata] = Metadata()
+    title: Optional[str] = "Report"
+    datetime: Optional[str] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    model_config = ConfigDict( extra='allow' )
+
     content: Optional[List[Annotated[Node, Field(discriminator="type")]]] = []
 
     @model_validator(mode="before")
     @classmethod
     def coerceListInput( cls, values ):
         if not values:
-            return {"metadata": Metadata(), "content": []}
+            return values
 
         if isinstance(values, list):
             content = []
@@ -46,7 +44,7 @@ class JsonReportSchema(BaseModel):
                 except ValidationError:
                     node = item
                 content.append(node)
-            return {"metadata": Metadata(), "content": content}
+            return {"content": content}
         elif isinstance(values, dict):
             return values
         else:
