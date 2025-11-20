@@ -4,7 +4,10 @@ from feelpp.benchmarking.dashboardRenderer.plugins.figures.controller import Con
 class Controller:
 
     def __init__( self, config ) -> None:
-        self.config = JsonReportSchema.model_validate(config)
+        if config:
+            self.config = JsonReportSchema.model_validate(config)
+        else:
+            self.config = JsonReportSchema.model_validate({})
 
     def generateReport(self) -> str:
         return self.config.content
