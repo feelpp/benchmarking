@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
 from feelpp.benchmarking.reframe.parser import CustomHelpFormatter
-from feelpp.benchmarking.reframe.config.configSchemas import DefaultPlot
+from feelpp.benchmarking.reframe.config.configSchemas import JsonReportSchemaWithDefaults
 import os, shutil, json
 
 
@@ -71,15 +71,9 @@ class ReportArgParser():
         new_configs = []
         for plot_config in self.args.plot_configs:
             with open (plot_config,"r") as f:
-                plot_config_content = json.load(f)
-                if isinstance(plot_config_content,dict):
-                    if "plots" not in plot_config_content:
-                        raise ValueError("Plot configuration is a dictionary and does not contains the 'plots' key. Provide a list instead.")
-                    plot_config_content = plot_config_content["plots"]
+                plot_config_content = JsonReportSchemaWithDefaults.model_validate(json.load(f))
 
-                if not isinstance(plot_config_content,list):
-                    raise ValueError("Plot configuration is not a list.")
-                new_configs.append([DefaultPlot(**d).model_dump() for d in plot_config_content ])
+                new_configs.append(plot_config_content)
         self.args.plot_configs = new_configs
 
 
