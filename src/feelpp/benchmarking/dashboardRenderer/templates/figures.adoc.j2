@@ -1,7 +1,4 @@
 ++++
-<style>
-{%include "css/figures.css" %}
-</style>
 
 {% for figure in FiguresController(figures_df,plots).generateAll() %}
 {% set figure_i = loop.index %}
@@ -33,8 +30,4 @@
 
 {% endfor %}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script type="text/javascript">
-{%include "js/figureHelpers.js"%}
-</script>
 ++++

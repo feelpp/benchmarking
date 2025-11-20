@@ -23,13 +23,6 @@
 
 {% for testcase in run.testcases %} {{ flatten_keys(testcase.check_params) }} {% endfor %}
 
-++++
-<style>
-.scrollable {
-  overflow-x: auto;
-}
-</style>
-++++
 [.scrollable]
 --
 [cols="^1,^2,{% for _ in ns.keys %}<3,{% endfor %}<3{% if descriptions %},<3{% endif %}", options="header"]

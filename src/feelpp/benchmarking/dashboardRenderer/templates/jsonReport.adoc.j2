@@ -21,11 +21,7 @@
 
 
 {% set json_report_controller = JsonReportController(config) %}
-++++
-<style>
-{% include "css/figures.css" %}
-</style>
-++++
+
 
 {% for contentNode in json_report_controller.generateReport() %}
 
@@ -38,11 +34,3 @@
 {% endif %}
 
 {% endfor %}
-
-
-++++
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script type="text/javascript">
-{% include "js/figureHelpers.js" %}
-</script>
-++++
