@@ -7,6 +7,27 @@
 {% endmacro %}
 
 
+{% macro render_image(image) %}
+{% set src = image.src %}
+{% set alt = image.alt or "" %}
+
+{% if image.caption %}
+image::{{src}}[{{alt}},title={{image.caption}}]
+{% else %}
+image::{{src}}[{{alt}}]
+{% endif %}
+
+{% endmacro %}
+
+{% macro render_latex(latex_node) %}
+
+[stem]
+++++
+{{ latex_node.latex }}
+++++
+
+{% endmacro %}
+
 {% macro render_section(section, level=1) %}
 {{'=' * level }}  {{ section.title }}
 
@@ -17,6 +38,10 @@
 {{ render_plot(dataframe, child.plot) }}
 {% elif child.type == "section" %}
 {{ render_section(child, level + 1) }}
+{% elif child.type == "image" %}
+{{ render_image(child) }}
+{% elif child.type == "latex" %}
+{{ render_latex(child) }}
 {% endif %}
 {% endfor %}
 {% endmacro %}
@@ -33,6 +58,10 @@
 {{ contentNode.text }}
 {% elif contentNode.type == "section" %}
 {{ render_section(contentNode, 1) }}
+{% elif child.type == "image" %}
+{{ render_image(child) }}
+{% elif child.type == "latex" %}
+{{ render_latex(child) }}
 {% endif %}
 
 {% endfor %}

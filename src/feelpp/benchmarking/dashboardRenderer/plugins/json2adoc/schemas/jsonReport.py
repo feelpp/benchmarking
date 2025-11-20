@@ -12,11 +12,21 @@ class TextNode(ReportNode):
     type:Literal["text"]
     text: str
 
+class LatexNode(ReportNode):
+    type:Literal["latex"]
+    latex: str
+
+class ImageNode(ReportNode):
+    type:Literal["image"]
+    src: str
+    caption: Optional[str] = None
+    alt: Optional[str] = None
+
 class PlotNode(ReportNode):
     type: Literal["plot"]
     plot: Plot
 
-Node = Union[TextNode, "SectionNode", PlotNode]
+Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode]
 
 class SectionNode(ReportNode):
     type:Literal["section"]
