@@ -1,3 +1,5 @@
+:leveloffset: +1
+
 {% macro render_plot(figures_df, plot) %}
 {% with figures_df=figures_df, plots=[plot.model_dump()] %}
     {% include "figures.adoc.j2"%}
@@ -5,8 +7,8 @@
 {% endmacro %}
 
 
-{% macro render_section(section) %}
-== {{ section.title }}
+{% macro render_section(section, level=1) %}
+{{'=' * level }}  {{ section.title }}
 
 {% for child in section.content %}
 {% if child.type == "text" %}
@@ -14,7 +16,7 @@
 {% elif child.type == "plot" %}
 {{ render_plot(dataframe, child.plot) }}
 {% elif child.type == "section" %}
-{{ render_section(child) }}
+{{ render_section(child, level + 1) }}
 {% endif %}
 {% endfor %}
 {% endmacro %}
@@ -30,7 +32,7 @@
 {% elif contentNode.type == "text" %}
 {{ contentNode.text }}
 {% elif contentNode.type == "section" %}
-{{ render_section(contentNode) }}
+{{ render_section(contentNode, 1) }}
 {% endif %}
 
 {% endfor %}
