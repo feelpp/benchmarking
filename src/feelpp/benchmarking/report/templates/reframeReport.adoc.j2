@@ -1,4 +1,8 @@
-= {{ report.title or title}} - {{ report.datetime }}
+{% if report and report.title %}
+= {{ report.title }} {{ " - "+report.datetime or "" }}
+{% else %}
+= {{ title }}
+{% endif %}
 
 :page-illustration: ROOT:report-icon.jpg
 :description: {{machine}} - {{application}} - {{use_case}}
