@@ -1,27 +1,96 @@
-[
-    {
-        "title": "Performance",
-        "plot_types": [ "scatter", "stacked_bar", "grouped_bar" ],
-        "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
-        "color_axis":{"filter":[{"elapsed_fill":"Fill","elapsed_compute":"Compute"}]},
-        "yaxis":{"label":"Execution time (s)"},
-        "secondary_axis":{ "parameter":"elements", "label":"N" }
-    },
-    {
-        "title": "Absolute performance",
-        "plot_types": [ "scatter","stacked_bar","grouped_bar" ],
-        "xaxis":{ "parameter":"elements", "label":"N" },
-        "color_axis":{"filter":[{"elapsed_fill":"Fill","elapsed_compute":"Compute"}]},
-        "yaxis":{"label":"Execution time (s)"},
-        "secondary_axis":{ "parameter":"tasks", "label":"Number of tasks" }
-    },
-    {
-        "title": "Speedup",
-        "plot_types": [ "scatter" ],
-        "transformation": "speedup",
-        "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
-        "color_axis":{"filter":[{"elapsed_fill":"Fill","elapsed_compute":"Compute"}]},
-        "yaxis": { "label": "Speedup" },
-        "secondary_axis":{ "parameter":"elements", "label":"N" }
-    }
-]
+{
+    "title": "Matrix-Vector Multiplication Benchmark Report",
+    "description": "Benchmark results for matrix-vector multiplication across varying problem sizes (N) and task counts.",
+    "content": [
+        {
+            "type": "section",
+            "title": "Description",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "This report analyzes the performance of matrix-vector multiplication for different matrix sizes (N) and levels of task parallelism. We compare fill and compute phases and evaluate how execution time and speedup evolve with increasing workloads."
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Performance Analysis",
+            "content": [
+                {
+                    "type": "section",
+                    "title": "Execution Time vs Number of Tasks",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Performance",
+                                "plot_types": [ "scatter", "stacked_bar", "grouped_bar" ],
+                                "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+                                "yaxis": { "label": "Execution time (s)" },
+                                "color_axis": { "filter": [ { "elapsed_fill": "Fill", "elapsed_compute": "Compute" } ] },
+                                "secondary_axis": { "parameter": "elements", "label": "N" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "This plot shows the execution time breakdown (fill and compute stages) as the number of tasks increases. It highlights parallel scaling behavior for different matrix sizes."
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "Execution Time vs Problem Size (N)",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Absolute performance",
+                                "plot_types": [ "scatter", "stacked_bar", "grouped_bar" ],
+                                "xaxis": { "parameter": "elements", "label": "N" },
+                                "yaxis": { "label": "Execution time (s)" },
+                                "color_axis": { "filter": [ { "elapsed_fill": "Fill", "elapsed_compute": "Compute" } ] },
+                                "secondary_axis": { "parameter": "tasks", "label": "Number of tasks" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "This plot illustrates how execution time scales with matrix size N under different task counts. It helps identify compute bottlenecks and memory throughput constraints."
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "Speedup Analysis",
+                    "content": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Speedup",
+                                "plot_types": [ "scatter" ],
+                                "transformation": "speedup",
+                                "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+                                "yaxis": { "label": "Speedup" },
+                                "color_axis": { "filter": [ { "elapsed_fill": "Fill", "elapsed_compute": "Compute" } ] },
+                                "secondary_axis": { "parameter": "elements", "label": "N" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "This speedup plot shows how effectively the computation accelerates when increasing task parallelism. It highlights differences between fill and compute phases and reveals scaling limits for larger matrix sizes."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Additional Analysis",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "This section may include memory bandwidth analysis, NUMA locality effects, comparison between blocking strategies, or alternative matrix layouts (AoS vs SoA)."
+                }
+            ]
+        }
+    ]
+}

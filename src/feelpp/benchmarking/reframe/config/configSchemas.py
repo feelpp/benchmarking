@@ -2,7 +2,8 @@ from pydantic import BaseModel, field_validator, model_validator, RootModel, Con
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot, PlotAxis
-from feelpp.benchmarking.dashboardRenderer.plugins.json2adoc.schemas.jsonReport import JsonReportSchema
+from feelpp.benchmarking.dashboardRenderer.plugins.json2adoc.schemas.jsonReport import PlotNode
+from feelpp.benchmarking.dashboardRenderer.plugins.json2adoc.schemas.jsonReport import JsonReportSchema,PlotNode, SectionNode, TextNode
 import os, re
 
 class Sanity(BaseModel):
@@ -129,6 +130,9 @@ class DefaultPlot(Plot):
     yaxis: Optional[DefaultPlotYAxis] = DefaultPlotYAxis()
     color_axis: Optional[DefaultColorAxis] = DefaultColorAxis()
 
+class DefaultPlotNode(PlotNode):
+    plot: DefaultPlot
+
 class ConfigFile(BaseModel):
     executable: str
     timeout: str
@@ -144,7 +148,7 @@ class ConfigFile(BaseModel):
     sanity: Optional[Sanity] = Sanity()
     parameters: List[Parameter]
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
-    json_report: Optional[Union[JsonReportSchema,List[DefaultPlot]]] = JsonReportSchema()
+    json_report: Optional[Union[JsonReportSchema,List[DefaultPlotNode]]] = JsonReportSchema()
 
     model_config = ConfigDict( extra='allow' )
     def __getattr__(self, item):
@@ -152,6 +156,46 @@ class ConfigFile(BaseModel):
             return self.model_extra[item]
         raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
 
+
+
+    @field_validator("json_report", mode="before")
+    @classmethod
+    def fillPlotDefaults(cls, v):
+        """
+        Recursively traverse json_report content and convert all plot dicts into
+        DefaultPlotNode with yaxis/color_axis defaults filled.
+        """
+        def recursiveFill(node):
+            if isinstance(node, dict):
+                t = node.get("type")
+                if t == "plot":
+                    plot_dict = node.get("plot", {})
+                    if "yaxis" not in plot_dict or plot_dict["yaxis"] is None:
+                        plot_dict["yaxis"] = DefaultPlotYAxis()
+                    if "color_axis" not in plot_dict or plot_dict["color_axis"] is None:
+                        plot_dict["color_axis"] = DefaultColorAxis()
+                    node["plot"] = plot_dict
+                    return DefaultPlotNode.model_validate(node)
+                elif t == "section":
+                    content = node.get("content", [])
+                    node["content"] = [recursiveFill(n) for n in content]
+                    return SectionNode.model_validate(node)
+                elif t == "text":
+                    return TextNode.model_validate(node)
+                else:
+                    return node
+            elif isinstance(node, (PlotNode, SectionNode, TextNode)):
+                return node
+            else:
+                return node
+
+        if isinstance(v, list):
+            return [recursiveFill(n) for n in v]
+        elif isinstance(v, dict):
+            content = v.get("content", [])
+            v["content"] = [recursiveFill(n) for n in content]
+            return v
+        return v
 
     @field_validator("timeout",mode="before")
     @classmethod
