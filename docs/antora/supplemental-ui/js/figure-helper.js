@@ -1,6 +1,3 @@
-// At the absolute top of the file
-alert("My script is definitely running!");
-
 function downloadData(data, filename) {
     if (data.length == 1) {
         if (data[0].content.length == 1) {
