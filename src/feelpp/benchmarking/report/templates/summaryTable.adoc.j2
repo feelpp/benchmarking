@@ -1,14 +1,34 @@
+
 {%for child_repo_type,repo_table in aggregated["summary"].items()%}
 
 [.scrollable]
-[cols="^1,^2,^1,^1,^1, options="header"]
+--
+[cols="^1,^2,^1,^1,^1", options="header"]
 |===
 
 | *{{ child_repo_type }}* | Date | # Runs | # Test Cases | # Failures
+
 {% for row in repo_table.reset_index().to_dict(orient="records") %}
 |{% if row["result"] == "pass" %}🟢{% else %}🔴{% endif %} | {{ row[repo_table.index.name] }} | {{ row["num_runs"] }} | {{ row["num_cases"] }} | {{ row["num_failures"] }}
 {% endfor %}
 
 |===
 
+++++
+<input type="text" id="filter_{{child_repo_type}}_table" placeholder="Filter testcases..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+++++
+--
+
 {% endfor %}
+
+++++
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.scrollable').forEach(scrollable => {
+      const table = scrollable.querySelector('table');
+      const filterInput = scrollable.querySelector('input[type="text"]');
+      initTable(table, filterInput.id);
+    });
+  });
+</script>
+++++

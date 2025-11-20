@@ -39,5 +39,11 @@
 |===
 --
 ++++
-<input type="text" id="filterInput" placeholder="Filter testcases..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+<input type="text" class="filter-button" id="filterParamTable" placeholder="Filter testcases..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.scrollable table');
+    initTable(table, 'filterParamTable');
+  });
+</script>
 ++++
