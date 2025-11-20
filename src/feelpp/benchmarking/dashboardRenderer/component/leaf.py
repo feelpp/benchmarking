@@ -102,7 +102,7 @@ class LeafComponent(GraphNode):
             if filepath:
                 with open( os.path.join( self.view.template_data_dir, filepath ), "w" ) as f:
                     if format == "json":
-                        json.dump( patch, f )
+                        json.dump( patch.model_dump(), f )
                     else:
                         f.write( patch )
         self.view.updateTemplateData( {prefix:patch} )
