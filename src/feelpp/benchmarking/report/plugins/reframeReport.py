@@ -100,3 +100,9 @@ class ReframeReportPlugin:
             testcases_df = pd.concat(testcases,axis=0)
             runs_dfs.append(pd.concat([testcases_df,run_df.loc[run_df.index.repeat(perfvar_df.shape[0])].reset_index(drop=True)],axis=1))
         return pd.concat(runs_dfs,axis=0)
+
+
+def runsToDfPreprocessor(rfm_report):
+    if rfm_report:
+        return ReframeReportPlugin.runsToDf(rfm_report.get("runs",[]))
+    return pd.DataFrame()
