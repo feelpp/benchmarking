@@ -1,5 +1,6 @@
 
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateInfo,TemplateDataFile
+from feelpp.benchmarking.json_report.renderer import JsonReportController
 import json, os, warnings
 from typing import Union, Dict,Any
 
@@ -10,7 +11,7 @@ class DataHandler:
     Concrete subclasses must implement the `extractData` method to define how
     template data is sourced and prepared, based on the data's type.
     """
-    def extractData( self, data: Union[TemplateDataFile, Dict[str,Any]], partials:Dict[str,Any] = {} ) -> Dict[str,Any]:
+    def extractData( self, data: Union[TemplateDataFile, Dict[str,Any]], partials:Dict[str,Any] = {}, extra_renderers = {}) -> Dict[str,Any]:
         """
         Extracts and prepares data for use in a template renderer.
         Args:
@@ -35,7 +36,7 @@ class TemplateDataFileHandler(DataHandler):
         """
         self.template_data_dir = template_data_dir
 
-    def extractData( self, data: TemplateDataFile, partials:Dict[str,Any] = {} ) -> Dict[str,Any]:
+    def extractData( self, data: TemplateDataFile, partials:Dict[str,Any] = {}, extra_renderers = {} ) -> Dict[str,Any]:
         """
         Extracts data from a file or marks a file for copying based on the `TemplateDataFile` action.
 
@@ -67,6 +68,11 @@ class TemplateDataFileHandler(DataHandler):
                 partials[data.prefix] = filepath
             return {}
 
+        elif data.action == "json2adoc":
+            controller = JsonReportController(filepath, output_format="adoc")
+            extra_renderers[data.prefix] = controller
+            return {}
+
 
 class DictDataHandler(DataHandler):
     """
@@ -74,8 +80,8 @@ class DictDataHandler(DataHandler):
 
     This handler performs no external file operations, simply returning the input dictionary.
     """
-    def extractData(self, data: dict, partials:dict = {}) -> dict:
-        """ Extracts data by returning the input dictionary directly.
+    def extractData(self, data: dict, partials:dict = {}, extra_renderers = {}) -> dict:
+        """ Extracts data by returning the input dictionary directly.
         Args:
             data (Dict[str, Any]): The input dictionary data.
             partials (Dict[str, Any], optional): Not used by this handler. Defaults to {}.

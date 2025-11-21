@@ -71,6 +71,7 @@ class LeafComponent(GraphNode):
         ) )
 
         self.view.copyPartials( leaf_dir, os.path.join(base_dir,"..") )
+        self.view.renderExtra( leaf_dir )
 
         self.view.render( leaf_dir )
 

@@ -2,7 +2,6 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from pathlib import Path
 from feelpp.benchmarking.dashboardRenderer.plugins.figures.controller import Controller as FiguresController
-from feelpp.benchmarking.dashboardRenderer.plugins.json2adoc.controller import Controller as JsonReportController
 from typing import List,Union,Dict,Any
 
 class TemplateRenderer:
@@ -43,10 +42,7 @@ class TemplateRenderer:
 
     def setGlobals( self ) -> None:
         """Configures global variables available to all templates loaded by this environment."""
-        self.env.globals.update( {
-            "FiguresController":FiguresController,
-            "JsonReportController":JsonReportController
-        } )
+        self.env.globals.update( { "FiguresController":FiguresController } )
         self.env.globals["renderTemplate"] = self.renderTemplate
 
     def setFilters( self ) -> None:

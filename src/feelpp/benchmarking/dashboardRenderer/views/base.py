@@ -33,6 +33,7 @@ class View:
             out_filename (Optional[str], optional): The suggested filename for the rendered output. Defaults to None.
         """
         self.partials = {}
+        self.extra_renderers = {}
         self.renderer = self.initRenderer( base_template_type, template_info.template )
 
 
@@ -64,6 +65,7 @@ class View:
         cloned_view.template_data_dir = self.template_data_dir
         cloned_view.out_filename = self.out_filename
         cloned_view.partials = self.partials.copy()
+        cloned_view.extra_renderers = self.extra_renderers.copy()
 
         cloned_view.template_data = deepcopy( self.template_data )
 
@@ -107,7 +109,7 @@ class View:
         """
         assert hasattr(self,"renderer") and self.renderer is not None
         handler = TemplateDataHandlerFactory.getHandler(type(data),template_data_dir)
-        template_data = handler.extractData(data,self.partials)
+        template_data = handler.extractData(data,self.partials,self.extra_renderers)
         self.template_data.update(template_data)
         self.processPlugins()
 
@@ -124,6 +126,19 @@ class View:
             local_partial_path = os.path.join(base_dir,prefix)
             shutil.copytree(path, local_partial_path)
             self.updateTemplateData({prefix:os.path.relpath(local_partial_path,pages_dir)})
+
+    def renderExtra( self, base_dir:str ) -> None:
+        """
+        Renders all extra renderers associated with this view.
+        Each extra renderer is expected to have its own rendering logic and output path.
+
+        Args:
+            output_dirpath (str): The base directory where extra rendered outputs should be saved.
+        """
+        for prefix,renderer in self.extra_renderers.items():
+            output_filepath = renderer.render( base_dir )
+            self.updateTemplateData({prefix:os.path.relpath(output_filepath,base_dir)})
+
 
     def render( self, output_dirpath:str, filename:Optional[str] = None ) -> None:
         """ Executes the final rendering step, writing the output to a file.

@@ -1,37 +1,4 @@
-{% if report and report.title %}
-= {{ report.title }} {{ " - "+report.datetime or "" }}
-{% else %}
-= {{ title }}
-{% endif %}
-
 :page-illustration: ROOT:report-icon.jpg
 :description: {{machine}} - {{application}} - {{use_case}}
 
-== Summary
-
-- Use Case : {{ use_case }}
-- application : {{ application }}
-- Machine : {{ machine }}
-
-=== Session
-
-- Hostname : {{ rfm.session_info.hostname }}
-- User : {{ rfm.session_info.user }}
-- Time Start : {{ rfm.session_info.time_start }}
-- Time End : {{ rfm.session_info.time_end }}
-
-=== Cases
-
-- Total : {{rfm.session_info.num_cases }}
-- Failures : {{rfm.session_info.num_failures }}
-- Runs : {{rfm.runs|length }}
-
-=== Parametrization
-
-{% for run in rfm.runs %}
-{% include "parameterTable.adoc.j2"%}
-{% endfor %}
-
-{% with dataframe = reframe_runs_df, config = report%}
-    {%include "jsonReport.adoc.j2" %}
-{% endwith %}
+include::{{ report }}[]

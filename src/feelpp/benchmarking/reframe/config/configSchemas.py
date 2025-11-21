@@ -2,8 +2,8 @@ from pydantic import BaseModel, field_validator, model_validator, RootModel, Con
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot, PlotAxis
-from feelpp.benchmarking.dashboardRenderer.plugins.json2adoc.schemas.jsonReport import PlotNode
-from feelpp.benchmarking.dashboardRenderer.plugins.json2adoc.schemas.jsonReport import JsonReportSchema,PlotNode, SectionNode, TextNode
+from feelpp.benchmarking.json_report.schemas.jsonReport import PlotNode
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema,PlotNode, SectionNode, TextNode
 import os, re
 
 class Sanity(BaseModel):
