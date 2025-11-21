@@ -1,0 +1,26 @@
+{% import "macros/image.adoc.j2" as image %}
+{% import "macros/plot.adoc.j2"  as plot %}
+{% import "macros/latex.adoc.j2" as latex %}
+{% import "macros/text.adoc.j2"  as text %}
+
+{% set handlers = {
+    "plot":   plot.render,
+    "text":   text.render,
+    "image":  image.render,
+    "latex":  latex.render
+} %}
+
+{% macro render(sectionNode, report_data, level=1) %}
+{{ '=' * level }} {{ sectionNode.title }}
+
+{% for node in sectionNode.content %}
+{% if node.type == "section" %}
+{{ render(node, report_data, level + 1) }}
+{% else %}
+{% set handler = handlers.get(node.type) %}
+{% if handler %}
+{{ handler(node,report_data.get(node.data)) }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endmacro %}

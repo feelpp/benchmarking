@@ -1,7 +1,8 @@
+{% macro render(plotNode,data) %}
+
 ++++
 
-{% for figure in FiguresController(figures_df,plots).generateAll() %}
-{% set figure_i = loop.index %}
+{% for figure in FiguresController(data,plotNode.plot).generateAll() %}
 <div class='figure-container'>
     {% if figure.plot_types | length > 1%}
     <div class='tabs-container'>
@@ -13,7 +14,6 @@
     {% endif %}
 
     {% for subfigure in figure.subfigures %}
-    {% set subfigure_i = loop.index %}
       <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" data-subfigure="{{loop.index}}">
 
         <div class='export-container'>
@@ -32,3 +32,5 @@
 {% endfor %}
 
 ++++
+
+{% endmacro %}

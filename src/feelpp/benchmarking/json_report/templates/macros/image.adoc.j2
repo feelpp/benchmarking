@@ -1,0 +1,11 @@
+{% macro render(imageNode,data) %}
+{% set src = imageNode.src %}
+{% set alt = imageNode.alt or "" %}
+
+{% if image.caption %}
+image::{{src}}[{{alt}},title={{imageNode.caption}}]
+{% else %}
+image::{{src}}[{{alt}}]
+{% endif %}
+
+{% endmacro %}

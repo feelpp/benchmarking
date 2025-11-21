@@ -1,0 +1,6 @@
+:description: {{ report.description }}
+:docdatetime: {{ report.datetime }}
+
+{% import "macros/section.adoc.j2"    as section %}
+
+{{ section.render(report, report_data, 1) }}
