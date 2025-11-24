@@ -2,8 +2,7 @@ from pydantic import BaseModel, field_validator, model_validator, RootModel, Con
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot, PlotAxis
-from feelpp.benchmarking.json_report.schemas.jsonReport import PlotNode
-from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema,PlotNode, SectionNode, TextNode
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile
 import os, re
 
 class Sanity(BaseModel):
@@ -131,6 +130,11 @@ class DefaultPlot(Plot):
     color_axis: DefaultColorAxis = DefaultColorAxis()
 
 class JsonReportSchemaWithDefaults(JsonReportSchema):
+    data: List[Dict[str,str]] = [{
+        "name":"reframe_report",
+        "filepath":"./reframe_report.json",
+        "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor"
+    }]
 
     @model_validator(mode="before")
     @classmethod
@@ -172,6 +176,15 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
 
         else:
             raise TypeError(f"Expected dict or list at root, got {type(values)}")
+
+
+    @model_validator(mode="after")
+    def setDefaultTitle(self):
+        if self.title is None:
+            self.title = f"{self.datetime}"
+
+        return self
+
 
 class ConfigFile(BaseModel):
     executable: str

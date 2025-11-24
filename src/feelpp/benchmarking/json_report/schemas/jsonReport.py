@@ -130,7 +130,7 @@ class DataFile(BaseModel):
 
 
 class JsonReportSchema(BaseModel):
-    title: Optional[str] = "Report"
+    title: Optional[str] = None
     datetime: Optional[str] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data: Optional[List[Union[DataFile]]] = []
     model_config = ConfigDict( extra='allow' )

@@ -13,7 +13,10 @@
 } %}
 
 {% macro render(sectionNode, report_data, level=1) %}
+
+{%if sectionNode.title %}
 {{ '=' * level }} {{ sectionNode.title }}
+{%endif%}
 
 {% for node in sectionNode.content %}
 {% if node.type == "section" %}
