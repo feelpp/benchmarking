@@ -205,6 +205,7 @@ class GraphNode:
             ) )
 
 
+        self.view.renderExtra( component_dir )
         self.view.render( component_dir )
         for child in self.children:
             if not renderLeaves and child.isLeaf():
