@@ -1,17 +1,21 @@
 {
     "leaves":{
-        "fibonacci":[ {
-            "title":"Performance over time",
-            "plot_types":["scatter"],
-            "transformation":"performance",
-            "aggregations":[
-                {"column":"perfvalue","agg":"filter:elapsed"}
-            ],
-            "xaxis":{ "parameter":"date", "label":"Date" },
-            "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-            "secondary_axis":{"parameter":"n","label": "N" },
-            "color_axis":{"parameter":"method","label":"Method"}
-        }],
+        "fibonacci": {
+            "content":[{
+                "type":"plot",
+                "data":"aggregated_data",
+                "plot":{
+                    "title":"Performance over time",
+                    "plot_types":["scatter"],
+                    "transformation":"performance",
+                    "aggregations":[ {"column":"perfvalue","agg":"filter:elapsed"} ],
+                    "xaxis":{ "parameter":"date", "label":"Date" },
+                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
+                    "secondary_axis":{"parameter":"n","label": "N" },
+                    "color_axis":{"parameter":"method","label":"Method"}
+                }
+            }]
+        },
         "sortingApp":[ {
             "title":"Performance over time",
             "plot_types":["scatter"],
@@ -50,18 +54,22 @@
         }]
     },
     "machines":{
-        "machines":[{
-            "title":"Benchmarks by machine",
-            "plot_types":["sunburst"],
-            "transformation":"performance",
-            "aggregations":[
-                {"column":"leaves","agg":"nunique"}
-            ],
-            "xaxis":{"parameter":"applications","label":"Application"},
-            "yaxis": {"label":"Number of benchmarks", "parameter":"runs.num_cases"},
-            "color_axis":{"label":"Date","parameter":"date"},
-            "secondary_axis":{"parameter":"machines","label":"Machine"}
-        }],
+        "machines":{
+            "content":[{
+                "type":"plot",
+                "data":"aggregated_data",
+                "plot":{
+                    "title":"Benchmarks by machine",
+                    "plot_types":["sunburst"],
+                    "transformation":"performance",
+                    "aggregations":[ {"column":"leaves","agg":"nunique"} ],
+                    "xaxis":{"parameter":"applications","label":"Application"},
+                    "yaxis": {"label":"Number of benchmarks", "parameter":"runs.num_cases"},
+                    "color_axis":{"label":"Date","parameter":"date"},
+                    "secondary_axis":{"parameter":"machines","label":"Machine"}
+                }
+            }]
+        },
         "parallelSum":[{
             "title":"Maximum Performance over time",
             "plot_types":["scatter","marked_scatter"],
