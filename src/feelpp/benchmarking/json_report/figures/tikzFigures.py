@@ -1,5 +1,5 @@
 from jinja2 import Environment, FileSystemLoader
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.base import Figure
+from feelpp.benchmarking.json_report.figures.base import Figure
 
 from pathlib import Path
 

@@ -1,6 +1,6 @@
 """ Tests related to plots configuration """
 import pytest
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot, Aggregation, PlotAxis
+from feelpp.benchmarking.json_report.figures.schemas.plot import Plot, Aggregation, PlotAxis
 from pydantic import ValidationError
 
 class TestAggregation:

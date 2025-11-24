@@ -3,7 +3,7 @@ from pydantic import ValidationError, BaseModel, field_validator, model_validato
 from datetime import datetime
 import os, warnings
 import importlib.util
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot
+from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 
 class ReportNode(BaseModel):
     type:str

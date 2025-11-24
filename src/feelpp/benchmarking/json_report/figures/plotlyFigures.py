@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import plotly.express as px
 
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.base import Figure
+from feelpp.benchmarking.json_report.figures.base import Figure
 from numpy import float64 as float64
 from pandas import factorize as pd_factorize
 

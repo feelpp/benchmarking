@@ -1,7 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 import os
 from pathlib import Path
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.controller import Controller as FiguresController
+from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
 from typing import List,Union,Dict,Any
 
 class TemplateRenderer:

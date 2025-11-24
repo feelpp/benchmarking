@@ -1,8 +1,8 @@
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.transformationFactory import TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationStrategyFactory
 
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.base import CompositeFigure
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.tikzFigures import TikzFigure, TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.plotlyFigures import PlotlyFigure, PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure, PlotlyScatter3DFigure, PlotlySurface3DFigure, PlotlyParallelcoordinatesFigure, PlotlyMarkedScatter
+from feelpp.benchmarking.json_report.figures.base import CompositeFigure
+from feelpp.benchmarking.json_report.figures.tikzFigures import TikzFigure, TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
+from feelpp.benchmarking.json_report.figures.plotlyFigures import PlotlyFigure, PlotlyScatterFigure, PlotlyGroupedBarFigure, PlotlyStackedBarFigure, PlotlyTableFigure, PlotlyHeatmapFigure, PlotlySunburstFigure, PlotlyScatter3DFigure, PlotlySurface3DFigure, PlotlyParallelcoordinatesFigure, PlotlyMarkedScatter
 
 
 

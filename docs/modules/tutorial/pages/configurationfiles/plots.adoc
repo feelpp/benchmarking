@@ -116,7 +116,7 @@ For the given example, it produces the following dataframe
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.transformationFactory import TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationStrategyFactory
 from feelpp.benchmarking.reframe.config.configSchemas import DefaultPlot
 plot_config = DefaultPlot(**{
     "title": "Absolute performance",
@@ -181,7 +181,7 @@ Considering the same example axis as above, the software can generate the follow
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.figureFactory import FigureFactory
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
 figures = FigureFactory.create(DefaultPlot(**{
     "title": "Absolute performance - Scatter Plot",
     "plot_types": [ "scatter" ],

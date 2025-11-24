@@ -1,4 +1,4 @@
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.transformationFactory import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.transformationFactory import PerformanceStrategy, RelativePerformanceStrategy, SpeedupStrategy, TransformationStrategyFactory
 import pytest
 import pandas as pd
 import numpy as np

@@ -1,5 +1,5 @@
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.figureFactory import FigureFactory
-from feelpp.benchmarking.dashboardRenderer.plugins.figures.schemas.plot import Plot
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 from typing import List, Dict, Union
 
 class Controller:
