@@ -1,6 +1,7 @@
 {% macro render(tableNode, data) %}
 
-{%set table = TableController(data,tableNode.table).generate() %}
+{%set table_controller = TableController(data,tableNode.table) %}
+{%set table = table_controller.generate() %}
 
 {%if tableNode.title %}
 *{{tableNode.title}}*
@@ -8,7 +9,7 @@
 
 [{% for classname in tableNode.table.style.classnames %}.{{classname}}{% endfor %}]
 --
-[options="header"]
+[cols="{{ table_controller.getColsAlignment() }}",options="header"]
 |===
 
 {% for col in table.columns %}|{{ col }}{% endfor %}

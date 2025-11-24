@@ -26,7 +26,7 @@ class Pivot(BaseModel):
 
 class TableStyle(BaseModel):
     column_align: Dict[str,str] = {}
-    column_width : Dict[str,str] = {}
+    column_width : Dict[str,int] = {}
     classnames: List[str] = []
 
 class Table(BaseModel):

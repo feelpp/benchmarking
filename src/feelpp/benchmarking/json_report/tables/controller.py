@@ -9,6 +9,7 @@ class Controller:
         """
         self.data = data.copy()  # work on a copy to avoid mutating original
         self.config = table_config
+        self.column_order = self.config.column_order
 
     def generate(self) -> pd.DataFrame:
         """Generate a Pandas DataFrame according to the Table config."""
@@ -32,6 +33,25 @@ class Controller:
         df = self._rename_columns(df)
 
         return df
+
+
+    def getColsAlignment(self) -> str:
+        """
+        Generate the AsciiDoc cols="..." string based on column_align in style.
+        Defaults to 'left' if not specified.
+        Returns a string like: "c,l,r,l,r"
+        """
+        align_map = {"left": "<", "center": "^", "right": ">"}
+
+        cols = []
+        column_align = self.config.style.column_align
+        column_width = self.config.style.column_width
+        for col in self.column_order:
+            a = column_align.get(col)
+            w = column_width.get(col,3)
+            cols.append(f"{align_map.get(a,'<')}{w}")
+
+        return ",".join(cols)
 
     # -----------------------------
     # Private helper methods
@@ -114,4 +134,6 @@ class Controller:
         if self.config.column_order:
             order = [c for c in self.config.column_order if c in df.columns]
             df = df[order]
+        else:
+            self.column_order = df.columns.tolist()
         return df
