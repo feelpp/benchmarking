@@ -3,6 +3,10 @@ import os
 from pathlib import Path
 from typing import List,Union,Dict,Any
 
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
+from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
+from feelpp.benchmarking.json_report.tables.controller import Controller as TableController
+
 class TemplateRenderer:
     """
     Base Class to render structured data (like JSON) to text files (e.g., AsciiDoc)
@@ -42,6 +46,11 @@ class TemplateRenderer:
     def setGlobals( self ) -> None:
         """Configures global variables available to all templates loaded by this environment."""
         self.env.globals["renderTemplate"] = self.renderTemplate
+        self.env.globals["ValidateJsonReport"] = JsonReportSchema.model_validate
+        self.env.globals.update( {
+            "FiguresController":FiguresController,
+            "TableController":TableController
+        } )
 
     def setFilters( self ) -> None:
         """ Configures custom filters available for use within all templates. """
@@ -106,7 +115,10 @@ class BaseRendererFactory:
             raise ValueError(
                 f"Renderer type '{renderer_type}' not recognized. Valid options are: {', '.join(cls.DEFAULT_MV.keys())}."
             )
-        template_dirs = [os.path.join(Path(__file__).resolve().parent,"templates")]
+        template_dirs = [
+            os.path.join(Path(__file__).resolve().parent,"templates"),
+            os.path.join(Path(__file__).resolve().parent.parent,"json_report/templates")
+        ]
         if extra_templated_dir:
             template_dirs += [extra_templated_dir]
         return TemplateRenderer(
