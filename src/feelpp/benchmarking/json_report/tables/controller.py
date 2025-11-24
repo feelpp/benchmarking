@@ -7,12 +7,15 @@ class Controller:
         data: a pandas DataFrame containing the dataset
         table_config: a Table Pydantic model defining filtering, grouping, pivot, etc.
         """
-        self.data = data.copy()  # work on a copy to avoid mutating original
+        self.data = data.copy() if data is not None else pd.DataFrame()
         self.config = table_config
         self.column_order = self.config.column_order
 
     def generate(self) -> pd.DataFrame:
         """Generate a Pandas DataFrame according to the Table config."""
+        if self.data.empty:
+            return self.data
+
         df = self.data.copy()
 
         df = self._apply_filter(df)
