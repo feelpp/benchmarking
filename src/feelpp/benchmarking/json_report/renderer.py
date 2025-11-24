@@ -8,10 +8,12 @@ from feelpp.benchmarking.json_report.tables.controller import Controller as Tabl
 
 class JsonReportController:
     def __init__(self, report_filepath: str, output_format:str = "adoc") -> None:
-        self.report_filepath = report_filepath
-        self.output_format = output_format
+        self.report_filepath:str = report_filepath
+        self.output_format:str = output_format
         self.report: JsonReportSchema = self.loadReport(report_filepath)
         self.renderer: TemplateRenderer = self.initRenderer()
+
+        self.exposed:dict = dict()
         self.data:dict = self.loadReportData()
 
     def loadReport( self, report_filepath: str ) -> JsonReportSchema:
@@ -65,6 +67,9 @@ class JsonReportController:
 
             data[d.name] = filedata
 
+            if d.expose:
+                self.exposed[d.expose] = filedata
+
         return data
 
     def render(self, output_dirpath: str, output_filename:str = None ) -> str:
@@ -76,6 +81,6 @@ class JsonReportController:
 
         output_filepath = os.path.join( output_dirpath, os.path.basename(output_filename) )
 
-        self.renderer.render( output_filepath, dict(report=self.report, report_data = self.data) )
+        self.renderer.render( output_filepath, dict(report=self.report, report_data = self.data ))
 
         return os.path.abspath(output_filepath)

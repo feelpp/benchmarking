@@ -110,6 +110,9 @@ class View:
         assert hasattr(self,"renderer") and self.renderer is not None
         handler = TemplateDataHandlerFactory.getHandler(type(data),template_data_dir)
         template_data = handler.extractData(data,self.partials,self.extra_renderers)
+        for prefix,renderer in self.extra_renderers.items():
+            if hasattr(renderer, "exposed"):
+                self.template_data.update(renderer.exposed)
         self.template_data.update(template_data)
         self.processPlugins()
 

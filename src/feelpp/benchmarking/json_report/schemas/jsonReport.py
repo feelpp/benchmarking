@@ -98,6 +98,14 @@ class DataFile(BaseModel):
     filepath: str
     format: Optional[Literal["json","csv","raw"]] = None
     preprocessor: Optional[Preprocessor] = None
+    expose:Optional[Union[str,bool]] = True
+
+    @model_validator(mode="after")
+    def coerceExpose(self):
+        if self.expose and isinstance(self.expose,bool):
+            self.expose = self.name
+        return self
+
 
     @field_validator("filepath", mode="after")
     @classmethod

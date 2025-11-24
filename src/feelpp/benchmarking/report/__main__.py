@@ -16,7 +16,7 @@ def main_cli():
 
     dashboard = Dashboard(
         parser.args.config_file,
-        plugins=[ ReframeReportPlugin,VersionPlugin ]
+        plugins=[ VersionPlugin ]
     )
 
     if parser.args.plot_configs:
