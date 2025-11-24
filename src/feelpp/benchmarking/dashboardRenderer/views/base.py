@@ -135,10 +135,12 @@ class View:
         Args:
             output_dirpath (str): The base directory where extra rendered outputs should be saved.
         """
+        extra_renders = []
         for prefix,renderer in self.extra_renderers.items():
             output_filepath = renderer.render( base_dir )
             self.updateTemplateData({prefix:os.path.relpath(output_filepath,base_dir)})
-
+            extra_renders.append(os.path.relpath(output_filepath,base_dir))
+        self.updateTemplateData({"extra_renders":extra_renders})
 
     def render( self, output_dirpath:str, filename:Optional[str] = None ) -> None:
         """ Executes the final rendering step, writing the output to a file.

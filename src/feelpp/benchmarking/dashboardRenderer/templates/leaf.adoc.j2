@@ -4,6 +4,11 @@
 :page-tags: {{card_type or 'report'}}
 :parent-catalogs: {{parent_ids}}
 :page-illustration: {{card_image}}
+
+{% for rendered in extra_renders %}
+include::{{ rendered }}[]
+{%endfor%}
+
 {% for template in extra_templates %}
     {% include template %}
 {% endfor %}
