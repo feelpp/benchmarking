@@ -3,6 +3,7 @@ import pandas as pd
 
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
 from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
+from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
 
 class JsonReportController:
     def __init__(self, report_filepath: str, output_format:str = "adoc") -> None:
@@ -33,8 +34,10 @@ class JsonReportController:
 
     def initRenderer( self) -> TemplateRenderer:
         template_path, template_filename = self.getTemplatePath( )
-        return TemplateRenderer( template_paths=template_path, template_filename=template_filename )
+        renderer = TemplateRenderer( template_paths=template_path, template_filename=template_filename )
+        renderer.env.globals.update( { "FiguresController":FiguresController } )
 
+        return renderer
 
     def loadReportData( self ):
         if not hasattr(self,"report"):
