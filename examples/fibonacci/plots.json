@@ -1,6 +1,4 @@
 {
-    "title": "Fibonacci Benchmark Report",
-    "description": "Benchmark results for Fibonacci implementations (recursive vs iterative).",
     "content": [
         {
             "type": "section",
@@ -13,6 +11,37 @@
             ]
         },
         {
+            "type":"section",
+            "title":"Parametrization",
+            "content":[
+                {
+                    "type":"table",
+                    "data": "reframe_report",
+                    "title":"Test Cases",
+                    "table":{
+                        "columns":["result", "testcases.hashcode", "n", "method", "testcases.time_total" ],
+                        "rename":{
+                            "testcases.time_total":"Total Time (s)",
+                            "testcases.hashcode":"Hash",
+                            "result":""
+                        },
+                        "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
+                        "format":{
+                            "testcases.time_total":"%.3f",
+                            "result":{"pass": "🟢", "fail": "🔴"}
+                        },
+                        "column_order":["result","testcases.hashcode","n", "method", "testcases.time_total"],
+                        "style":{
+                            "column_align":{ "result":"center" },
+                            "column_width":{ "result":1 },
+                            "classnames":["scrollable","sortable"]
+                        }
+                    },
+                    "filter":{ "placeholder":"Filter testcases..." }
+                }
+            ]
+        },
+        {
             "type": "section",
             "title": "Complexity Analysis",
             "content": [
@@ -21,14 +50,16 @@
                     "title": "Time Complexity",
                     "content": [
                         {
-                            "type":"plot",
-                            "plot":{
+                            "type": "plot",
+                            "data": "reframe_report",
+                            "plot": {
                                 "title": "Time Complexity",
-                                "plot_types": [ "scatter"],
-                                "xaxis": { "parameter": "n", "label": "N" },
-                                "yaxis": { "label": "Execution time (s)"},
-                                "color_axis": { "parameter": "method", "label": "Method"},
-                                "aggregations": [{ "column": "perfvalue", "agg": "filter:elapsed" } ]
+                                "plot_types": [ "scatter" ],
+                                "transformation": "performance",
+                                "aggregations": [ { "column": "perfvalue", "agg": "filter:elapsed" } ],
+                                "xaxis": {"parameter": "n","label": "N"},
+                                "yaxis": { "parameter": "value", "label": "Execution time (s)"},
+                                "color_axis": { "parameter": "method", "label": "Method" }
                             }
                         },
                         {
@@ -36,38 +67,6 @@
                             "text": "The plot above shows execution time for each Fibonacci method as a function of input size N. Recursive implementation grows exponentially, while iterative grows linearly."
                         }
                     ]
-                },
-                {
-                    "type":"section",
-                    "title":"Speedup Analysis",
-                    "content":[
-                        {
-                            "type":"plot",
-                            "plot":{
-                                "title": "Speedup (Iterative / Recursive)",
-                                "plot_types": [ "scatter"],
-                                "transformation":"speedup",
-                                "xaxis": { "parameter": "n", "label": "N" },
-                                "yaxis": { "label": "Speedup"},
-                                "color_axis": { "parameter": "method", "label": "Method"},
-                                "aggregations": [{ "column": "perfvalue", "agg": "filter:elapsed" } ]
-                            }
-                        },
-                        {
-                        "type": "text",
-                        "text": "The speedup plot above shows the relative performance of the iterative method compared to the recursive method. As N increases, the iterative method provides significant speedup over the recursive implementation."
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "title": "Additional Analysis",
-            "content": [
-                {
-                "type": "text",
-                "text": "This section can include additional metrics such as memory usage, log-scale performance visualization, or comparisons between multiple Fibonacci implementations."
                 }
             ]
         }
