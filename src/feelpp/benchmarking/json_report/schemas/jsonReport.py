@@ -26,13 +26,20 @@ class ImageNode(ReportNode):
     caption: Optional[str] = None
     alt: Optional[str] = None
 
+
+class FilterInput(BaseModel):
+    placeholder: Optional[str] = "Filter..."
+    style:Optional[str] = "margin-bottom:0.5em;padding:0.3em;width:50%;"
+
 class PlotNode(ReportNode):
     type: Literal["plot"]
     plot: Plot
 
 class TableNode(ReportNode):
     type: Literal["table"]
+    title: Optional[str] = None
     table: Table
+    filter: Optional[FilterInput] = None
 
 Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode]
 

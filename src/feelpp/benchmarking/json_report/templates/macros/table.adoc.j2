@@ -2,10 +2,12 @@
 
 {%set table = TableController(data,tableNode.table).generate() %}
 
-{%if tableNode.table.title %}
-*{{tableNode.table.title}}*
+{%if tableNode.title %}
+*{{tableNode.title}}*
 {% endif %}
 
+[{% for classname in tableNode.table.style.classnames %}.{{classname}}{% endfor %}]
+--
 [options="header"]
 |===
 
@@ -17,5 +19,20 @@
 
 |===
 
+{%if tableNode.filter %}
+++++
+<input type="text" id="filter_{{tableNode.title}}_table" placeholder="{{tableNode.filter.placeholder}}" style="{{tableNode.filter.style}}">
+{% endif %}
+++++
+--
+
+++++
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.sortable table');
+    initTable(table, 'filter_{{tableNode.title}}_table');
+  });
+</script>
+++++
 
 {% endmacro %}

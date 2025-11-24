@@ -24,8 +24,12 @@ class Pivot(BaseModel):
     values: str
     agg: str
 
+class TableStyle(BaseModel):
+    column_align: Dict[str,str] = {}
+    column_width : Dict[str,str] = {}
+    classnames: List[str] = []
+
 class Table(BaseModel):
-    title: Optional[str] = None
     columns: List[str] = Field(default_factory=list)
     rename: Dict[str, str] = Field(default_factory=dict)
 
@@ -37,6 +41,8 @@ class Table(BaseModel):
 
     format: Dict[str, Union[str,Dict[str,str]]] = Field(default_factory=dict)
     column_order: List[str] = Field(default_factory=list)
+
+    style: Optional[TableStyle] = TableStyle()
 
     # -----------------------------
     # Validation logic (global)
