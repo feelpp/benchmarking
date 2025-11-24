@@ -1,5 +1,9 @@
+{% if report.description %}
 :description: {{ report.description }}
+{% endif %}
+{% if report.datetime %}
 :docdatetime: {{ report.datetime }}
+{% endif %}
 
 {% import "macros/section.adoc.j2"    as section %}
 
