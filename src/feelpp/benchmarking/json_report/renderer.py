@@ -28,7 +28,7 @@ class JsonReportController:
     def getTemplatePath( self ):
         template_filename = None
         if self.output_format == "adoc":
-            template_filename = "report.adoc.j2"
+            template_filename = "json2adoc_report.adoc.j2"
         #TODO: add more formats here (latex,html,...)
         else:
             raise ValueError(f"Output format '{self.output_format}' not supported.")
