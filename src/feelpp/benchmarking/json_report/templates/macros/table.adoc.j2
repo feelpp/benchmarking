@@ -1,0 +1,21 @@
+{% macro render(tableNode, data) %}
+
+{%set table = TableController(data,tableNode.table).generate() %}
+
+{%if tableNode.table.title %}
+*{{tableNode.table.title}}*
+{% endif %}
+
+[options="header"]
+|===
+
+{% for col in table.columns %}|{{ col }}{% endfor %}
+
+{% for row in table.itertuples(index=False) %}
+{% for cell in row %}|{{ cell }}{% endfor %}
+{% endfor %}
+
+|===
+
+
+{% endmacro %}

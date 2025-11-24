@@ -3,7 +3,9 @@ from pydantic import ValidationError, BaseModel, field_validator, model_validato
 from datetime import datetime
 import os, warnings
 import importlib.util
+
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
+from feelpp.benchmarking.json_report.tables.schemas.tableSchema import Table
 
 class ReportNode(BaseModel):
     type:str
@@ -28,7 +30,11 @@ class PlotNode(ReportNode):
     type: Literal["plot"]
     plot: Plot
 
-Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode]
+class TableNode(ReportNode):
+    type: Literal["table"]
+    table: Table
+
+Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode]
 
 class SectionNode(ReportNode):
     type:Literal["section"]
