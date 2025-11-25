@@ -31,6 +31,7 @@ class TableStyle(BaseModel):
 
 class Table(BaseModel):
     columns: List[str] = Field(default_factory=list)
+    computed_columns: Dict[str,str] = Field(default_factory=dict)
     rename: Dict[str, str] = Field(default_factory=dict)
 
     filter: List[FilterCondition] = Field(default_factory=list)
@@ -48,7 +49,7 @@ class Table(BaseModel):
     # Validation logic (global)
     # -----------------------------
     @model_validator(mode="after")
-    def validate_exclusivity(self):
+    def validateExclusivity(self):
         # Rule 1: pivot and group_by are mutually exclusive
         if self.group_by and self.pivot:
             raise ValueError(

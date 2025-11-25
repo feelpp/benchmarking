@@ -22,6 +22,8 @@ class Controller:
 
         df = self._selectColumns(df)
 
+        df = self._computeColumns(df)
+
         if self.config.pivot:
             df = self._pivot(df)
         elif self.config.group_by:
@@ -139,4 +141,12 @@ class Controller:
             df = df[order]
         else:
             self.column_order = df.columns.tolist()
+        return df
+
+    def _computeColumns(self, df:pd.DataFrame) -> pd.DataFrame:
+        if not self.config.computed_columns:
+            return df
+
+        for newcol, expr in self.config.computed_columns.items():
+            df[newcol] = df.apply(lambda row: eval(expr,{},dict(row=row)), axis=1)
         return df
