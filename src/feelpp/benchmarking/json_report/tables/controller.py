@@ -18,22 +18,22 @@ class Controller:
 
         df = self.data.copy()
 
-        df = self._apply_filter(df)
+        df = self._applyFilter(df)
 
-        df = self._select_columns(df)
+        df = self._selectColumns(df)
 
         if self.config.pivot:
             df = self._pivot(df)
         elif self.config.group_by:
-            df = self._group_and_aggregate(df)
+            df = self._groupAndAggregate(df)
 
         df = self._sort(df)
 
         df = self._format(df)
 
-        df = self._reorder_columns(df)
+        df = self._reorderColumns(df)
 
-        df = self._rename_columns(df)
+        df = self._renameColumns(df)
 
         return df
 
@@ -60,7 +60,7 @@ class Controller:
     # Private helper methods
     # -----------------------------
 
-    def _apply_filter(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _applyFilter(self, df: pd.DataFrame) -> pd.DataFrame:
         for f in self.config.filter:
             col, op, val = f.column, f.op, f.value
             if op == "==":
@@ -83,17 +83,17 @@ class Controller:
                 raise ValueError(f"Unknown filter operator: {op}")
         return df
 
-    def _select_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _selectColumns(self, df: pd.DataFrame) -> pd.DataFrame:
         if self.config.columns:
             df = df[self.config.columns]
         return df
 
-    def _rename_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _renameColumns(self, df: pd.DataFrame) -> pd.DataFrame:
         if self.config.rename:
             df = df.rename(columns=self.config.rename)
         return df
 
-    def _group_and_aggregate(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _groupAndAggregate(self, df: pd.DataFrame) -> pd.DataFrame:
         gb: GroupBy = self.config.group_by
 
         agg_cfg = gb.agg
@@ -133,7 +133,7 @@ class Controller:
         return df
 
 
-    def _reorder_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _reorderColumns(self, df: pd.DataFrame) -> pd.DataFrame:
         if self.config.column_order:
             order = [c for c in self.config.column_order if c in df.columns]
             df = df[order]
