@@ -27,10 +27,10 @@ class WebsiteConfigCreator:
                         },
                         "machines":{
                             "template": os.path.abspath(os.path.join(__file__,"../templates/machineOverview.adoc.j2")),
-                            "data":{"card_type":"machine"}
+                            "data":{"card_type":"machine", "card_image":"fa-solid fa-microchip"}
                         },
-                        "applications":{"card_type":"application"},
-                        "use_cases":{"card_type":"usecase"}
+                        "applications":{"card_type":"application", "card_image":"fa-solid fa-diagram-project"},
+                        "use_cases":{"card_type":"usecase", "card_image":"fa-solid fa-briefcase"}
                     },
                     "repositories":{
                         "template": os.path.abspath(os.path.join(__file__,"../templates/overview.adoc.j2"))
