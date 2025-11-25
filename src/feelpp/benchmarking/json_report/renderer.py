@@ -5,6 +5,7 @@ from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
 from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
 from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
 from feelpp.benchmarking.json_report.tables.controller import Controller as TableController
+from feelpp.benchmarking.json_report.text.controller import Controller as TextController
 
 class JsonReportController:
     def __init__(self, report_filepath: str, output_format:str = "adoc") -> None:
@@ -40,7 +41,8 @@ class JsonReportController:
         renderer = TemplateRenderer( template_paths=template_path, template_filename=template_filename )
         renderer.env.globals.update( {
             "FiguresController":FiguresController,
-            "TableController":TableController
+            "TableController":TableController,
+            "TextController":TextController
         } )
 
         return renderer

@@ -6,6 +6,7 @@ import importlib.util
 
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 from feelpp.benchmarking.json_report.tables.schemas.tableSchema import Table
+from feelpp.benchmarking.json_report.text.schemas.textSchema import Text
 
 class ReportNode(BaseModel):
     type:str
@@ -14,7 +15,7 @@ class ReportNode(BaseModel):
 
 class TextNode(ReportNode):
     type:Literal["text"]
-    text: str
+    text: Text
 
 class LatexNode(ReportNode):
     type:Literal["latex"]
