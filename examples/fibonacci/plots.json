@@ -7,6 +7,36 @@
                 {
                     "type": "text",
                     "text": "This report presents benchmark results for computing Fibonacci numbers using different methods. We compare recursive and iterative implementations for various input sizes."
+                },{
+                    "type":"section",
+                    "title":"Session",
+                    "content":[
+                        {
+                            "type":"list",
+                            "data":"reframe_json",
+                            "items":[
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.hostname}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Cases",
+                    "content":[
+                        {
+                            "type":"list",
+                            "data":"reframe_json",
+                            "items":[
+                                "Total: @{session_info.num_cases}@ ",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
                 }
             ]
         },
