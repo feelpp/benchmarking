@@ -2,7 +2,7 @@
 {% set src = imageNode.src %}
 {% set alt = imageNode.alt or "" %}
 
-{% if image.caption %}
+{% if imageNode.caption %}
 image::{{src}}[{{alt}},title={{imageNode.caption}}]
 {% else %}
 image::{{src}}[{{alt}}]
