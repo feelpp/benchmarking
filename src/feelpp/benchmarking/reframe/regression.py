@@ -4,6 +4,8 @@ from feelpp.benchmarking.reframe.config.configReader import FileHandler
 from feelpp.benchmarking.reframe.validation import ValidationHandler
 from feelpp.benchmarking.reframe.scalability import ScalabilityHandler
 
+from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
+
 
 import shutil, os
 
@@ -21,17 +23,6 @@ class RegressionTest(ReframeSetup):
     def executionGuard(self):
         if self.is_dry_run():
             self.skip("ReFrame is in dry-run mode, perormance and sanity are not going to be evaluated.")
-
-    @run_after('run')
-    def addRfmOutputFiles(self):
-        with open(os.path.join(self.stagedir, self.job.script_filename), 'r') as f:
-            self.script = f.read()
-
-        with open(os.path.join(self.stagedir,self.job.stdout), 'r') as f:
-            self.output_log = f.read()
-
-        with open(os.path.join(self.stagedir,self.job.stderr), 'r') as f:
-            self.error_log = f.read()
 
     @run_before('performance')
     def setPerfVars(self):
@@ -52,16 +43,37 @@ class RegressionTest(ReframeSetup):
         )
 
     @run_before('performance')
-    def loadCustomLogs(self):
+    def renderLogs(self):
+        logs_data = {}
+        with open(os.path.join(self.stagedir, self.job.script_filename), 'r') as f:
+            logs_data["script"] = f.read()
+
+        with open(os.path.join(self.stagedir,self.job.stdout), 'r') as f:
+            logs_data["output_log"] = f.read()
+
+        with open(os.path.join(self.stagedir,self.job.stderr), 'r') as f:
+            logs_data["error_log"] = f.read()
+        logs_data["custom_logs"] = []
         for custom_log_file in self.app_reader.config.additional_files.custom_logs:
             if not os.path.exists(custom_log_file):
                 DEBUG(f"{custom_log_file} does not exist, continuing...")
                 continue
             with open(custom_log_file,"r") as f:
-                self.custom_logs.append({
+                logs_data["custom_logs"].append({
                     "filename":os.path.basename(custom_log_file),
                     "content":f.read()
                 })
+
+        renderer = TemplateRenderer(os.path.join(os.path.dirname(__file__),"templates"),"logs.adoc.j2")
+        renderer.render(os.path.join(self.stagedir,"logs.adoc"),logs_data)
+
+    @run_before('performance')
+    def copyLogs(self):
+        FileHandler.copyResource(
+            os.path.join(self.stagedir,"logs.adoc"),
+            os.path.join(self.report_dir_path,"logs"),
+            self.hashcode
+        )
 
     @run_before("cleanup")
     def removeDirectories(self):

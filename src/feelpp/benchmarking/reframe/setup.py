@@ -22,11 +22,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     #set num_nodes as variable (as not implemented in reframe) - used for exporting
     num_nodes = variable(int)
 
-    script = variable(str)
-    error_log = variable(str)
-    output_log = variable(str)
-    custom_logs = variable(list, value=[])
-
     #TODO: Find a way to avoid env variables
 
     #====================== INIT READERS ==================#
