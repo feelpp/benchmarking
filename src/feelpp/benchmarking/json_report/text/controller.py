@@ -8,10 +8,18 @@ class Controller:
 
     def generate(self):
         if self.text_config.mode == "static":
-            return self.text_config.content
-        elif self.text_config.mode == "dynamic":
-            return re.sub(self.text_config.placeholder_expr, self._resolvePlaceHolders, self.text_config.content)
+            content = self.text_config.content
 
+        elif self.text_config.mode == "dynamic":
+            content = re.sub(
+                self.text_config.placeholder_expr,
+                self._resolvePlaceHolders,
+                self.text_config.content
+            )
+        else:
+            content = self.text_config.content
+
+        return content
 
     def _resolvePlaceHolders(self, match):
         path = match.group(1).split(".")
