@@ -2,14 +2,16 @@
 {% import "macros/plot.adoc.j2"  as plot %}
 {% import "macros/latex.adoc.j2" as latex %}
 {% import "macros/text.adoc.j2"  as text %}
-{% import "macros/table.adoc.j2"  as table %}
+{% import "macros/table.adoc.j2" as table %}
+{% import "macros/list.adoc.j2"  as list %}
 
 {% set handlers = {
     "plot":   plot.render,
     "text":   text.render,
     "image":  image.render,
     "latex":  latex.render,
-    "table": table.render
+    "table": table.render,
+    "list": list.render
 } %}
 
 {% macro render(sectionNode, report_data, level=1) %}

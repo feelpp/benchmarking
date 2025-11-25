@@ -42,7 +42,24 @@ class TableNode(ReportNode):
     table: Table
     filter: Optional[FilterInput] = None
 
-Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode]
+class ListNode(ReportNode):
+    type:Literal["list"]
+    items:List[Union[TextNode,Text,str]]
+
+    @model_validator(mode="after")
+    def coerceItemsText(self):
+        parsedItems = []
+        for item in self.items:
+            if isinstance(item,str) or isinstance(item, Text):
+                parsedItems.append(TextNode.model_validate({"type":"text","text":Text.model_validate(item),"data":self.data}))
+            elif isinstance(item,TextNode):
+                if not item.data:
+                    item.data = self.data
+                parsedItems.append(item)
+        self.items = parsedItems
+        return self
+
+Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode, ListNode]
 
 class SectionNode(ReportNode):
     type:Literal["section"]
