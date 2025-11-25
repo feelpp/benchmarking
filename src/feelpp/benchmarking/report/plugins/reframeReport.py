@@ -5,7 +5,7 @@ class ReframeReportPlugin:
     @staticmethod
     def aggregator(node_id, repository_type, template_data, child_results):
         child_dfs = [c.get("data") for c in child_results if c and "data" in c]
-        own_df = template_data.get("reframe_report")
+        own_df = template_data.get("reframe_df")
         if own_df is not None:
             if repository_type == "leaves":
                 own_df["date"] = pd.to_datetime(template_data["title"],format="%Y_%m_%dT%H_%M_%S")

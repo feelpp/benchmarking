@@ -131,7 +131,7 @@ class DefaultPlot(Plot):
 
 class JsonReportSchemaWithDefaults(JsonReportSchema):
     data: List[Dict[str,str]] = [{
-        "name":"reframe_report",
+        "name":"reframe_df",
         "filepath":"./reframe_report.json",
         "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor"
     }]
@@ -150,7 +150,7 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
             new_content = []
             for item in values:
                 try:
-                    node = { "type": "plot", "data":"reframe_report", "plot": DefaultPlot.model_validate(item) }
+                    node = { "type": "plot", "data":"reframe_df", "plot": DefaultPlot.model_validate(item) }
                 except ValidationError:
                     node = item
                 new_content.append(node)
@@ -164,7 +164,7 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
                     if isinstance(item, dict) and item.get("type") == "plot":
                         item = {
                             "type": "plot",
-                            "data":"reframe_report",
+                            "data":"reframe_df",
                             "plot": DefaultPlot.model_validate(item["plot"])
                         }
                     elif isinstance(item, dict) and item.get("type") == "section":
