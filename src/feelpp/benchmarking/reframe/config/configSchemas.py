@@ -130,11 +130,14 @@ class DefaultPlot(Plot):
     color_axis: DefaultColorAxis = DefaultColorAxis()
 
 class JsonReportSchemaWithDefaults(JsonReportSchema):
-    data: List[Dict[str,str]] = [{
-        "name":"reframe_df",
-        "filepath":"./reframe_report.json",
-        "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor"
-    }]
+    data: List[Dict[str,str]] = [
+        { "name":"reframe_json", "filepath":"./reframe_report.json" },
+        {
+            "name":"reframe_df",
+            "filepath":"./reframe_report.json",
+            "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor"
+        }
+    ]
 
     @model_validator(mode="before")
     @classmethod
