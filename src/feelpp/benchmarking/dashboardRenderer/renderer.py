@@ -6,6 +6,7 @@ from typing import List,Union,Dict,Any
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
 from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
 from feelpp.benchmarking.json_report.tables.controller import Controller as TableController
+from importlib.resources import files
 
 class TemplateRenderer:
     """
@@ -117,7 +118,7 @@ class BaseRendererFactory:
             )
         template_dirs = [
             os.path.join(Path(__file__).resolve().parent,"templates"),
-            os.path.join(Path(__file__).resolve().parent.parent,"json_report/templates")
+            os.path.join(files("feelpp.benchmarking.json_report"),"templates")
         ]
         if extra_templated_dir:
             template_dirs += [extra_templated_dir]
