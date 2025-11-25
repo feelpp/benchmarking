@@ -1,6 +1,4 @@
 {
-    "title": "Matrix-Vector Multiplication Benchmark Report",
-    "description": "Benchmark results for matrix-vector multiplication across varying problem sizes (N) and task counts.",
     "content": [
         {
             "type": "section",
@@ -9,6 +7,67 @@
                 {
                     "type": "text",
                     "text": "This report analyzes the performance of matrix-vector multiplication for different matrix sizes (N) and levels of task parallelism. We compare fill and compute phases and evaluate how execution time and speedup evolve with increasing workloads."
+                },{
+                    "type":"section",
+                    "title":"Session",
+                    "content":[
+                        {
+                            "type":"list",
+                            "data":"reframe_json",
+                            "items":[
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.hostname}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Cases",
+                    "content":[
+                        {
+                            "type":"list",
+                            "data":"reframe_json",
+                            "items":[
+                                "Total: @{session_info.num_cases}@ ",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Parametrization",
+            "content":[
+                {
+                    "type":"table",
+                    "data": "reframe_df",
+                    "title":"Test Cases",
+                    "table":{
+                        "columns":["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total" ],
+                        "rename":{
+                            "testcases.time_total":"Total Time (s)",
+                            "testcases.hashcode":"Hash",
+                            "result":""
+                        },
+                        "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
+                        "format":{
+                            "testcases.time_total":"%.3f",
+                            "result":{"pass": "🟢", "fail": "🔴"}
+                        },
+                        "column_order":["result","testcases.hashcode","tasks", "elements", "testcases.time_total"],
+                        "style":{
+                            "column_align":{ "result":"center" },
+                            "column_width":{ "result":1 },
+                            "classnames":["scrollable","sortable"]
+                        }
+                    },
+                    "filter":{ "placeholder":"Filter testcases..." }
                 }
             ]
         },
@@ -79,16 +138,6 @@
                             "text": "This speedup plot shows how effectively the computation accelerates when increasing task parallelism. It highlights differences between fill and compute phases and reveals scaling limits for larger matrix sizes."
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "title": "Additional Analysis",
-            "content": [
-                {
-                    "type": "text",
-                    "text": "This section may include memory bandwidth analysis, NUMA locality effects, comparison between blocking strategies, or alternative matrix layouts (AoS vs SoA)."
                 }
             ]
         }
