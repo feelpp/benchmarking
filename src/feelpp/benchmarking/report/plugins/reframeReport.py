@@ -4,7 +4,7 @@ import pandas as pd
 class ReframeReportPlugin:
     @staticmethod
     def aggregator(node_id, repository_type, template_data, child_results):
-        child_dfs = [c.get("data") for c in child_results if c and "data" in c]
+        child_dfs = [c.get("data") for c in child_results if c and c.get("data") is not None]
         own_df = template_data.get("reframe_df")
         if own_df is not None:
             if repository_type == "leaves":

@@ -5,6 +5,7 @@
 
 === Latest benchmarks
 
+{%if aggregated and aggregated.get("data") is not none %}
 {% if "leaves" in aggregated["data"] %}
 {% set agg = {
     "date":"first",
@@ -24,7 +25,7 @@
 {% endif %}
 
 {%set df = aggregated["data"].groupby("leaves").agg(agg).reset_index(drop=True).sort_values("date",ascending=False).head(15) %}
-
+{% endif %}
 
 
 [.scrollable]
