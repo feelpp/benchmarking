@@ -45,17 +45,21 @@
                             "title":"Test Cases",
                             "table":{
                                 "columns":["result", "testcases.hashcode", "resources.tasks","memory","mesh", "discretization","solver", "testcases.time_total" ],
+                                "computed_columns":{
+                                    "description_link":"f'link:descriptions/{row['testcases.hashcode']}.html[Description]'"
+                                },
                                 "rename":{
                                     "testcases.time_total":"Total Time (s)",
                                     "testcases.hashcode":"Hash",
-                                    "result":""
+                                    "result":"",
+                                    "description_link":""
                                 },
                                 "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
                                 "format":{
                                     "testcases.time_total":"%.3f",
                                     "result":{"pass": "🟢", "fail": "🔴"}
                                 },
-                                "column_order":["result","testcases.hashcode","resources.tasks","memory","mesh", "discretization","solver", "testcases.time_total"],
+                                "column_order":["result","testcases.hashcode","resources.tasks","memory","mesh", "discretization","solver", "testcases.time_total", "description_link"],
                                 "style":{
                                     "column_align":{ "result":"center" },
                                     "column_width":{ "result":1 },
