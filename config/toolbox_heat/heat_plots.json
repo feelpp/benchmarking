@@ -1,7 +1,73 @@
 {
-    "title": "Feel++ Toolbox Thermal Bridges Case 3 Benchmark Report",
-    "description": "Detailed performance and validation metrics for the Feel++ Toolbox simulation of Heat Thermal Bridges Case 3, analyzing accuracy and parallel scalability.",
     "content": [
+        {
+            "type":"section",
+            "title":"Benchmark Execution Summary",
+            "content": [
+                {
+                    "type":"section",
+                    "title":"Session",
+                    "content":[
+                        {
+                            "type":"list",
+                            "data":"reframe_json",
+                            "items":[
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.hostname}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Cases",
+                    "content":[
+                        {
+                            "type":"list",
+                            "data":"reframe_json",
+                            "items":[
+                                "Total: @{session_info.num_cases}@ ",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Parametrization",
+                    "content":[
+                        {
+                            "type":"table",
+                            "data": "reframe_df",
+                            "title":"Test Cases",
+                            "table":{
+                                "columns":["result", "testcases.hashcode", "resources.tasks","memory","mesh", "discretization","solver", "testcases.time_total" ],
+                                "rename":{
+                                    "testcases.time_total":"Total Time (s)",
+                                    "testcases.hashcode":"Hash",
+                                    "result":""
+                                },
+                                "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
+                                "format":{
+                                    "testcases.time_total":"%.3f",
+                                    "result":{"pass": "🟢", "fail": "🔴"}
+                                },
+                                "column_order":["result","testcases.hashcode","resources.tasks","memory","mesh", "discretization","solver", "testcases.time_total"],
+                                "style":{
+                                    "column_align":{ "result":"center" },
+                                    "column_width":{ "result":1 },
+                                    "classnames":["scrollable","sortable"]
+                                }
+                            },
+                            "filter":{ "placeholder":"Filter testcases..." }
+                        }
+                    ]
+                }
+            ]
+        },
         {
             "type": "section",
             "title": "Case Overview",
@@ -300,7 +366,7 @@
         },
         {
             "type": "section",
-            "title": "Summary",
+            "title": "Conclusion",
             "content": [
                 {
                     "type": "text",
