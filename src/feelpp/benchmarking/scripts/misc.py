@@ -1,35 +1,7 @@
 from argparse import ArgumentParser
-import glob, json, copy, os, shutil
+import glob, json,  os, shutil
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema
-
-def mergeDicts(dict1, dict2):
-    """Recursively merges two dictionaries."""
-    merged = copy.deepcopy(dict1)  # Make a deep copy of the first dictionary
-    for key, value in dict2.items():
-        if key in merged:
-            if not value: continue
-
-            if isinstance(merged[key], dict) and isinstance(value, dict):
-                merged[key] = mergeDicts(merged[key], value)
-            elif isinstance(merged[key], list) and isinstance(value, list):
-                new_merged = []
-                for m in merged[key]:
-                    new_merged.append(m)
-                for v in value:
-                    if v not in new_merged:
-                        new_merged.append(v)
-                merged[key] = new_merged
-
-            # elif isinstance(merged[key], list) and isinstance(value, list):
-            #     merged[key] = list(set(merged[key] + value))
-            else:
-                merged[key] = value
-        else:
-            merged[key] = value
-    return merged
-
-
 
 
 def jsonConfigMerge_cli():
@@ -40,11 +12,12 @@ def jsonConfigMerge_cli():
     parser.add_argument("--update_paths", "-u", action="store_true", help="Whether to update the config file paths")
     args = parser.parse_args()
 
-    master_config = {}
-    for filename in glob.glob(args.file_pattern,recursive=True):
+    for i,filename in enumerate(glob.glob(args.file_pattern,recursive=True)):
         with open(filename,"r") as f:
             current_config = json.load(f)
         current_config = DashboardSchema.model_validate( current_config )
+        if i == 0:
+            master_config = current_config.model_copy()
         if args.update_paths:
             file_dirpath = os.path.dirname(os.path.relpath(filename,"."))
             report_paths = glob.glob(os.path.join(file_dirpath,"**","reframe_report.json"),recursive=True)
@@ -60,10 +33,10 @@ def jsonConfigMerge_cli():
                 for order in current_config.component_map.component_order:
                     curr = curr[order_map[order]]
                 curr["path"] = os.path.join(file_dirpath,app,use_case,machine)
-        master_config = mergeDicts(master_config,current_config.model_dump())
+        master_config.merge(current_config)
 
     with open(args.output_file_path,"w") as f:
-        f.write(json.dumps(master_config))
+        f.write(json.dumps(master_config.model_dump()))
 
     return 0
 
