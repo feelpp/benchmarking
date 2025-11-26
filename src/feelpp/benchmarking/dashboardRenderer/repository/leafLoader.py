@@ -106,8 +106,7 @@ class GirderLeafLoader(LeafLoader):
             repository (Repository): The repository to load components into.
             parent_ids (List[str]): List of parent IDs for the components.
         """
-
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory(delete=False) as tmpdir:
             girder_handler = GirderHandler( tmpdir )
             girder_handler.downloadFolder( self.location )
             local_loader = LocalLeafLoader( tmpdir, self.template_info )
