@@ -55,7 +55,7 @@ class TemplateInfo(BaseModel):
         if template_dir_env and os.path.isdir(template_dir_env):
             template_dir = os.path.abspath(template_dir_env)
         else:
-            template_dir = os.path.join(files("feelpp.benchmarking.json_report"),"templates")
+            template_dir = os.path.join(files("feelpp.benchmarking.report"),"templates")
             if not os.path.isdir(template_dir):
                 template_dir = "./src/feelpp/benchmarking/report/templates/"
 
