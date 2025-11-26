@@ -59,6 +59,8 @@
                         "group_by": { "columns": ["testcases.hashcode"], "agg": "first" },
                         "format": {
                             "testcases.time_total": "%.3f",
+                            "tasks":"%.0f",
+                            "elements":"%.0f",
                             "result": { "pass": "🟢", "fail": "🔴" }
                         },
                         "column_order": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total"],
