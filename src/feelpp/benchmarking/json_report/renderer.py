@@ -19,7 +19,8 @@ class JsonReportController:
 
     def loadReport( self, report_filepath: str ) -> JsonReportSchema:
         if not os.path.exists( report_filepath ):
-            raise FileNotFoundError(f"Report file '{report_filepath}' does not exist.")
+            warnings.warn(f"Report file '{report_filepath}' does not exist.")
+            return JsonReportSchema()
 
         with open( report_filepath, "r" ) as f:
             data = json.load(f)
