@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
-import glob, json, copy, os
+import glob, json, copy, os, shutil
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema
 
 def mergeDicts(dict1, dict2):
     """Recursively merges two dictionaries."""
@@ -12,7 +13,16 @@ def mergeDicts(dict1, dict2):
             if isinstance(merged[key], dict) and isinstance(value, dict):
                 merged[key] = mergeDicts(merged[key], value)
             elif isinstance(merged[key], list) and isinstance(value, list):
-                merged[key] = list(set(merged[key] + value))
+                new_merged = []
+                for m in merged[key]:
+                    new_merged.append(m)
+                for v in value:
+                    if v not in new_merged:
+                        new_merged.append(v)
+                merged[key] = new_merged
+
+            # elif isinstance(merged[key], list) and isinstance(value, list):
+            #     merged[key] = list(set(merged[key] + value))
             else:
                 merged[key] = value
         else:
@@ -34,16 +44,23 @@ def jsonConfigMerge_cli():
     for filename in glob.glob(args.file_pattern,recursive=True):
         with open(filename,"r") as f:
             current_config = json.load(f)
-
+        current_config = DashboardSchema.model_validate( current_config )
         if args.update_paths:
             file_dirpath = os.path.dirname(os.path.relpath(filename,"."))
             report_paths = glob.glob(os.path.join(file_dirpath,"**","reframe_report.json"),recursive=True)
             for report in report_paths:
                 app,use_case,machine = report.split("/")[-5:-2]
+                order_map = {
+                    "applications":app,
+                    "machines":machine,
+                    "use_cases":use_case
+                }
 
-                current_config["execution_mapping"][app][machine][use_case]["path"] = os.path.join(file_dirpath,app,use_case,machine)
-
-        master_config = mergeDicts(master_config,current_config)
+                curr = current_config.component_map.mapping
+                for order in current_config.component_map.component_order:
+                    curr = curr[order_map[order]]
+                curr["path"] = os.path.join(file_dirpath,app,use_case,machine)
+        master_config = mergeDicts(master_config,current_config.model_dump())
 
     with open(args.output_file_path,"w") as f:
         f.write(json.dumps(master_config))
@@ -61,45 +78,48 @@ def updateStageConfig_cli():
 
     with open(args.stage_config,"r") as f:
         stage_cfg = json.load(f)
+    stage_cfg = DashboardSchema.model_validate(stage_cfg)
     with open(args.production_config,"r") as f:
         prod_cfg = json.load(f)
+    prod_cfg = DashboardSchema.model_validate(prod_cfg)
 
     girder_client = GirderHandler(None)
 
-    for app_name, machines in stage_cfg["execution_mapping"].items():
-        for machine_name, use_cases in machines.items():
-            for use_case_name, info in use_cases.items():
+    #TODO: Use recursion to support arbitrary lvls
+    for level_1_name, level_1 in stage_cfg.component_map.mapping.items():
+        for level_2_name, level_2 in level_1.items():
+            for level_3_name, info in level_2.items():
                 stage_platform = info["platform"]
                 stage_path = info["path"]
 
                 if (
-                    app_name in prod_cfg["execution_mapping"] and
-                    machine_name in prod_cfg["execution_mapping"][app_name] and
-                    use_case_name in prod_cfg["execution_mapping"][app_name][machine_name]
+                    level_1_name in prod_cfg.component_map.mapping and
+                    level_2_name in prod_cfg.component_map.mapping[level_1_name] and
+                    level_3_name in prod_cfg.component_map.mapping[level_1_name][level_2_name]
                 ):
-                    prod_info = prod_cfg["execution_mapping"][app_name][machine_name][use_case_name]
+                    prod_info = prod_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]
                     prod_platorm = prod_info["platform"]
                     prod_path = prod_info["path"]
 
                     if stage_platform == "local":
                         for report_item_basename in os.listdir(stage_path):
                             girder_client.upload( os.path.join(stage_path,report_item_basename), prod_path, reuse_existing=False)
-                        stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["path"] = prod_path
-                        stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["platform"] = prod_platorm
+                        stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["path"] = prod_path
+                        stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["platform"] = prod_platorm
                     else:
                         raise ValueError("Unexpected: non local path but benchmark is staged")
 
                 else:
-                    print(f"{app_name}-{machine_name}-{use_case_name} not found in production... Adding it.")
+                    print(f"{level_1_name}-{level_2_name}-{level_3_name} not found in production... Adding it.")
 
-                    tmp_location = os.path.join("./tmp",f"{app_name}_{use_case_name}_{machine_name}")
-                    os.rename(stage_path,tmp_location)
+                    tmp_location = os.path.join("./tmp",f"{level_1_name}_{level_3_name}_{level_2_name}")
+                    shutil.move(stage_path,tmp_location)
                     uploaded_id = girder_client.upload( tmp_location, args.production_girder_id, return_id=True )
 
-                    stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["path"] = uploaded_id
-                    stage_cfg["execution_mapping"][app_name][machine_name][use_case_name]["platform"] = "girder"
+                    stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["path"] = uploaded_id
+                    stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["platform"] = "girder"
 
     with open(args.stage_config,"w") as f:
-        json.dump(stage_cfg,f)
+        json.dump(stage_cfg.model_dump(),f)
 
     return 0
