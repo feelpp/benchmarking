@@ -1,7 +1,54 @@
 from argparse import ArgumentParser
-import glob, json,  os, shutil
+import glob, json, os, shutil, copy
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema
+import copy
+
+def _item_in_list(item, lst):
+    """Recursively check if item is already in list, including dicts and lists."""
+    for elem in lst:
+        if _deep_equal(item, elem):
+            return True
+    return False
+
+def _deep_equal(a, b):
+    """Recursively compare lists/dicts for equality by value."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        if set(a.keys()) != set(b.keys()):
+            return False
+        return all(_deep_equal(a[k], b[k]) for k in a)
+    elif isinstance(a, list) and isinstance(b, list):
+        if len(a) != len(b):
+            return False
+        return all(_deep_equal(x, y) for x, y in zip(a, b))
+    else:
+        return a == b
+
+def _unique_list(seq):
+    """Return a list with unique items while preserving original order."""
+    unique = []
+    for item in seq:
+        if not _item_in_list(item, unique):
+            unique.append(item)
+    return unique
+
+def mergeDicts(dict1, dict2):
+    """Recursively merges two dictionaries."""
+    merged = copy.deepcopy(dict1)
+    for key, value in dict2.items():
+        if key in merged:
+            if not value:
+                continue
+
+            if isinstance(merged[key], dict) and isinstance(value, dict):
+                merged[key] = mergeDicts(merged[key], value)
+            elif isinstance(merged[key], list) and isinstance(value, list):
+                merged[key] = _unique_list(merged[key] + value)
+            else:
+                merged[key] = value
+        else:
+            merged[key] = value
+    return merged
+
 
 
 def jsonConfigMerge_cli():
@@ -12,31 +59,22 @@ def jsonConfigMerge_cli():
     parser.add_argument("--update_paths", "-u", action="store_true", help="Whether to update the config file paths")
     args = parser.parse_args()
 
-    for i,filename in enumerate(glob.glob(args.file_pattern,recursive=True)):
+    master_config = {}
+    for filename in glob.glob(args.file_pattern,recursive=True):
         with open(filename,"r") as f:
             current_config = json.load(f)
-        current_config = DashboardSchema.model_validate( current_config )
-        if i == 0:
-            master_config = current_config.model_copy()
+
         if args.update_paths:
             file_dirpath = os.path.dirname(os.path.relpath(filename,"."))
             report_paths = glob.glob(os.path.join(file_dirpath,"**","reframe_report.json"),recursive=True)
             for report in report_paths:
                 app,use_case,machine = report.split("/")[-5:-2]
-                order_map = {
-                    "applications":app,
-                    "machines":machine,
-                    "use_cases":use_case
-                }
+                current_config["component_map"][machine][app][use_case]["path"] = os.path.join(file_dirpath,app,use_case,machine)
 
-                curr = current_config.component_map.mapping
-                for order in current_config.component_map.component_order:
-                    curr = curr[order_map[order]]
-                curr["path"] = os.path.join(file_dirpath,app,use_case,machine)
-        master_config.merge(current_config)
+        master_config = mergeDicts(master_config,current_config)
 
     with open(args.output_file_path,"w") as f:
-        f.write(json.dumps(master_config.model_dump()))
+        f.write(json.dumps(master_config))
 
     return 0
 
@@ -51,34 +89,33 @@ def updateStageConfig_cli():
 
     with open(args.stage_config,"r") as f:
         stage_cfg = json.load(f)
-    stage_cfg = DashboardSchema.model_validate(stage_cfg)
+
     with open(args.production_config,"r") as f:
         prod_cfg = json.load(f)
-    prod_cfg = DashboardSchema.model_validate(prod_cfg)
 
     girder_client = GirderHandler(None)
 
     #TODO: Use recursion to support arbitrary lvls
-    for level_1_name, level_1 in stage_cfg.component_map.mapping.items():
+    for level_1_name, level_1 in stage_cfg["component_map"].items():
         for level_2_name, level_2 in level_1.items():
             for level_3_name, info in level_2.items():
                 stage_platform = info["platform"]
                 stage_path = info["path"]
 
                 if (
-                    level_1_name in prod_cfg.component_map.mapping and
-                    level_2_name in prod_cfg.component_map.mapping[level_1_name] and
-                    level_3_name in prod_cfg.component_map.mapping[level_1_name][level_2_name]
+                    level_1_name in prod_cfg["component_map"] and
+                    level_2_name in prod_cfg["component_map"][level_1_name] and
+                    level_3_name in prod_cfg["component_map"][level_1_name][level_2_name]
                 ):
-                    prod_info = prod_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]
+                    prod_info = prod_cfg["component_map"][level_1_name][level_2_name][level_3_name]
                     prod_platorm = prod_info["platform"]
                     prod_path = prod_info["path"]
 
                     if stage_platform == "local":
                         for report_item_basename in os.listdir(stage_path):
                             girder_client.upload( os.path.join(stage_path,report_item_basename), prod_path, reuse_existing=False)
-                        stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["path"] = prod_path
-                        stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["platform"] = prod_platorm
+                        stage_cfg["component_map"][level_1_name][level_2_name][level_3_name]["path"] = prod_path
+                        stage_cfg["component_map"][level_1_name][level_2_name][level_3_name]["platform"] = prod_platorm
                     else:
                         raise ValueError("Unexpected: non local path but benchmark is staged")
 
@@ -89,10 +126,10 @@ def updateStageConfig_cli():
                     shutil.move(stage_path,tmp_location)
                     uploaded_id = girder_client.upload( tmp_location, args.production_girder_id, return_id=True )
 
-                    stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["path"] = uploaded_id
-                    stage_cfg.component_map.mapping[level_1_name][level_2_name][level_3_name]["platform"] = "girder"
+                    stage_cfg["component_map"][level_1_name][level_2_name][level_3_name]["path"] = uploaded_id
+                    stage_cfg["component_map"][level_1_name][level_2_name][level_3_name]["platform"] = "girder"
 
     with open(args.stage_config,"w") as f:
-        json.dump(stage_cfg.model_dump(),f)
+        json.dump(stage_cfg,f)
 
     return 0

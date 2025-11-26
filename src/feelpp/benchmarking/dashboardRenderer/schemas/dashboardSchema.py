@@ -73,16 +73,6 @@ class TemplateInfo(BaseModel):
 
         return v.replace("${TEMPLATE_DIR}",template_dir)
 
-    def merge(self, other: "TemplateInfo"):
-        if other.template:
-            self.template = other.template
-
-        for item in other.data:
-            if not any(_items_equal(item, existing) for existing in self.data):
-                self.data.append(item)
-
-        return self
-
 
 class LeafMetadata(BaseModel):
     path: Optional[str] = None
@@ -100,38 +90,10 @@ class LeafMetadata(BaseModel):
                 v = TemplateInfo(data = v)
         return v
 
-    def merge(self, other: "LeafMetadata"):
-        if other.path:
-            self.path = other.path
-        if other.platform:
-            self.platform = other.platform
-        self.template_info.merge(other.template_info)
-        return self
-
 class ComponentMap(BaseModel):
     component_order: Optional[List[str]] = None
     mapping: Dict[str,Dict]
 
-
-    def merge(self, other: "ComponentMap"):
-        def merge_mapping(a, b):
-            for key, val in b.items():
-                if key not in a:
-                    a[key] = val
-                else:
-                    if isinstance(a[key], dict) and isinstance(val, dict):
-                        merge_mapping(a[key], val)
-                    else:
-                        a[key] = val
-            return a
-
-        self.mapping = merge_mapping(self.mapping, other.mapping)
-
-        # component_order: replace if other provides it
-        if other.component_order:
-            self.component_order = other.component_order
-
-        return self
 
 class TemplateDefaults(BaseModel):
     repositories: Optional[Union[Dict,TemplateInfo]] = TemplateInfo(data = {})
@@ -159,18 +121,6 @@ class TemplateDefaults(BaseModel):
                 else:
                     v[node] = TemplateInfo(data = template_info)
         return v
-
-    def merge(self, other: "TemplateDefaults"):
-        self.repositories.merge(other.repositories)
-        self.leaves.merge(other.leaves)
-
-        for k, v in other.components.items():
-            if k in self.components:
-                self.components[k].merge(v)
-            else:
-                self.components[k] = v
-
-        return self
 
 
 class DashboardSchema(BaseModel):
@@ -280,62 +230,5 @@ class DashboardSchema(BaseModel):
 
                 if not component_data.template:
                     component_data.template = template
-
-        return self
-
-    def merge(self, other: "DashboardSchema"):
-        def deep_merge(a, b):
-            """
-            Merge b into a.
-            - If both values are dicts → recursive merge.
-            - If both are TemplateInfo → call TemplateInfo.merge().
-            - Otherwise → replace.
-            """
-            if isinstance(a, TemplateInfo) and isinstance(b, TemplateInfo):
-                return a.merge(b)
-
-            if isinstance(a, dict) and isinstance(b, dict):
-                for key, b_val in b.items():
-                    if key not in a:
-                        a[key] = b_val
-                    else:
-                        a[key] = deep_merge(a[key], b_val)
-                return a
-
-            return b
-
-        # dashboard_metadata
-        if other.dashboard_metadata:
-            self.dashboard_metadata = deep_merge( self.dashboard_metadata,other.dashboard_metadata)
-
-        # repositories
-        if other.repositories:
-            if self.repositories is None:
-                self.repositories = other.repositories
-            else:
-                self.repositories = deep_merge(self.repositories, other.repositories)
-
-        # components
-        if other.components:
-            for repo, comp_dict in other.components.items():
-                if repo not in self.components:
-                    self.components[repo] = comp_dict
-                else:
-                    self.components[repo] = deep_merge( self.components[repo], comp_dict )
-
-        # component_map
-        if other.component_map:
-            self.component_map.merge(other.component_map)
-
-        # views
-        if other.views:
-            if self.views is None:
-                self.views = other.views
-            else:
-                self.views = deep_merge(self.views, other.views)
-
-        # template_defaults
-        if other.template_defaults:
-            self.template_defaults.merge(other.template_defaults)
 
         return self
