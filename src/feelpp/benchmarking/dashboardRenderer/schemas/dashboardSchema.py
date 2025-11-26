@@ -47,7 +47,7 @@ class TemplateInfo(BaseModel):
 
     @field_validator("template",mode="after")
     @classmethod
-    def expandTemplate(cls,v:str):
+    def expandTemplate(cls, v:str):
         if v is None:
             return v
 
