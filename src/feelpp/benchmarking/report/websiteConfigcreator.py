@@ -10,12 +10,12 @@ class WebsiteConfigCreator:
         else:
             self.config = dict(
                 dashboard_metadata = {
-                    "template": os.path.abspath(os.path.join(__file__,"../templates/dashboardOverview.adoc.j2")),
+                    "template": "${TEMPLATE_DIR}/dashboardOverview.adoc.j2",
                     "data":{"title":"feelpp.benchmarking"}
                 },
                 template_defaults = {
                     "leaves":{
-                        "template":os.path.abspath(os.path.join(__file__,"../templates/reframeReport.adoc.j2")),
+                        "template":"${TEMPLATE_DIR}/reframeReport.adoc.j2",
                         "data":[
                             { "filepath":"report.json", "prefix":"report", "action":"json2adoc"},
                             { "filepath":"partials/", "action":"copy", "prefix":"descriptions" },
@@ -24,17 +24,17 @@ class WebsiteConfigCreator:
                     },
                     "components":{
                         "all":{
-                            "template": os.path.abspath(os.path.join(__file__,"../templates/overview.adoc.j2")),
+                            "template": "${TEMPLATE_DIR}/overview.adoc.j2",
                         },
                         "machines":{
-                            "template": os.path.abspath(os.path.join(__file__,"../templates/machineOverview.adoc.j2")),
+                            "template": "${TEMPLATE_DIR}/machineOverview.adoc.j2",
                             "data":{"card_type":"machine", "card_image":"fa-solid fa-microchip"}
                         },
                         "applications":{"card_type":"application", "card_image":"fa-solid fa-diagram-project"},
                         "use_cases":{"card_type":"usecase", "card_image":"fa-solid fa-briefcase"}
                     },
                     "repositories":{
-                        "template": os.path.abspath(os.path.join(__file__,"../templates/overview.adoc.j2"))
+                        "template": "${TEMPLATE_DIR}/overview.adoc.j2"
                     },
                 },
                 views = {

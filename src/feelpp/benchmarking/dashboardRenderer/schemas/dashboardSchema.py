@@ -1,5 +1,7 @@
 from pydantic import BaseModel, field_validator, model_validator
 from typing import List, Dict, Optional, Union
+import os
+from importlib.resources import files
 
 
 def castTemplateInfo(v):
@@ -42,6 +44,22 @@ class TemplateInfo(BaseModel):
             else:
                 result.append(item)
         return result
+
+    @field_validator("template",mode="after")
+    @classmethod
+    def expandTemplate(cls,v:str):
+        if v is None:
+            return v
+
+        template_dir_env = os.getenv("TEMPLATE_DIR")
+        if template_dir_env and os.path.isdir(template_dir_env):
+            template_dir = os.path.abspath(template_dir_env)
+        else:
+            template_dir = os.path.join(files("feelpp.benchmarking.json_report"),"templates")
+            if not os.path.isdir(template_dir):
+                template_dir = "./src/feelpp/benchmarking/report/templates/"
+
+        return v.replace("${TEMPLATE_DIR}",template_dir)
 
 
 class LeafMetadata(BaseModel):
