@@ -51,10 +51,14 @@
                     "title": "Test Cases",
                     "table": {
                         "columns": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total"],
+                        "computed_columns":{
+                            "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
+                        },
                         "rename": {
                             "testcases.time_total": "Total Time (s)",
                             "testcases.hashcode": "Hash",
-                            "result": ""
+                            "result": "",
+                            "logs_link":""
                         },
                         "group_by": { "columns": ["testcases.hashcode"], "agg": "first" },
                         "format": {
@@ -63,10 +67,10 @@
                             "elements":"%.0f",
                             "result": { "pass": "🟢", "fail": "🔴" }
                         },
-                        "column_order": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total"],
+                        "column_order": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total","logs_link"],
                         "style": {
                             "column_align": { "result": "center" },
-                            "column_width": { "result": 1 },
+                            "column_width":{ "result":1,"logs_link":1},
                             "classnames": ["scrollable", "sortable"]
                         }
                     },
