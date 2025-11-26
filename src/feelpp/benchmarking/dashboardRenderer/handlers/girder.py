@@ -1,13 +1,12 @@
-from feelpp.benchmarking.dashboardRenderer.handlers.download import DownloadHandler, SingletonMeta
+from feelpp.benchmarking.dashboardRenderer.handlers.download import DownloadHandler
 import girder_client
 import os
 from typing import Optional, List
 
-class GirderHandler( DownloadHandler, metaclass=SingletonMeta ):
+class GirderHandler( DownloadHandler ):
     def __init__( self, download_base_dir:str ):
         """
         Handles connections, authentication, and file/folder transfers with a Girder server.
-        This class is a singleton.
         It manages the connection details and provides methods to download and upload data to the remote platform.
         """
         super().__init__( download_base_dir = download_base_dir )

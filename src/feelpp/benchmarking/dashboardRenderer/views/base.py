@@ -54,7 +54,7 @@ class View:
     def clone( self ):
         """
         Creates a shallow copy of the View, but ensures deep copying of mutable data (`template_data`).
-        The underlying `renderer` (which is often a singleton or immutable after creation) and other configuration attributes are copied by reference.
+        The underlying `renderer` and other configuration attributes are copied by reference.
         Returns:
             View: A new View instance with identical, but independent, data context.
         """
