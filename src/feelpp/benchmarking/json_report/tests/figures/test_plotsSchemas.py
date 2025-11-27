@@ -38,8 +38,7 @@ class TestPlotSchemas:
     # ------------------------------------------------------------------
     # Aggregation: valid agg methods
     # ------------------------------------------------------------------
-    @pytest.mark.parametrize(
-        "aggMethod",
+    @pytest.mark.parametrize( "aggMethod",
         ["sum","mean","min","max","first","count","nunique","filter:custom"]
     )
     def test_checkAggAcceptsValidMethods(self, aggMethod):
@@ -56,12 +55,7 @@ class TestPlotSchemas:
     def test_checkAxisValid(self):
         xaxis = PlotAxis(parameter="x")
         yaxis = PlotAxis(parameter="y")
-        plot = Plot(
-            title="Test Plot",
-            plot_types=["scatter"],
-            xaxis=xaxis,
-            yaxis=yaxis
-        )
+        plot = Plot( title="Test Plot", plot_types=["scatter"], xaxis=xaxis, yaxis=yaxis )
         assert plot.xaxis.parameter == "x"
         assert plot.yaxis.parameter == "y"
 
@@ -81,16 +75,8 @@ class TestPlotSchemas:
         aggs = [Aggregation(column="score", agg="sum")]
 
         plot = Plot(
-            title="Full Plot",
-            plot_types=["scatter","table"],
-            transformation="performance",
-            aggregations=aggs,
-            xaxis=xaxis,
-            secondary_axis=secondary,
-            yaxis=yaxis,
-            color_axis=color,
-            extra_axes=extra,
-            layout_modifiers={"width":800}
+            title="Full Plot", plot_types=["scatter","table"], transformation="performance", aggregations=aggs, xaxis=xaxis,
+            secondary_axis=secondary, yaxis=yaxis, color_axis=color, extra_axes=extra, layout_modifiers={"width":800}
         )
 
         assert plot.title == "Full Plot"
