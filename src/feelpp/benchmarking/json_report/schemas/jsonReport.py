@@ -88,24 +88,24 @@ class Preprocessor(BaseModel):
 
     @model_validator(mode="after")
     def setPreprocessor( self ):
-        try:
-            self.module = __import__( self.module, fromlist=[self.function] )
-        except ImportError as e:
-            try:
+
+        if isinstance(self.module,str):
+            if os.path.isfile(self.module):
                 spec = importlib.util.spec_from_file_location(self.module,self.module)
-                self.module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(self.module)
-            except Exception as e:
-                raise ImportError(f"Preprocessor module '{self.module}' could not be imported: {e}")
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                self.module = mod
+            else:
+                self.module = __import__( self.module, fromlist=[self.function] )
 
-
-        try:
-            if not hasattr( self.module, self.function ):
-                raise AttributeError(f"Preprocessor function '{self.function}' not found in module '{self.module}'.")
-            self.function = getattr( self.module, self.function )
-        except AttributeError as e:
-            raise AttributeError(f"Preprocessor function '{self.function}' could not be set: {e}")
-        return self
+        if isinstance(self.function,str):
+            try:
+                if not hasattr( self.module, self.function ):
+                    raise AttributeError(f"Preprocessor function '{self.function}' not found in module '{self.module}'.")
+                self.function = getattr( self.module, self.function )
+            except AttributeError as e:
+                raise AttributeError(f"Preprocessor function '{self.function}' could not be set: {e}")
+            return self
 
     def apply(self, filedata: Any) -> Any:
         return self.function(filedata)
