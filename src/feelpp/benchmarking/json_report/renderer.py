@@ -1,7 +1,7 @@
 import json, os, warnings
 import pandas as pd
 
-from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile
 from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
 from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
 from feelpp.benchmarking.json_report.tables.controller import Controller as TableController
@@ -48,28 +48,33 @@ class JsonReportController:
 
         return renderer
 
+    def readAndPreprocess(self,d:DataFile):
+        filedata = None
+        with open( d.filepath, "r" ) as f:
+            if d.format == "json":
+                filedata = json.load(f)
+            elif d.format == "csv":
+                filedata = pd.read_csv(f)
+            elif d.format == "raw":
+                filedata = f.read()
+            else:
+                warnings.warn(f"Data file format '{d.format}' not recognized. Skipping data file '{d.filepath}'")
+        if d.preprocessor:
+            filedata = d.preprocessor.apply(filedata)
+        return filedata
+
     def loadReportData( self ):
         if not hasattr(self,"report"):
             raise RuntimeError("Report must be loaded before loading data files.")
 
         data = {}
         for d in self.report.data:
-            filedata = None
-            with open( d.filepath, "r" ) as f:
-                if d.format == "json":
-                    filedata = json.load(f)
-                elif d.format == "csv":
-                    filedata = pd.read_csv(f)
-                elif d.format == "raw":
-                    filedata = f.read()
-                else:
-                    warnings.warn(f"Data file format '{d.format}' not recognized. Skipping data file '{d.filepath}'")
+            filedata = self.readAndPreprocess(d)
 
-            if d.preprocessor:
-                filedata = d.preprocessor.apply(filedata)
+            if d.format == "raw":
+                filedata = {d.name : filedata}
 
             data[d.name] = filedata
-
             if d.expose:
                 self.exposed[d.expose] = filedata
 
