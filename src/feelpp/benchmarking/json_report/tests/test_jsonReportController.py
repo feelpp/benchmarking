@@ -142,17 +142,17 @@ def test_loadReportDataLoadsRaw(tmp_path):
 
     data = ctrl.loadReportData()
 
-    assert data["rawfile"] == "hello world"
-    assert ctrl.exposed["alias"] == "hello world"
+    assert data["rawfile"] == {"rawfile":"hello world"}
+    assert ctrl.exposed["alias"] == {"rawfile":"hello world"}
 
 def test_loadReportDataAppliesPreprocessor_withMock(tmp_path):
     raw_path = tmp_path / "data.raw"
-    raw_path.write_text("hello")
+    raw_path.write_text('{"hello":"world"}')
 
     mock_prep = MagicMock()
     mock_prep.apply = MagicMock(return_value="processed")
 
-    df = DataFile.model_construct( name = "d1", filepath=str(raw_path), format="raw", preprocessor=mock_prep, expose=False )
+    df = DataFile.model_construct( name = "d1", filepath=str(raw_path), format="json", preprocessor=mock_prep, expose=False )
 
     ctrl = JsonReportController.__new__(JsonReportController)
     ctrl.report = type("R", (), {"data": [df]})()
@@ -167,7 +167,7 @@ def test_loadReportDataAppliesPreprocessor_withMock(tmp_path):
 # ----------------------------------------------------------------------
 # render()
 # ----------------------------------------------------------------------
-def test_renderWritesToOutput(tmp_path):
+def test_renderWritesToOutput(monkeypatch, tmp_path):
     fake_renderer = MagicMock()
     fake_renderer.render = MagicMock()
 

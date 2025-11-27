@@ -23,15 +23,14 @@
                             "passed": "Passed",
                             "grade": "Grade"
                         },
-                        "group_by": { "columns": ["name"], "agg": "first" },
                         "format": {
                             "score": "%.1f",
                             "passed": { "True": "✔️", "False": "❌" }
                         },
-                        "column_order": ["student", "subject", "score", "grade", "passed"],
+                        "column_order": ["name", "subject", "score", "grade", "passed"],
                         "style": {
-                            "column_align": { "Grade": "center", "Passed": "center" },
-                            "column_width": { "Grade": 1, "Passed": 1 },
+                            "column_align": { "grade": "center", "passed": "center" },
+                            "column_width": { "grade": 1, "passed": 1 },
                             "classnames": ["sortable"]
                         }
                     },
