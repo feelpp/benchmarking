@@ -69,7 +69,6 @@ class TestReportNodes:
         module_path = tmp_path / "dummy_module.py"
         module_path.write_text("def double(x): return x*2")
         prep = Preprocessor(module = str(module_path), function="double")
-        prep.setPreprocessor()
         assert prep.apply(3) == 6
 
     # ------------------------------------------------------------------
