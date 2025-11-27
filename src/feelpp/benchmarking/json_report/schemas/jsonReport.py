@@ -86,26 +86,39 @@ class Preprocessor(BaseModel):
         else:
             raise TypeError(f"Expected str or dict for Preprocessor, got {type(values)}")
 
-    @model_validator(mode="after")
-    def setPreprocessor( self ):
+    @field_validator("module",mode="after")
+    @classmethod
+    def setPreprocessorModule( cls, module, info ):
+        if isinstance(module,str):
+            try:
+                module = __import__( module, fromlist=[info.data.get("function")] )
+            except ImportError as e:
+                if not os.path.isabs(module):
+                    report_filepath = info.context.get("report_filepath", None)
+                    if not report_filepath:
+                        raise FileNotFoundError(f"Cannot resolve the report file path {report_filepath}")
+                    report_filepath = os.path.abspath(report_filepath)
 
-        if isinstance(self.module,str):
-            if os.path.isfile(self.module):
-                spec = importlib.util.spec_from_file_location(self.module,self.module)
+                    module = os.path.abspath( os.path.join( os.path.dirname(report_filepath), module ) )
+
+                spec = importlib.util.spec_from_file_location(module,module)
                 mod = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(mod)
-                self.module = mod
-            else:
-                self.module = __import__( self.module, fromlist=[self.function] )
+                module = mod
 
-        if isinstance(self.function,str):
+        return module
+
+    @field_validator("function",mode="after")
+    def setPreprocessorFunction( cls, function, info ):
+        if isinstance(function,str):
             try:
-                if not hasattr( self.module, self.function ):
-                    raise AttributeError(f"Preprocessor function '{self.function}' not found in module '{self.module}'.")
-                self.function = getattr( self.module, self.function )
+                if not hasattr( info.data["module"], function ):
+                    raise AttributeError(f"Preprocessor function '{function}' not found in module '{info.data.get("module")}'.")
+                function = getattr( info.data["module"], function )
             except AttributeError as e:
-                raise AttributeError(f"Preprocessor function '{self.function}' could not be set: {e}")
-            return self
+                raise AttributeError(f"Preprocessor function '{function}' could not be set: {e}")
+
+        return function
 
     def apply(self, filedata: Any) -> Any:
         return self.function(filedata)
@@ -153,6 +166,13 @@ class DataFile(BaseModel):
             ext = ext.lstrip(".").lower()
             values["format"] = ext
         return values
+
+    @field_validator("preprocessor",mode="before")
+    @classmethod
+    def passContext(cls, v:Preprocessor, info):
+        if v:
+            return Preprocessor.model_validate(v,context=info.context)
+        return v
 
 
 class JsonReportSchema(BaseModel):
