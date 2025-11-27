@@ -113,7 +113,7 @@ class Preprocessor(BaseModel):
         if isinstance(function,str):
             try:
                 if not hasattr( info.data["module"], function ):
-                    raise AttributeError(f"Preprocessor function '{function}' not found in module '{info.data.get("module")}'.")
+                    raise AttributeError(f"Preprocessor function {function} not found in module {info.data.get('module')}.")
                 function = getattr( info.data["module"], function )
             except AttributeError as e:
                 raise AttributeError(f"Preprocessor function '{function}' could not be set: {e}")
