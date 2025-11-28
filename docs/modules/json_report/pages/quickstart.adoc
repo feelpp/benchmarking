@@ -71,10 +71,10 @@ json-report-render config.json
 
 === Results
 
-The command successfully generates the report, creating the directory `output` and saving your rendered document as `output/config.adoc` and have the following content:
+The command successfully generates the report, saving your rendered document as `./config.adoc` and having the following content:
 
 [source,adoc]
-====
+----
 :docdatetime: 2025-11-28 14:22:05
 
 = Simple Quickstart Report
@@ -95,13 +95,4 @@ The report analyzes 3 data entries.
 |===
 --
 
-++++
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const table = document.querySelector('.sortable table');
-    initTable(table, 'filter_Performance Summary_table');
-  });
-</script>
-++++
-
-====
+----
