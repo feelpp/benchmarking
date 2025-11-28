@@ -1,3 +1,6 @@
+:page-jupyter: true
+:page-plotly: true
+
 = Plot Node
 
 The **Plot Node** defines a data visualization within the report. It specifies the data to be used, how that data should be mapped to the figure's axes and dimensions, and what transformations should be applied before rendering.
@@ -82,6 +85,116 @@ The `transformation` field defines how the data is restructured and normalized b
 | `"speedup"`| Computes the speedup relative to the smallest value found along the X-axis dimension (often used to show parallel scaling). | Scaling Factors
 |===
 
+
+To explain how transformation and plot types work, we can consider the following example.
+
+[%dynamic%hide_code,python]
+----
+records = [{"perfvalue": "elapsed_fill", "value": 28.9239, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 10000.0}, {"perfvalue": "elapsed_compute", "value": 1.92806, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 10000.0}, {"perfvalue": "elapsed_fill", "value": 63.0273, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 20000.0}, {"perfvalue": "elapsed_compute", "value": 3.74504, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 20000.0}, {"perfvalue": "elapsed_fill", "value": 92.358, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 30000.0}, {"perfvalue": "elapsed_compute", "value": 3.29597, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 30000.0}, {"perfvalue": "elapsed_fill", "value": 99.9142, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 40000.0}, {"perfvalue": "elapsed_compute", "value": 2.37914, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 40000.0}, {"perfvalue": "elapsed_fill", "value": 24.8636, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 10000.0}, {"perfvalue": "elapsed_compute", "value": 0.629236, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 10000.0}, {"perfvalue": "elapsed_fill", "value": 14.9139, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 20000.0}, {"perfvalue": "elapsed_compute", "value": 0.498528, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 20000.0}, {"perfvalue": "elapsed_fill", "value": 98.9536, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 30000.0}, {"perfvalue": "elapsed_compute", "value": 2.3708, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 30000.0}, {"perfvalue": "elapsed_fill", "value": 45.4764, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 40000.0}, {"perfvalue": "elapsed_compute", "value": 1.56548, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 40000.0}, {"perfvalue": "elapsed_fill", "value": 2.89716, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 10000.0}, {"perfvalue": "elapsed_compute", "value": 0.0434488, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 10000.0}, {"perfvalue": "elapsed_fill", "value": 36.537, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 20000.0}, {"perfvalue": "elapsed_compute", "value": 0.519222, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 20000.0}, {"perfvalue": "elapsed_fill", "value": 52.302, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 30000.0}, {"perfvalue": "elapsed_compute", "value": 1.23368, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 30000.0}, {"perfvalue": "elapsed_fill", "value": 98.397, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 40000.0}, {"perfvalue": "elapsed_compute", "value": 1.55742, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 40000.0}]
+----
+
+[%dynamic%hide_code,python]
+----
+import pandas as pd
+
+master_df = pd.DataFrame.from_dict(records)
+----
+
+
+[%dynamic%open%hide_code,python]
+----
+master_df.head(5)
+----
+
+We can see that this dataframe contains the parameters:
+- system
+- result
+- tasks
+- elements
+- value
+- perfvalue
+- unit
+
+By having this common structure, we can make use of transformation strategies to manipulate values depending on the desired output.
+
+Strategies will depend on the figure axis. All strategies will create a pivot dataframe that will contain the parameter specified as `color_axis` as columns, `xaxis` as first level index and `secondary_axis` as second level index. Values of the dataframe will always be the `values` of the master dataframe.
+
+As an example, we will consider the following axis definitions:
+[source,json]
+----
+"xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+"yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+"secondary_axis":{ "parameter":"elements", "label":"N" },
+"color_axis":{ "parameter":"perfvalue", "label":"Performance variable" }
+----
+
+**performance**
+
+This strategy should be seen as the "base" strategy. No transformation, other that a pivot, is done.
+For the given example, it produces the following dataframe
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)"},
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{"parameter":"elements", "label":"N"}
+})
+strategy = TransformationStrategyFactory.create(plot_config)
+df = strategy.calculate(master_df)
+print(df)
+----
+
+**relative_performance**
+
+The relative performance strategy computes the proportion of the time that a a `color_axis` variable takes with regards of the total.
+
+[%dynamic%open%hide_code,python]
+----
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "relative_performance",
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{"parameter":"value", "label":"Execution time (s)"},
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N"
+    }
+})
+strategy = TransformationStrategyFactory.create(plot_config)
+df = strategy.calculate(master_df)
+print(df)
+----
+
+The sum along the column axis will always be equal to 100.
+
+**speedup**
+
+The speedup strategy computes the speedup of the `color_axis` variables. The minimum of the `xaxis` values is taken as the base of the speedup.
+For the example, this strategy will produce the following.
+
+[%dynamic%open%hide_code,python]
+----
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "speedup",
+    "xaxis":{"parameter":"tasks", "label":"Number of tasks"},
+    "yaxis":{"parameter":"value", "label":"Execution time (s)"},
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{"parameter":"elements", "label":"N"}
+})
+strategy = TransformationStrategyFactory.create(plot_config)
+df = strategy.calculate(master_df)
+print(df)
+----
+
+
 ---
 
 == Aggregations
@@ -121,4 +234,290 @@ The optional `aggregations` field allows for data reduction and filtering across
 
 == Plot Types
 
-The engine supports a diverse range of visualizations, grouped into 2D, 3D, and specialized formats.
+The engine supports a diverse range of visualizations, grouped into 2D, 3D, and specialized formats. The definition of each axis depends on the plot type.
+
+
+=== 2D Visualizations
+
+These are standard 2D plots that support the `xaxis`, `yaxis`, and often the `color_axis` and `secondary_axis` (for animation/faceting).
+
+For examples in this section, we will define the axis as:
+
+
+[source,json]
+----
+"xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+"yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+"color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+"secondary_axis":{ "parameter":"elements", "label":"N" }
+----
+
+
+**scatter**: Standard scatter plot, typically showing performance trends.
+
+Axis definition:
+
+- `secondary_axis` : represents the figure slider
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Scatter Plot",
+    "plot_types": [ "scatter" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+**marked_scatter**: Enhanced scatter plot where the symbol/mark shape can be mapped to an additional dimension.
+
+Axis definition:
+
+- `secondary_axis` : represents the marks
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Marked Scatter Plot",
+    "plot_types": [ "marked_scatter" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+**stacked_bar**: Displays cumulative values, useful for showing the proportion of components (e.g., `relative_performance` transformation).
+
+Axis definition:
+
+- `xaxis` : represents the subplot dimension. A subplot is created for each value in the x axis.
+- `secondary_axis` : represents the x axis of each subplot.
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Stacked Bar Plot",
+    "plot_types": [ "stacked_bar" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+**grouped_bar**: Displays values side-by-side for easy comparison.
+
+Axis definition:
+
+- `secondary_axis` : represents the figure slider
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Grouped Bar Plot",
+    "plot_types": [ "grouped_bar" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+**heatmap**: Displays data values as colors on a 2D grid defined by the X and Color axes.
+
+Axis definition:
+
+- `yaxis`: Is given by the color scale (I know it is counter-intuitive).
+- `xaxis`: Represents the columns of the heatmap
+- `color_axis`: Represents the rows of the heatmap
+- `secondary_axis` : Represents the figure slider
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Heatmap",
+    "plot_types": [ "heatmap" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+
+### Specialized Visualizations
+
+**table**: Renders the processed data directly into a styled, tabular format (similar to the Table Node, but generated through the figure pipeline).
+
+
+Axis definition: Columns are displayed in the following order, from left to right: [`extra_axes`] -> `secondary_axis` -> `xaxis` ->  [all values in `color_axis`].
+
+Cell values correspond to `yaxis`.
+
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Table",
+    "plot_types": [ "table" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+
+**sunburst**: Displays hierarchical data as a multi-layered ring chart, useful for showing partitions.
+
+**Dimensions are mapped to the rings:** From inner to outer:  `secondary_axis` -> `xaxis`-> [`extra_axes`] -> `color_axis` (outer).
+
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Sunburst",
+    "plot_types": [ "sunburst" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+
+
+**parallelcoordinates**: Displays multidimensional data where each variable is represented by a vertical axis, and data points are drawn as colored lines connecting the axes.
+
+Axes will be shown on the following order from left to right:
+`secondary_axis` -> `xaxis`, [`extra_axes`] -> `color_axis`.
+The `yaxis` will be shown in the line color.
+
+
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Parallel Coordinates",
+    "plot_types": [ "parallelcoordinates" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+
+### 3D Visualizations
+
+These plots are used for visualizing three or four variables. **At least three dimensions are required** (`xaxis`, `yaxis`, and `secondary_axis`).
+
+* `scatter3d`: Displays individual data points in three dimensions.
+* `surface3d`: Displays values as a 3D surface grid.
+
+|===
+| 3D Axis | Mapped Parameter
+| **X-axis** | `xaxis` parameter
+| **Y-axis** | `secondary_axis` parameter (or first `extra_axes` element if provided)
+| **Z-axis** | `yaxis` parameter (the measured value)
+| **Color/Trace** | `color_axis` parameter
+|===
+
+---
+
+
+**scatter3d**
+
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Scatter 3D",
+    "plot_types": [ "scatter3d" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+
+**surface3d**
+
+[%dynamic%open%hide_code,python]
+----
+from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Surface 3D",
+    "plot_types": [ "surface3d" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()
+----
+
+== Custom Layouts (`layout_modifiers`)
+
+The `layout_modifiers` field allows expert users to pass raw configuration dictionaries to the underlying plotting engine (Plotly). This is useful for advanced styling not covered by the standard schema.
+
+These options correspond to the accepted layout reference for Plotly: https://plotly.com/python/reference/layout/[Plotly layout reference]
+It accepts a nested dictionnary just as Plotly does.
+
+For example, we could customize a figure to have have its x-axis on a logscale.
+[source,json]
+----
+"layout_modifiers":{
+    "xaxis":{
+        "type":"log"
+    }
+}
+----
+
+
+
+++++
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+}
+</style>
+++++
