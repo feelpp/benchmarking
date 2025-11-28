@@ -1,54 +1,74 @@
-= Content Node: Text
+= Text Node
 
-The `TextNode` allows for static text and powerful dynamic text replacement, pulling values from the loaded report data.
+The **Text Node** is used to insert narrative content into your report. It supports both fixed, **static** text blocks and **dynamic** content that integrates processed values directly from loaded data files.
 
-== TextNode Schema
 
 |===
 |Field|Type|Description|Default Value
 
 |`type`|string|Must be set to `"text"`.|`"text"`
 |`text`|string or object|The text content or a nested `Text` object.|*Required*
-|`data`|string|The `name` of the data file to use for dynamic placeholder resolution.|`null`
+|`data`|string|The `name` / reference of the data field to use for dynamic placeholder resolution.|`null`
 
 |===
 
-=== Dynamic Text (`Text` Schema)
+== Text Configuration (Nested Object)
+
+If you need to override the default dynamic behavior (e.g., change the placeholder delimiters), you can use the detailed configuration object instead of a raw string for the `text` field.
 
 |===
 |Field|Type|Description|Default Value
 
-|`content`|string|The text string, potentially containing placeholders.|*Required*
-|`mode`|string (`"static"`, `"dynamic"`)|Controls processing. If `null`, it's inferred based on the presence of placeholders.|Inferred
-|`placeholder_expr`|string|The regular expression to identify placeholders.|`@{([^}]+)}@`
-
+|`content`|string|The text string containing the narrative and any placeholders.|*Required*
+|`mode`|string (`"static"`, `"dynamic"`)|Explicitly controls processing. If omitted, the mode is inferred based on whether placeholders are detected in the `content`.|Inferred
+|`placeholder_expr`|string|The regular expression used to identify placeholders in the text.|`@{([^}]+)}@`
 |===
 
-=== Placeholder Syntax
 
-Placeholders are used to inject values from the data exposed via the `data` field (or the global context if `data` is omitted).
+== Static Text
 
-[cols="2,5"]
+Static content is the simplest form and does not require the `data` field.
+
+[NOTE]
+If the `text` field is defined as a raw string, the engine automatically treats it as static content unless placeholders are detected.
+
+[source,json]
+----
+{
+  "type":"text",
+  "text":"My custom static text!"
+}
+----
+
+Dynamic text uses **placeholders** (`@{...}@`) to inject data values. The content inside the placeholders follows a simple path and operator syntax.
+
+=== Path Syntax
+
+Use dot (`.`) notation to traverse nested data structures within the data source referenced by the `data` field.
+
+* **Dictionary/JSON:** Use keys: `@{data_name.key.subkey}@`
+* **Lists/Arrays:** Use numerical indices: `@{data_list.0.item_name}@`
+
+=== Value Operators
+
+Simple operators can be applied to the retrieved value using the pipe (`|`) syntax to perform common transformations directly at render-time.
+
 |===
-|Syntax|Description
+|Operator|Description|Example
 
-|`@{path.to.value}@`|Accesses a value from the root of the selected data using dot notation. For lists, use the index: `@{list_data.0.name}@`.
-|`@{path.to.value | length}@`|Applies a simple operation (`length` is currently supported) to the value.
-
+|`length`|Returns the size of a list, array, or string.|`@{list_data \| length}@`
 |===
 
 === Example
 
-If you have a data file named `"results"` loaded with `{"version": "1.2.3", "timings": [1, 2, 3]}`:
+Assume a data file named `"results"` was loaded, containing the data: `{"version": "1.2.3", "timings": [1, 2, 3]}`.
 
 [source,json]
 ----
 {
   "type": "text",
   "data": "results",
-  "text": {
-    "content": "The report was generated for version @{version}@. We analyzed @{timings | length}@ samples."
-  }
+  "text": "The report was generated for version @{results.version}@. We analyzed @{results.timings | length}@ samples."
 }
 // Renders as: "The report was generated for version 1.2.3. We analyzed 3 samples."
 ----

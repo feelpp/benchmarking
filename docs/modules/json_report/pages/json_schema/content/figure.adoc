@@ -1,47 +1,124 @@
-= Content Node: Plot/Figure
-:navtitle: Plot/Figure
+= Plot Node
 
-The `PlotNode` is used to define a data visualization, which the template renderer then uses with an internal plotting controller (`FiguresController`) to generate and embed an image (e.g., a chart or graph).
+The **Plot Node** defines a data visualization within the report. It specifies the data to be used, how that data should be mapped to the figure's axes and dimensions, and what transformations should be applied before rendering.
 
-== PlotNode Schema
+== PlotNode Schema (Container)
 
 |===
 |Field|Type|Description|Default Value
 
 |`type`|string|Must be set to `"plot"`.|`"plot"`
-|`plot`|object|The nested `Plot` configuration defining the figure's characteristics.|*Required*
-|`data`|string|The `name` of the data file (must be a pandas DataFrame-like structure) to use.|*Required*
+|`data`|string|The unique `name` (reference) of the data file (from the root `data` list) containing the dataset.|*Required*
+|`plot`|object|The nested configuration object (`Plot` schema) defining the figure's dimensions, type, and transformation.|*Required*
 |===
 
-=== Nested Plot Configuration (`Plot` Schema)
+== Plot Configuration (`plot` Field)
 
-The `Plot` schema defines the axes, aggregation, and type of visualization.
-
-|===
-|Field|Type|Description|Default Value
-
-|`title`|string|The title of the plot.|*Required*
-|`plot_types`|array of strings|List of visualization types (e.g., `"scatter"`, `"stacked_bar"`, `"heatmap"`).|*Required*
-|`transformation`|string|Defines how data is normalized (e.g., `"performance"`, `"relative_performance"`, `"speedup"`).|`"performance"`
-|`aggregations`|array of objects|List of `Aggregation` objects to compute values before plotting (e.g., `{"column": "time", "agg": "mean"}`).|`null`
-|`xaxis`|object|The primary x-axis definition (`PlotAxis` schema).|*Required*
-|`yaxis`|object|The primary y-axis definition (`PlotAxis` schema).|*Required*
-|`color_axis`|object|Optional axis for defining color groups in the plot (`PlotAxis` schema).|`null`
-|`extra_axes`|array of objects|Additional axes for filtering/grouping that don't map directly to a visual axis.|`[]`
-|`layout_modifiers`|object|Dictionary of raw modifiers to pass to the plotting backend (e.g., for legend placement).|`{}`
-|===
-
-=== Image Node (Static Images)
-
-For embedding simple, pre-rendered images, use the `ImageNode`.
+The core configuration is provided here, defining the geometry and data logic of the figure.
 
 |===
 |Field|Type|Description|Default Value
 
-|`type`|string|Must be set to `"image"`.|`"image"`
-|`src`|string|Path to the image file.|*Required*
-|`caption`|string|Caption for the image.|`null`
-|`alt`|string|Alternative text for the image.|`null`
+|`title`|string|The title displayed at the top of the figure.|*Required*
+|`plot_types`|array of strings|A list of one or more visualization types to generate from the same configuration (e.g., `["scatter", "table"]`).|*Required*
+|`transformation`|string|Defines how the input data should be processed and normalized before plotting.|`"performance"`
+|`aggregations`|array of objects|A sequential list of instructions to filter and summarize the dataset before mapping to axes.|`null`
+|`xaxis`|object|The configuration for the horizontal axis (`PlotAxis` schema).|*Required*
+|`yaxis`|object|The configuration for the vertical axis (`PlotAxis` schema).|*Required*
+|`secondary_axis`|object|A second independent axis used for animation (sliders) or defining a third dimension.|`null`
+|`color_axis`|object|The parameter used to define distinct lines or groups, mapping data values to the trace color/legend.|`null`
+|`extra_axes`|array of objects|Additional parameters used for filtering, grouping, or serving as a fourth dimension in complex plots (e.g., 3D or parallel coordinates).|`[]`
+|`layout_modifiers`|object|Allows passing raw configuration options to the underlying plotting library (Plotly) for fine-grained control (e.g., log scale).|`{}`
 |===
 
 ---
+
+
+== Dimensions and Axes (`PlotAxis` Schema)
+
+All axis fields (`xaxis`, `yaxis`, `secondary_axis`, `color_axis`, `extra_axes`) use the `PlotAxis` schema to define which data column maps to which dimension.
+
+|===
+|Field|Type|Description|Default Value
+
+|`parameter`|string|The name of the data column to be mapped to this axis. Use dot notation (`parameter.subparameter`) for nested data.|*Required*
+|`label`|string|The display label for the axis in the final figure.|Inferred from `parameter`
+|`filter`|string, array, or object|Allows explicit filtering or renaming of values within this dimension. (See Filtering section below.)|`[]`
+|===
+
+=== Dimension Filtering and Renaming
+
+The `filter` field within an axis allows you to select specific values from that column to include in the plot, and optionally rename them for display.
+
+|===
+| Syntax | Action | Example
+
+| Single string | Filters by the value, keeps the value as the label. | `"filter": "ValueA"`
+| Array of strings | Filters by multiple values, keeps values as labels. | `"filter": ["ValueA", "ValueB"]`
+| Map of strings | Filters by keys, renames to values. | `"filter": {"old_name": "New Label"}`
+|===
+
+[source,json]
+----
+"xaxis": {
+    "parameter": "System",
+    "filter": {
+        "cluster_a": "Cluster A (Production)",
+        "dev_box": "Development System"
+    }
+}
+----
+
+---
+== Data Transformations
+
+The `transformation` field defines how the data is restructured and normalized before being plotted.
+
+|===
+| Transformation | Purpose | Output Focus
+
+| `"performance"`| The base and default strategy. Data is restructured (pivoted) using the axes dimensions but values remain absolute.| Absolute Values
+| `"relative_performance"`| Data is restructured, and each value is normalized by the total sum of its row (e.g., component percentages of total time). | Percentage/Proportion
+| `"speedup"`| Computes the speedup relative to the smallest value found along the X-axis dimension (often used to show parallel scaling). | Scaling Factors
+|===
+
+---
+
+== Aggregations
+
+The optional `aggregations` field allows for data reduction and filtering across the dataset *before* the final pivot structure is created. **The order of these instructions matters.**
+
+|===
+| Aggregation Field | Type | Description
+
+|`column`|string|The column to apply the aggregation or filter to.
+|`agg`|string|The aggregation function or filter instruction.
+|===
+
+=== Available Aggregation Functions
+
+|===
+| Function | Action
+
+| `mean` | Computes the arithmetic average of the column.
+| `sum` | Computes the total sum of the column.
+| `max`, `min` | Finds the maximum or minimum value in the column.
+| `count`, `nunique` | Counts the number of values or unique values.
+| `filter:VALUE` | Filters the column to keep only rows where the column value matches `VALUE`.
+|===
+
+[source,json]
+----
+"aggregations":[
+    {"column":"Date","agg":"max"}, // Keep only records with the latest date
+    {"column":"System","agg":"filter:gaya"}, // Filter to only keep the 'gaya' system
+    {"column":"Time","agg":"mean"} // Calculate the mean execution time
+]
+----
+
+---
+
+
+== Plot Types
+
+The engine supports a diverse range of visualizations, grouped into 2D, 3D, and specialized formats.

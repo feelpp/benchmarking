@@ -1,18 +1,16 @@
-= Content Node: Section
+= Section Node
 
-Content is built using a list of *Nodes* under the root `content` field. The `SectionNode` is the primary way to structure the report hierarchically.
-
-== SectionNode Schema
+The **Section Node** is the fundamental building block for structuring your report. It defines a titled, hierarchical container that organizes other content nodes into logical chapters and subsections.
 
 |===
 |Field|Type|Description|Default Value
 
 |`type`|string|Must be set to `"section"`.|`"section"`
-|`title`|string|The title of the section (becomes an AsciiDoc heading).|*Required*
+|`title`|string|The title of the section.|*Required*
 |`content`|array of objects|A recursive list of other content nodes, including nested `SectionNode`s.|*Required*
 |===
 
-=== Example
+== Example
 
 [source,json]
 ----

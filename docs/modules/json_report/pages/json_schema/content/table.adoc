@@ -1,48 +1,210 @@
-= Content Node: Table
+= Table Node
 :navtitle: Table
 
-The `TableNode` defines how to extract, transform, and present data from a loaded data file into a tabular format, and provides specific AsciiDoc styling.
+The **Table Node** is a powerful mechanism for defining, processing, and styling tabular data extracted from a loaded data source. It leverages a comprehensive pipeline of data transformations (filtering, grouping, pivoting) before the data is rendered.
 
-== TableNode Schema
+The structure is composed of the `TableNode` container and the nested `Table` configuration object.
+
+== TableNode Schema (Container)
 
 |===
 |Field|Type|Description|Default Value
 
 |`type`|string|Must be set to `"table"`.|`"table"`
-|`title`|string|An optional title/caption for the table.|`null`
-|`data`|string|The `name` of the data file (must be a pandas DataFrame-like structure) to use.|*Required*
-|`table`|object|The nested `Table` configuration defining data manipulation (filter, group, pivot, etc.).|*Required*
-|`filter`|object|*Optional*. Defines an HTML input filter for dynamic filtering in the rendered output (if supported by the template).|`null`
+|`data`|string|The unique `name` (reference) of the data file (from the root `data` list) containing the dataset to be processed.|*Required*
+|`title`|string|An optional caption or title displayed above the rendered table.|`null`
+|`table`|object|The nested configuration object (`Table` schema) defining the data manipulation and styling.|*Required*
+|`filter`|object|*Optional.* Configuration for an interactive **filter input** element added above the table (if supported by the target format/template).|`null`
 |===
 
-=== Nested Table Configuration (`Table` Schema)
+---
 
-This schema controls the entire data transformation pipeline, applied in this order:
+== Table Configuration (`table` Field)
 
-1.  *Filter*
-2.  *Select Columns*
-3.  *Compute Columns*
-4.  *Pivot* or *Group By/Aggregate*
-5.  *Sort*
-6.  *Format*
-7.  *Reorder Columns*
-8.  *Rename Columns*
+The nested `table` object defines a precise, sequential pipeline of data manipulation steps.
+
+=== Data Transformation Pipeline
+
+The data is processed in this strict order:
+
+1.  **Filter:** Row reduction based on conditions.
+2.  **Computed Columns:** Creation of new columns via Python expressions.
+3.  **Group By / Pivot:** Data aggregation or structural reshaping (mutually exclusive).
+4.  **Sort:** Ordering of final rows.
+5.  **Format:** Value presentation (e.g., decimal precision, value substitution).
+6.  **Reorder / Rename:** Final display adjustments.
+
+---
+
+==== Filtering Data (`table.filter`)
+
+The `filter` field is a list of conditions used to exclude rows from the initial dataset.
 
 |===
-|Field|Type|Description|Default Value
+| Condition Field | Type | Description
 
-|`columns`|array of strings|Columns to keep/select. If empty, all columns are kept.|`[]`
-|`computed_columns`|object|A mapping of `{"new_col": "expression"}` to create new columns using Python expressions (`eval` on each row).|`{}`
-|`rename`|object|A mapping of `{"old_name": "new_name"}` to rename columns.|`{}`
-|`filter`|array of objects|List of `FilterCondition` objects to filter rows.|`[]`
-|`sort`|array of objects|List of `SortInstruction` objects to sort the final table.|`[]`
-|`group_by`|object|Defines columns to group by and aggregation methods (`GroupBy` schema). *Mutually exclusive with `pivot`*.|`null`
-|`pivot`|object|Defines index, columns, values, and aggregation for a pivot table (`Pivot` schema). *Mutually exclusive with `group_by`*.|`null`
-|`format`|object|A mapping of `{"column": "format_string"}` (e.g., `"{:.2f}"`) or a map for value substitution.|`{}`
-|`column_order`|array of strings|The final display order of columns. If empty, uses the order of the DataFrame after transformations.|`[]`
-|`style`|object|Defines AsciiDoc-specific styling like alignment and width (`TableStyle` schema).|`TableStyle()`
+| `column` | `string` | The column name to apply the condition to.
+| `op` | `string` | The comparison operator. Supported: `==`, `!=`, `>`, `<`, `>=`, `<=`, `in`, `not in`.
+| `value` | `object` | The value(s) to compare against. Use an array for `in`/`not in` operators.
 |===
 
-[NOTE]
-.AsciiDoc Table Style
-The `TableStyle` allows for custom AsciiDoc table attributes, such as `column_align` (`"left"`, `"center"`, `"right"`) and `column_width` (integer units). The `TableController.getColsAlignment()` method generates the final AsciiDoc `cols="..."` attribute string.
+[source,json]
+----
+"filter": [
+    {"column": "Time", "op": "<", "value": 50.0},
+    {"column": "Method", "op": "in", "value": ["A", "B"]}
+]
+----
+
+==== Creating New Columns
+
+* `computed_columns`: Define new columns based on existing row values using Python expressions.
+* `columns`: List of column names to select and retain. If empty, all columns are retained.
+
+[source,json]
+----
+"computed_columns": {
+    "Speedup": "row['Time_Ref'] / row['Time']",
+    "Max_Memory_GB": "row['Memory_MB'] / 1024"
+}
+----
+
+==== Group By (`group_by`)
+
+Used to group rows by categorical columns and apply aggregation functions to numeric columns.
+
+|===
+| Field | Type | Description
+
+| `columns` | `array of strings` | The columns to group the data by.
+| `agg` | `object` or `string` | The aggregation function (e.g., `"mean"`, `"sum"`, `"max"`). Can be a single string for all columns, or a map like `{"Time_s": "mean"}`.
+|===
+
+==== Pivot (`pivot`)
+
+Used to create cross-tabulation tables by transforming unique column values into new column headers.
+
+|===
+| Field | Type | Description
+
+| `index` | `array of strings` | The column(s) for the new row headers.
+| `columns` | `array of strings` | The column(s) whose unique values will become the new column headers.
+| `values` | `string` | The column providing the data for the new cell values.
+| `agg` | `string` | The aggregation function applied to cell values (e.g., `"mean"`).
+|===
+
+[IMPORTANT]
+.Validation Rules
+The engine enforces validation rules: `pivot` and `group_by` are mutually exclusive, and sorting is discouraged after pivoting due to ambiguous results.
+
+=== Sorting Data (`sort`)
+
+The `sort` field is a list of instructions defining the final order of rows.
+
+|===
+| Instruction Field | Type | Description | Default Value
+
+| `column` | `string` | The column name to sort by. |
+| `ascending` | `boolean` | If `true`, sorts ascending (A-Z, 0-9). If `false`, sorts descending. | `true`
+|===
+
+[source,json]
+----
+"sort": [
+    {"column": "Configuration", "ascending": true},
+    {"column": "Time", "ascending": false}
+]
+----
+
+=== Formatting and Renaming
+
+|===
+| Field | Type | Description | Default Value
+
+| `format` | `object` | Map of `{"column_name": "format_string"}` (e.g., `"{:.2f}"` for two decimal places) or a map for value substitution (e.g., `{"column": {"true": "Success"}}`). | `{}`
+| `rename` | `object` | Map of `{"old_name": "New Display Name"}` for the final column headers. | `{}`
+| `column_order` | `array of strings` | The final explicit display order of columns. Must use the post-renamed names. | `[]`
+|===
+
+
+== Styling and Interactivity (`style`)
+
+The `style` object defines presentation attributes that are converted into AsciiDoc table attributes and HTML class names for dynamic behavior.
+
+=== Column Alignment and Width
+
+|===
+| Field | Type | Description
+
+| `column_align` | `object` | Map of `{"column_name": "alignment"}` where alignment is `"left"`, `"center"`, or `"right"`. Used to build the AsciiDoc `cols` attribute.
+| `column_width` | `object` | Map of `{"column_name": integer}` defining the relative width of columns (used in the AsciiDoc `cols` attribute).
+|===
+
+=== Interactive Classnames
+
+The `classnames` field applies CSS classes to the table, enabling client-side interactive features when the output format supports it (e.g., HTML/Antora with JavaScript).
+
+|===
+| Classname | Purpose
+
+| **`sortable`** | Enables client-side **sorting** by clicking on column headers.
+| **`filterable`** | Enables client-side **filtering** or searching over the table content.
+|===
+
+[source,json]
+----
+"style": {
+    "column_align": {"Time": "right", "Config": "center"},
+    "classnames": ["sortable", "filterable", "grid"]
+}
+----
+
+== Examples
+
+The following examples assume a data file was loaded with the name `"batch_data"`.
+
+=== Example 1: Filtering, Formatting, and Renaming
+
+This example filters the data to include only results from Method 'M1', renames the `Time` column, and formats it to two decimal places.
+
+[source,json]
+----
+{
+  "type": "table",
+  "data": "batch_data",
+  "title": "Filtered Performance Results for M1",
+  "table": {
+    "columns": ["Method", "Time", "Status"],
+    "filter": [
+      { "column": "Method", "op": "==", "value": "M1" },
+      { "column": "Status", "op": "!=", "value": "Failed" }
+    ],
+    "rename": { "Time": "Execution Time (s)" },
+    "format": { "Execution Time (s)": "{:.2f}" }
+  }
+}
+----
+
+=== Example 2: Grouping, Interactivity, and Custom Style
+
+This example demonstrates data **aggregation** (`group_by`) to calculate the mean time per configuration, and enables **interactive sorting and filtering** for the final HTML output.
+
+[source,json]
+----
+{
+  "type": "table",
+  "data": "batch_data",
+  "title": "Average Time Per Configuration (Grouped)",
+  "table": {
+    "group_by": {
+      "columns": ["Configuration"],
+      "agg": { "Time": "mean" }
+    },
+    "format": { "Time": "{:.3f}" },
+    "style": {
+      "column_align": { "Time": "right" },
+      "classnames": ["sortable", "filterable"]
+    }
+  }
+}
+----

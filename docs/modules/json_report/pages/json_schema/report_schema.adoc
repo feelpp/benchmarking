@@ -2,10 +2,6 @@
 
 The root of the configuration file is the `JsonReportSchema`. It defines global metadata and the main content structure.
 
-[NOTE]
-.Pydantic Model
-The schema is validated against the `JsonReportSchema` Pydantic model.
-
 == Core Fields
 
 |===
@@ -13,8 +9,8 @@ The schema is validated against the `JsonReportSchema` Pydantic model.
 
 |`title`|string|The main title of the document.|`null`
 |`datetime`|string|A timestamp for the report generation.|Current date and time (`YYYY-MM-DD HH:MM:SS`)
-|`data`|array of objects|A list of external data files to load (see link:data.adoc[Data Files]).|`[]`
-|`content`|array of objects|The ordered list of content nodes that make up the report (see link:content/section.adoc[Content Nodes]).|`[]`
+|`data`|array of objects|A list of external or internal data files to load (see <<Including Data>>).|`[]`
+|`content`|array of objects|The ordered list of content nodes that make up the report (see <<Allowed Content Nodes>>).|`[]`
 |===
 
 === Example
@@ -33,13 +29,37 @@ The schema is validated against the `JsonReportSchema` Pydantic model.
 }
 ----
 
-include::content/section.adoc[leveloffset=+1]
+== Report Structure [[report_structure]]
+
+The `content` field defines the hierarchical structure and entire narrative flow of the final document. It is an ordered list of **Content Nodes**.
+
+A report is primarily built using the **Section Node**, which contains a title and an array of nested content, allowing you to create chapters, sub-sections, and detailed analysis blocks.
+
+=== Allowed Content Nodes
+
+The engine supports the following node types, which can be placed directly in the root `content` array or nested within a `SectionNode`:
+
+|===
+|Node Type|Purpose|See Documentation
+
+|`section`|Used for creating hierarchical structure (chapters, sections, subsections).|<<Section Node>>
+|`text`|For static narrative text or embedding dynamic data values into sentences.|<<Text Node>>
+|`table`|Defines how to extract, process, and render a data file into a structured table.|<<Table Node>>
+|`plot`|Defines the parameters for generating a data visualization (figure).|<<Plot Node>>
+|`image`|For embedding pre-rendered images with captions.|<<Image Node>>
+|`latex`|Allows direct insertion of raw LaTeX mathematical expressions or blocks.|<<LaTeX Node>>
+|`list`|Defines an ordered or unordered list of text items.|<<List Node>>
+|===
 
 include::data.adoc[leveloffset=+1]
+
+include::content/section.adoc[leveloffset=+1]
 
 include::content/text.adoc[leveloffset=+1]
 
 include::content/latex.adoc[leveloffset=+1]
+
+include::content/image.adoc[leveloffset=+1]
 
 include::content/table.adoc[leveloffset=+1]
 

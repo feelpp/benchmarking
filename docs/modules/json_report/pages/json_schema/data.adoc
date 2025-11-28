@@ -1,8 +1,8 @@
-= Data Files and Preprocessing
+= Including Data
 
 The `data` field in the root report schema is an array of `DataFile` objects, which instruct the renderer how to load external data and make it available for content generation.
 
-== DataFile Schema (`JsonReportSchema.data`)
+== DataFile Schema (External files)
 
 |===
 |Field|Type|Description|Default Value
@@ -13,16 +13,9 @@ The `data` field in the root report schema is an array of `DataFile` objects, wh
 |`preprocessor`|string or object|Defines a Python function to preprocess the loaded data.|`null`
 |===
 
-=== Preprocessor Field
+=== Preprocessing data
 
-The `preprocessor` field allows for custom data manipulation after loading. It can be a string in the format `"module_name:function_name"` or an object.
-
-|===
-|Field|Type|Description|Default Value
-
-|`module`|string|The Python module to import.|*Required*
-|`function`|string|The function name within the module that takes the loaded data as a single argument and returns the processed data.|*Required*
-|===
+The `preprocessor` field allows for custom data manipulation after loading. It can be a string in the format `"module_name:function_name"` or an object `{"module":"module_name", "function":"function_name"}`
 
 [WARNING]
 .Security Implication

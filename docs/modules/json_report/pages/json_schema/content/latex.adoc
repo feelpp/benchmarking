@@ -1,23 +1,23 @@
-= Content Node: LaTeX
-:navtitle: LaTeX
+= LaTeX Node
 
-The `LatexNode` is used to embed raw LaTeX syntax directly into the document. In an AsciiDoc report, this typically requires a processor that supports passing through LaTeX, or rendering within a math environment.
-
-== LatexNode Schema
+The **LaTeX Node** is designed for the direct embedding of mathematical formulas, equations, or complex typesetting commands into the final report.
 
 |===
 |Field|Type|Description|Default Value
 
 |`type`|string|Must be set to `"latex"`.|`"latex"`
 |`latex`|string|The raw LaTeX content (e.g., a mathematical equation or a custom LaTeX block).|*Required*
+|`data`|string|The `name` / reference of the data field to use for dynamic placeholder resolution.|`null`
 |===
 
-=== Example
+== Example
+
+This example demonstrates including a multi-line equation and an inline mathematical expression.
 
 [source,json]
 ----
 {
   "type": "latex",
-  "latex": "This is a custom \\textit{LaTeX} block with an inline equation: $\\sum_{i=0}^{N} x_i$."
+  "latex": "\\begin{equation*}\n  \\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\epsilon_0}\n\\end{equation*}\n\nAn inline expression is also supported, such as $E=mc^2$."
 }
 ----
