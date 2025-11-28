@@ -1,0 +1,107 @@
+= ⚡ Quickstart
+:navtitle: Quickstart
+:page-layout: default
+
+This guide shows you how to quickly define a simple report configuration and generate your first AsciiDoc document using the Command-Line Interface (CLI).
+
+== Step 1: Set Up Files
+
+Create a project directory and add the following two files: `config.json` and `data.csv`.
+
+[source]
+----
+my_report_project/
+├── config.json
+└── data.csv
+----
+
+== Step 2: Create Data Source (`data.csv`)
+
+This is the sample data your report will read. The engine automatically recognizes this as CSV data.
+
+[source,csv]
+----
+Scenario,Time_s,Memory_MB
+Run A,12.5,1024
+Run B,25.1,2048
+Run C,15.9,1536
+----
+
+== Step 3: Create Report Configuration (`config.json`)
+
+This JSON file tells the engine where to find the data (`"timings"`) and how to display it (as a text snippet and a basic formatted table).
+
+[source,json]
+----
+{
+  "title": "Simple Quickstart Report",
+  "data": [
+    {
+      "name": "timings",
+      "filepath": "data.csv"
+    }
+  ],
+  "content": [
+    {
+      "type": "text",
+      "data": "timings",
+      "text": "The report analyzes @{timings | length}@ data entries."
+    },
+    {
+      "type": "table",
+      "title": "Performance Summary",
+      "data": "timings",
+      "table": {
+        "rename": { "Time_s": "Time (s)" },
+        "format": { "Time (s)": "{:.2f}" }
+      }
+    }
+  ]
+}
+----
+
+== Step 4: Run the Engine (CLI)
+
+Execute the `json-report-render` command from your project directory.
+
+[source,bash]
+----
+json-report-render config.json
+----
+
+=== Results
+
+The command successfully generates the report, creating the directory `output` and saving your rendered document as `output/config.adoc` and have the following content:
+
+[source,adoc]
+====
+:docdatetime: 2025-11-28 14:22:05
+
+= Simple Quickstart Report
+
+The report analyzes 3 data entries.
+
+*Performance Summary*
+
+--
+[cols="<3,<3,<3",options="header"]
+|===
+
+|Scenario|Time (s)|Memory_MB
+|Run A|12.5|1024
+|Run B|25.1|2048
+|Run C|15.9|1536
+
+|===
+--
+
+++++
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.sortable table');
+    initTable(table, 'filter_Performance Summary_table');
+  });
+</script>
+++++
+
+====
