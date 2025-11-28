@@ -1,0 +1,48 @@
+= Content Node: Table
+:navtitle: Table
+
+The `TableNode` defines how to extract, transform, and present data from a loaded data file into a tabular format, and provides specific AsciiDoc styling.
+
+== TableNode Schema
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"table"`.|`"table"`
+|`title`|string|An optional title/caption for the table.|`null`
+|`data`|string|The `name` of the data file (must be a pandas DataFrame-like structure) to use.|*Required*
+|`table`|object|The nested `Table` configuration defining data manipulation (filter, group, pivot, etc.).|*Required*
+|`filter`|object|*Optional*. Defines an HTML input filter for dynamic filtering in the rendered output (if supported by the template).|`null`
+|===
+
+=== Nested Table Configuration (`Table` Schema)
+
+This schema controls the entire data transformation pipeline, applied in this order:
+
+1.  *Filter*
+2.  *Select Columns*
+3.  *Compute Columns*
+4.  *Pivot* or *Group By/Aggregate*
+5.  *Sort*
+6.  *Format*
+7.  *Reorder Columns*
+8.  *Rename Columns*
+
+|===
+|Field|Type|Description|Default Value
+
+|`columns`|array of strings|Columns to keep/select. If empty, all columns are kept.|`[]`
+|`computed_columns`|object|A mapping of `{"new_col": "expression"}` to create new columns using Python expressions (`eval` on each row).|`{}`
+|`rename`|object|A mapping of `{"old_name": "new_name"}` to rename columns.|`{}`
+|`filter`|array of objects|List of `FilterCondition` objects to filter rows.|`[]`
+|`sort`|array of objects|List of `SortInstruction` objects to sort the final table.|`[]`
+|`group_by`|object|Defines columns to group by and aggregation methods (`GroupBy` schema). *Mutually exclusive with `pivot`*.|`null`
+|`pivot`|object|Defines index, columns, values, and aggregation for a pivot table (`Pivot` schema). *Mutually exclusive with `group_by`*.|`null`
+|`format`|object|A mapping of `{"column": "format_string"}` (e.g., `"{:.2f}"`) or a map for value substitution.|`{}`
+|`column_order`|array of strings|The final display order of columns. If empty, uses the order of the DataFrame after transformations.|`[]`
+|`style`|object|Defines AsciiDoc-specific styling like alignment and width (`TableStyle` schema).|`TableStyle()`
+|===
+
+[NOTE]
+.AsciiDoc Table Style
+The `TableStyle` allows for custom AsciiDoc table attributes, such as `column_align` (`"left"`, `"center"`, `"right"`) and `column_width` (integer units). The `TableController.getColsAlignment()` method generates the final AsciiDoc `cols="..."` attribute string.

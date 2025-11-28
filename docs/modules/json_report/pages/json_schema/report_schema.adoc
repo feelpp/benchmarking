@@ -1,0 +1,46 @@
+= JsonReport Schema
+
+The root of the configuration file is the `JsonReportSchema`. It defines global metadata and the main content structure.
+
+[NOTE]
+.Pydantic Model
+The schema is validated against the `JsonReportSchema` Pydantic model.
+
+== Core Fields
+
+|===
+|Field|Type|Description|Default Value
+
+|`title`|string|The main title of the document.|`null`
+|`datetime`|string|A timestamp for the report generation.|Current date and time (`YYYY-MM-DD HH:MM:SS`)
+|`data`|array of objects|A list of external data files to load (see link:data.adoc[Data Files]).|`[]`
+|`content`|array of objects|The ordered list of content nodes that make up the report (see link:content/section.adoc[Content Nodes]).|`[]`
+|===
+
+=== Example
+
+[source,json]
+----
+{
+  "title": "My Project Benchmarking Report",
+  "datetime": "2025-11-28 10:00:00",
+  "data": [
+    // ... DataFile definitions ...
+  ],
+  "content": [
+    // ... Content Node definitions (Sections, Tables, Plots, Text) ...
+  ]
+}
+----
+
+include::content/section.adoc[leveloffset=+1]
+
+include::data.adoc[leveloffset=+1]
+
+include::content/text.adoc[leveloffset=+1]
+
+include::content/latex.adoc[leveloffset=+1]
+
+include::content/table.adoc[leveloffset=+1]
+
+include::content/figure.adoc[leveloffset=+1]

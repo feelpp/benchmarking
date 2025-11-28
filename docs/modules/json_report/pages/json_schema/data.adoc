@@ -1,0 +1,52 @@
+= Data Files and Preprocessing
+
+The `data` field in the root report schema is an array of `DataFile` objects, which instruct the renderer how to load external data and make it available for content generation.
+
+== DataFile Schema (`JsonReportSchema.data`)
+
+|===
+|Field|Type|Description|Default Value
+
+|`name`|string|A **unique identifier** used to reference this data in content nodes (e.g., in a table or plot).|*Required*
+|`filepath`|string|The path to the data file. Relative paths are resolved relative to the JSON report file.|*Required*
+|`format`|string (`"json"`, `"csv"`, `"raw"`)|The format of the file. If omitted, it is inferred from the file extension (`.json`, `.csv`).|Inferred from `filepath`
+|`preprocessor`|string or object|Defines a Python function to preprocess the loaded data.|`null`
+|===
+
+=== Preprocessor Field
+
+The `preprocessor` field allows for custom data manipulation after loading. It can be a string in the format `"module_name:function_name"` or an object.
+
+|===
+|Field|Type|Description|Default Value
+
+|`module`|string|The Python module to import.|*Required*
+|`function`|string|The function name within the module that takes the loaded data as a single argument and returns the processed data.|*Required*
+|===
+
+[WARNING]
+.Security Implication
+The preprocessor feature involves dynamic module loading and function execution. Ensure that preprocessors originate from a trusted source.
+
+=== Example
+
+[source,json]
+----
+{
+  "data": [
+    {
+      "name": "benchmark_results",
+      "filepath": "data/timing_data.csv",
+      "format": "csv",
+      "preprocessor": "my_data_utils:clean_data"
+    },
+    {
+      "name": "raw_log",
+      "filepath": "logs/run.log",
+      "format": "raw"
+    }
+  ]
+}
+----
+
+In the example above, `my_data_utils.py` must contain a function `clean_data(df: pandas.DataFrame) -> pandas.DataFrame`.

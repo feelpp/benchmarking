@@ -1,0 +1,47 @@
+= Content Node: Plot/Figure
+:navtitle: Plot/Figure
+
+The `PlotNode` is used to define a data visualization, which the template renderer then uses with an internal plotting controller (`FiguresController`) to generate and embed an image (e.g., a chart or graph).
+
+== PlotNode Schema
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"plot"`.|`"plot"`
+|`plot`|object|The nested `Plot` configuration defining the figure's characteristics.|*Required*
+|`data`|string|The `name` of the data file (must be a pandas DataFrame-like structure) to use.|*Required*
+|===
+
+=== Nested Plot Configuration (`Plot` Schema)
+
+The `Plot` schema defines the axes, aggregation, and type of visualization.
+
+|===
+|Field|Type|Description|Default Value
+
+|`title`|string|The title of the plot.|*Required*
+|`plot_types`|array of strings|List of visualization types (e.g., `"scatter"`, `"stacked_bar"`, `"heatmap"`).|*Required*
+|`transformation`|string|Defines how data is normalized (e.g., `"performance"`, `"relative_performance"`, `"speedup"`).|`"performance"`
+|`aggregations`|array of objects|List of `Aggregation` objects to compute values before plotting (e.g., `{"column": "time", "agg": "mean"}`).|`null`
+|`xaxis`|object|The primary x-axis definition (`PlotAxis` schema).|*Required*
+|`yaxis`|object|The primary y-axis definition (`PlotAxis` schema).|*Required*
+|`color_axis`|object|Optional axis for defining color groups in the plot (`PlotAxis` schema).|`null`
+|`extra_axes`|array of objects|Additional axes for filtering/grouping that don't map directly to a visual axis.|`[]`
+|`layout_modifiers`|object|Dictionary of raw modifiers to pass to the plotting backend (e.g., for legend placement).|`{}`
+|===
+
+=== Image Node (Static Images)
+
+For embedding simple, pre-rendered images, use the `ImageNode`.
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"image"`.|`"image"`
+|`src`|string|Path to the image file.|*Required*
+|`caption`|string|Caption for the image.|`null`
+|`alt`|string|Alternative text for the image.|`null`
+|===
+
+---

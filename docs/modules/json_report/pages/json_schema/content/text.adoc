@@ -1,0 +1,54 @@
+= Content Node: Text
+
+The `TextNode` allows for static text and powerful dynamic text replacement, pulling values from the loaded report data.
+
+== TextNode Schema
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"text"`.|`"text"`
+|`text`|string or object|The text content or a nested `Text` object.|*Required*
+|`data`|string|The `name` of the data file to use for dynamic placeholder resolution.|`null`
+
+|===
+
+=== Dynamic Text (`Text` Schema)
+
+|===
+|Field|Type|Description|Default Value
+
+|`content`|string|The text string, potentially containing placeholders.|*Required*
+|`mode`|string (`"static"`, `"dynamic"`)|Controls processing. If `null`, it's inferred based on the presence of placeholders.|Inferred
+|`placeholder_expr`|string|The regular expression to identify placeholders.|`@{([^}]+)}@`
+
+|===
+
+=== Placeholder Syntax
+
+Placeholders are used to inject values from the data exposed via the `data` field (or the global context if `data` is omitted).
+
+[cols="2,5"]
+|===
+|Syntax|Description
+
+|`@{path.to.value}@`|Accesses a value from the root of the selected data using dot notation. For lists, use the index: `@{list_data.0.name}@`.
+|`@{path.to.value | length}@`|Applies a simple operation (`length` is currently supported) to the value.
+
+|===
+
+=== Example
+
+If you have a data file named `"results"` loaded with `{"version": "1.2.3", "timings": [1, 2, 3]}`:
+
+[source,json]
+----
+{
+  "type": "text",
+  "data": "results",
+  "text": {
+    "content": "The report was generated for version @{version}@. We analyzed @{timings | length}@ samples."
+  }
+}
+// Renders as: "The report was generated for version 1.2.3. We analyzed 3 samples."
+----
