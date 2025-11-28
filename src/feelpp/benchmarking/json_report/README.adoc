@@ -1,0 +1,97 @@
+= JSON Report Engine Documentation
+:navtitle: JSON Report Engine
+:toc: left
+:toclevels: 2
+:sectids:
+
+The **JSON Report Engine** is a powerful, format-agnostic Python library designed to transform complex data and a **declarative JSON configuration** into high-quality, structured reports (primarily **AsciiDoc**, with support for HTML and LaTeX via templating).
+
+It operates as a **powerful middleware pipeline**, managing the complete report generation workflow: configuration, data ingestion, processing, and rendering.
+
+
+
+---
+
+== ✨ Key Features
+
+* **Declarative:** Define the entire report (sections, tables, plots) using a single, validated JSON file.
+* **Data Agnostic:** Load data from **CSV**, JSON, or raw files, and apply custom Python preprocessing routines.
+* **Powerful Transformations:** Configure advanced data manipulation, including filtering, sorting, aggregation, and structural reshaping.
+* **Rich Output:** Supports generating sections, dynamic text, figures, interactive tables (using `.sortable` and `.filterable` classes), and mathematical content (LaTeX).
+* **Simple CLI:** Easily generate reports using a single command-line call.
+
+---
+
+== ⬇️ Installation
+
+The engine is distributed as part of the `feelpp-benchmarking` Python suite.
+
+[source,bash]
+----
+pip install feelpp-benchmarking
+----
+
+---
+
+== 🚀 Quickstart (CLI)
+
+The easiest way to generate a report is using the command-line interface (`json-report-render`).
+
+### 1. Create Files
+
+Create a directory with your data and configuration file.
+
+* **Data File (`data.csv`)**
++
+[source,csv]
+----
+Scenario,Time_s,Memory_MB
+Run A,12.5,1024
+Run B,25.1,2048
+Run C,15.9,1536
+----
+
+### 2. Configuration (`config.json`)
+
+Define a data source (`timings`) and embed a simple table content node.
+
+[source,json]
+----
+{
+  "title": "My Benchmark Report",
+  "data": [{"name": "timings", "filepath": "data.csv"}],
+  "content": [
+    {
+      "type": "text",
+      "data": "timings",
+      "text": "Total entries analyzed: @{timings | length}@"
+    },
+    {
+      "type": "table",
+      "title": "Performance Summary",
+      "data": "timings",
+      "table": {
+        "rename": {"Time_s": "Time (s)"},
+        "style": {"classnames": ["sortable"]}
+      }
+    }
+  ]
+}
+----
+
+### 3. Execution
+
+Run the CLI, specifying your configuration file.
+
+[source,bash]
+----
+json-report-render config.json --output-dir output
+----
+
+This command processes the data, transforms the table, and generates the final AsciiDoc document at: `output/config.adoc`.
+
+---
+
+== 📖 Documentation and Schema
+
+For comprehensive details on all available fields, transformations, and output formats, refer to the full documentation:
