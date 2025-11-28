@@ -2,6 +2,7 @@
     "data": [
         { "name": "students", "filepath": "students.csv", "format": "csv", "preprocessor": "./preprocessors.py:uppercase_names" },
         { "name": "attendance", "filepath": "attendance.json", "preprocessor": "./preprocessors.py:list_to_df"},
+        { "name": "attendance_json_cols", "filepath": "attendance.json", "preprocessor":"./preprocessors.py:json_records_to_cols"},
         {
             "name": "notes",
             "filepath": "notes.txt",
@@ -20,7 +21,8 @@
                 },
                 {
                     "type": "text",
-                    "text": "Placeholders in this report allow dynamic insertion of values from the datasets. For example, total students: @{students | length}@."
+                    "data":"attendance_json_cols",
+                    "text": "Placeholders in this report allow dynamic insertion of values from the datasets. For example, total students: @{name |length}@."
                 }
             ]
         },
@@ -131,6 +133,7 @@
             "title": "Teacher Notes",
             "content": [
                 {
+                    "data":"notes",
                     "type": "text",
                     "text": "Teacher remarks (loaded from a raw text file with preprocessing applied): @{notes}@"
                 }

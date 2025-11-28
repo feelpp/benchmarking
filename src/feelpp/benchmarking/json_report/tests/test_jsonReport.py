@@ -1,25 +1,31 @@
-import pytest, os, tempfile, difflib
+import pytest, os, tempfile, difflib, json, re
 from feelpp.benchmarking.json_report.renderer import JsonReportController
 
 
-
-
 def normalizeReport(content: str) -> str:
-    """
-    Normalize report content for comparison:
-    - Remove blank lines at the start/end
-    - Strip trailing spaces
-    - Replace dynamic timestamps
-    """
+    content = content.strip()
+
+    content = re.sub( r"^:docdatetime: .*?$", ":docdatetime: <TIMESTAMP>", content, flags=re.MULTILINE )
+
+    content = re.sub(
+        r"<button[^>]*?>\s*(.*?)\s*</button>",
+        lambda match : f"<button>{match.group(1).strip()}</button>",
+        content, flags=re.DOTALL
+    )
+    content = re.sub(
+        r"<div[^>]*>\s*<div[^>]*></div>\s*<script.*?</script>\s*</div>",
+        """
+        <div>
+            <div>FIGURE</div>
+            <script></script>
+        </div>""",
+        content,
+        flags=re.DOTALL
+    )
+
     lines = [line.rstrip() for line in content.splitlines() if line.strip()]
-    normalized = []
-    for line in lines:
-        # Replace dynamic docdatetime
-        if line.startswith(":docdatetime:"):
-            normalized.append(":docdatetime: <TIMESTAMP>")
-        else:
-            normalized.append(line)
-    return "\n".join(normalized)
+    return "\n".join(lines)
+
 
 def assert_report_matches_golden(output_file: str, golden_file: str):
     with open(output_file, "r") as f:
@@ -28,13 +34,10 @@ def assert_report_matches_golden(output_file: str, golden_file: str):
         golden_content = normalizeReport(f.read())
 
     if output_content != golden_content:
-        diff = "\n".join(difflib.unified_diff(
-            golden_content.splitlines(),
-            output_content.splitlines(),
-            fromfile="golden",
-            tofile="output",
-            lineterm=""
-        ))
+        diff = "\n".join(
+            difflib.unified_diff( golden_content.splitlines(), output_content.splitlines(),
+                                 fromfile="golden",tofile="output", lineterm="" )
+        )
         print(diff)
         pytest.fail("Generated report does not match golden file")
 
