@@ -7,7 +7,9 @@
 *{{tableNode.title}}*
 {% endif %}
 
+{% if tableNode.table.style.classnames %}
 [{% for classname in tableNode.table.style.classnames %}.{{classname}}{% endfor %}]
+{% endif %}
 --
 [cols="{{ table_controller.getColsAlignment() }}",options="header"]
 |===
@@ -16,6 +18,7 @@
 
 {% for row in table.itertuples(index=False) %}
 {% for cell in row %}|{{ cell }}{% endfor %}
+
 {% endfor %}
 
 |===
