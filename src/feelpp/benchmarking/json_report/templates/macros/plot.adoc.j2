@@ -2,7 +2,7 @@
 
 ++++
 
-{% for figure in FiguresController(data,plotNode.plot).generateAll() %}
+{% for figure in FiguresController(data.get(plotNode.data),plotNode.plot).generateAll() %}
 <div class='figure-container'>
     {% if figure.plot_types | length > 1%}
     <div class='tabs-container'>

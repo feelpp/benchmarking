@@ -106,8 +106,8 @@ def test_loadReportDataLoadsJson(tmp_path):
     data = ctrl.loadReportData()
 
     assert "d1" in data
-    assert data["d1"] == {"a": 1}
-    assert ctrl.exposed["d1"] == {"a": 1}
+    assert data["d1"]["d1"] == {"a": 1}
+    assert ctrl.exposed["d1"]["d1"] == {"a": 1}
 
 
 def test_loadReportDataLoadsCsv(tmp_path):
@@ -124,8 +124,8 @@ def test_loadReportDataLoadsCsv(tmp_path):
 
     data = ctrl.loadReportData()
 
-    assert "tab" in data
-    assert isinstance(data["tab"], pd.DataFrame)
+    assert "tab" in data.get("tab")
+    assert isinstance(data["tab"]["tab"], pd.DataFrame)
 
 
 def test_loadReportDataLoadsRaw(tmp_path):
@@ -161,7 +161,7 @@ def test_loadReportDataAppliesPreprocessor_withMock(tmp_path):
     data = JsonReportController.loadReportData(ctrl)
 
     mock_prep.apply.assert_called_once()
-    assert data["d1"] == "processed"
+    assert data["d1"] == {"d1":"processed"}
 
 
 # ----------------------------------------------------------------------

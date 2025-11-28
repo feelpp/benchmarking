@@ -38,13 +38,14 @@ class Controller:
 
         path = path_str.split(".")
         value = self.data
-        try:
-            for key in path:
-                if isinstance(value, list):
-                    key = int(key)
-                value = value[key]
-        except (KeyError, IndexError, TypeError, ValueError):
-            return match.group(0)
+        if not isinstance(value,str):
+            try:
+                for key in path:
+                    if isinstance(value, list):
+                        key = int(key)
+                    value = value[key]
+            except (KeyError, IndexError, TypeError, ValueError):
+                return match.group(0)
 
         for op in ops:
             if op == "length":

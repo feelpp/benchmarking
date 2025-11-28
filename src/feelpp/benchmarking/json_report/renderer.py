@@ -71,8 +71,7 @@ class JsonReportController:
         for d in self.report.data:
             filedata = self.readAndPreprocess(d)
 
-            if d.format == "raw":
-                filedata = {d.name : filedata}
+            filedata = {d.name : filedata}
 
             data[d.name] = filedata
             if d.expose:
