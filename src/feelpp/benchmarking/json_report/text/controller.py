@@ -38,7 +38,7 @@ class Controller:
 
         path = path_str.split(".")
         value = self.data
-        if not isinstance(value,str):
+        if isinstance(value,dict):
             try:
                 for key in path:
                     if isinstance(value, list):
