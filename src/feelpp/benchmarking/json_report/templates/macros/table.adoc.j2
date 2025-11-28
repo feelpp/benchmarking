@@ -29,6 +29,7 @@
 {% endif %}
 --
 
+{% if 'sortable' in tableNode.table.style.classnames %}
 ++++
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -37,5 +38,6 @@
   });
 </script>
 ++++
+{% endif %}
 
 {% endmacro %}
