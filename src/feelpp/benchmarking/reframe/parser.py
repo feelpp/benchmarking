@@ -47,36 +47,25 @@ class Parser(BaseParser):
     def validate(self):
         """ Checks that required args are present, and that they latch the expected format"""
         if not self.args.benchmark_config and not self.args.dir:
-            print(f'[Error] At least one of --benchmark-config or --dir option must be specified')
-            sys.exit(1)
+            self.parser.error(f'[Error] At least one of --benchmark-config or --dir option must be specified')
 
         if self.args.benchmark_config and len(self.args.dir) > 1:
-            print(f'[Error] --dir and --benchmark-config combination can only handle one DIR')
-            sys.exit(1)
+            self.parser.error(f'[Error] --dir and --benchmark-config combination can only handle one DIR')
 
         if not self.args.machine_config:
-            print(f'[Error] --machine-config should be specified')
-            sys.exit(1)
+            self.parser.error(f'[Error] --machine-config should be specified')
 
 
 
     def checkDirectoriesExist(self):
         """ Check that directories passed as arguments exist in the filesystem"""
-        not_found = []
-        for dir in self.args.dir:
-            if not os.path.isdir(dir):
-                not_found.append(dir)
-
-        if not_found:
-            print(f'[Error] Following directories were not found')
-            for dir in not_found:
-                print(f" > {dir}")
-            sys.exit(1)
+        missing = [d for d in self.args.dir if not os.path.isdir(d)]
+        if missing:
+            self.parser.error(f'[Error] Following directories were not found: {"\n".join(missing)} ')
 
         if self.args.custom_rfm_config:
             if not os.path.isfile(self.args.custom_rfm_config):
-                print(f"Provided custom reframe configuration file {self.args.custom_rfm_config} not found...")
-                sys.exit(1)
+                self.parser.error(f"Provided custom reframe configuration file {self.args.custom_rfm_config} not found...")
 
     def buildConfigList(self):
         """ Find configuration filepaths specified by the --dir argument and build a list acordingly.
