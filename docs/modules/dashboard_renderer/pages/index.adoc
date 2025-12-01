@@ -1,0 +1,80 @@
+= Dashboard Renderer: Overview
+
+The DashboardRenderer library is a tool designed to generate structured catalog-like reporting sites directly from declarative configuration files in JSON. It is primarily used to organize and present complex data assets, benchmarks, or documentation components in a highly navigable format, typically compatible with systems like Antora.
+
+== What it Does
+
+The library's core function is to map a high-level configuration onto a structured output hierarchy. It manages the organization, presentation logic, and default values for your content, acting as a flexible bridge between raw data definitions and final navigable documentation pages.
+
+The process ensures that complex, related data—such as benchmark results or component specifications—are consistently rendered into reusable, structured assets.
+
+== Installation
+
+The DashboardRenderer is typically installed as part of the main feelpp.benchmarking package using pip.
+
+[source, bash]
+----
+pip install feelpp-benchmarking
+----
+
+== Basic Usage
+
+To render a structured data catalog, you typically define a configuration file (config.json) that specifies the component hierarchy and the views to be used.
+
+=== 1. Define the Configuration (config.json)
+
+Your configuration defines the organization of your output, specifying the component types (repositories) and their instances (components).
+
+[source, json]
+----
+{
+    "dashboard_metadata": { "title": "Employee Performance Benchmarks" },
+    "views": { "companies": "teams", "teams": "companies" },
+    "repositories": {
+        "companies": { "title": "Global Companies", "description": "Organizational units" },
+        "teams": { "title": "Development Teams", "description": "Departmental teams" }
+    },
+    "components": {
+        "companies": {
+            "TechCorp": { "title": "TechCorp Inc.", "description": "Main Technology Company" }
+        },
+        "teams": {
+            "DevTeamA": { "title": "Development Team A", "description": "Frontend Development Team" }
+        }
+    },
+    "component_map": { "TechCorp": { "DevTeamA": { "path": "reports/employee_data/" } } }
+}
+----
+
+This simple configuration will generate a catalog with the following pages:
+
+- Global Companies -> TechCorp Inc. -> Development Team A -> [employee_report1, ..., employee_reportN]
+- Development Teams ->  Development Team A -> TechCorp Inc. -> [employee_report1, ..., employee_reportN]
+
+Where ALL files under the `reports/employee_data/` directory will be created using cards.
+
+Initially, rendered files will be empty if a template is not provided. This can be configured following the instructions on the <<Custom Templates>> section.
+
+=== 2. Instantiate and Render
+
+You load the configuration, pass it to the renderer, and specify the output directory.
+You can also provide custom "plugins" to process data before render-time.
+
+[source, python]
+----
+
+class VersionPlugin:
+    @staticmethod
+    def process(template_data):
+        return {"feelpp_benchmarking_version":feelpp.benchmarking.__version__}
+
+def main_cli():
+
+    #Instantiate the dashboard, adding the feelpp_benchmarking_version to the template-accessible data.
+    dashboard = Dashboard( "config.json", plugins=[ VersionPlugin ] )
+
+    #Render the catalog dashboard under `docs/modules/ROOT/pages`
+    dashboard.render("docs/modules/ROOT/pages")
+
+
+----
