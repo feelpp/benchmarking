@@ -1,20 +1,15 @@
-from argparse import ArgumentParser, RawTextHelpFormatter
-from feelpp.benchmarking.reframe.parser import CustomHelpFormatter
+import os, json
 from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import JsonReportSchemaWithDefaults
-import os, shutil, json
+from feelpp.benchmarking.argsParser import BaseParser
 
 
-#TODO: Factorize with feelpp.reframe parser
-class ReportArgParser():
+class ReportArgParser(BaseParser):
     """ Class for parsing and validating command-line arguments for the report module"""
-    def __init__(self,print_args=True):
-        self.parser = ArgumentParser(formatter_class=CustomHelpFormatter, add_help=False,description="Render benchmarking reports")
-        self.addArgs()
-        self.args = self.parser.parse_args()
-        self.validate()
+    def __init__(self, print_args = True):
+        super().__init__(print_args,"Render Benchmarking Reports")
+
+    def processArgs(self):
         self.normalizePaths()
-        if print_args:
-            self.printArgs()
         self.parsePlotConfigs()
 
     def addArgs(self):
@@ -76,11 +71,3 @@ class ReportArgParser():
                 new_configs.append(plot_config_content)
         self.args.plot_configs = new_configs
 
-
-
-    def printArgs(self):
-        """ Prints arguments on the standard output"""
-        print("\n[Loaded command-line options]")
-        for arg in vars(self.args):
-            print(f"\t > {arg + ':' :<{20}} {getattr(self.args, arg)}")
-        print("\n" + '=' * shutil.get_terminal_size().columns)

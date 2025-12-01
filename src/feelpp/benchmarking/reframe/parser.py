@@ -1,70 +1,18 @@
-import os
-import sys
-import glob
-import shutil
-from argparse import ArgumentParser, RawTextHelpFormatter, REMAINDER
+import os, sys, glob
+from feelpp.benchmarking.argsParser import BaseParser
 
-
-class CustomHelpFormatter(RawTextHelpFormatter):
-    """
-    Class for formatting the usage and the options display of the parser
-    """
-    def _format_action_invocation(self, action):
-        """ Override of RawTextHelpFormatter method
-        Removes ARG [ARG ...] for nargs and {choice1, choice2, ...} in option_group
-        """
-        if action.option_strings:
-            return ', '.join(action.option_strings)
-        else:
-            return super()._format_action_invocation(action)
-
-    def _format_usage(self, usage, actions, groups, prefix):
-        """ Override of RawTextHelpFormatter method
-        Removes ARG [ARG ...] for nargs in usage
-        """
-        print("")
-        usage = f"Usage: {self._prog} "
-        usage_args = []
-
-        for action in actions:
-            # Options
-            if action.option_strings:
-                if action.choices:
-                    choices_str = ','.join(action.choices)
-                    usage_args.append(f"[{action.option_strings[0]} {{{choices_str}}}]")
-                elif action.nargs:
-                    usage_args.append(f"[{action.option_strings[0]} {action.metavar} ...]")
-                elif action.required:
-                    usage_args.append(f"{action.option_strings[0]} {action.metavar}")
-                elif action.metavar != None:
-                    usage_args.append(f"[{action.option_strings[0]} {action.metavar}]")
-                else:
-                    usage_args.append(f"[{action.option_strings[0]}]")
-
-            # Positional arguments
-            else:
-                usage_args.append(f"{action.dest.upper()}")
-
-        return usage + ' '.join(usage_args) + "\n"
-
-
-class Parser():
+class Parser(BaseParser):
     """ Class for parsing and validating command-line arguments"""
-    def __init__(self):
-        self.parser = ArgumentParser(formatter_class=CustomHelpFormatter, add_help=False)
-        self.addArgs()
-        self.args = self.parser.parse_args()
-        self.processArgs()
+    def __init__(self,print_args=True):
+        super().__init__(print_args,"Execute a benchmark")
         if self.args.list_files:
             self.listFilesAndExit()
 
     def processArgs(self):
         """ Pipeline to process arguments. Will:
-            - validate the options
             - check that directories exist
             - building a configuration file list
         """
-        self.validateOptions()
         if self.args.dir:
             self.checkDirectoriesExist()
         self.buildConfigList()
@@ -96,7 +44,7 @@ class Parser():
         if self.args.plots_config:
             self.args.plots_config = os.path.abspath(self.args.plots_config)
 
-    def validateOptions(self):
+    def validate(self):
         """ Checks that required args are present, and that they latch the expected format"""
         if not self.args.benchmark_config and not self.args.dir:
             print(f'[Error] At least one of --benchmark-config or --dir option must be specified')
@@ -157,10 +105,3 @@ class Parser():
             print(f"\t> {config_path}")
         print(f"\nTotal: {len(self.args.benchmark_config)} file(s)")
         sys.exit(0)
-
-    def printArgs(self):
-        """ Prints arguments on the standard output"""
-        print("\n[Loaded command-line options]")
-        for arg in vars(self.args):
-            print(f"\t > {arg + ':' :<{20}} {getattr(self.args, arg)}")
-        print("\n" + '=' * shutil.get_terminal_size().columns)
