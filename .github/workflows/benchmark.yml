@@ -187,7 +187,7 @@ jobs:
         -   name: Gather arguments
             id: gather_arguments
             run: |
-                echo "executable_name=$(jq -r '.executable' ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }})" >> $GITHUB_OUTPUT
+                echo "application_name=$(jq -r '.application_name' ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }})" >> $GITHUB_OUTPUT
                 echo "use_case=$(jq -r '.use_case_name' ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }})" >> $GITHUB_OUTPUT
 
         -   name: Create Pull Request
