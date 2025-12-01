@@ -6,15 +6,14 @@
     "options":[
         "-n {{parameters.n.value}}",
         "-a {{parameters.method.value}}",
-        "-o {{output_dir}}/output.json"
+        "-o {{output_dir}}/output.csv"
     ],
     "scalability": {
         "directory":"{{output_dir}}",
         "stages":[
             {
                 "name":"",
-                "filepath":"output.json",
-                "format":"csv",
+                "filepath":"output.csv",
                 "units":{ "fibonacci_number":"" }
             }
         ]

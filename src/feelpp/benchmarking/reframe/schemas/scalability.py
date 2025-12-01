@@ -5,7 +5,7 @@ from typing import Optional,Literal,Dict,Union,List
 class Stage(BaseModel):
     name:str
     filepath:str
-    format:Literal["csv","tsv","json"]
+    format:Optional[Literal["csv","tsv","json"]] = None
     variables_path:Optional[Union[str,List[str]]] = []
     units: Optional[Dict[str,str]] = {}
 
@@ -14,6 +14,12 @@ class Stage(BaseModel):
     def parseUnits(cls,v):
         v["*"] = v.get("*","s")
         return v
+
+    @model_validator(mode="after")
+    def inferFormat(self):
+        if not self.format:
+            self.format = self.filepath.split(".")[-1]
+        return self
 
     @model_validator(mode="after")
     def checkFormatOptions(self):
