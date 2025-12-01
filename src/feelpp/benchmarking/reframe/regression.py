@@ -17,7 +17,10 @@ class RegressionTest(ReframeSetup):
     @run_before('run')
     def initHandlers(self):
         self.validation_handler = ValidationHandler(self.app_reader.config.sanity)
-        self.scalability_handler = ScalabilityHandler(self.app_reader.config.scalability)
+        if self.app_reader.config.scalability:
+            self.scalability_handler = ScalabilityHandler(self.app_reader.config.scalability)
+        else:
+            self.scalability_handler = None
 
     @run_after('run')
     def executionGuard(self):
@@ -27,6 +30,8 @@ class RegressionTest(ReframeSetup):
     @run_before('performance')
     def setPerfVars(self):
         self.perf_variables = {}
+        if not self.scalability_handler:
+            return
         self.perf_variables.update(
             self.scalability_handler.getPerformanceVariables(self.num_tasks)
         )
@@ -77,7 +82,7 @@ class RegressionTest(ReframeSetup):
 
     @run_before("cleanup")
     def removeDirectories(self):
-        if self.app_reader.config.scalability.clean_directory:
+        if self.app_reader.config.scalability and self.app_reader.config.scalability.clean_directory:
             FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
         if self.machine_reader.config.input_user_dir and self.app_reader.config.input_file_dependencies:
             DEBUG("REMOVING INPUT FILE DEPENDENCIES...")

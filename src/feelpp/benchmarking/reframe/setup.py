@@ -161,7 +161,8 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def cleanupDirectories(self):
-        FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
+        if self.app_reader.config.scalability:
+            FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
 
     @run_before('run')
     def setSchedOptions(self):

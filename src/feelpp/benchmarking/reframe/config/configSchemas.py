@@ -1,6 +1,8 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict, ValidationError
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.config.configParameters import Parameter
+from feelpp.benchmarking.reframe.config.configResources import Resources
+from feelpp.benchmarking.reframe.config.configPlatform import Platform
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot, PlotAxis
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile
 import os, re
@@ -46,53 +48,11 @@ class Scalability(BaseModel):
     custom_variables:Optional[List[CustomVariable]] = []
     clean_directory: Optional[bool] = False
 
-
-
-class Image(BaseModel):
-    url: Optional[str] = None
-    filepath:str
-
-    @field_validator("filepath", mode="after")
-    @classmethod
-    def checkImage(cls,v,info):
-        if not info.data["url"] and not ("{{"  in v  or "}}" in v) :
-            if not os.path.exists(v):
-                if info.context and info.context.get("dry_run", False):
-                   print(f"Dry Run: Skipping image check for {v}")
-                else:
-                    raise FileNotFoundError(f"Cannot find image {v}")
-
-        return v
-
-
-class Platform(BaseModel):
-    image:Optional[Image] = None
-    input_dir:Optional[str] = None
-    options:Optional[List[str]]= []
-    append_app_options:Optional[List[str]]= []
-
 class AdditionalFiles(BaseModel):
     description_filepath: Optional[str] = None
     parameterized_descriptions_filepath: Optional[str] = None
     custom_logs: Optional[List[str]] = []
 
-
-class Resources(BaseModel):
-    tasks: Optional[Union[str,int]] = None
-    tasks_per_node: Optional[Union[str,int]] = None
-    gpus_per_node: Optional[Union[str,int]] = None
-    nodes: Optional[Union[str,int]] = None
-    memory: Optional[Union[str,int]] = 0
-    exclusive_access: Optional[Union[str,bool]] = True
-
-    @model_validator(mode="after")
-    def validateResources(self):
-        assert (
-            self.tasks and self.tasks_per_node and not self.nodes or
-            self.tasks_per_node and self.nodes and not self.tasks or
-            self.tasks and not self.tasks_per_node and not self.nodes
-        ), "Tasks - tasks_per_node - nodes combination is not supported"
-        return self
 
 class BaseRemoteData(BaseModel):
     destination: str
@@ -192,18 +152,17 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
 
 class ConfigFile(BaseModel):
     executable: str
-    timeout: str
-    resources: Resources
+    timeout: Optional[str] = "0-00:05:00"
+    resources: Optional[Resources] = Resources(tasks=1, exclusive_access=False)
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
-    output_directory:Optional[str] = ""
     use_case_name: str
-    options: List[str]
+    options: Optional[List[str]] = []
     env_variables:Optional[Dict] = {}
     remote_input_dependencies: Optional[Dict[str,RemoteData]] = {}
     input_file_dependencies: Optional[Dict[str,str]] = {}
-    scalability: Scalability
+    scalability: Optional[Scalability] = None
     sanity: Optional[Sanity] = Sanity()
-    parameters: List[Parameter]
+    parameters: Optional[List[Parameter]] = []
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     json_report: Optional[Union[JsonReportSchemaWithDefaults,List[DefaultPlot]]] = JsonReportSchemaWithDefaults()
 
