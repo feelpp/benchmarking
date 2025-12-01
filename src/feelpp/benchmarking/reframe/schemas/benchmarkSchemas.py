@@ -6,7 +6,7 @@ from feelpp.benchmarking.reframe.schemas.scalability import Scalability
 from feelpp.benchmarking.reframe.schemas.platform import Platform
 from feelpp.benchmarking.reframe.schemas.defaultJsonReport import JsonReportSchemaWithDefaults,DefaultPlot
 from feelpp.benchmarking.reframe.schemas.remoteData import RemoteData
-import re
+import re, os
 
 class Sanity(BaseModel):
     success:Optional[List[str]] = []
@@ -24,6 +24,7 @@ class ConfigFile(BaseModel):
     resources: Optional[Resources] = Resources(tasks=1, exclusive_access=False)
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     use_case_name: str
+    application_name: Optional[str] = None
     options: Optional[List[str]] = []
     env_variables:Optional[Dict] = {}
     remote_input_dependencies: Optional[Dict[str,RemoteData]] = {}
@@ -98,3 +99,9 @@ class ConfigFile(BaseModel):
                 raise ValueError(f"{k} not implemented")
         return v
 
+
+    @model_validator(mode="after")
+    def inferApplicationName(self):
+        if not self.application_name:
+            self.application_name = os.path.basename(self.executable).split(".")[0]
+        return self

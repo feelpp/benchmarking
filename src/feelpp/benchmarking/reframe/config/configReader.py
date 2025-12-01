@@ -1,5 +1,6 @@
 import json, os, re, shutil
 from pydantic import BaseModel
+from typing import Type, List
 
 class TemplateProcessor:
     """Helper class for processing template values in a JSON file"""
@@ -118,17 +119,17 @@ class FileHandler:
 
 class ConfigReader:
     """ Class to load config files"""
-    def __init__(self, config_paths, schema, name, dry_run=False, additional_readers = []):
+    def __init__(self, config_paths, schema, name, dry_run=False, additional_readers:List["ConfigReader"] = []):
         """
         Args:
             config_paths (str | list[str] | list[dict[str,str]]) : Path to the config JSON file. If a list is provided, files will be merged. If a list of dict is provided, files will be prefixed by the key in the schema
         """
-        self.schema = schema
+        self.schema:Type[BaseModel] = schema
         self.context = { "dry_run":dry_run }
         if config_paths:
             self.config = self.load( self.prepareConfigs(config_paths), schema )
         self.name = name
-        self.original_config = self.config.model_copy()
+        self.original_config: BaseModel = self.config.model_copy()
         self.processor = TemplateProcessor()
         for additional_reader in additional_readers:
             self.updateConfig(TemplateProcessor.flattenDict(additional_reader.config,additional_reader.name))
@@ -180,10 +181,10 @@ class ConfigReader:
         """
         if not flattened_replace:
             flattened_replace = TemplateProcessor.flattenDict(self.config.model_dump())
-        self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context)
+        self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context(BaseModel))
 
     def __repr__(self):
-        return json.dumps(self.config.dict(), indent=4)
+        return json.dumps(self.config.model_dump(), indent=4)
 
     def resetConfig(self, additional_readers = []):
         self.config = self.original_config.model_copy()
