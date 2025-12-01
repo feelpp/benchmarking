@@ -1,13 +1,17 @@
 from feelpp.benchmarking.dashboardRenderer.component.base import GraphNode
+from feelpp.benchmarking.dashboardRenderer.component.leaf import LeafComponent
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateDataFile
+
 import pytest
 
 class MockView:
-    def __init__(self,name):
+    def __init__(self,name = ""):
         self.name = name
         self.template_data = {"test":"template_data"}
     def clone(self):
         return MockView(f"Cloned {self.name}")
-
+    def updateTemplateData(self,data):
+        self.template_data.update(data)
 
 def test_constructorLinks():
     a = GraphNode("A", None)
@@ -94,7 +98,7 @@ def test_getPathToRoot():
 
 
 
-def test_clone_with_and_without_view():
+def test_clone():
     view_a = MockView("MainView")
     a = GraphNode("A", view_a)
     a.setRepository(GraphNode("Repo", None))
@@ -198,3 +202,112 @@ def test_upstreamViewData_aggregation():
     assert a1.view.template_data["aggregated"]["count"] == 2
     assert a2.view.template_data["aggregated"]["count"] == 1
     assert b1.view.template_data["aggregated"]["count"] == 1
+
+def test_addParent():
+    """Tests adding a parent and ensuring bidirectional linkage and idempotency."""
+    a = GraphNode("A", None)
+    b = GraphNode("B", None)
+
+    # 1. Add B as parent to A
+    a.addParent(b)
+
+    assert b in a.parents
+    assert a in b.children
+
+    # 2. Ensure calling again is idempotent (no duplicates)
+    a.addParent(b)
+    assert len(a.parents) == 1
+    assert len(b.children) == 1
+
+    # 3. Add a different parent C
+    c = GraphNode("C", None)
+    a.addParent(c)
+
+    assert c in a.parents
+    assert a in c.children
+    assert len(a.parents) == 2
+    assert len(b.children) == 1
+    assert len(c.children) == 1
+
+
+def test_leafcomponentInit():
+    """Tests ID construction and repository assignment in LeafComponent.__init__."""
+    repo = GraphNode("TestRepo",None)
+    view = MockView("LeafView")
+    parent_ids = ["parentA", "parentB"]
+    item_name = "item_001"
+
+    leaf = LeafComponent(item_name, repo, parent_ids, view)
+
+    # 1. Check ID construction
+    expected_id = "parentA-parentB-item_001"
+    assert leaf.id == expected_id
+
+    # 2. Check repository assignment
+    assert leaf.repository is repo
+
+    # 3. Check specific attributes
+    assert leaf.item_name == item_name
+    assert leaf.parent_ids == parent_ids
+    assert leaf.view is view
+
+def test_leafcomponentClone():
+    """Tests that calling clone on LeafComponent raises a RuntimeError."""
+    repo = GraphNode("TestRepo",None)
+    view = MockView()
+    leaf = LeafComponent("item", repo, ["p"], view)
+
+    with pytest.raises(RuntimeError) as excinfo:
+        leaf.clone()
+
+    assert "Leaf component cannot be cloned" in str(excinfo.value)
+
+def test_leafcomponent_getPermParentIdsStr():
+    """
+    Tests the logic for compiling all unique hierarchical parent ID paths
+    as a comma-separated string.
+    """
+    # Structure: Root -> A1 -> B1 (Leaf)
+    #            Root -> A2 -> B1 (Leaf - multi-parent scenario is covered by GraphNode's structure)
+    root = GraphNode("Root", None)
+    a1 = GraphNode("A1", None, {root})
+    a2 = GraphNode("A2", None, {root}) # A2 also linked to root
+
+    repo = GraphNode("R",None)
+    view = MockView()
+
+    # Create the leaf and explicitly link it to both parents (A1 and A2)
+    # LeafComponent's constructor only takes a parent_ids list, which is for its ID construction,
+    # but the parents set is updated via the GraphNode constructor.
+    leaf_id_list = ["A1", "B1"] # ID will be A1-B1-item_L
+    leaf = LeafComponent("item_L", repo, leaf_id_list, view)
+
+    # Manually set up the GraphNode links for multi-parent testing
+    leaf.parents = {a1, a2} # Link to both A1 and A2
+    a1.children.add(leaf)
+    a2.children.add(leaf)
+
+    # Path 1 (via A1): [L, A1, Root] -> Reversed parents: [A1, Root] -> 'A1-Root'
+    # Path 2 (via A2): [L, A2, Root] -> Reversed parents: [A2, Root] -> 'A2-Root'
+
+    parent_id_str = leaf.getPermParentIdsStr()
+
+    # The result should contain all unique parent paths, separated by a comma.
+    # The order of paths depends on the set iteration, so we check for sets of strings.
+    paths = set(parent_id_str.split(','))
+
+    assert paths == {"Root-A1", "Root-A2"}
+
+
+def test_leafcomponent_patchTemplateInfo_no_save():
+    """Tests that patchTemplateInfo updates data correctly when save=False."""
+    view = MockView()
+    leaf = LeafComponent("item", GraphNode("R",None), ["p"], view)
+
+    patch_data = {"test_key": 123, "nested": {"a": "b"}}
+    prefix = "meta"
+
+    leaf.patchTemplateInfo(patch_data, prefix, save=False)
+
+    assert view.template_data["meta"] == patch_data
+    # Ensure no file operations occurred (implicitly, as we aren't mocking open/json.dump)
