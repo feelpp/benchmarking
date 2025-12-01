@@ -6,6 +6,7 @@ from feelpp.benchmarking.reframe.schemas.scalability import Scalability
 from feelpp.benchmarking.reframe.schemas.platform import Platform
 from feelpp.benchmarking.reframe.schemas.defaultJsonReport import JsonReportSchemaWithDefaults,DefaultPlot
 from feelpp.benchmarking.reframe.schemas.remoteData import RemoteData
+from feelpp.benchmarking.reframe.schemas.machines import MachineConfig
 import re, os
 
 class Sanity(BaseModel):
@@ -19,6 +20,7 @@ class AdditionalFiles(BaseModel):
 
 
 class ConfigFile(BaseModel):
+    machine: Optional[MachineConfig] = MachineConfig(machine="default",targets="::")
     executable: str
     timeout: Optional[str] = "0-00:05:00"
     resources: Optional[Resources] = Resources(tasks=1, exclusive_access=False)

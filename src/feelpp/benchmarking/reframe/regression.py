@@ -84,10 +84,10 @@ class RegressionTest(ReframeSetup):
     def removeDirectories(self):
         if self.app_reader.config.scalability and self.app_reader.config.scalability.clean_directory:
             FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
-        if self.machine_reader.config.input_user_dir and self.app_reader.config.input_file_dependencies:
+        if self.app_reader.config.machine.input_user_dir and self.app_reader.config.input_file_dependencies:
             DEBUG("REMOVING INPUT FILE DEPENDENCIES...")
             for input_dep in self.app_reader.config.input_file_dependencies.values():
-                location = os.path.join(self.machine_reader.config.input_dataset_base_dir,input_dep)
+                location = os.path.join(self.app_reader.config.machine.input_dataset_base_dir,input_dep)
                 if os.path.isfile(location):
                     os.remove(location)
                 elif os.path.isdir(location):
@@ -95,7 +95,7 @@ class RegressionTest(ReframeSetup):
                 DEBUG(f"\t DELETED {input_dep}")
 
             #Delete empty dirs
-            for dirpath, dirnames, _ in os.walk(self.machine_reader.config.input_dataset_base_dir, topdown=False):
+            for dirpath, dirnames, _ in os.walk(self.app_reader.config.machine.input_dataset_base_dir, topdown=False):
                 for dirname in dirnames:
                     directory = os.path.join(dirpath,dirname)
                     if not os.listdir(directory):

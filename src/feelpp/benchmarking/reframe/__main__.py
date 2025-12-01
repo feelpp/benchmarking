@@ -11,9 +11,6 @@ def main_cli():
     parser = Parser()
     parser.printArgs()
 
-    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
-    cmd_builder = CommandBuilder(machine_reader.config,parser)
-    website_config = WebsiteConfigCreator(machine_reader.config.reports_base_dir)
 
     os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.machine_config
 
@@ -22,19 +19,25 @@ def main_cli():
 
 
     configs = [{"":config_filepath}]
+    if parser.args.machine_config:
+        configs += [{"machine":parser.args.machine_config}]
     if parser.args.plots_config:
         configs += [{"json_report":parser.args.plots_config}]
-    app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
+
+    app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run)
+
+    cmd_builder = CommandBuilder(app_reader.config.machine,parser)
+    website_config = WebsiteConfigCreator(app_reader.config.machine.reports_base_dir)
 
     report_folder_path = cmd_builder.createReportFolder(app_reader.config.application_name,app_reader.config.use_case_name)
 
     #===============PULL IMAGES==================#
     if not parser.args.dry_run:
         for platform_name, platform_field in app_reader.config.platforms.items():
-            if not platform_field.image or not platform_field.image.url or not machine_reader.config.containers[platform_name].executable:
+            if not platform_field.image or not platform_field.image.url or not app_reader.config.machine.containers[platform_name].executable:
                 continue
             if platform_name == "apptainer":
-                completed_pull = subprocess.run(f"{machine_reader.config.containers['apptainer'].executable} pull -F {platform_field.image.filepath} {platform_field.image.url}", shell=True)
+                completed_pull = subprocess.run(f"{app_reader.config.machine.containers['apptainer'].executable} pull -F {platform_field.image.filepath} {platform_field.image.url}", shell=True)
                 completed_pull.check_returncode()
             else:
                 raise NotImplementedError(f"Image pulling is not yet supported for {platform_name}")
@@ -44,7 +47,7 @@ def main_cli():
     if not parser.args.dry_run:
         if app_reader.config.remote_input_dependencies:
             if any(v.girder for v in app_reader.config.remote_input_dependencies.values()):
-                girder_handler = GirderHandler(machine_reader.config.input_user_dir or machine_reader.config.input_dataset_base_dir  )
+                girder_handler = GirderHandler(app_reader.config.machine.input_user_dir or app_reader.config.machine.input_dataset_base_dir  )
         for dependency_name,remote_dependency in app_reader.config.remote_input_dependencies.items():
             print(f"Donwloading remote file dependency : {dependency_name} ...")
             if remote_dependency.girder:
@@ -65,11 +68,11 @@ def main_cli():
     common_itempath = "/".join(common_itempath[:-1 - (common_itempath[-1] == "")])
 
     website_config.updateExecutionMapping(
-        app_reader.config.application_name, machine_reader.config.machine, app_reader.config.use_case_name,
+        app_reader.config.application_name, app_reader.config.machine.machine, app_reader.config.use_case_name,
         report_itempath = common_itempath
     )
 
-    website_config.updateMachine(machine_reader.config.machine)
+    website_config.updateMachine(app_reader.config.machine.machine)
     website_config.updateUseCase(app_reader.config.use_case_name)
     website_config.updateApplication(app_reader.config.application_name)
 
