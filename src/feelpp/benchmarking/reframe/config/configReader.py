@@ -181,7 +181,7 @@ class ConfigReader:
         """
         if not flattened_replace:
             flattened_replace = TemplateProcessor.flattenDict(self.config.model_dump())
-        self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context(BaseModel))
+        self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context)
 
     def __repr__(self):
         return json.dumps(self.config.model_dump(), indent=4)
