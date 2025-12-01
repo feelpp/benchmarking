@@ -21,7 +21,6 @@ class Container(BaseModel):
 
         return v
 
-
 class MachineConfig(BaseModel):
     machine:str
     targets:Optional[Union[str,List[str]]] = None
@@ -107,6 +106,17 @@ class MachineConfig(BaseModel):
                 container_info.executable = container_type
 
         return v
+
+    @field_validator("containers",mode="after")
+    @classmethod
+    def setTmpAndCacheDirs(cls,v):
+        for container_type, container_info in v.items():
+            if container_type == "apptainer":
+                if container_info.cachedir:
+                    os.environ["APPTAINER_CACHEDIR"] = container_info.cachedir
+                if container_info.tmpdir:
+                    os.environ["APPTAINER_TMPDIR"] = container_info.tmpdir
+
 
     @model_validator(mode="after")
     def checkInputUserDir(self):

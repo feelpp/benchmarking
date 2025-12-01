@@ -12,22 +12,10 @@ def main_cli():
     parser.printArgs()
 
     machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
-
-    #Sets the cachedir and tmpdir directories for containers
-    for platform, dirs in machine_reader.config.containers.items():
-        if platform=="apptainer":
-            if dirs.cachedir:
-                os.environ["APPTAINER_CACHEDIR"] = dirs.cachedir
-            if dirs.tmpdir:
-                os.environ["APPTAINER_TMPDIR"] = dirs.cachedir
-        elif platform=="docker":
-            raise NotImplementedError("Docker container directories configuration is not implemented")
-
     cmd_builder = CommandBuilder(machine_reader.config,parser)
+    website_config = WebsiteConfigCreator(machine_reader.config.reports_base_dir)
 
     os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.machine_config
-
-    website_config = WebsiteConfigCreator(machine_reader.config.reports_base_dir)
 
     for config_filepath in parser.args.benchmark_config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
