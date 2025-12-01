@@ -116,7 +116,7 @@ class MachineConfig(BaseModel):
                     os.environ["APPTAINER_CACHEDIR"] = container_info.cachedir
                 if container_info.tmpdir:
                     os.environ["APPTAINER_TMPDIR"] = container_info.tmpdir
-
+        return v
 
     @model_validator(mode="after")
     def checkInputUserDir(self):
