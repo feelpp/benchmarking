@@ -1,0 +1,46 @@
+= List Node
+
+The **List Node** is used to render ordered lists. Its primary strength is that every item in the list is automatically processed as a potential **Dynamic Text Node**, allowing placeholders to be used in any list item.
+
+== ListNode Schema
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"list"`.|`"list"`
+|`items`|array of objects/strings|The contents of the list. Each entry can be a simple string, a full `Text Node` object, or a `Text Configuration` object.|*Required*
+|`data`|string|The `name` / reference of the data field to use for dynamic placeholder resolution within all list items.|`null`
+|===
+
+== Item Coercion and Dynamic Text
+
+For simplicity, the engine automatically coerces simple strings and `Text` objects provided in the `items` array into full `Text Node` objects.
+
+* If an item is a **simple string**, it can contain **placeholders** (`@{...}@`).
+* The `data` reference specified on the `ListNode` container is automatically inherited by all items, enabling dynamic text substitution for the entire list based on a single data source.
+
+=== Example: Dynamic List
+
+Assume a data file named `"config"` was loaded, containing: `{"user": "Alice", "tasks": ["compute", "fill", "finalize"]}`.
+
+[source,json]
+----
+{
+  "type": "list",
+  "data": "config",
+  "items": [
+    "Report generated for user: @{user}@",
+    "Total tasks found: @{tasks | length}@",
+    "First task: @{tasks.0}@"
+  ]
+}
+----
+
+When rendered, the output would be:
+
+[source,asciidoc]
+----
+- Report generated for user: Alice
+- Total tasks found: 3
+- First task: compute
+----
