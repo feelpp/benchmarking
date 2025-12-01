@@ -1,8 +1,8 @@
 from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict, ValidationError
 from typing import Literal, Union, Optional, List, Dict
-from feelpp.benchmarking.reframe.config.configParameters import Parameter
-from feelpp.benchmarking.reframe.config.configResources import Resources
-from feelpp.benchmarking.reframe.config.configPlatform import Platform
+from feelpp.benchmarking.reframe.schemas.parameters import Parameter
+from feelpp.benchmarking.reframe.schemas.resources import Resources
+from feelpp.benchmarking.reframe.schemas.platform import Platform
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot, PlotAxis
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile
 import os, re

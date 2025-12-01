@@ -1,6 +1,6 @@
 """ Tests related to machine configuration"""
 import pytest
-from feelpp.benchmarking.reframe.config.configMachines import Container, MachineConfig
+from feelpp.benchmarking.reframe.schemas.machines import Container, MachineConfig
 from pydantic import ValidationError
 
 

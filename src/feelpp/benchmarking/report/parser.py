@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
 from feelpp.benchmarking.reframe.parser import CustomHelpFormatter
-from feelpp.benchmarking.reframe.config.configSchemas import JsonReportSchemaWithDefaults
+from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import JsonReportSchemaWithDefaults
 import os, shutil, json
 
 

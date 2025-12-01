@@ -1,8 +1,8 @@
 
 from feelpp.benchmarking.reframe.parameters import ParameterHandler
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader, TemplateProcessor, FileHandler
-from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
-from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
+from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import ConfigFile
+from feelpp.benchmarking.reframe.schemas.machines import MachineConfig
 from feelpp.benchmarking.reframe.resources import ResourceHandler
 
 

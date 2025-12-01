@@ -1,7 +1,7 @@
 """Tests for parameter models validation by pydantic schemas"""
 
 import pytest
-from feelpp.benchmarking.reframe.config.configParameters import Parameter, Linspace,Geomspace,Range,Geometric,Repeat
+from feelpp.benchmarking.reframe.schemas.parameters import Parameter, Linspace,Geomspace,Range,Geometric,Repeat
 from pydantic import ValidationError
 
 

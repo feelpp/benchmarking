@@ -1,7 +1,6 @@
 """ Tests for the configSchemas module """
 import pytest
-from feelpp.benchmarking.reframe.config.configSchemas import Sanity,CustomVariable,Scalability,Resources,AdditionalFiles,ConfigFile
-from feelpp.benchmarking.reframe.config.configPlatform import Platform
+from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import Sanity,CustomVariable,Scalability,Resources,AdditionalFiles,ConfigFile,Platform
 from pydantic import ValidationError
 
 

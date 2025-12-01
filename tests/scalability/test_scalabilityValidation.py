@@ -1,5 +1,5 @@
 import pytest
-from feelpp.benchmarking.reframe.config.configSchemas import Stage
+from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import Stage
 from pydantic import ValidationError
 
 class TestScalability:

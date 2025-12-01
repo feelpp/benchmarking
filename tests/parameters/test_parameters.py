@@ -6,7 +6,7 @@ import numpy as np
 import string
 import pytest
 from feelpp.benchmarking.reframe.parameters import ParameterFactory
-from feelpp.benchmarking.reframe.config.configParameters import Parameter
+from feelpp.benchmarking.reframe.schemas.parameters import Parameter
 
 def createParameterDict(mode,param_config):
     """Helper function to create the expected dictionnary for the Parameter schema, with the default name of "test_param"
