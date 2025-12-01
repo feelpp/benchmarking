@@ -5,17 +5,12 @@ class Parser(BaseParser):
     """ Class for parsing and validating command-line arguments"""
     def __init__(self,print_args=True):
         super().__init__(print_args,"Execute a benchmark")
-        if self.args.list_files:
-            self.listFilesAndExit()
 
     def processArgs(self):
         """ Pipeline to process arguments. Will:
             - check that directories exist
             - building a configuration file list
         """
-        if self.args.dir:
-            self.checkDirectoriesExist()
-        self.buildConfigList()
         self.convertPathsToAbsolute()
 
     def addArgs(self):
@@ -23,14 +18,10 @@ class Parser(BaseParser):
         options = self.parser.add_argument_group("Options")
         options.add_argument('--machine-config', '-mc', required=True, type=str, metavar='MACHINE_CONFIG', help='Path to JSON reframe machine configuration file, specific to a system.')
         options.add_argument('--plots-config', '-pc', required=False, default=None, type=str, help='Path to JSON plots configuration file, used to generate figures. \nIf not provided, no plots will be generated. The plots configuration can also be included in the benchmark configuration file, under the "plots" field.')
-        options.add_argument('--benchmark-config', '-bc', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON benchmark configuration files \nIn combination with --dir, specify only provide basenames for selecting JSON files.')
+        options.add_argument('--benchmark-config', '-bc', type=str, required=True, metavar='CONFIG', help='Paths to JSON benchmark configuration file.')
         options.add_argument('--custom-rfm-config', '-rc', type=str, required=False, default=None, help="Additional reframe configuration file to use instead of built-in ones. It should correspond the with the --machine-config specifications.")
-        options.add_argument('--dir', '-d', type=str, nargs='+', action='extend', default=[], metavar='DIR', help='Name of the directory containing JSON configuration files')
-        options.add_argument('--exclude', '-e', type=str, nargs='+', action='extend', default=[], metavar='EXCLUDE', help='To use in combination with --dir, mentioned files will not be launched. \nOnly provide basenames to exclude.')
         options.add_argument('--move-results', "-mv", type=str, help='Directory to move the resulting files to. \nIf not provided, result files will be located under the directory specified by the machine configuration.', required=False, default=None)
-        options.add_argument('--list-files', '-lf', action='store_true', help='List all benchmarking configuration file found. \nIf this option is provided, the application will not run. Use it for validation.')
         options.add_argument('--verbose', '-v', action='count', default=0, help='Select verbose level by specifying multiple v\'s. ')
-        options.add_argument('--help', '-h', action='help', help='Display help and quit program')
         options.add_argument('--website', '-w', action='store_true', help='Render reports, compile them and create the website.')
         options.add_argument('--dry-run', action='store_true', help='Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.')
 
@@ -39,58 +30,29 @@ class Parser(BaseParser):
 
     def convertPathsToAbsolute(self):
         """ Converts arguments that contain paths to absolute. No change is made if absolute paths are provided"""
-        self.args.benchmark_config = [os.path.abspath(c) for c in self.args.benchmark_config]
+        self.args.benchmark_config = os.path.abspath(self.args.benchmark_config)
         self.args.machine_config = os.path.abspath(self.args.machine_config)
+
         if self.args.plots_config:
             self.args.plots_config = os.path.abspath(self.args.plots_config)
 
+        if self.args.custom_rfm_config:
+            self.args.custom_rfm_config = os.path.abspath(self.args.custom_rfm_config)
+
+        if self.args.move_results:
+            self.args.move_results = os.path.abspath(self.args.move_results)
+
     def validate(self):
-        """ Checks that required args are present, and that they latch the expected format"""
-        if not self.args.benchmark_config and not self.args.dir:
-            self.parser.error(f'[Error] At least one of --benchmark-config or --dir option must be specified')
-
-        if self.args.benchmark_config and len(self.args.dir) > 1:
-            self.parser.error(f'[Error] --dir and --benchmark-config combination can only handle one DIR')
-
-        if not self.args.machine_config:
-            self.parser.error(f'[Error] --machine-config should be specified')
-
-
-
-    def checkDirectoriesExist(self):
-        """ Check that directories passed as arguments exist in the filesystem"""
-        missing = [d for d in self.args.dir if not os.path.isdir(d)]
-        if missing:
-            self.parser.error(f'[Error] Following directories were not found: {"\n".join(missing)} ')
-
         if self.args.custom_rfm_config:
             if not os.path.isfile(self.args.custom_rfm_config):
                 self.parser.error(f"Provided custom reframe configuration file {self.args.custom_rfm_config} not found...")
 
-    def buildConfigList(self):
-        """ Find configuration filepaths specified by the --dir argument and build a list acordingly.
-        If --benchmark_config is passed, then a list with a single config filepath is set"""
-        configs = []
-        if self.args.dir:
-            for dir in self.args.dir:
-                path = os.path.join(dir, '**/*.json')
-                json_files = glob.glob(path, recursive=True)
-                configs.extend(json_files)
-            if self.args.benchmark_config:
-                configs = [config for config in configs if os.path.basename(config) in self.args.benchmark_config]
+        if not os.path.isfile(self.args.benchmark_config):
+            self.parser.error(f"Benchmark configuration file {self.args.benchmark_config} cannot be found")
 
-        if self.args.benchmark_config and not self.args.dir:
-            configs = self.args.benchmark_config
+        if not os.path.isfile(self.args.machine_config):
+            self.parser.error(f"Machine configuration file {self.args.machine_config} cannot be found")
 
-        if self.args.exclude:
-            configs = [config for config in configs if os.path.basename(config) not in self.args.exclude]
-
-        self.args.benchmark_config = [os.path.abspath(config) for config in configs]
-
-    def listFilesAndExit(self):
-        """ Print configuration filepaths and exits"""
-        print("\nFollowing configuration files have been found and validated:")
-        for config_path in self.args.benchmark_config:
-            print(f"\t> {config_path}")
-        print(f"\nTotal: {len(self.args.benchmark_config)} file(s)")
-        sys.exit(0)
+        if self.args.plots_config:
+            if not os.path.isfile(self.args.plots_config):
+                self.parser.error(f"Plot configuration file {self.args.plots_config} cannot be found")

@@ -47,13 +47,13 @@ class CustomHelpFormatter(RawTextHelpFormatter):
 
 class BaseParser:
     def __init__(self,print_args=True,description=""):
-        self.parser = ArgumentParser(formatter_class=CustomHelpFormatter, add_help=False,description=description)
+        self.parser = ArgumentParser(formatter_class=CustomHelpFormatter, add_help=True,description=description)
         self.addArgs()
         self.args = self.parser.parse_args()
         if print_args:
             self.printArgs()
-        self.validate()
         self.processArgs()
+        self.validate()
 
     def addArgs(self):
         raise NotImplementedError("This method should be implemented in child classes.")
