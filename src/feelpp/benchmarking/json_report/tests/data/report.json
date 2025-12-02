@@ -21,7 +21,7 @@
                 },
                 {
                     "type": "text",
-                    "data":"attendance_json_cols",
+                    "ref":"attendance_json_cols",
                     "text": "Placeholders in this report allow dynamic insertion of values from the datasets. For example, total students: @{name |length}@."
                 }
             ]
@@ -32,7 +32,7 @@
             "content": [
                 {
                     "type": "table",
-                    "data": "students",
+                    "ref": "students",
                     "title": "Student Scores",
                     "table": {
                         "columns": ["name", "subject", "score", "passed"],
@@ -65,7 +65,7 @@
             "content": [
                 {
                     "type": "table",
-                    "data": "attendance",
+                    "ref": "attendance",
                     "title": "Attendance Records",
                     "table": {
                         "columns": ["name", "subject", "days_present", "days_absent"],
@@ -97,7 +97,7 @@
             "content": [
                 {
                     "type": "plot",
-                    "data": "students",
+                    "ref": "students",
                     "plot": {
                         "title": "Average Scores by Subject",
                         "plot_types": ["scatter"],
@@ -112,7 +112,7 @@
                 },
                 {
                     "type": "plot",
-                    "data": "attendance",
+                    "ref": "attendance",
                     "plot": {
                         "title": "Attendance Rate by Student",
                         "plot_types": ["grouped_bar"],
@@ -133,7 +133,7 @@
             "title": "Teacher Notes",
             "content": [
                 {
-                    "data":"notes",
+                    "ref":"notes",
                     "type": "text",
                     "text": "Teacher remarks (loaded from a raw text file with preprocessing applied): @{notes}@"
                 }

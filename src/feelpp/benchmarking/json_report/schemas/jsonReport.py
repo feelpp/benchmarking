@@ -10,7 +10,7 @@ from feelpp.benchmarking.json_report.text.schemas.textSchema import Text
 
 class ReportNode(BaseModel):
     type:str
-    data: Optional[str] = None
+    ref: Optional[str] = None
 
 
 class TextNode(ReportNode):
@@ -51,10 +51,10 @@ class ListNode(ReportNode):
         parsedItems = []
         for item in self.items:
             if isinstance(item,str) or isinstance(item, Text):
-                parsedItems.append(TextNode.model_validate({"type":"text","text":Text.model_validate(item),"data":self.data}))
+                parsedItems.append(TextNode.model_validate({"type":"text","text":Text.model_validate(item),"ref":self.ref}))
             elif isinstance(item,TextNode):
-                if not item.data:
-                    item.data = self.data
+                if not item.ref:
+                    item.ref = self.ref
                 parsedItems.append(item)
         self.items = parsedItems
         return self

@@ -63,13 +63,13 @@ Define a data source (`timings`) and embed a simple table content node.
   "content": [
     {
       "type": "text",
-      "data": "timings",
+      "ref": "timings",
       "text": "Total entries analyzed: @{timings | length}@"
     },
     {
       "type": "table",
       "title": "Performance Summary",
-      "data": "timings",
+      "ref": "timings",
       "table": {
         "rename": {"Time_s": "Time (s)"},
         "style": {"classnames": ["sortable"]}

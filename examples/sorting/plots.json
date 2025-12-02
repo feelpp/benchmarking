@@ -14,7 +14,7 @@
                     "content": [
                         {
                             "type": "list",
-                            "data": "reframe_json",
+                            "ref": "reframe_json",
                             "items": [
                                 "Hostname: @{session_info.hostname}@",
                                 "User: @{session_info.user}@",
@@ -30,7 +30,7 @@
                     "content": [
                         {
                             "type": "list",
-                            "data": "reframe_json",
+                            "ref": "reframe_json",
                             "items": [
                                 "Total: @{session_info.num_cases}@",
                                 "Failures: @{session_info.num_failures}@",
@@ -47,7 +47,7 @@
             "content": [
                 {
                     "type": "table",
-                    "data": "reframe_df",
+                    "ref": "reframe_df",
                     "title": "Test Cases",
                     "table": {
                         "columns": ["result", "testcases.hashcode", "algorithm", "elements", "testcases.time_total"],

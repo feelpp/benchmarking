@@ -1,6 +1,6 @@
 {% macro render(tableNode, data) %}
 
-{%set table_controller = TableController(data.get(tableNode.data),tableNode.table) %}
+{%set table_controller = TableController(data.get(tableNode.ref),tableNode.table) %}
 {%set table = table_controller.generate() %}
 
 {%if tableNode.title %}

@@ -39,7 +39,7 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
             new_content = []
             for item in values:
                 try:
-                    node = { "type": "plot", "data":"reframe_df", "plot": DefaultPlot.model_validate(item) }
+                    node = { "type": "plot", "ref":"reframe_df", "plot": DefaultPlot.model_validate(item) }
                 except ValidationError:
                     node = item
                 new_content.append(node)
@@ -53,7 +53,7 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
                     if isinstance(item, dict) and item.get("type") == "plot":
                         item = {
                             "type": "plot",
-                            "data":"reframe_df",
+                            "ref":"reframe_df",
                             "plot": DefaultPlot.model_validate(item["plot"])
                         }
                     elif isinstance(item, dict) and item.get("type") == "section":
