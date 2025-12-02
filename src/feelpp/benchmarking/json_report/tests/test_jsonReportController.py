@@ -2,7 +2,8 @@ import json, os, pytest, warnings
 import pandas as pd
 from unittest.mock import MagicMock, patch
 
-from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile,Preprocessor
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile
+
 from feelpp.benchmarking.json_report.renderer import JsonReportController
 
 

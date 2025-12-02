@@ -1,7 +1,7 @@
 from pydantic import model_validator, ValidationError
 from typing import List,Dict, Optional
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot, PlotAxis
-from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
 
 class DefaultPlotYAxis(PlotAxis):
     parameter: Optional[str] = "value"

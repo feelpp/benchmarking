@@ -1,5 +1,6 @@
 import os, warnings, importlib.util, pytest, math, tempfile
 from feelpp.benchmarking.json_report.schemas.jsonReport import *
+from feelpp.benchmarking.json_report.schemas.dataRefs import Preprocessor
 
 
 
