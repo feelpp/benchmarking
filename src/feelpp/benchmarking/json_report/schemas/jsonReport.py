@@ -38,7 +38,6 @@ class PlotNode(ReportNode):
 
 class TableNode(ReportNode):
     type: Literal["table"]
-    title: Optional[str] = None
     table: Table
     filter: Optional[FilterInput] = None
 

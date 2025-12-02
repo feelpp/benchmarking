@@ -54,6 +54,6 @@ def test_jsonReportCases(report_filename,output_format="adoc"):
     )
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        output_file = controller.render(output_dirpath=os.path.join(data_dir,"outputs"))
+        output_file = controller.render(output_dirpath=os.path.join(data_dir,tmpdir))
         golden_file = os.path.join(data_dir,"golden",report_filename.replace(".json",f".{output_format}"))
         assert_report_matches_golden(output_file,golden_file)

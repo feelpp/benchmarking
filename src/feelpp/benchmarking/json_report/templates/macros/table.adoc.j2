@@ -3,10 +3,6 @@
 {%set table_controller = TableController(data.get(tableNode.ref),tableNode.table) %}
 {%set table = table_controller.generate() %}
 
-{%if tableNode.title %}
-*{{tableNode.title}}*
-{% endif %}
-
 {% if tableNode.table.style.classnames %}
 [{% for classname in tableNode.table.style.classnames %}.{{classname}}{% endfor %}]
 {% endif %}
@@ -24,7 +20,7 @@
 |===
 {%if tableNode.filter %}
 ++++
-<input type="text" id="filter_{{tableNode.title}}_table" placeholder="{{tableNode.filter.placeholder}}" style="{{tableNode.filter.style}}">
+<input type="text" id="filter_{{tableNode.ref}}_table" placeholder="{{tableNode.filter.placeholder}}" style="{{tableNode.filter.style}}">
 ++++
 {% endif %}
 --
@@ -34,7 +30,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const table = document.querySelector('.sortable table');
-    initTable(table, 'filter_{{tableNode.title}}_table');
+    initTable(table, 'filter_{{tableNode.ref}}_table');
   });
 </script>
 ++++
