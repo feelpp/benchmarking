@@ -100,7 +100,7 @@ class TestReportNodes:
             {"title":"plot1", "plot_types":["scatter"], "xaxis":{"parameter":"x"}, "yaxis":{"parameter":"y"}},
             {"title":"plot2", "plot_types":["scatter"], "xaxis":{"parameter":"x2"}, "yaxis":{"parameter":"y2"}}
         ])
-        assert isinstance(schema.content[0], PlotNode) and isinstance(schema.content[1], PlotNode)
+        assert isinstance(schema.contents[0], PlotNode) and isinstance(schema.contents[1], PlotNode)
 
     def test_jsonReportSchemaCoerceDictPassesThrough(self):
         schema = JsonReportSchema.model_validate({"title":"myreport"})
@@ -115,8 +115,8 @@ class TestReportNodes:
     # ------------------------------------------------------------------
     def test_sectionNodeFlattenContent(self):
         textNode = TextNode(type="text", text=Text(content="a"))
-        section = SectionNode(type="section", title="sec", content=[textNode])
-        schema = JsonReportSchema(content=[section])
+        section = SectionNode(type="section", title="sec", contents=[textNode])
+        schema = JsonReportSchema(contents=[section])
         flattened = schema.flattenContent()
         assert len(flattened) == 1
         assert flattened[0].text.content == "a"

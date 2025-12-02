@@ -12,7 +12,7 @@ The root of the configuration file is the `JsonReportSchema`. It defines global 
 |`title`|string|The main title of the document.|`null`
 |`datetime`|string|A timestamp for the report generation.|Current date and time (`YYYY-MM-DD HH:MM:SS`)
 |`data`|array of objects|A list of external or internal data files to load (see <<Including Data>>).|`[]`
-|`content`|array of objects|The ordered list of content nodes that make up the report (see <<Allowed Content Nodes>>).|`[]`
+|`contents`|array of objects|The ordered list of content nodes that make up the report (see <<Allowed Content Nodes>>).|`[]`
 |===
 
 === Example
@@ -25,7 +25,7 @@ The root of the configuration file is the `JsonReportSchema`. It defines global 
   "data": [
     // ... DataFile definitions ...
   ],
-  "content": [
+  "contents": [
     // ... Content Node definitions (Sections, Tables, Plots, Text) ...
   ]
 }
@@ -33,13 +33,13 @@ The root of the configuration file is the `JsonReportSchema`. It defines global 
 
 == Report Structure [[report_structure]]
 
-The `content` field defines the hierarchical structure and entire narrative flow of the final document. It is an ordered list of **Content Nodes**.
+The `contents` field defines the hierarchical structure and entire narrative flow of the final document. It is an ordered list of **Content Nodes**.
 
 A report is primarily built using the **Section Node**, which contains a title and an array of nested content, allowing you to create chapters, sub-sections, and detailed analysis blocks.
 
 === Allowed Content Nodes
 
-The engine supports the following node types, which can be placed directly in the root `content` array or nested within a `SectionNode`:
+The engine supports the following node types, which can be placed directly in the root `contents` array or nested within a `SectionNode`:
 
 |===
 |Node Type|Purpose|See Documentation

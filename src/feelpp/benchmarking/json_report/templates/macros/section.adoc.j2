@@ -20,7 +20,7 @@
 {{ '=' * level }} {{ sectionNode.title }}
 {%endif%}
 
-{% for node in sectionNode.content %}
+{% for node in sectionNode.contents %}
 {% if node.type == "section" %}
 {{ render(node, report_data, level + 1) }}
 {% else %}

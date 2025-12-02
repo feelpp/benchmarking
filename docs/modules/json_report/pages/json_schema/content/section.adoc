@@ -7,7 +7,7 @@ The **Section Node** is the fundamental building block for structuring your repo
 
 |`type`|string|Must be set to `"section"`.|`"section"`
 |`title`|string|The title of the section.|*Required*
-|`content`|array of objects|A recursive list of other content nodes, including nested `SectionNode`s.|*Required*
+|`contents`|array of objects|A recursive list of other content nodes, including nested `SectionNode`s.|*Required*
 |===
 
 == Example
@@ -15,22 +15,22 @@ The **Section Node** is the fundamental building block for structuring your repo
 [source,json]
 ----
 {
-  "content": [
+  "contents": [
     {
       "type": "section",
       "title": "Introduction",
-      "content": [
+      "contents": [
         // Text, Tables, Images, etc.
       ]
     },
     {
       "type": "section",
       "title": "Detailed Results",
-      "content": [
+      "contents": [
         {
           "type": "section",
           "title": "Timing Analysis",
-          "content": [
+          "contents": [
             // Plots and Tables
           ]
         }

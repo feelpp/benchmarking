@@ -44,12 +44,12 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
                     node = item
                 new_content.append(node)
 
-            return {"content": new_content}
+            return {"contents": new_content}
 
         elif isinstance(values, dict):
-            if "content" in values and isinstance(values["content"], list):
+            if "contents" in values and isinstance(values["contents"], list):
                 new_content = []
-                for item in values["content"]:
+                for item in values["contents"]:
                     if isinstance(item, dict) and item.get("type") == "plot":
                         item = {
                             "type": "plot",
@@ -60,7 +60,7 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
                         item = cls.applyDefaultPlots(item)
                     new_content.append(item)
 
-                values["content"] = new_content
+                values["contents"] = new_content
 
             return values
 

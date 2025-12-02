@@ -64,7 +64,7 @@ Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode,
 class SectionNode(ReportNode):
     type:Literal["section"]
     title:str
-    content: List[Node]
+    contents: List[Node]
 
 
 class Preprocessor(BaseModel):
@@ -181,7 +181,7 @@ class JsonReportSchema(BaseModel):
     data: Optional[List[Union[DataFile]]] = []
     model_config = ConfigDict( extra='allow' )
 
-    content: Optional[List[Annotated[Node, Field(discriminator="type")]]] = []
+    contents: Optional[List[Annotated[Node, Field(discriminator="type")]]] = []
 
     @model_validator(mode="before")
     @classmethod
@@ -190,26 +190,26 @@ class JsonReportSchema(BaseModel):
             return values
 
         if isinstance(values, list):
-            content = []
+            contents = []
             for item in values:
                 try:
                     node = PlotNode.model_validate({"type":"plot", "plot":item})
                 except ValidationError:
                     node = item
-                content.append(node)
-            return {"content": content}
+                contents.append(node)
+            return {"contents": contents}
         elif isinstance(values, dict):
             return values
         else:
             raise TypeError(f"Expected dict or list at root, got {type(values)}")
 
-    def flattenContent(self, content = None) -> list[Node]:
+    def flattenContent(self, contents = None) -> list[Node]:
         flattened = []
-        if content is None:
-            content = self.content
-        for node in content:
+        if contents is None:
+            contents = self.contents
+        for node in contents:
             if node.type == "section":
-                flattened += self.flattenContent(node.content)
+                flattened += self.flattenContent(node.contents)
             else:
                 flattened.append(node)
         return flattened
