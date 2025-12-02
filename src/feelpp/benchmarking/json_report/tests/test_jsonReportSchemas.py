@@ -37,7 +37,7 @@ class TestReportNodes:
         text1 = Text(content="a")
         text2 = "b"
         items = [text1, text2]
-        node = ListNode(type="list", items=items)
+        node = ListNode(type="itemize", items=items)
         assert all(isinstance(i, TextNode) for i in node.items)
         assert node.items[0].text.content == "a"
         assert node.items[1].text.content == "b"

@@ -43,7 +43,7 @@ class TableNode(ReportNode):
     filter: Optional[FilterInput] = None
 
 class ListNode(ReportNode):
-    type:Literal["list"]
+    type:Literal["itemize"]
     items:List[Union[TextNode,Text,str]]
 
     @model_validator(mode="after")

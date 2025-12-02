@@ -3,7 +3,7 @@
 {% import "macros/latex.adoc.j2" as latex %}
 {% import "macros/text.adoc.j2"  as text %}
 {% import "macros/table.adoc.j2" as table %}
-{% import "macros/list.adoc.j2"  as list %}
+{% import "macros/itemize.adoc.j2"  as itemize %}
 
 {% set handlers = {
     "plot":   plot.render,
@@ -11,7 +11,7 @@
     "image":  image.render,
     "latex":  latex.render,
     "table": table.render,
-    "list": list.render
+    "itemize": itemize.render
 } %}
 
 {% macro render(sectionNode, report_data, level=1) %}

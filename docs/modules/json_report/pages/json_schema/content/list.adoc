@@ -7,7 +7,7 @@ The **List Node** is used to render ordered lists. Its primary strength is that 
 |===
 |Field|Type|Description|Default Value
 
-|`type`|string|Must be set to `"list"`.|`"list"`
+|`type`|string|Must be set to `"itemize"`.|`"itemize"`
 |`items`|array of objects/strings|The contents of the list. Each entry can be a simple string, a full `Text Node` object, or a `Text Configuration` object.|*Required*
 |`data`|string|The `name` / reference of the data field to use for dynamic placeholder resolution within all list items.|`null`
 |===
@@ -26,7 +26,7 @@ Assume a data file named `"config"` was loaded, containing: `{"user": "Alice", "
 [source,json]
 ----
 {
-  "type": "list",
+  "type": "itemize",
   "ref": "config",
   "items": [
     "Report generated for user: @{user}@",
