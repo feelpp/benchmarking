@@ -4,7 +4,7 @@ from datetime import datetime
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 from feelpp.benchmarking.json_report.tables.schemas.tableSchema import TableLayout, TableStyle, FilterInput
 from feelpp.benchmarking.json_report.text.schemas.textSchema import Text
-from feelpp.benchmarking.json_report.schemas.dataRefs import DataTable, DataObject, DataRaw
+from feelpp.benchmarking.json_report.schemas.dataRefs import DataTable, DataObject, DataRaw, DataField
 
 class ReportNode(BaseModel):
     type:str
@@ -63,11 +63,12 @@ class SectionNode(ReportNode):
     contents: List[Node]
 
 
+DataTypes = Union[DataTable, DataObject, DataRaw]
 
 class JsonReportSchema(BaseModel):
     title: Optional[str] = None
     datetime: Optional[str] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data: Optional[List[Union[DataTable, DataObject, DataRaw]]] = []
+    data: Optional[List[DataTypes]] = []
     model_config = ConfigDict( extra='allow' )
 
     contents: Optional[List[Annotated[Node, Field(discriminator="type")]]] = []

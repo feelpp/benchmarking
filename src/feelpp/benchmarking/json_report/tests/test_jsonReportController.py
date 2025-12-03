@@ -1,10 +1,12 @@
 import json, os, pytest, warnings
 import pandas as pd
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
+from feelpp.benchmarking.json_report.schemas.dataRefs import Preprocessor
 
 from feelpp.benchmarking.json_report.renderer import JsonReportController
+
 
 
 
@@ -89,12 +91,7 @@ def test_loadReportDataLoadsJson(tmp_path):
     datafile_path.write_text(json.dumps({"a": 1}))
 
     report = JsonReportSchema(
-        data=[dict(
-            name="d1",
-            filepath=str(datafile_path),
-            format="json",
-            expose=True
-        )]
+        data=[dict( name="d1", filepath=str(datafile_path) )]
     )
 
     ctrl = JsonReportController.__new__(JsonReportController)
@@ -102,7 +99,6 @@ def test_loadReportDataLoadsJson(tmp_path):
     ctrl.exposed = {}
 
     data = ctrl.loadReportData()
-
     assert "d1" in data
     assert data["d1"]["d1"] == {"a": 1}
     assert ctrl.exposed["d1"]["d1"] == {"a": 1}
@@ -125,11 +121,10 @@ def test_loadReportDataLoadsCsv(tmp_path):
 
 
 def test_loadReportDataLoadsRaw(tmp_path):
-    raw_path = tmp_path / "data.raw"
+    raw_path = tmp_path / "data.txt"
     raw_path.write_text("hello world")
 
-    report = JsonReportSchema(data=[dict(name="rawfile", filepath=str(raw_path), format="raw", expose="alias")])
-
+    report = JsonReportSchema(data=[dict(name="rawfile", filepath=str(raw_path), expose="alias")])
     ctrl = JsonReportController.__new__(JsonReportController)
     ctrl.report = report
     ctrl.exposed = {}
@@ -143,16 +138,17 @@ def test_loadReportDataAppliesPreprocessor_withMock(tmp_path):
     raw_path = tmp_path / "data.raw"
     raw_path.write_text('{"hello":"world"}')
 
-    mock_prep = MagicMock()
-    mock_prep.apply = MagicMock(return_value="processed")
+
+    module_path = tmp_path / "dummy_module.py"
+    module_path.write_text("def process(x): return 'processed'")
+    prep = Preprocessor(module = str(module_path), function="process")
 
     ctrl = JsonReportController.__new__(JsonReportController)
-    ctrl.report = type("R", (), {"data": [dict(name = "d1", filepath=str(raw_path), format="json", preprocessor=mock_prep, expose=False )]})()
+    ctrl.report = JsonReportSchema(data=[dict(name = "d1", filepath=str(raw_path), format="json", preprocessor=prep, expose=False )])
     ctrl.exposed = {}
 
     data = JsonReportController.loadReportData(ctrl)
 
-    mock_prep.apply.assert_called_once()
     assert data["d1"] == {"d1":"processed"}
 
 

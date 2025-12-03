@@ -58,7 +58,8 @@ class JsonReportController:
             parser = DataFieldParserFactory.create(d)
             filedata = parser.load()
             filedata = parser.process(filedata)
-            data[d.name] = {d.name : filedata}
+            filedata = {d.name : filedata}
+            data[d.name] = filedata
             if d.expose:
                 self.exposed[d.expose] = filedata
 

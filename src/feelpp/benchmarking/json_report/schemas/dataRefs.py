@@ -160,6 +160,10 @@ class DataField(BaseModel):
             filepath = values.pop("filepath")
             format = values.pop("format",None)
             values["source"] = DataFile.model_validate({"filepath":filepath,"format":format}, context=info.context)
+            format_to_default_type = { "json":"Object", "csv":"DataTable", "raw":"Raw" }
+            if values.get("type") is None:
+                values["type"] = format_to_default_type.get(values["source"].format,"Raw")
+            return values
         else:
             data_type = values.get("type")
             if data_type == "DataTable":
@@ -187,16 +191,6 @@ class DataField(BaseModel):
             return Preprocessor.model_validate(v,context=info.context)
         return v
 
-
-    @model_validator(mode="after")
-    def inferTypeFromFormat(self):
-        if not isinstance(self.source, DataFile):
-            return self
-
-        format_to_default_type = { "json":"Object", "csv":"DataTable", "raw":"Raw" }
-        if self.type is None:
-            self.type = format_to_default_type.get(self.source.format,"Raw")
-        return self
 
 class GroupBy(BaseModel):
     columns: List[str]
@@ -251,11 +245,11 @@ class TableOptions(BaseModel):
 
 
 class DataTable(DataField):
-    type: Optional[Literal['DataTable']] = "DataTable"
+    type: Literal['DataTable'] = "DataTable"
     table_options:Optional[TableOptions] = TableOptions()
 
 class DataObject(DataField):
-    type: Optional[Literal["Object"]] = "Object"
+    type: Literal["Object"] = "Object"
 
 class DataRaw(DataField):
-    type: Optional[Literal["Raw"]] = "Raw"
+    type: Literal["Raw"] = "Raw"
