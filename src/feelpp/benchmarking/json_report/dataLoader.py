@@ -123,7 +123,7 @@ class DataObjectParser(DataFieldParser):
                 if source.format == "json":
                     return json.load(f)
                 elif source.format == "csv":
-                    return pd.read_csv(f).to_dict()
+                    return pd.read_csv(f).to_dict("list")
                 else:
                     raise NotImplementedError(f"Cannot create DataObject (Dictionnary) from {source.format} files")
         elif isinstance(source,InlineObject):

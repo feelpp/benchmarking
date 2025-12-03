@@ -2,7 +2,7 @@ import json, os, pytest, warnings
 import pandas as pd
 from unittest.mock import MagicMock, patch
 
-from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, DataFile
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
 
 from feelpp.benchmarking.json_report.renderer import JsonReportController
 
@@ -88,16 +88,13 @@ def test_loadReportDataLoadsJson(tmp_path):
     datafile_path = tmp_path / "data.json"
     datafile_path.write_text(json.dumps({"a": 1}))
 
-    # Build fake report schema
-    df = DataFile(
-        name="d1",
-        filepath=str(datafile_path),
-        format="json",
-        expose=True
-    )
-
     report = JsonReportSchema(
-        data=[df]
+        data=[dict(
+            name="d1",
+            filepath=str(datafile_path),
+            format="json",
+            expose=True
+        )]
     )
 
     ctrl = JsonReportController.__new__(JsonReportController)
@@ -115,9 +112,7 @@ def test_loadReportDataLoadsCsv(tmp_path):
     csv_path = tmp_path / "data.csv"
     csv_path.write_text("x,y\n1,2\n3,4\n")
 
-    df = DataFile( name="tab", filepath=str(csv_path), format="csv", expose=False)
-
-    report = JsonReportSchema(data=[df])
+    report = JsonReportSchema(data=[dict(name="tab", filepath=str(csv_path), format="csv", expose=False )])
 
     ctrl = JsonReportController.__new__(JsonReportController)
     ctrl.report = report
@@ -133,9 +128,7 @@ def test_loadReportDataLoadsRaw(tmp_path):
     raw_path = tmp_path / "data.raw"
     raw_path.write_text("hello world")
 
-    df = DataFile( name="rawfile", filepath=str(raw_path), format="raw", expose="alias")
-
-    report = JsonReportSchema(data=[df])
+    report = JsonReportSchema(data=[dict(name="rawfile", filepath=str(raw_path), format="raw", expose="alias")])
 
     ctrl = JsonReportController.__new__(JsonReportController)
     ctrl.report = report
@@ -153,10 +146,8 @@ def test_loadReportDataAppliesPreprocessor_withMock(tmp_path):
     mock_prep = MagicMock()
     mock_prep.apply = MagicMock(return_value="processed")
 
-    df = DataFile.model_construct( name = "d1", filepath=str(raw_path), format="json", preprocessor=mock_prep, expose=False )
-
     ctrl = JsonReportController.__new__(JsonReportController)
-    ctrl.report = type("R", (), {"data": [df]})()
+    ctrl.report = type("R", (), {"data": [dict(name = "d1", filepath=str(raw_path), format="json", preprocessor=mock_prep, expose=False )]})()
     ctrl.exposed = {}
 
     data = JsonReportController.loadReportData(ctrl)
