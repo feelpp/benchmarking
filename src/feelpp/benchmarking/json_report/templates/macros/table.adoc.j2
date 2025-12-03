@@ -1,10 +1,10 @@
 {% macro render(tableNode, data) %}
 
-{%set table_controller = TableController(data.get(tableNode.ref),tableNode.table) %}
+{%set table_controller = TableController(data.get(tableNode.ref),tableNode.layout, tableNode.style) %}
 {%set table = table_controller.generate() %}
 
-{% if tableNode.table.style.classnames %}
-[{% for classname in tableNode.table.style.classnames %}.{{classname}}{% endfor %}]
+{% if tableNode.style.classnames %}
+[{% for classname in tableNode.style.classnames %}.{{classname}}{% endfor %}]
 {% endif %}
 --
 [cols="{{ table_controller.getColsAlignment() }}",options="header"]
@@ -25,7 +25,7 @@
 {% endif %}
 --
 
-{% if 'sortable' in tableNode.table.style.classnames %}
+{% if 'sortable' in tableNode.style.classnames %}
 ++++
 <script>
   document.addEventListener('DOMContentLoaded', () => {

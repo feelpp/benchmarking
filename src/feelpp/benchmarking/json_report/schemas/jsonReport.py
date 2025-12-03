@@ -2,9 +2,9 @@ from typing import Literal, Union, Optional, List, Dict, Annotated, Callable, An
 from pydantic import ValidationError, BaseModel, field_validator, model_validator, Field, ConfigDict
 from datetime import datetime
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
-from feelpp.benchmarking.json_report.tables.schemas.tableSchema import Table
+from feelpp.benchmarking.json_report.tables.schemas.tableSchema import TableLayout
 from feelpp.benchmarking.json_report.text.schemas.textSchema import Text
-from feelpp.benchmarking.json_report.schemas.dataRefs import DataFile
+from feelpp.benchmarking.json_report.schemas.dataRefs import DataTable, DataObject, DataRaw
 
 class ReportNode(BaseModel):
     type:str
@@ -34,12 +34,21 @@ class PlotNode(ReportNode):
     type: Literal["plot"]
     plot: Plot
 
+
+
+class TableStyle(BaseModel):
+    column_align: Dict[str,str] = {}
+    column_width : Dict[str,int] = {}
+    classnames: List[str] = []
+
 class TableNode(ReportNode):
     type: Literal["table"]
-    table: Optional[Table] = Table()
+    layout: Optional[TableLayout] = TableLayout()
     filter: Optional[FilterInput] = None
+    style: Optional[TableStyle] = TableStyle()
 
 class ListNode(ReportNode):
+    # type:Literal["itemize"]
     type:Literal["itemize"]
     items:List[Union[TextNode,Text,str]]
 
@@ -68,7 +77,7 @@ class SectionNode(ReportNode):
 class JsonReportSchema(BaseModel):
     title: Optional[str] = None
     datetime: Optional[str] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data: Optional[List[Union[DataFile]]] = []
+    data: Optional[List[Union[DataTable, DataObject, DataRaw]]] = []
     model_config = ConfigDict( extra='allow' )
 
     contents: Optional[List[Annotated[Node, Field(discriminator="type")]]] = []
