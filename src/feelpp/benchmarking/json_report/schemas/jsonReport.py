@@ -10,6 +10,8 @@ class ReportNode(BaseModel):
     type:str
     ref: Optional[str] = None
 
+    model_config = ConfigDict( extra="forbid" )
+
 
 class TextNode(ReportNode):
     type:Literal["text"]
