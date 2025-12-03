@@ -128,10 +128,11 @@ class InlineTable(BaseModel):
     @field_validator("columns",mode="after")
     @classmethod
     def checkColumnSize(cls,columns:List[InlineTableColumn]):
-        table_len = len(columns[0].values)
-        for col in columns:
-            if len(col.values) != table_len:
-                raise ValueError("Inline table columns should have the same length.")
+        if columns:
+            table_len = len(columns[0].values)
+            for col in columns:
+                if len(col.values) != table_len:
+                    raise ValueError("Inline table columns should have the same length.")
 
         return columns
 

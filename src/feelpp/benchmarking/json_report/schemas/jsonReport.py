@@ -2,7 +2,7 @@ from typing import Literal, Union, Optional, List, Dict, Annotated, Callable, An
 from pydantic import ValidationError, BaseModel, field_validator, model_validator, Field, ConfigDict
 from datetime import datetime
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
-from feelpp.benchmarking.json_report.tables.schemas.tableSchema import TableLayout
+from feelpp.benchmarking.json_report.tables.schemas.tableSchema import TableLayout, TableStyle, FilterInput
 from feelpp.benchmarking.json_report.text.schemas.textSchema import Text
 from feelpp.benchmarking.json_report.schemas.dataRefs import DataTable, DataObject, DataRaw
 
@@ -26,20 +26,11 @@ class ImageNode(ReportNode):
     alt: Optional[str] = None
 
 
-class FilterInput(BaseModel):
-    placeholder: Optional[str] = "Filter..."
-    style:Optional[str] = "margin-bottom:0.5em;padding:0.3em;width:50%;"
-
 class PlotNode(ReportNode):
     type: Literal["plot"]
     plot: Plot
 
 
-
-class TableStyle(BaseModel):
-    column_align: Dict[str,str] = {}
-    column_width : Dict[str,int] = {}
-    classnames: List[str] = []
 
 class TableNode(ReportNode):
     type: Literal["table"]
