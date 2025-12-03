@@ -94,7 +94,7 @@ class DataTableParser(DataFieldParser):
             cols_to_agg = [c for c in df.columns if c not in groupby.columns]
             agg_cfg = {col: agg_cfg for col in cols_to_agg}
 
-        return df.groupby(groupby.columns, dropna=False, as_index=False).agg(agg_cfg)
+        return df.groupby(groupby.columns, dropna=True, as_index=False).agg(agg_cfg)
 
     def _sort(self, sort:List[SortInstruction], df: pd.DataFrame) -> pd.DataFrame:
         if sort:
