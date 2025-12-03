@@ -1,8 +1,8 @@
 import pandas as pd
-from feelpp.benchmarking.json_report.tables.schemas.tableSchema import TableLayout
+from feelpp.benchmarking.json_report.tables.schemas.tableSchema import TableLayout, TableStyle
 
 class Controller:
-    def __init__(self, data: pd.DataFrame, table_layout: TableLayout, table_style) -> None:
+    def __init__(self, data: pd.DataFrame, table_layout: TableLayout, table_style:TableStyle) -> None:
         """
         data: a pandas DataFrame containing the dataset
         table_layout: a Table Pydantic model defining ordering, renaming, and other aesthetical operations
