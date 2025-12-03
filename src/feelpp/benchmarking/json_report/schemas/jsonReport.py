@@ -48,7 +48,6 @@ class TableNode(ReportNode):
     style: Optional[TableStyle] = TableStyle()
 
 class ListNode(ReportNode):
-    # type:Literal["itemize"]
     type:Literal["itemize"]
     items:List[Union[TextNode,Text,str]]
 
