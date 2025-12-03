@@ -1,7 +1,27 @@
 {
     "data": [
-        { "name": "students", "filepath": "students.csv", "format": "csv", "preprocessor": "./preprocessors.py:uppercase_names" },
-        { "name": "attendance", "filepath": "attendance.json", "preprocessor": "./preprocessors.py:list_to_df"},
+        {
+            "name": "students", "filepath": "students.csv", "format": "csv", "preprocessor": "./preprocessors.py:uppercase_names",
+            "table_options":{
+                "computed_columns": {
+                    "grade": "('A' if row['score'] >= 90 else 'B' if row['score'] >= 75 else 'C' if row['score'] >= 60 else 'F')"
+                },
+                "format": {
+                    "Score": "%.1f",
+                    "Passed": {"1": "✅", "0": "❌"}
+                }
+            }
+        },
+        { "name": "attendance", "filepath": "attendance.json", "preprocessor": "./preprocessors.py:list_to_df", "type":"DataTable",
+            "table_options":{
+                "computed_columns": {
+                    "attendance_rate": "row['days_present'] / (row['days_present'] + row['days_absent']) * 100"
+                },
+                "format": {
+                    "Attendance (%)": "%.1f"
+                }
+            }
+        },
         { "name": "attendance_json_cols", "filepath": "attendance.json", "preprocessor":"./preprocessors.py:json_records_to_cols"},
         {
             "name": "notes",
@@ -33,26 +53,14 @@
                 {
                     "type": "table",
                     "ref": "students",
-                    "table": {
-                        "columns": ["name", "subject", "score", "passed"],
-                        "computed_columns": {
-                            "grade": "('A' if row['score'] >= 90 else 'B' if row['score'] >= 75 else 'C' if row['score'] >= 60 else 'F')"
-                        },
-                        "rename": {
-                            "score": "Score",
-                            "passed": "Passed",
-                            "grade": "Grade"
-                        },
-                        "format": {
-                            "Score": "%.1f",
-                            "Passed": {"1": "✅", "0": "❌"}
-                        },
-                        "column_order": ["name", "subject", "Score", "Passed", "Grade"],
-                        "style": {
-                            "column_align": { "Score": "right", "Passed": "center", "Grade": "center" },
-                            "column_width": { "Score": 5, "Passed": 3, "Grade": 3 },
-                            "classnames": ["scrollable", "sortable"]
-                        }
+                    "layout": {
+                        "rename": { "score": "Score", "passed": "Passed", "grade": "Grade" },
+                        "column_order": ["name", "subject", "Score", "Passed", "Grade"]
+                    },
+                    "style": {
+                        "column_align": { "Score": "right", "Passed": "center", "Grade": "center" },
+                        "column_width": { "Score": 5, "Passed": 3, "Grade": 3 },
+                        "classnames": ["scrollable", "sortable"]
                     },
                     "filter": { "placeholder": "Filter students..." }
                 }
@@ -65,25 +73,18 @@
                 {
                     "type": "table",
                     "ref": "attendance",
-                    "table": {
-                        "columns": ["name", "subject", "days_present", "days_absent"],
-                        "computed_columns": {
-                            "attendance_rate": "row['days_present'] / (row['days_present'] + row['days_absent']) * 100"
-                        },
+                    "layout": {
                         "rename": {
                             "days_present": "Present Days",
                             "days_absent": "Absent Days",
                             "attendance_rate": "Attendance (%)"
                         },
-                        "format": {
-                            "Attendance (%)": "%.1f"
-                        },
-                        "column_order": ["name", "subject", "Present Days", "Absent Days", "Attendance (%)"],
-                        "style": {
-                            "column_align": { "attendance_rate": "right" },
-                            "column_width": { "attendance_rate": 5 },
-                            "classnames": ["sortable"]
-                        }
+                        "column_order": ["name", "subject", "Present Days", "Absent Days", "Attendance (%)"]
+                    },
+                    "style": {
+                        "column_align": { "attendance_rate": "right" },
+                        "column_width": { "attendance_rate": 5 },
+                        "classnames": ["sortable"]
                     },
                     "filter": { "placeholder": "Filter attendance..." }
                 }
