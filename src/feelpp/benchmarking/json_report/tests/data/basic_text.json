@@ -1,4 +1,22 @@
 {
+    "data":[
+        { "name":"MyCustomTextFromFile", "filepath":"my_data.txt" },
+
+        {
+            "type":"Raw",
+            "name":"MyCustomInlineRaw",
+            "value":"Some data i want to refactor across nodes"
+        },
+
+        { "name":"MyCustomObjectFromFile", "filepath":"my_json_obj.json" },
+
+        {
+            "type":"Object",
+            "name":"MyCustomInlineObject",
+            "object":{ "data1":"my data value" }
+        }
+
+    ],
     "contents": [
         {
             "type": "section",
@@ -17,6 +35,52 @@
                             "text": "Nested sections should appear with correct formatting."
                         }
                     ]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Raw Object",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"MyCustomTextFromFile",
+                    "text":"Custom from file : @{MyCustomTextFromFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"MyCustomInlineRaw",
+                    "text":"Custom from inline : @{MyCustomInlineRaw}@"
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Object from file",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"MyCustomObjectFromFile",
+                    "text":"Number of students @{students | length}@"
+                },
+                {
+                    "type":"itemize",
+                    "ref":"MyCustomObjectFromFile",
+                    "items":[
+                        "Javier: @{students.javier.score}@ (@{students.javier.grade}@)",
+                        "Oscar: @{students.oscar.score}@ (@{students.oscar.grade}@)"
+                    ]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Inline Object",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"MyCustomInlineObject",
+                    "text":"Value @{data1}@"
                 }
             ]
         }
