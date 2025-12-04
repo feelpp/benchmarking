@@ -28,14 +28,15 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
             "name":"parameter_table",
             "filepath":"./reframe_report.json",
             "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor",
-
-            "computed_columns":{
-                "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
-            },
-            "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
-            "format":{
-                "testcases.time_total":"%.3f",
-                "result":{"pass": "🟢", "fail": "🔴"}
+            "table_options":{
+                "computed_columns":{
+                    "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
+                },
+                "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
+                "format":{
+                    "testcases.time_total":"%.3f",
+                    "result":{"pass": "🟢", "fail": "🔴"}
+                }
             }
         }
     ]
