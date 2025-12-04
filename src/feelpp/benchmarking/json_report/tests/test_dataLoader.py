@@ -1,9 +1,10 @@
 import pytest
 import pandas as pd
 import numpy as np
+from unittest.mock import patch, mock_open
 
 from feelpp.benchmarking.json_report.schemas.dataRefs import  *
-from feelpp.benchmarking.json_report.dataLoader  import DataLoaderFactory, DataProcessorFactory, DataTableProcessor, DataObjectProcessor, DataRawProcessor, DataFileLoader, InlineLoader
+from feelpp.benchmarking.json_report.dataLoader  import DataLoaderFactory, DataProcessorFactory, DataTableProcessor, DataObjectProcessor, DataRawProcessor, DataFileLoader, InlineLoader, DataReferenceDependencyGraph, DataFieldParser
 
 
 # ------------------------------------------------------------
@@ -342,3 +343,118 @@ class TestDataTableProcessor:
         expected = expected.reset_index(drop=True)
         assert list(out.columns) == list(expected.columns)
         pd.testing.assert_frame_equal(out, expected, check_dtype=False,check_names=False)
+
+# ----------------------------
+# ReferenceSource tests
+# ----------------------------
+
+def addOne(x):
+    if isinstance(x, pd.DataFrame):
+        return x + 1
+    elif isinstance(x, dict):
+        return {k: v + 1 for k, v in x.items()}
+    elif isinstance(x, str):
+        return str(int(x)+1)
+    return x
+
+def double(x):
+    if isinstance(x, pd.DataFrame):
+        return x * 2
+    elif isinstance(x, dict):
+        return {k: v * 2 for k, v in x.items()}
+    elif isinstance(x, str):
+        return str(int(x)*2)
+    return x
+
+
+class TestReferences:
+    def test_object(self):
+        # Define base field
+        base_field = DataObject(name="base", source=InlineObject(object={"x":10, "y":20}))
+        ref_field = DataObject(name="ref", source=ReferenceSource(ref="base"))
+
+        graph = DataReferenceDependencyGraph([base_field, ref_field])
+
+        val_base = graph.resolve("base")
+        assert val_base == {"x":10,"y":20}
+
+        val_ref = graph.resolve("ref")
+        assert val_ref == val_base
+
+    def test_circular_reference_detection(self):
+        field_a = DataObject(name="A", source=ReferenceSource(ref="B"))
+        field_b = DataObject(name="B", source=ReferenceSource(ref="A"))
+        graph = DataReferenceDependencyGraph([field_a, field_b])
+
+        with pytest.raises(RecursionError):
+            graph.resolve("A")
+
+    def test_raw(self):
+        base = DataRaw(name="base", source=InlineRaw(value="42"))
+        ref = DataRaw(name="ref", source=ReferenceSource(ref="base"))
+        graph = DataReferenceDependencyGraph([base, ref])
+
+        val_base = graph.resolve("base")
+        val_ref = graph.resolve("ref")
+        assert val_base == "42"
+        assert val_ref == "42"
+
+    def test_table(self):
+        base = DataTable(
+            name="base",
+            source=InlineTable(columns=[
+                InlineTableColumn(name="a", values=[1,2,3]),
+                InlineTableColumn(name="b", values=[10,20,30])
+            ])
+        )
+        ref = DataTable(name="ref", source=ReferenceSource(ref="base"))
+        graph = DataReferenceDependencyGraph([base, ref])
+
+        val_base = graph.resolve("base")
+        val_ref = graph.resolve("ref")
+        pd.testing.assert_frame_equal(val_base, val_ref)
+
+    def test_chaining(self):
+        base = DataObject(name="one", source=InlineObject(object={"x":1}))
+        mid = DataObject(name="two", source=ReferenceSource(ref="one"))
+        end = DataObject(name="three", source=ReferenceSource(ref="two"))
+
+        graph = DataReferenceDependencyGraph([base, mid, end])
+        val_end = graph.resolve("three")
+
+        assert val_end == {"x":1}
+
+    def test_reference_with_preprocessor(self):
+        base = DataObject(
+            name="base",
+            source=InlineObject(object={"x":1}),
+            preprocessor=Preprocessor(module=__name__, function="addOne")
+        )
+        ref = DataObject(
+            name="ref",
+            source=ReferenceSource(ref="base"),
+            preprocessor=Preprocessor(module=__name__, function="double")
+        )
+
+        graph = DataReferenceDependencyGraph([base, ref])
+        val_base = graph.resolve("base")
+        val_ref = graph.resolve("ref")
+
+        assert val_base == {"x":2}       # add_one applied
+        assert val_ref == {"x":4}        # multiply_two applied on base
+
+
+    def test_mixed_types(self):
+        dt_base = DataTable( name="dt", source=InlineTable(columns=[InlineTableColumn(name="a", values=[1,2])]) )
+        obj_base = DataObject(name="obj", source=InlineObject(object={"x":100}))
+        raw_base = DataRaw(name="raw", source=InlineRaw(value="42"))
+
+        dt_ref = DataTable(name="dt_ref", source=ReferenceSource(ref="dt"))
+        obj_ref = DataObject(name="obj_ref", source=ReferenceSource(ref="obj"))
+        raw_ref = DataRaw(name="raw_ref", source=ReferenceSource(ref="raw"))
+
+        graph = DataReferenceDependencyGraph([dt_base, obj_base, raw_base, dt_ref, obj_ref, raw_ref])
+
+        pd.testing.assert_frame_equal(graph.resolve("dt_ref"), graph.resolve("dt"))
+        assert graph.resolve("obj_ref") == {"x":100}
+        assert graph.resolve("raw_ref") == "42"

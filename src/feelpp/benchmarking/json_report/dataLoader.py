@@ -38,13 +38,12 @@ class InlineLoader(DataLoader):
            raise NotImplementedError(f"Unkonwn inline type {type(self.source)}")
 
 class ReferenceLoader(DataLoader):
-    def __init__(self, data_graph):
-        super().__init__()
+    def __init__(self, source, data_graph):
+        super().__init__(source)
         self.data_graph = data_graph
 
     def load(self):
-        pass
-
+        return self.data_graph.resolve(self.source.ref)
 
 class DataFieldProcessor:
     def __init__(self,data_field: Union[DataTable,DataObject,DataRaw]):
@@ -169,12 +168,15 @@ class DataTableProcessor(DataFieldProcessor):
 
 class DataLoaderFactory:
     @staticmethod
-    def create(source):
+    def create(source, data_graph = None):
         if isinstance(source, DataFile):
             return DataFileLoader(source)
+        elif isinstance(source,ReferenceSource):
+            if data_graph is None:
+                raise RuntimeError("Reference Loader requires a data_graph")
+            return ReferenceLoader(source,data_graph)
         else:
             return InlineLoader(source)
-        #TODO: REF
 
 class DataProcessorFactory:
     type_to_processor:Dict[str,Type] = {
@@ -194,12 +196,13 @@ class DataProcessorFactory:
 
 
 class DataFieldParser:
-    def __init__(self, data_field :DataField):
+    def __init__(self, data_field :DataField, data_graph=None):
         self.data_field = data_field
+        self.data_graph = data_graph
 
 
     def parse(self):
-        loader = DataLoaderFactory.create(self.data_field.source)
+        loader = DataLoaderFactory.create(self.data_field.source,self.data_graph)
         processor = DataProcessorFactory.create(self.data_field)
 
         filedata = loader.load()
@@ -209,25 +212,24 @@ class DataFieldParser:
 
 
 class DataReferenceDependencyGraph:
-    def __init__(self, data_fields:List[DataField]):
-        self.data_fields:Dict[str,DataField] = { f.name : f for f in data_fields}
+    def __init__(self, data_fields: List[DataField]):
+        self.data_fields = {f.name: f for f in data_fields}
         self.cache = {}
 
-    def resolve(self, ref_name:str):
+    def resolve(self, ref_name: str):
         if ref_name in self.cache:
             return self.cache[ref_name]
 
-        data_field = self.data_fields.get(ref_name,None)
-        if not data_field:
-            raise ReferenceError(f"Cannot find data reference {ref_name} on the loaded data")
+        field = self.data_fields.get(ref_name)
+        if not field:
+            raise ReferenceError(f"Reference {ref_name} not found")
 
-        if isinstance(data_field,ReferenceSource):
-            parent = self.data_fields[data_field.source.ref]
-            if not data_field.type:
-                data_field.type = parent.type
+        if isinstance(field.source, ReferenceSource):
+            parent = self.data_fields[field.source.ref]
+            if field.type is None:
+                field.type = parent.type
 
-        parser = DataFieldParserFactory.create(data_field=data_field, graph=self)
-        result = parser.load()
+        parser = DataFieldParser(field, data_graph=self)
+        result = parser.parse()
         self.cache[ref_name] = result
         return result
-

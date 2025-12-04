@@ -6,7 +6,7 @@ from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
 from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
 from feelpp.benchmarking.json_report.tables.controller import Controller as TableController
 from feelpp.benchmarking.json_report.text.controller import Controller as TextController
-from feelpp.benchmarking.json_report.dataLoader import DataFieldParser
+from feelpp.benchmarking.json_report.dataLoader import DataFieldParser, DataReferenceDependencyGraph
 
 class JsonReportController:
     def __init__(self, report_filepath: str, output_format:str = "adoc") -> None:
@@ -54,6 +54,7 @@ class JsonReportController:
             raise RuntimeError("Report must be loaded before loading data files.")
 
         data = {}
+        data_graph = DataReferenceDependencyGraph(self.report.data)
         for d in self.report.data:
             parser = DataFieldParser(d)
             filedata = parser.parse()
