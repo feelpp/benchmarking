@@ -27,7 +27,7 @@ class Preprocessor(BaseModel):
     def setPreprocessorModule( cls, module, info ):
         if isinstance(module,str):
             try:
-                module = __import__( module, fromlist=[info.data.get("function")] )
+                module = __import__( module, fromlist=info.data.get("function","").split(".") )
             except ImportError as e:
                 if not os.path.isabs(module):
                     report_filepath = info.context.get("report_filepath", None)
