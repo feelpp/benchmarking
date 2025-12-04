@@ -1,7 +1,7 @@
 import os, warnings, builtins
 import importlib.util
 from typing import Literal, Union, Optional, Any, List, Type, Dict
-from pydantic import  BaseModel, field_validator, model_validator
+from pydantic import  BaseModel, field_validator, model_validator, ConfigDict
 
 class Preprocessor(BaseModel):
     #TODO: IMPORTANT: VERIFY SECURITY IMPLICATIONS OF DYNAMIC IMPORTS
@@ -150,6 +150,8 @@ class DataField(BaseModel):
 
     expose:Optional[Union[str,bool]] = True
 
+    model_config = ConfigDict( extra="forbid" )
+
     @model_validator(mode="before")
     @classmethod
     def inferSource(cls,values:Dict, info):
@@ -167,11 +169,14 @@ class DataField(BaseModel):
         else:
             data_type = values.get("type")
             if data_type == "DataTable":
-                values["source"] = InlineTable(columns=values.get("columns"))
+                cols = values.pop("columns")
+                values["source"] = InlineTable(columns=cols)
             elif data_type == "Object":
-                values["source"] = InlineObject(object=values.get("object"))
+                object = values.pop("object")
+                values["source"] = InlineObject(object=object)
             elif data_type == "Raw":
-                values["source"] = InlineRaw(value=values.get("value"))
+                val = values.pop("value")
+                values["source"] = InlineRaw(value=val)
             else:
                 raise ValueError("Data Type should be provided when passing inline data.")
 
