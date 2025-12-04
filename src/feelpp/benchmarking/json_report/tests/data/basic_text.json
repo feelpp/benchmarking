@@ -14,7 +14,19 @@
             "type":"Object",
             "name":"MyCustomInlineObject",
             "object":{ "data1":"my data value" }
-        }
+        },
+
+        { "name":"myRefFromTextFile", "ref":"MyCustomTextFromFile" },
+        { "name":"myProcessedRefFromTextFile", "ref":"MyCustomTextFromFile", "preprocessor":"builtins:str.lower" },
+        { "name":"myRefFromInline", "ref":"MyCustomInlineRaw" },
+        { "name":"myProcessedRefFromInline", "ref":"MyCustomInlineRaw", "preprocessor":"builtins:str.upper" },
+
+        { "name":"myObjectRefFromFile", "ref":"MyCustomObjectFromFile"},
+        { "type":"Raw","name":"myProcessedObjectRefFromFile", "ref":"MyCustomObjectFromFile", "preprocessor":"json:dumps" },
+
+        { "name":"myObjectRefInline", "ref":"MyCustomInlineObject"},
+        { "type":"Raw", "name":"myProcessedObjectRefInline", "ref":"MyCustomInlineObject" }
+
 
     ],
     "contents": [
@@ -81,6 +93,55 @@
                     "type":"text",
                     "ref":"MyCustomInlineObject",
                     "text":"Value @{data1}@"
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"References",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"myRefFromTextFile",
+                    "text":"Unchanged reference : @{myRefFromTextFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedRefFromTextFile",
+                    "text":"Reference lower : @{myProcessedRefFromTextFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myRefFromInline",
+                    "text":"Inline ref : @{myRefFromInline}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedRefFromInline",
+                    "text":"Inline UPPER : @{myProcessedRefFromInline}@"
+                },
+                {
+                    "type":"itemize",
+                    "ref":"myObjectRefFromFile",
+                    "items":[
+                        "Javier Copy: @{students.javier.score}@ (@{students.javier.grade}@)",
+                        "Oscar Copy: @{students.oscar.score}@ (@{students.oscar.grade}@)"
+                    ]
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedObjectRefFromFile",
+                    "text":"Dumped json : @{myProcessedObjectRefFromFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myObjectRefInline",
+                    "text":"Inline object from ref: @{data1}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedObjectRefInline",
+                    "text":"Object Casted to raw: @{myProcessedObjectRefInline}@"
                 }
             ]
         }
