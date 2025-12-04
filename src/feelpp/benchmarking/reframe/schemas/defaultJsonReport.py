@@ -16,7 +16,7 @@ class DefaultPlot(Plot):
     color_axis: DefaultColorAxis = DefaultColorAxis()
 
 class JsonReportSchemaWithDefaults(JsonReportSchema):
-    data: List[Dict[str,str]] = [
+    data: List[Dict] = [
         { "name":"reframe_json", "filepath":"./reframe_report.json" },
         {
             "name":"reframe_df",
