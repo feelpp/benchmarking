@@ -1,16 +1,54 @@
 from typing import Union, Type, List, Dict
-from feelpp.benchmarking.json_report.schemas.dataRefs import DataFile, InlineTable, InlineRaw, InlineObject,DataTable,DataObject,DataRaw,DataField, Preprocessor
+from feelpp.benchmarking.json_report.schemas.dataRefs import DataFile, InlineTable, InlineRaw, InlineObject,DataTable,DataObject,DataRaw,DataField, Preprocessor, ReferenceSource
 from feelpp.benchmarking.json_report.schemas.dataRefs import Pivot, GroupBy, SortInstruction, FilterCondition
 import pandas as pd
 import json
 
 
-class DataFieldParser:
-    def __init__(self,data_field: Union[DataTable,DataObject,DataRaw]):
-        self.data_field = data_field
+class DataLoader:
+    def __init__(self, source):
+        self.source = source
+
+    def load(self)-> Union[pd.DataFrame,dict,str]:
+        raise NotImplementedError("Pure virtual function, must be implemented in child class")
+
+class DataFileLoader(DataLoader):
+    def load(self):
+        if not isinstance(self.source, DataFile):
+            raise ValueError(f" DataFileLoader is not supported for source type : {type(self.source)}")
+        with open( self.source.filepath, "r" ) as f:
+            if self.source.format == "csv":
+                return pd.read_csv(f)
+            elif self.source.format == "json":
+                return json.load(f)
+            elif self.source.format == "raw" :
+                return f.read()
+            else:
+                raise NotImplementedError(f"Unkonwn format {self.source.format} for {self.source.filepath}")
+
+class InlineLoader(DataLoader):
+    def load(self):
+        if isinstance( self.source, InlineTable):
+            return pd.DataFrame({c.name:c.values for c in self.source.columns})
+        elif isinstance( self.source, InlineObject):
+            return dict(self.source.object)
+        elif isinstance( self.source, InlineRaw):
+            return str(self.source.value)
+        else:
+           raise NotImplementedError(f"Unkonwn inline type {type(self.source)}")
+
+class ReferenceLoader(DataLoader):
+    def __init__(self, data_graph):
+        super().__init__()
+        self.data_graph = data_graph
 
     def load(self):
-        raise NotImplementedError("Pure virtual function, must be implemented in child class")
+        pass
+
+
+class DataFieldProcessor:
+    def __init__(self,data_field: Union[DataTable,DataObject,DataRaw]):
+        self.data_field = data_field
 
     def process(self, filedata: Union[pd.DataFrame,dict,str]):
         if self.data_field.preprocessor:
@@ -18,32 +56,40 @@ class DataFieldParser:
         return filedata
 
 
-class DataTableParser(DataFieldParser):
-    def load(self) -> pd.DataFrame:
-        source = self.data_field.source
-        if isinstance(source,DataFile):
-            with open( source.filepath, "r" ) as f:
-                if source.format == "csv":
-                    filedata =  pd.read_csv(f)
-                elif source.format == "json":
-                    filedata = json.load(f)
-                    if not self.data_field.preprocessor:
-                        self.data_field.preprocessor = Preprocessor.model_construct(module=pd,function=pd.DataFrame.from_dict)
-                else:
-                    raise NotImplementedError(f"Cannot create DataTable from {source.format} files")
-        elif isinstance(source,InlineTable):
-            filedata = source.columns
-            if not self.data_field.preprocessor:
-                self.data_field.preprocessor = Preprocessor.model_construct(module=pd,function=lambda x : pd.DataFrame.from_dict({c.name:c.values for c in source.columns}))
-        else:
-            raise NotImplementedError(f"Cannot create a DataTable from  type {type(source)}")
+class DataObjectProcessor(DataFieldProcessor):
+    def process(self, filedata):
+        filedata = super().process(filedata)
 
-        filedata = self.process(filedata)
+        if isinstance(filedata,pd.DataFrame):
+            filedata = filedata.to_dict(orient="list")
+        elif isinstance(filedata, str):
+            filedata = json.loads(filedata)
+
+        return filedata
+
+class DataRawProcessor(DataFieldProcessor):
+    def process(self, filedata):
+        filedata = super().process(filedata)
+
+        if isinstance(filedata,pd.DataFrame):
+            filedata = filedata.to_string()
+        elif isinstance(filedata, dict):
+            filedata = json.dumps(filedata)
+
         return filedata
 
 
-    def process(self,filedata: Union[pd.DataFrame,dict,str]):
+class DataTableProcessor(DataFieldProcessor):
+    def process(self, filedata):
         filedata = super().process(filedata)
+        if isinstance(filedata, list):
+            filedata = pd.DataFrame.from_dict(filedata,orient="columns")
+        elif isinstance(filedata,dict):
+            filedata = pd.DataFrame.from_dict(filedata,orient="index")
+        elif isinstance(filedata,str):
+            raise NotImplementedError(f"Cannot create a Table from a string: {filedata}")
+
+
         opts = self.data_field.table_options
         if isinstance(filedata, pd.DataFrame):
             filedata = self._applyFilter(opts.filter,filedata)
@@ -55,9 +101,7 @@ class DataTableParser(DataFieldParser):
             filedata = self._sort(opts.sort,filedata)
             filedata = self._format(opts.format,filedata)
 
-
         return filedata
-
 
     def _applyFilter(self, filter: List[FilterCondition], df: pd.DataFrame) -> pd.DataFrame:
         for f in filter:
@@ -122,53 +166,68 @@ class DataTableParser(DataFieldParser):
                         df[col] = df[col].astype(str)
         return df
 
-class DataObjectParser(DataFieldParser):
-    def load(self) -> dict:
-        source = self.data_field.source
-        if isinstance(source,DataFile):
-            with open( source.filepath, "r" ) as f:
-                if source.format == "json":
-                    filedata = json.load(f)
-                elif source.format == "csv":
-                    filedata = pd.read_csv(f)
-                    if not self.data_field.preprocessor:
-                        self.data_field.preprocessor = Preprocessor.model_construct(module=None,function=lambda x : filedata.to_dict("list"))
-                else:
-                    raise NotImplementedError(f"Cannot create DataObject (Dictionnary) from {source.format} files")
-        elif isinstance(source,InlineObject):
-            filedata = dict(source.object)
-        else:
-            raise NotImplementedError(f"Cannot create a DataObject from  type {type(source)}")
 
-        filedata = self.process(filedata)
-        return filedata
-
-class DataRawParser(DataFieldParser):
-    def load(self) -> str:
-        source = self.data_field.source
-        if isinstance(source,DataFile):
-            with open( source.filepath, "r" ) as f:
-                filedata = f.read()
-        elif isinstance(source,InlineRaw):
-            filedata = source.value
-        else:
-            raise NotImplementedError(f"Cannot create a RawObject (str) from  type {type(source)}")
-
-        filedata = self.process(filedata)
-        return filedata
-
-class DataFieldParserFactory:
+class DataLoaderFactory:
     @staticmethod
-    def create(data_field: DataField) -> DataFieldParser:
-        type_to_parser = {
-            DataTable: DataTableParser,
-            DataObject: DataObjectParser,
-            DataRaw:DataRawParser
-        }
+    def create(source):
+        if isinstance(source, DataFile):
+            return DataFileLoader(source)
+        else:
+            return InlineLoader(source)
+        #TODO: REF
 
-        parser:Type[DataFieldParser] = type_to_parser.get(type(data_field))
+class DataProcessorFactory:
+    type_to_processor:Dict[str,Type] = {
+        DataTable: DataTableProcessor,
+        DataObject: DataObjectProcessor,
+        DataRaw: DataRawProcessor
+    }
 
-        if not parser:
+    @classmethod
+    def create(cls,data_field: DataField):
+        processor:Type[DataFieldProcessor] = cls.type_to_processor.get(type(data_field))
+
+        if not processor:
             raise NotImplementedError(f"Unknown data field type: {data_field.type}")
 
-        return parser(data_field)
+        return processor(data_field)
+
+
+class DataFieldParser:
+    def __init__(self, data_field :DataField):
+        self.data_field = data_field
+
+
+    def parse(self):
+        loader = DataLoaderFactory.create(self.data_field.source)
+        processor = DataProcessorFactory.create(self.data_field)
+
+        filedata = loader.load()
+        filedata = processor.process(filedata)
+
+        return filedata
+
+
+class DataReferenceDependencyGraph:
+    def __init__(self, data_fields:List[DataField]):
+        self.data_fields:Dict[str,DataField] = { f.name : f for f in data_fields}
+        self.cache = {}
+
+    def resolve(self, ref_name:str):
+        if ref_name in self.cache:
+            return self.cache[ref_name]
+
+        data_field = self.data_fields.get(ref_name,None)
+        if not data_field:
+            raise ReferenceError(f"Cannot find data reference {ref_name} on the loaded data")
+
+        if isinstance(data_field,ReferenceSource):
+            parent = self.data_fields[data_field.source.ref]
+            if not data_field.type:
+                data_field.type = parent.type
+
+        parser = DataFieldParserFactory.create(data_field=data_field, graph=self)
+        result = parser.load()
+        self.cache[ref_name] = result
+        return result
+

@@ -21,12 +21,10 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
         {
             "name":"reframe_df",
             "filepath":"./reframe_report.json",
-            "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor",
+            "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor"
         },
         {
-            "type":"DataTable",
-            "name":"parameter_table",
-            "filepath":"./reframe_report.json",
+            "type":"DataTable", "name":"parameter_table", "filepath":"./reframe_report.json",
             "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor",
             "table_options":{
                 "computed_columns":{

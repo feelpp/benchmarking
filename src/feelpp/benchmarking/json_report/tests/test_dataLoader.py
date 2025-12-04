@@ -3,107 +3,126 @@ import pandas as pd
 import numpy as np
 
 from feelpp.benchmarking.json_report.schemas.dataRefs import  *
-from feelpp.benchmarking.json_report.dataLoader  import DataFieldParserFactory, DataTableParser, DataObjectParser, DataRawParser
+from feelpp.benchmarking.json_report.dataLoader  import DataLoaderFactory, DataProcessorFactory, DataTableProcessor, DataObjectProcessor, DataRawProcessor, DataFileLoader, InlineLoader
 
 
 # ------------------------------------------------------------
-# DataFieldParserFactory Tests
+# DataLoader Tests
 # ------------------------------------------------------------
-
-class TestDataFieldParserFactory:
-    def test_create(self):
-        dt = DataTable(name="dt",source=InlineTable(columns=[]))
-        do = DataObject(name="do",source=InlineObject(object={}))
-        dr = DataRaw(name="dr",source=InlineRaw(value="raw"))
-
-        assert isinstance(DataFieldParserFactory.create(dt), DataTableParser)
-        assert isinstance(DataFieldParserFactory.create(do), DataObjectParser)
-        assert isinstance(DataFieldParserFactory.create(dr), DataRawParser)
-
-    def test_raises(self):
-        class UnknownField:
-            type = "unknown"
-        with pytest.raises(NotImplementedError):
-            DataFieldParserFactory.create(UnknownField())
-
-
-class TestDataRawParser:
-    def test_loadInline(self):
-        dr = DataRaw(name="rawdata",source=InlineRaw(value="hello"))
-        parser = DataRawParser(dr)
-        assert parser.load() == "hello"
-
-    def test_loadFile(self, tmp_path):
-        filepath = tmp_path / "data.txt"
-        filepath.write_text("file contents")
-
-        dr = DataRaw(name="rawdata",source=DataFile.model_validate(dict(filepath=str(filepath)),context={"report_filepath":str(filepath)}))
-        parser = DataRawParser(dr)
-        result = parser.load()
-
-        assert result == "file contents"
-
-
-    def test_loadInvalid(self):
-        dr = DataRaw(source=InlineObject(object={}),name="dr")
-        parser = DataRawParser(dr)
-        with pytest.raises(NotImplementedError):
-            parser.load()
-
-
-
-class TestObjectParser:
-    def test_loadInline(self):
-        do = DataObject(name="objec_data", source=InlineObject(object={"a":"b","c":{"c1":"c2"}}))
-        parser = DataObjectParser(do)
-        assert parser.load() == {"a":"b","c":{"c1":"c2"}}
-
-    def test_loadFileJson(self, tmp_path):
+class TestDataLoaderFactory:
+    def test_create(self,tmp_path):
         filepath = tmp_path / "data.json"
-        filepath.write_text("""{"a":"b","c":{"c1":"c2"}}""")
+        filepath.write_text("")
+        djson = DataField.model_validate(dict(name="test", source = dict(filepath=str(filepath))),context={"report_filepath":str(filepath)})
+        assert isinstance(DataLoaderFactory.create(djson.source), DataFileLoader)
 
-        dr = DataObject(name="object_data",source=DataFile.model_validate(dict(filepath=str(filepath)),context={"report_filepath":str(filepath)}))
-        parser = DataObjectParser(dr)
-        result = parser.load()
+        dt = DataTable(name="dt",source=InlineTable(columns=[]))
+        assert isinstance(DataLoaderFactory.create(dt.source), InlineLoader)
 
-        assert isinstance(result,dict)
-        assert result == {"a":"b","c":{"c1":"c2"}}
+        do = DataObject(name="do",source=InlineObject(object={}))
+        assert isinstance(DataLoaderFactory.create(do.source), InlineLoader)
 
-    def test_loadFileCsv(self, tmp_path):
-        filepath = tmp_path / "data.csv"
-        filepath.write_text("""a,b,c\n1,2,3\n11,22,33""")
-
-        dr = DataObject(name="object_data",source=DataFile.model_validate(dict(filepath=str(filepath)),context={"report_filepath":str(filepath)}))
-        parser = DataObjectParser(dr)
-        result = parser.load()
-
-        assert isinstance(result,dict)
-        assert result == {"a":[1,11],"b":[2,22],"c":[3,33]}
+        dr = DataRaw(name="dr",source=InlineRaw(value="raw"))
+        assert isinstance(DataLoaderFactory.create(dr.source), InlineLoader)
 
 
+class TestFileLoader:
 
-    def test_loadInvalid(self,tmp_path):
-        with pytest.raises(UserWarning):
-            dr = DataObject(name="object_data",source=DataFile.model_validate(dict(filepath=str(tmp_path)),context={"report_filepath":str(tmp_path)}))
-            parser = DataObjectParser(dr)
+    @pytest.mark.parametrize("extension,data,expected_type",[
+        ("json", '{"my_obj":"my_val"}',dict),
+        ("json", "{}",dict),
+        ("txt","",str),
+        ("txt","Some raw text",str),
+        ("csv","a,b,c\n1,2,3",pd.DataFrame)
+    ])
+    def test_format(self,tmp_path,extension,data, expected_type):
+        filepath = tmp_path / ("data." + extension)
+        filepath.write_text(data)
+        datafield = DataField.model_validate(dict(name="test", source = dict(filepath=str(filepath))),context={"report_filepath":str(filepath)})
+        loaded = DataFileLoader(datafield.source).load()
+        assert isinstance(loaded,expected_type)
+
+    def test_unkown(self,tmp_path):
+        filepath = tmp_path / "data.unkown"
+        filepath.write_text("Weird format")
+
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            datafield = DataField.model_validate(dict(name="test", source = DataFile(filepath=str(filepath))),context={"report_filepath":str(filepath)})
+            datafield.source.format = "unkown"
             with pytest.raises(NotImplementedError):
-                result = parser.load()
+                loaded = DataFileLoader(datafield.source).load()
 
-        dr = DataObject(source=InlineRaw(value=""),name="dr")
-        parser = DataObjectParser(dr)
-        with pytest.raises(NotImplementedError):
-            parser.load()
 
-class TestDataTableParser:
+    @pytest.mark.parametrize("content",[
+        "file contents"
+    ])
+    def test_loadRaw(self, tmp_path,content):
+        filepath = tmp_path / "data.txt"
+        filepath.write_text(content)
+        source=DataFile.model_validate(dict(filepath=str(filepath)),context={"report_filepath":str(filepath)})
+        parser = DataFileLoader(source)
+        assert parser.load() == content
+
+
+    @pytest.mark.parametrize("content,expected",[
+        ("""{"a":"b","c":{"c1":"c2"}}""", {"a":"b","c":{"c1":"c2"}})
+    ])
+    def test_loadJson(self, tmp_path,content,expected):
+        filepath = tmp_path / "data.json"
+        filepath.write_text(content)
+        source=DataFile.model_validate(dict(filepath=str(filepath)),context={"report_filepath":str(filepath)})
+        parser = DataFileLoader(source)
+        assert parser.load() == expected
+
+
+    @pytest.mark.parametrize("content,expected",[
+        ("""a,b,c\n1,2,3\n11,22,33""", pd.DataFrame(columns=["a","b","c"],data=[[1,2,3],[11,22,33]]))
+    ])
+    def test_loadCsv(self, tmp_path,content,expected):
+        filepath = tmp_path / "data.csv"
+        filepath.write_text(content)
+        source=DataFile.model_validate(dict(filepath=str(filepath)),context={"report_filepath":str(filepath)})
+        parser = DataFileLoader(source)
+        pd.testing.assert_frame_equal(parser.load(),expected)
+
+class TestInlineLoader:
+
+    @pytest.mark.parametrize("source, expected_type",[
+        (
+            InlineTable(columns=[ InlineTableColumn(name="a", values=[1, 2, 3]), InlineTableColumn(name="b", values=[10, 20, 30]) ]),
+            pd.DataFrame
+        ),
+        ( InlineObject(object={"my_object":"val"}), dict ),
+        ( InlineRaw(value="my_raw_str"), str ),
+    ])
+    def test_inlineTypes(self, source, expected_type):
+        loaded = InlineLoader(source).load()
+        assert isinstance(loaded,expected_type)
+
+
+    @pytest.mark.parametrize("val", [
+        "hello"
+    ])
+    def test_loadRaw(self,val):
+        source = InlineRaw(value=val)
+        loader = InlineLoader(source)
+        assert loader.load() == val
+
+    @pytest.mark.parametrize("val",[
+        {"a":"b","c":{"c1":"c2"}}
+    ])
+    def test_loadJson(self,val):
+        source =InlineObject(object=val)
+        parser = InlineLoader(source)
+        assert parser.load() == val
 
     def test_loadInlineTable(self):
-        dt = DataTable( name="table",
-            source=InlineTable(columns=[
-                InlineTableColumn(name="a", values=[1, 2, 3]),
-                InlineTableColumn(name="b", values=[10, 20, 30])
-            ])
-        )
-        parser = DataTableParser(dt)
+        source=InlineTable(columns=[
+            InlineTableColumn(name="a", values=[1, 2, 3]),
+            InlineTableColumn(name="b", values=[10, 20, 30])
+        ])
+        parser = InlineLoader(source)
         df = parser.load()
 
         assert isinstance(df, pd.DataFrame)
@@ -111,54 +130,50 @@ class TestDataTableParser:
         assert list(df["a"]) == [1, 2, 3]
         assert list(df["b"]) == [10, 20, 30]
 
-    def test_loadCsv(self,tmp_path):
-        filepath = tmp_path / "data.csv"
-        filepath.write_text("a,b\n1,2\n3,4\n")
-
-        dt = DataTable( name="table", source=DataFile.model_validate( dict(filepath=str(filepath), format="csv"), context={"report_filepath": str(filepath)} ) )
-        parser = DataTableParser(dt)
-        df = parser.load()
-
-        assert isinstance(df, pd.DataFrame)
-        assert list(df.columns) == ["a", "b"]
-        assert list(df["a"]) == [1, 3]
-        assert list(df["b"]) == [2, 4]
+# ------------------------------------------------------------
+# DataProcessor Tests
+# ------------------------------------------------------------
 
 
-    def test_loadJson(self, tmp_path):
-        filepath = tmp_path / "data.json"
-        filepath.write_text('[{"x": 1, "y": 2}, {"x": 3, "y": 4}]')
+class TestDataObjectProcessor:
+    @pytest.mark.parametrize("input_data, expected", [
+        (pd.DataFrame({"a": [1, 2]}), {"a": [1, 2]}), # DataFrame → dict(list)
+        ('{"x": 1, "y": 2}', {"x": 1, "y": 2}), # JSON string → dict
+        ({"k": 5}, {"k": 5}), # dict → unchanged
+    ])
+    def test_process(self,input_data,expected):
+        p = DataObjectProcessor(DataObject(name="obj",preprocessor=None,source = InlineObject(object={})))
+        assert p.process(input_data) == expected
 
-        dt = DataTable( name="table", source=DataFile.model_validate( dict(filepath=str(filepath), format="json"), context={"report_filepath": str(filepath)} ) )
-        parser = DataTableParser(dt)
-        df = parser.load()
+class TestDataRawProcessor:
+    @pytest.mark.parametrize("input_data, expected", [
+        (pd.DataFrame({"a": [1]}), pd.DataFrame({"a":[1]}).to_string()), # DataFrame → string table
+        ({"x": 7}, '{"x": 7}'),# dict → JSON string
+        ("hello!", "hello!"), # string → unchanged
+    ])
+    def test_process(self,input_data, expected):
+        p = DataRawProcessor(DataRaw(name="r",preprocessor=None, source=InlineRaw(value="")))
+        assert p.process(input_data) == expected
+
+
+
+class TestDataTableProcessor:
+
+    def test_castJson(self):
+        dt = DataTable( name="table", source=InlineTable(columns=[]) )
+        parser = DataTableProcessor(dt)
+        data = [{"x": 1, "y": 2}, {"x": 3, "y": 4}]
+        df = parser.process(data)
 
         assert isinstance(df, pd.DataFrame)
         assert list(df.columns) == ["x", "y"]
         assert list(df["x"]) == [1, 3]
 
-    def test_loadUnsupportedFormat(self,tmp_path):
-        filepath = tmp_path / "data.txt"
-        filepath.write_text("invalid")
-
-        dt = DataTable( name="table", source=DataFile.model_validate( dict(filepath=str(filepath)), context={"report_filepath": str(filepath)} ) )
-        parser = DataTableParser(dt)
-
-        with pytest.raises(NotImplementedError):
-            parser.load()
-
-
-    def test_loadInvalidInlineTypeRaises(self):
-        dt = DataTable( name="table", source=InlineObject(object={"bad": "type"}) )
-        parser = DataTableParser(dt)
-
-        with pytest.raises(NotImplementedError):
-            parser.load()
 
     @staticmethod
-    def makeParser() -> DataTableParser:
-        """Create a DataTableParser instance without calling __init__()."""
-        return DataTableParser.__new__(DataTableParser)
+    def makeProcessor() -> DataTableProcessor:
+        """Create a DataTableProcessor instance without calling __init__()."""
+        return DataTableProcessor.__new__(DataTableProcessor)
 
 
     def test_applyFilter(self):
@@ -169,7 +184,7 @@ class TestDataTableParser:
             FilterCondition(column="b", op="==", value="y"),
         ]
 
-        parser = self.makeParser()
+        parser = self.makeProcessor()
         out = parser._applyFilter(filters, df)
 
         assert len(out) == 1
@@ -182,7 +197,7 @@ class TestDataTableParser:
 
         computed = { "z": "row['x'] + row['y']", "t": "row['x'] * 2", }
 
-        parser = self.makeParser()
+        parser = self.makeProcessor()
         out = parser._computeColumns(computed, df)
 
         assert list(out.columns) == ["x", "y", "z", "t"]
@@ -204,7 +219,7 @@ class TestDataTableParser:
             agg="mean"
         )
 
-        parser = self.makeParser()
+        parser = self.makeProcessor()
         out = parser._pivot(pivot, df)
 
         assert list(out.columns) == ["team", "m1", "m2"]
@@ -224,7 +239,7 @@ class TestDataTableParser:
             agg="sum"   # string form must apply to all non-groupby columns
         )
 
-        parser = self.makeParser()
+        parser = self.makeProcessor()
         out = parser._groupAndAggregate(groupby, df)
 
         assert list(out.columns) == ["grp", "val1", "val2"]
@@ -243,7 +258,7 @@ class TestDataTableParser:
             SortInstruction(column="a", ascending=True)
         ]
 
-        parser = self.makeParser()
+        parser = self.makeProcessor()
         out = parser._sort(sort, df)
 
         assert out["a"].tolist() == [1, 2, 3]
@@ -259,7 +274,7 @@ class TestDataTableParser:
             "code": {"A": "Alpha", "B": "Beta"}
         }
 
-        parser = self.makeParser()
+        parser = self.makeProcessor()
         out = parser._format(fmt, df)
 
         assert out["num"].tolist() == ["1.2", "5.7"]
@@ -311,19 +326,16 @@ class TestDataTableParser:
         )
     ])
     def test_process(self,options,expected):
-        dt = DataTable(
-            name="table",
-            source=InlineTable(columns=[
-                InlineTableColumn(name="a", values=[1, 2, 3]),
-                InlineTableColumn(name="b", values=[10, 20, 30]),
-                InlineTableColumn(name="c", values=[100, 200, 300]),
-            ])
-        )
+        dt = DataTable( name="table", source=InlineTable(columns=[ ]) )
+        df = pd.DataFrame.from_dict({
+            "a":[1,2,3],
+            "b":[10,20,30],
+            "c":[100,200,300]
+        })
 
         dt.table_options = TableOptions(**options)
 
-        parser = DataTableParser(dt)
-        df = parser.load()
+        parser = DataTableProcessor(dt)
         out = parser.process(df)
 
         out = out.reset_index(drop=True)

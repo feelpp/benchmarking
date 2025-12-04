@@ -144,7 +144,7 @@ def test_loadReportDataAppliesPreprocessor_withMock(tmp_path):
     prep = Preprocessor(module = str(module_path), function="process")
 
     ctrl = JsonReportController.__new__(JsonReportController)
-    ctrl.report = JsonReportSchema(data=[dict(name = "d1", filepath=str(raw_path), format="json", preprocessor=prep, expose=False )])
+    ctrl.report = JsonReportSchema(data=[dict(type="Raw", name = "d1", filepath=str(raw_path), format="json", preprocessor=prep, expose=False )])
     ctrl.exposed = {}
 
     data = JsonReportController.loadReportData(ctrl)

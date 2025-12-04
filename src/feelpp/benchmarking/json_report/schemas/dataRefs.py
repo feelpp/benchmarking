@@ -142,11 +142,15 @@ class InlineObject(BaseModel):
 class InlineRaw(BaseModel):
     value: str
 
+
+class ReferenceSource(BaseModel):
+    ref:str
+
 class DataField(BaseModel):
     type: Optional[Literal["DataTable","Object","Raw"]] = None
     name: str
     preprocessor: Optional[Preprocessor] = None
-    source: Union[DataFile, InlineTable, InlineObject, InlineRaw]
+    source: Union[DataFile, InlineTable, InlineObject, InlineRaw, ReferenceSource]
 
     expose:Optional[Union[str,bool]] = True
 
@@ -165,7 +169,9 @@ class DataField(BaseModel):
             format_to_default_type = { "json":"Object", "csv":"DataTable", "raw":"Raw" }
             if values.get("type") is None:
                 values["type"] = format_to_default_type.get(values["source"].format,"Raw")
-            return values
+        elif "ref" in values:
+            ref_name = values.pop("ref")
+            values["source"] = ReferenceSource(ref=ref_name)
         else:
             data_type = values.get("type")
             if data_type == "DataTable":
