@@ -228,7 +228,7 @@ class DataReferenceDependencyGraph:
             parent = self.data_fields[field.source.ref]
             if field.type is None or field.type == "__reference__":
                 field.type = parent.type
-                field = type(parent)(**field.model_dump())
+                field = type(parent).model_validate(field.model_dump())
 
         parser = DataFieldParser(field, data_graph=self)
         result = parser.parse()

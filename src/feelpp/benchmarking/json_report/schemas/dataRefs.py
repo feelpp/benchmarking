@@ -1,13 +1,13 @@
 import os, warnings, builtins
 import importlib.util
-from typing import Literal, Union, Optional, Any, List, Type, Dict
+from typing import Literal, Union, Optional, Any, List, Type, Dict, Callable
 from pydantic import  BaseModel, field_validator, model_validator, ConfigDict
 
 class Preprocessor(BaseModel):
     #TODO: IMPORTANT: VERIFY SECURITY IMPLICATIONS OF DYNAMIC IMPORTS
     # Maybe support class later and/or static methods
-    module:str
-    function:str
+    module:Union[str,Any]
+    function:Union[str,Callable]
 
     @model_validator(mode="before")
     @classmethod
@@ -47,12 +47,20 @@ class Preprocessor(BaseModel):
     @field_validator("function",mode="after")
     def setPreprocessorFunction( cls, function, info ):
         if isinstance(function,str):
-            try:
-                if not hasattr( info.data["module"], function ):
-                    raise AttributeError(f"Preprocessor function {function} not found in module {info.data.get('module')}.")
-                function = getattr( info.data["module"], function )
-            except AttributeError as e:
-                raise AttributeError(f"Preprocessor function '{function}' could not be set: {e}")
+            fct_path = function.split(".")
+            module = info.data.get("module")
+            if not module:
+                raise AttributeError(f"Module not found during function resolution : {module}")
+
+            obj = module
+            for part in fct_path:
+                try:
+                    obj = getattr(obj, part)
+                except AttributeError as e:
+                    raise AttributeError(f"Preprocessor function {part} not found in module {obj}.")
+
+
+            function = obj
 
         return function
 
