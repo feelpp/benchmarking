@@ -55,13 +55,12 @@ class JsonReportController:
 
         data = {}
         data_graph = DataReferenceDependencyGraph(self.report.data)
-        for d in self.report.data:
-            parser = DataFieldParser(d)
-            filedata = parser.parse()
-            filedata = {d.name : filedata}
-            data[d.name] = filedata
-            if d.expose:
-                self.exposed[d.expose] = filedata
+        for field_name, field in data_graph.data_fields.items():
+            filedata = {field_name : data_graph.resolve(field_name)}
+            data[field_name] = filedata
+
+            if field.expose:
+                self.exposed[field.expose] = filedata
 
         return data
 
