@@ -1,5 +1,5 @@
 from typing import Union, Type, List, Dict
-from feelpp.benchmarking.json_report.schemas.dataRefs import DataFile, InlineTable, InlineRaw, InlineObject,DataTable,DataObject,DataRaw,DataField
+from feelpp.benchmarking.json_report.schemas.dataRefs import DataFile, InlineTable, InlineRaw, InlineObject,DataTable,DataObject,DataRaw,DataField, Preprocessor
 from feelpp.benchmarking.json_report.schemas.dataRefs import Pivot, GroupBy, SortInstruction, FilterCondition
 import pandas as pd
 import json
@@ -24,15 +24,22 @@ class DataTableParser(DataFieldParser):
         if isinstance(source,DataFile):
             with open( source.filepath, "r" ) as f:
                 if source.format == "csv":
-                    return pd.read_csv(f)
+                    filedata =  pd.read_csv(f)
                 elif source.format == "json":
-                    return pd.DataFrame.from_dict(json.load(f))
+                    filedata = json.load(f)
+                    if not self.data_field.preprocessor:
+                        self.data_field.preprocessor = Preprocessor.model_construct(module=pd,function=pd.DataFrame.from_dict)
                 else:
                     raise NotImplementedError(f"Cannot create DataTable from {source.format} files")
         elif isinstance(source,InlineTable):
-            return pd.DataFrame.from_dict({c.name:c.values for c in source.columns})
+            filedata = source.columns
+            if not self.data_field.preprocessor:
+                self.data_field.preprocessor = Preprocessor.model_construct(module=pd,function=lambda x : pd.DataFrame.from_dict({c.name:c.values for c in source.columns}))
         else:
             raise NotImplementedError(f"Cannot create a DataTable from  type {type(source)}")
+
+        filedata = self.process(filedata)
+        return filedata
 
 
     def process(self,filedata: Union[pd.DataFrame,dict,str]):
@@ -121,27 +128,34 @@ class DataObjectParser(DataFieldParser):
         if isinstance(source,DataFile):
             with open( source.filepath, "r" ) as f:
                 if source.format == "json":
-                    return json.load(f)
+                    filedata = json.load(f)
                 elif source.format == "csv":
-                    return pd.read_csv(f).to_dict("list")
+                    filedata = pd.read_csv(f)
+                    if not self.data_field.preprocessor:
+                        self.data_field.preprocessor = Preprocessor.model_construct(module=None,function=lambda x : filedata.to_dict("list"))
                 else:
                     raise NotImplementedError(f"Cannot create DataObject (Dictionnary) from {source.format} files")
         elif isinstance(source,InlineObject):
-            return dict(source.object)
+            filedata = dict(source.object)
         else:
             raise NotImplementedError(f"Cannot create a DataObject from  type {type(source)}")
+
+        filedata = self.process(filedata)
+        return filedata
 
 class DataRawParser(DataFieldParser):
     def load(self) -> str:
         source = self.data_field.source
         if isinstance(source,DataFile):
             with open( source.filepath, "r" ) as f:
-                return f.read()
+                filedata = f.read()
         elif isinstance(source,InlineRaw):
-            return source.value
+            filedata = source.value
         else:
             raise NotImplementedError(f"Cannot create a RawObject (str) from  type {type(source)}")
 
+        filedata = self.process(filedata)
+        return filedata
 
 class DataFieldParserFactory:
     @staticmethod
