@@ -172,6 +172,8 @@ class DataField(BaseModel):
         elif "ref" in values:
             ref_name = values.pop("ref")
             values["source"] = ReferenceSource(ref=ref_name)
+            if not values.get("type"):
+                values["type"] = "__reference__" #temporary placeholder
         else:
             data_type = values.get("type")
             if data_type == "DataTable":
@@ -264,3 +266,6 @@ class DataObject(DataField):
 
 class DataRaw(DataField):
     type: Literal["Raw"] = "Raw"
+
+class DataRef(DataField):
+    type: Literal["__reference__"] = "__reference__"
