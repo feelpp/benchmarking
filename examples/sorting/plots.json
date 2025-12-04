@@ -48,29 +48,18 @@
                 {
                     "type": "table",
                     "ref": "reframe_df",
-                    "table": {
-                        "columns": ["result", "testcases.hashcode", "algorithm", "elements", "testcases.time_total"],
-                        "computed_columns":{
-                            "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
-                        },
+                    "layout": {
                         "rename": {
                             "testcases.time_total": "Execution Time (s)",
                             "testcases.hashcode": "Hash",
                             "result": ""
                         },
-                        "group_by": { "columns": ["testcases.hashcode"], "agg": "first" },
-                        "format": {
-                            "testcases.time_total": "%.6f",
-                            "result": { "pass": "🟢", "fail": "🔴" },
-                            "elements":"%.0f",
-                            "logs_link":""
-                        },
-                        "column_order": ["result", "testcases.hashcode", "algorithm", "elements", "testcases.time_total","logs_link"],
-                        "style": {
-                            "column_align": { "result": "center" },
-                            "column_width":{ "result":1,"logs_link":1},
-                            "classnames": ["scrollable", "sortable"]
-                        }
+                        "column_order": ["result", "testcases.hashcode", "algorithm", "elements", "testcases.time_total","logs_link"]
+                    },
+                    "style": {
+                        "column_align": { "result": "center" },
+                        "column_width":{ "result":1,"logs_link":1},
+                        "classnames": ["scrollable", "sortable"]
                     },
                     "filter": { "placeholder": "Filter testcases..." }
                 }
