@@ -1,4 +1,14 @@
 {
+    "data":[
+        {
+            "name":"ext_parameter_table","ref":"parameter_table",
+            "table_options":{
+                "computed_columns":{
+                    "description_link":"f'link:descriptions/{row[\"testcases.hashcode\"]}.html[Description]'"
+                }
+            }
+        }
+    ],
     "contents": [
         {
             "type":"section",
@@ -41,32 +51,18 @@
                     "contents":[
                         {
                             "type":"table",
-                            "ref": "reframe_df",
-                            "title":"Test Cases",
-                            "table":{
-                                "columns":["result", "testcases.hashcode", "resources.tasks","memory","mesh", "discretization","solver", "testcases.time_total" ],
-                                "computed_columns":{
-                                    "description_link":"f'link:descriptions/{row[\"testcases.hashcode\"]}.html[Description]'",
-                                    "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
-                                },
-                                "rename":{
-                                    "testcases.time_total":"Total Time (s)",
-                                    "testcases.hashcode":"Hash",
-                                    "result":"",
-                                    "description_link":"",
-                                    "logs_link":""
-                                },
-                                "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
-                                "format":{
-                                    "testcases.time_total":"%.3f",
-                                    "result":{"pass": "🟢", "fail": "🔴"}
-                                },
+                            "ref": "ext_parameter_table",
+                            "layout":{
                                 "column_order":["result","testcases.hashcode","resources.tasks","memory","mesh", "discretization","solver", "testcases.time_total", "description_link","logs_link"],
-                                "style":{
-                                    "column_align":{ "result":"center" },
-                                    "column_width":{ "result":1,"logs_link":1,"description_link":2},
-                                    "classnames":["scrollable","sortable"]
+                                "rename":{
+                                    "testcases.time_total":"Total Time (s)", "testcases.hashcode":"Hash",
+                                    "result":"", "description_link":"", "logs_link":""
                                 }
+                            },
+                            "style":{
+                                "column_align":{ "result":"center" },
+                                "column_width":{ "result":1,"logs_link":1,"description_link":2},
+                                "classnames":["scrollable","sortable"]
                             },
                             "filter":{ "placeholder":"Filter testcases..." }
                         }
