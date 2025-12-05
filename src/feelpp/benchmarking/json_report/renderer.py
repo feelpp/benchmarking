@@ -1,6 +1,7 @@
 import json, os, warnings
 import pandas as pd
 
+from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
 from feelpp.benchmarking.dashboardRenderer.renderer import TemplateRenderer
 from feelpp.benchmarking.json_report.figures.controller import Controller as FiguresController
@@ -24,7 +25,7 @@ class JsonReportController:
             return JsonReportSchema()
 
         with open( report_filepath, "r" ) as f:
-            data = json.load(f)
+            data = json.load(f, cls=JSONWithCommentsDecoder)
 
         return JsonReportSchema.model_validate( data, context={"report_filepath":report_filepath} )
 

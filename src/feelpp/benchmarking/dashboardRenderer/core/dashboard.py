@@ -1,3 +1,4 @@
+from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 from feelpp.benchmarking.dashboardRenderer.core.treeBuilder import ComponentTree
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import DashboardSchema
 import json, os, shutil
@@ -43,7 +44,7 @@ class Dashboard:
             pydantic.ValidationError: If the JSON structure does not match the DashboardSchema.
         """
         with open(filepath,"r") as f:
-            components_config = DashboardSchema(**json.load(f))
+            components_config = DashboardSchema(**json.load(f, cls=JSONWithCommentsDecoder))
         return components_config
 
     def print( self ) -> None:

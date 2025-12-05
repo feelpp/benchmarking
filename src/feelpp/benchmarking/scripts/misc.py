@@ -1,3 +1,4 @@
+from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 from argparse import ArgumentParser
 import glob, json, os, shutil, copy
 from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
@@ -62,7 +63,7 @@ def jsonConfigMerge_cli():
     master_config = {}
     for filename in glob.glob(args.file_pattern,recursive=True):
         with open(filename,"r") as f:
-            current_config = json.load(f)
+            current_config = json.load(f, cls=JSONWithCommentsDecoder)
 
         if args.update_paths:
             file_dirpath = os.path.dirname(os.path.relpath(filename,"."))
@@ -88,10 +89,10 @@ def updateStageConfig_cli():
     args = parser.parse_args()
 
     with open(args.stage_config,"r") as f:
-        stage_cfg = json.load(f)
+        stage_cfg = json.load(f,cls=JSONWithCommentsDecoder)
 
     with open(args.production_config,"r") as f:
-        prod_cfg = json.load(f)
+        prod_cfg = json.load(f,cls=JSONWithCommentsDecoder)
 
     girder_client = GirderHandler(None)
 

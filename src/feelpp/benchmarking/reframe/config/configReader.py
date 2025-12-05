@@ -1,5 +1,6 @@
 import json, os, re, shutil
 from pydantic import BaseModel
+from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 
 class TemplateProcessor:
     """Helper class for processing template values in a JSON file"""
@@ -70,16 +71,6 @@ class TemplateProcessor:
         elif isinstance(target, str):
             return self.replacePlaceholders(target,flattened_source)
         return target
-
-
-# https://stackoverflow.com/questions/29959191/how-to-parse-json-file-with-c-style-comments
-class JSONWithCommentsDecoder(json.JSONDecoder):
-    def __init__(self, **kw):
-        super().__init__(**kw)
-
-    def decode(self, s: str):
-        s = '\n'.join(l if not l.lstrip().startswith('//') else '' for l in s.split('\n'))
-        return super().decode(s)
 
 class FileHandler:
     @staticmethod

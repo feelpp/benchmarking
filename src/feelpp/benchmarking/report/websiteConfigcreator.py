@@ -1,3 +1,4 @@
+from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 import json, os
 
 class WebsiteConfigCreator:
@@ -6,7 +7,7 @@ class WebsiteConfigCreator:
 
         if os.path.exists(self.config_filepath):
             with open(self.config_filepath,"r") as cfg:
-                self.config = json.load(cfg)
+                self.config = json.load(cfg, cls=JSONWithCommentsDecoder)
         else:
             self.config = dict(
                 dashboard_metadata = {

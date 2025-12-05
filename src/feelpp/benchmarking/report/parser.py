@@ -1,5 +1,6 @@
 import os, json
 from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import JsonReportSchemaWithDefaults
+from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 from feelpp.benchmarking.argsParser import BaseParser
 
 
@@ -66,7 +67,7 @@ class ReportArgParser(BaseParser):
         new_configs = []
         for plot_config in self.args.plot_configs:
             with open (plot_config,"r") as f:
-                plot_config_content = JsonReportSchemaWithDefaults.model_validate(json.load(f))
+                plot_config_content = JsonReportSchemaWithDefaults.model_validate(json.load(f, cls=JSONWithCommentsDecoder))
 
                 new_configs.append(plot_config_content)
         self.args.plot_configs = new_configs
