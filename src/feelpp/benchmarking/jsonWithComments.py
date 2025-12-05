@@ -1,29 +1,25 @@
 import json, re
 
-# https://stackoverflow.com/questions/29959191/how-to-parse-json-file-with-c-style-comments
 class JSONWithCommentsDecoder(json.JSONDecoder):
     _COMMENT_RE = re.compile(
         r"""
-        (//[^\n]*?$)              |   # // line comments
-        (/\*.*?\*/)               |   # /* block comments */
+        ("(?:\\.|[^"\\])*") |       # JSON string (preserve)
+        (//.*?$|/\*.*?\*/)\s*       # Single-line or multi-line comment (remove)
         """,
         re.MULTILINE | re.DOTALL | re.VERBOSE
     )
 
-    _TRAILING_COMMA_RE = re.compile(
-        r"""
-        ,                      # a comma
-        (?=\s*[\]}])           # followed only by spaces then } or ]
-        """,
-        re.VERBOSE
-    )
+    _TRAILING_COMMA_RE = re.compile( r""" ,(?=\s*[\]}])""",re.VERBOSE )
 
 
     def __init__(self, **kw):
         super().__init__(**kw)
 
+    def replacer(self,match):
+        return match.group(1) or ""
+
     def decode(self, s: str):
-        no_comment = re.sub(self._COMMENT_RE, "", s)
+        no_comment = self._COMMENT_RE.sub(self.replacer, s)
 
         no_trailing_comma = self._TRAILING_COMMA_RE.sub("", no_comment)
 
