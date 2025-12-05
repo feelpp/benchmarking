@@ -2,6 +2,7 @@
 import tempfile, os, json
 import pytest
 from feelpp.benchmarking.report.websiteConfigcreator import WebsiteConfigCreator
+from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 
 @pytest.mark.parametrize(("config","empty_config"),[
     (WebsiteConfigCreator(basepath="./tests/data/non_existent_configs"), True),
@@ -20,7 +21,7 @@ class TestWebsiteConfig:
             assert "use_cases" in config.config["components"]
         else:
             with open("./tests/data/configs/website_config.json", "r") as f:
-                assert config.config == json.load(f)
+                assert config.config == json.load(f, cls=JSONWithCommentsDecoder)
 
     def test_updateExecutionMapping(self, config, empty_config):
         """ Tests the updateExecutionMapping method """
@@ -60,4 +61,4 @@ class TestWebsiteConfig:
             config.save()
 
             with open(temp.name, "r") as f:
-                assert json.load(f) == config.config
+                assert json.load(f, cls=JSONWithCommentsDecoder) == config.config
