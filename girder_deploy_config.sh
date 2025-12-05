@@ -1,6 +1,6 @@
 #!/bin/bash
 
-production_website_config_id=691b4b862e3e0a69f7c5a08c
+production_website_config_id=6932dd982e3e0a69f7c5a903
 staging_folder_id=691b44792e3e0a69f7c5a089
 production_folder_id=691b44702e3e0a69f7c5a088
 accepted_folder_id=691b446b2e3e0a69f7c5a087
