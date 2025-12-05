@@ -18,23 +18,12 @@ class DefaultPlot(Plot):
 class JsonReportSchemaWithDefaults(JsonReportSchema):
     data: List[Dict] = [
         { "name":"reframe_json", "filepath":"./reframe_report.json" },
-        {
-            "name":"reframe_df",
-            "filepath":"./reframe_report.json",
-            "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor"
-        },
-        {
-            "type":"DataTable", "name":"parameter_table", "filepath":"./reframe_report.json",
-            "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor",
+        { "type":"DataTable", "name":"reframe_df", "ref":"reframe_json", "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor" },
+        { "type":"DataTable", "name":"parameter_table", "ref":"reframe_df",
             "table_options":{
-                "computed_columns":{
-                    "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
-                },
+                "computed_columns":{ "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'" },
                 "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
-                "format":{
-                    "testcases.time_total":"%.3f",
-                    "result":{"pass": "🟢", "fail": "🔴"}
-                }
+                "format":{ "testcases.time_total":"%.3f", "result":{"pass": "🟢", "fail": "🔴"} }
             }
         }
     ]
