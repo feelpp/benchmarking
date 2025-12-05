@@ -184,6 +184,14 @@ class DataField(BaseModel):
                 values["type"] = "__reference__" #temporary placeholder
         else:
             data_type = values.get("type")
+            if not data_type:
+                if "columns" in values:
+                    data_type = "DataTable"
+                elif "object" in values:
+                    data_type = "Object"
+                elif "value" in values:
+                    data_type = "Raw"
+
             if data_type == "DataTable":
                 cols = values.pop("columns")
                 values["source"] = InlineTable(columns=cols)
@@ -194,7 +202,7 @@ class DataField(BaseModel):
                 val = values.pop("value")
                 values["source"] = InlineRaw(value=val)
             else:
-                raise ValueError("Data Type should be provided when passing inline data.")
+                raise ValueError(f"Data Type could not be inferred for inline data. {values}")
 
         return values
 
