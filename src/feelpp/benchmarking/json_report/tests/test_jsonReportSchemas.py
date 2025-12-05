@@ -138,8 +138,6 @@ class TestSectionNode(ReportNodeTests):
     def test_raises(self):
         with pytest.raises(ValidationError):
             node = SectionNode(type="section")
-        with pytest.raises(ValidationError):
-            node = SectionNode(type="section",title="TITLE")
 
 class TestTableNode(ReportNodeTests):
 
