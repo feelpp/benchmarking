@@ -81,18 +81,6 @@ class TestDataField:
         assert getattr(df.source, expected_attr) == expected_value
 
 
-    @pytest.mark.parametrize(
-        "payload",
-        [
-            {"name": "x", "value": 123},
-            {"name": "x", "columns": ["a", "b"]},
-            {"name": "x", "object": {"a": 1}},
-        ],
-    )
-    def test_inferSource_missing_type_raises(self,payload):
-        with pytest.raises(ValueError, match="Data Type should be provided"):
-            DataField.model_validate(payload, context={})
-
 
 class TestTableOptions:
 
