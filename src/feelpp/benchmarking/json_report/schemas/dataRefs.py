@@ -231,7 +231,7 @@ class SortInstruction(BaseModel):
 class FilterCondition(BaseModel):
     column: str
     op: Literal["==", "!=", ">", "<", ">=", "<=", "in", "not in"]
-    value: object
+    value: Any
 
 
 class TableOptions(BaseModel):
@@ -277,3 +277,4 @@ class DataRaw(DataField):
 
 class DataRef(DataField):
     type: Literal["__reference__"] = "__reference__"
+    model_config = ConfigDict(extra="allow")
