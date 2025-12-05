@@ -62,7 +62,7 @@ Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode,
 class SectionNode(ReportNode):
     type:Literal["section"]
     title:str
-    contents: List[Node]
+    contents: Optional[List[Node]] = []
 
 
 DataTypes = Union[DataTable, DataObject, DataRaw, DataRef]
