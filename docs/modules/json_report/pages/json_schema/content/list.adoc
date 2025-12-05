@@ -9,7 +9,7 @@ The **List Node** is used to render ordered lists. Its primary strength is that 
 
 |`type`|string|Must be set to `"itemize"`.|`"itemize"`
 |`items`|array of objects/strings|The contents of the list. Each entry can be a simple string, a full `Text Node` object, or a `Text Configuration` object.|*Required*
-|`data`|string|The `name` / reference of the data field to use for dynamic placeholder resolution within all list items.|`null`
+|`ref`|string|The `name` of the data field to reference for dynamic placeholder resolution within all list items.|`null`
 |===
 
 == Item Coercion and Dynamic Text
@@ -17,7 +17,7 @@ The **List Node** is used to render ordered lists. Its primary strength is that 
 For simplicity, the engine automatically coerces simple strings and `Text` objects provided in the `items` array into full `Text Node` objects.
 
 * If an item is a **simple string**, it can contain **placeholders** (`@{...}@`).
-* The `data` reference specified on the `ListNode` container is automatically inherited by all items, enabling dynamic text substitution for the entire list based on a single data source.
+* The `ref` specified on the `ListNode` container is automatically inherited by all items, enabling dynamic text substitution for the entire list based on a single data source.
 
 === Example: Dynamic List
 
