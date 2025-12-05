@@ -11,138 +11,78 @@ The structure is composed of the `TableNode` container and the nested `Table` co
 |Field|Type|Description|Default Value
 
 |`type`|string|Must be set to `"table"`.|`"table"`
-|`data`|string|The unique `name` (reference) of the data file (from the root `data` list) containing the dataset to be processed.|*Required*
-|`title`|string|An optional caption or title displayed above the rendered table.|`null`
-|`table`|object|The nested configuration object (`Table` schema) defining the data manipulation and styling.|*Required*
+|`ref`|string|The unique reference of the data file (from the root `data` list) containing the table to be rendered.|*Required*
+|`layout`|object|*Optional.* A layout configuration object defining renaming and ordering operations.| {}
+|`style`|object|*Optional.* A style configuration object allowing column alignment, resizing and custom styling | {}
 |`filter`|object|*Optional.* Configuration for an interactive **filter input** element added above the table (if supported by the target format/template).|`null`
 |===
 
 ---
 
-== Table Configuration (`table` Field)
+== Table layout
 
-The nested `table` object defines a precise, sequential pipeline of data manipulation steps.
+The `layout` field allows users to rename table columns when rendering, as well as change the column order.
 
-=== Data Transformation Pipeline
-
-The data is processed in this strict order:
-
-1.  **Filter:** Row reduction based on conditions.
-2.  **Computed Columns:** Creation of new columns via Python expressions.
-3.  **Group By / Pivot:** Data aggregation or structural reshaping (mutually exclusive).
-4.  **Sort:** Ordering of final rows.
-5.  **Format:** Value presentation (e.g., decimal precision, value substitution).
-6.  **Reorder / Rename:** Final display adjustments.
-
----
-
-==== Filtering Data (`table.filter`)
-
-The `filter` field is a list of conditions used to exclude rows from the initial dataset.
 
 |===
-| Condition Field | Type | Description
+| Field | Type | Description | Default
 
-| `column` | `string` | The column name to apply the condition to.
-| `op` | `string` | The comparison operator. Supported: `==`, `!=`, `>`, `<`, `>=`, `<=`, `in`, `not in`.
-| `value` | `object` | The value(s) to compare against. Use an array for `in`/`not in` operators.
+| `rename` | `Dict[str,str]` | Map of `{"old_col_name": "new_col_name"}`| {}
+| `column_order` | `List[str]` | List of column names to render respecting the order. If not provided, all columns will be shown. | `null`
 |===
+
+
+=== Renaming
+
+To rename columns, pass a dictionary containing the original column names as keys and the new names as values.
 
 [source,json]
 ----
-"filter": [
-    {"column": "Time", "op": "<", "value": 50.0},
-    {"column": "Method", "op": "in", "value": ["A", "B"]}
-]
-----
-
-==== Creating New Columns
-
-* `computed_columns`: Define new columns based on existing row values using Python expressions.
-* `columns`: List of column names to select and retain. If empty, all columns are retained.
-
-[source,json]
-----
-"computed_columns": {
-    "Speedup": "row['Time_Ref'] / row['Time']",
-    "Max_Memory_GB": "row['Memory_MB'] / 1024"
+"layout":{
+  "rename":{
+    "ntask":"Number of Tasks (x10)",
+    "avg_v":"Average Computation Load",
+    "datetime":""
+  }
 }
 ----
 
-==== Group By (`group_by`)
+[TIP]
+Columns can be renamed into an empty string `""` to hide the header name.
 
-Used to group rows by categorical columns and apply aggregation functions to numeric columns.
+=== Column ordering
 
-|===
-| Field | Type | Description
+To order the way the columns appear on the rendered table, you can use the `column_order` field.
 
-| `columns` | `array of strings` | The columns to group the data by.
-| `agg` | `object` or `string` | The aggregation function (e.g., `"mean"`, `"sum"`, `"max"`). Can be a single string for all columns, or a map like `{"Time_s": "mean"}`.
-|===
+This field also controls which columns appear and which are hidden on the tables.
 
-==== Pivot (`pivot`)
+By default, all columns are shown.
 
-Used to create cross-tabulation tables by transforming unique column values into new column headers.
+It follows the conventions:
 
-|===
-| Field | Type | Description
-
-| `index` | `array of strings` | The column(s) for the new row headers.
-| `columns` | `array of strings` | The column(s) whose unique values will become the new column headers.
-| `values` | `string` | The column providing the data for the new cell values.
-| `agg` | `string` | The aggregation function applied to cell values (e.g., `"mean"`).
-|===
-
-[IMPORTANT]
-.Validation Rules
-The engine enforces validation rules: `pivot` and `group_by` are mutually exclusive, and sorting is discouraged after pivoting due to ambiguous results.
-
-=== Sorting Data (`sort`)
-
-The `sort` field is a list of instructions defining the final order of rows.
-
-|===
-| Instruction Field | Type | Description | Default Value
-
-| `column` | `string` | The column name to sort by. |
-| `ascending` | `boolean` | If `true`, sorts ascending (A-Z, 0-9). If `false`, sorts descending. | `true`
-|===
-
-[source,json]
-----
-"sort": [
-    {"column": "Configuration", "ascending": true},
-    {"column": "Time", "ascending": false}
-]
-----
-
-=== Formatting and Renaming
-
-|===
-| Field | Type | Description | Default Value
-
-| `format` | `object` | Map of `{"column_name": "format_string"}` (e.g., `"{:.2f}"` for two decimal places) or a map for value substitution (e.g., `{"column": {"true": "Success"}}`). | `{}`
-| `rename` | `object` | Map of `{"old_name": "New Display Name"}` for the final column headers. | `{}`
-| `column_order` | `array of strings` | The final explicit display order of columns. Must use the post-renamed names. | `[]`
-|===
+- If `column_order` is not provided, all columns are rendered in the same way they are loaded.
+- If `column_order` is `[]`. No column will be shown on the table.
+- If `column_order` is a non-empty list, only the provided columns will be rendered, in the same order as in the list.
 
 
-== Styling and Interactivity (`style`)
+== Styling and Interactivity
 
 The `style` object defines presentation attributes that are converted into AsciiDoc table attributes and HTML class names for dynamic behavior.
-
-=== Column Alignment and Width
 
 |===
 | Field | Type | Description
 
 | `column_align` | `object` | Map of `{"column_name": "alignment"}` where alignment is `"left"`, `"center"`, or `"right"`. Used to build the AsciiDoc `cols` attribute.
 | `column_width` | `object` | Map of `{"column_name": integer}` defining the relative width of columns (used in the AsciiDoc `cols` attribute).
+| `classnames` | `List[str]` | List of class names to apply to the table
 |===
+
 
 === Interactive Classnames
 
 The `classnames` field applies CSS classes to the table, enabling client-side interactive features when the output format supports it (e.g., HTML/Antora with JavaScript).
+
+Users can customize their own classes, but the framework provides the following built-in functionalities.
 
 |===
 | Classname | Purpose
@@ -159,52 +99,36 @@ The `classnames` field applies CSS classes to the table, enabling client-side in
 }
 ----
 
-== Examples
+== Searching and filtering
 
-The following examples assume a data file was loaded with the name `"batch_data"`.
+If using the `filterable` classname, users can provide the `filter` field to customize the text input appearing on the bottom of the table.
 
-=== Example 1: Filtering, Formatting, and Renaming
+|===
+|Field| Type| Description |Default
 
-This example filters the data to include only results from Method 'M1', renames the `Time` column, and formats it to two decimal places.
+|placeholder| str| The placeholder for the text input| "Filter..."
+|style| str | Optional inline css to include in the `<input/>` object. | `margin-bottom:0.5em;padding:0.3em;width:50%;`
+|===
+
+== Example: renaming, ordering, interactivity and custom style
+
+The following example assume a data file was loaded with the name `"batch_data"`.
+
+This example renames the `Time` column, and orders the column to appear in the order `Method`, "Time", "Status" from left to right.
+
+It also enables **interactive sorting and filtering** for the final HTML output.
 
 [source,json]
 ----
 {
-  "type": "table",
-  "ref": "batch_data",
-  "title": "Filtered Performance Results for M1",
-  "table": {
-    "columns": ["Method", "Time", "Status"],
-    "filter": [
-      { "column": "Method", "op": "==", "value": "M1" },
-      { "column": "Status", "op": "!=", "value": "Failed" }
-    ],
+  "type": "table", "ref": "batch_data",
+  "layout": {
+    "column_order": ["Method", "Time", "Status"],
     "rename": { "Time": "Execution Time (s)" },
-    "format": { "Execution Time (s)": "{:.2f}" }
-  }
-}
-----
-
-=== Example 2: Grouping, Interactivity, and Custom Style
-
-This example demonstrates data **aggregation** (`group_by`) to calculate the mean time per configuration, and enables **interactive sorting and filtering** for the final HTML output.
-
-[source,json]
-----
-{
-  "type": "table",
-  "ref": "batch_data",
-  "title": "Average Time Per Configuration (Grouped)",
-  "table": {
-    "group_by": {
-      "columns": ["Configuration"],
-      "agg": { "Time": "mean" }
-    },
-    "format": { "Time": "{:.3f}" },
-    "style": {
-      "column_align": { "Time": "right" },
-      "classnames": ["sortable", "filterable"]
-    }
+  },
+  "style": {
+    "column_align": { "Time": "right" },
+    "classnames": ["sortable", "filterable"]
   }
 }
 ----
