@@ -1,37 +1,34 @@
 {
     "dashboard_metadata": {
-        "template": "./src/feelpp/benchmarking/report/templates/dashboardOverview.adoc.j2",
-        "data":[
-            {"title": "feelpp.benchmarking"}
-        ]
+        "template": "${TEMPLATE_DIR}/dashboardOverview.adoc.j2",
+        "data": {"title": "feelpp.benchmarking"}
     },
     "views": {
-        "machines": {"applications":"use_cases","use_cases":"applications"},
+        "machines": {"applications":"use_cases"},
         "applications": {"use_cases":"machines"}
     },
     "template_defaults":{
         "repositories":{
-            "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
-            "data":[{"filepath":"./reports/overview.json","prefix":"plots"}]
+            "template": "${TEMPLATE_DIR}/overview.adoc.j2",
+            "data":{"filepath":"./reports/overview.json","prefix":"plots"}
         },
         "components":{
-            "all":{
-                "template": "./src/feelpp/benchmarking/report/templates/overview.adoc.j2",
-                "data":{"filepath":"./reports/overview.json","prefix":"plots"}
+            "all": {
+                "template": "${TEMPLATE_DIR}/overview.adoc.j2"
             },
-            "machines":{
-                "template": "./src/feelpp/benchmarking/report/templates/machineOverview.adoc.j2",
-                "data":{"card_type":"machine"}
+            "machines": {
+                "template": "${TEMPLATE_DIR}/machineOverview.adoc.j2",
+                "data": { "card_type": "machine", "card_image": "fa-solid fa-microchip" }
             },
-            "applications":{"card_type":"application"},
-            "use_cases":{"card_type":"usecase"}
+            "applications": { "card_type": "application", "card_image": "fa-solid fa-diagram-project" },
+            "use_cases": { "card_type": "usecase", "card_image": "fa-solid fa-briefcase" }
         },
         "leaves":{
-            "template": "./src/feelpp/benchmarking/report/templates/reframeReport.adoc.j2",
+            "template": "${TEMPLATE_DIR}/reframeReport.adoc.j2",
             "data": [
-                { "filepath": "reframe_report.json", "prefix": "rfm" },
-                { "filepath": "plots.json", "prefix": "plots" },
-                { "filepath": "partials/", "action": "copy", "prefix": "descriptions" }
+                { "filepath": "report.json", "prefix": "report", "action": "json2adoc" },
+                { "filepath": "partials/", "action": "copy", "prefix": "descriptions" },
+                { "filepath": "logs/", "action": "copy", "prefix": "logs" }
             ]
         }
     },
@@ -42,17 +39,18 @@
     },
     "components": {
         "machines":{
-            "gaya": { "title": "gaya", "description": "", "nodes":"6","cores_per_node":"128"},
-            "discoverer": { "title": "Discoverer", "description": "", "nodes":"100","cores_per_node":"128"}
+            "gaya": { "title": "gaya", "description": "Strasbourg - France", "nodes":"6","cores_per_node":"128"},
+            "discoverer": { "title": "Discoverer", "description": "Sofia - Bulgaria", "nodes":"1128","cores_per_node":"128"},
+            "default": { "title": "Default", "description": "Local system" }
         },
         "applications":{
-            "sortingApp": { "title": "sortingApp", "description": "", "card_image":"fa-solid fa-arrow-up-wide-short" },
-            "fibonacci": {"title": "fibonacci", "description": "", "card_image":"fa-solid fa-fan"},
-            "matrixvector": {"title": "matrixvector", "description": "","card_image":"fa-solid fa-table-list" },
-            "parallelSum": {"title": "parallelSum", "description": "","card_image":"fa-solid fa-plus" }
+            "sortingApp": { "title": "sortingApp", "description": "Sorting algorithms", "card_image":"fa-solid fa-arrow-up-wide-short" },
+            "fibonacci": {"title": "fibonacci", "description": "n-th Fibonacci number", "card_image":"fa-solid fa-fan"},
+            "matrixvector": {"title": "matrixvector", "description": "Operations between Matrix and Vector","card_image":"fa-solid fa-table-list" },
+            "parallelSum": {"title": "parallelSum", "description": "Compute the sum of an array using MPI","card_image":"fa-solid fa-plus" }
         },
         "use_cases":{
-            "multiplication": {"title":"multiplication", "description":"Multiplication", "card_image":"fa-solid fa-times"}
+            "multiplication": {"title":"multiplication", "description":"Multiplication between different objects", "card_image":"fa-solid fa-times"}
         }
 
     },
