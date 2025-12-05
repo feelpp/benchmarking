@@ -4,14 +4,14 @@ from pydantic import BaseModel, Field, model_validator
 
 
 class TableLayout(BaseModel):
-    rename: Dict[str, str] = {}
-    column_order: List[str] = []
+    rename: Optional[Dict[str, str]] = {}
+    column_order: Optional[List[str]] = None
 
 
 class TableStyle(BaseModel):
-    column_align: Dict[str,str] = {}
-    column_width : Dict[str,int] = {}
-    classnames: List[str] = []
+    column_align: Optional[Dict[str,str]] = {}
+    column_width : Optional[Dict[str,int]] = {}
+    classnames: Optional[List[str]] = []
 
 
 class FilterInput(BaseModel):

@@ -36,7 +36,7 @@ class Controller:
         cols = []
         column_align = self.style.column_align
         column_width = self.style.column_width
-        for col in self.layout.column_order:
+        for col in self.layout.column_order or []:
             a = column_align.get(col)
             w = column_width.get(col,3)
             cols.append(f"{align_map.get(a,'<')}{w}")
@@ -51,7 +51,7 @@ class Controller:
 
 
     def _reorderColumns(self, df: pd.DataFrame) -> pd.DataFrame:
-        if self.layout.column_order:
+        if self.layout.column_order is not None:
             order = [c for c in self.layout.column_order if c in df.columns]
             df = df[order]
         else:
