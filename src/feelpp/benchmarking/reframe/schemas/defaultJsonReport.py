@@ -1,4 +1,4 @@
-from pydantic import model_validator, ValidationError
+from pydantic import model_validator, ValidationError, field_validator
 from typing import List,Dict, Optional
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot, PlotAxis
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
@@ -15,18 +15,41 @@ class DefaultPlot(Plot):
     yaxis: DefaultPlotYAxis = DefaultPlotYAxis()
     color_axis: DefaultColorAxis = DefaultColorAxis()
 
-class JsonReportSchemaWithDefaults(JsonReportSchema):
-    data: List[Dict] = [
-        { "name":"reframe_json", "filepath":"./reframe_report.json" },
-        { "type":"DataTable", "name":"reframe_df", "ref":"reframe_json", "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor" },
-        { "type":"DataTable", "name":"parameter_table", "ref":"reframe_df",
-            "table_options":{
-                "computed_columns":{ "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'" },
-                "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
-                "format":{ "testcases.time_total":"%.3f", "result":{"pass": "🟢", "fail": "🔴"} }
-            }
+
+DEFAULT_DATA = [
+    { "name":"reframe_json", "filepath":"./reframe_report.json" },
+    { "type":"DataTable", "name":"reframe_df", "ref":"reframe_json", "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor" },
+    { "type":"DataTable", "name":"parameter_table", "ref":"reframe_df",
+        "table_options":{
+            "computed_columns":{ "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'" },
+            "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
+            "format":{ "testcases.time_total":"%.3f", "result":{"pass": "🟢", "fail": "🔴"} }
         }
-    ]
+    }
+]
+
+
+
+class JsonReportSchemaWithDefaults(JsonReportSchema):
+    data: List[Dict] = []
+
+    @staticmethod
+    def addToDefault(v:list):
+        if not v:
+            return DEFAULT_DATA.copy()
+
+        filtered_v = [it for it in v if it not in DEFAULT_DATA]
+        return DEFAULT_DATA + filtered_v
+
+    @field_validator("data", mode="before")
+    @classmethod
+    def append_default_data(cls, v):
+        if not v:
+            return cls.addToDefault([])
+        if isinstance(v, list):
+            return cls.addToDefault(v)
+        raise TypeError(f"Expected a list for `data`, got {type(v)}")
+
 
     @model_validator(mode="before")
     @classmethod
