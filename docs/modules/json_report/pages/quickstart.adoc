@@ -36,25 +36,24 @@ This JSON file tells the engine where to find the data (`"timings"`) and how to 
 {
   "title": "Simple Quickstart Report",
   "data": [
-    {
-      "name": "timings",
-      "filepath": "data.csv"
-    }
+    { "name": "timings", "filepath": "data.csv" }
   ],
   "contents": [
     {
-      "type": "text",
-      "ref": "timings",
+      "type": "text", "ref": "timings",
       "text": "The report analyzes @{timings | length}@ data entries."
     },
     {
-      "type": "table",
+      "type":"section",
       "title": "Performance Summary",
-      "ref": "timings",
-      "table": {
-        "rename": { "Time_s": "Time (s)" },
-        "format": { "Time (s)": "{:.2f}" }
-      }
+      "contents":[
+        {
+          "type": "table", "ref": "timings",
+          "layout": {
+            "rename": { "Time_s": "Time (s)" }
+          }
+        }
+      ]
     }
   ]
 }
@@ -75,13 +74,13 @@ The command successfully generates the report, saving your rendered document as 
 
 [source,adoc]
 ----
-:docdatetime: 2025-11-28 14:22:05
+:docdatetime: 2025-12-05 10:16:21
 
 = Simple Quickstart Report
 
 The report analyzes 3 data entries.
 
-*Performance Summary*
+== Performance Summary
 
 --
 [cols="<3,<3,<3",options="header"]
