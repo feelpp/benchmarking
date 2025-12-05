@@ -62,18 +62,17 @@ Define a data source (`timings`) and embed a simple table content node.
   "data": [{"name": "timings", "filepath": "data.csv"}],
   "contents": [
     {
-      "type": "text",
-      "ref": "timings",
+      "type": "text", "ref": "timings",
       "text": "Total entries analyzed: @{timings | length}@"
     },
     {
-      "type": "table",
+      "type":"section",
       "title": "Performance Summary",
-      "ref": "timings",
-      "table": {
-        "rename": {"Time_s": "Time (s)"},
+      "contents":[{
+        "type": "table", "ref": "timings",
+        "layout": { "rename": {"Time_s": "Time (s)"} },
         "style": {"classnames": ["sortable"]}
-      }
+      }]
     }
   ]
 }
