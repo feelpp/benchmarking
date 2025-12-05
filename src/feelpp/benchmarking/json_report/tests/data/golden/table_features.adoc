@@ -91,13 +91,27 @@
 ++++
 
 
+=== Ref to inline
+
+
+--
+[cols="<3,<3,<3,<3,<3",options="header"]
+|===
+
+|time|power|temperature|comfort|power_temp_sum
+|2.3|20|23.0|0.6|43.0
+|3.4|30|21.3|0.7|51.3
+|4.5|40|22.1|0.8|62.1
+
+|===
+--
 
 
 
 == File Table
 
 
-=== Default inline table
+=== Default file table
 
 
 
@@ -108,7 +122,7 @@
 |Scenario|Time_s|Memory_MB|result|memory_per_time
 |Run A|12|1024|🟢|81.92
 |Run B|25|2048|🔴|81.59
-|Run C|16|1536|🟢|96.60
+|Run C|15|1536|🟢|96.60
 
 |===
 --
@@ -117,7 +131,7 @@
 
 
 
-=== Styled inline table
+=== Styled file table
 
 
 
@@ -147,6 +161,19 @@
 ++++
 
 
+=== Ref to file table
+
+
+--
+[cols="<3,<3,<3",options="header"]
+|===
+
+|result|Scenario|Memory_MB
+|🔴|1|2048
+|🟢|2|2560
+
+|===
+--
 
 
 
@@ -192,3 +219,18 @@
 ++++
 --
 
+=== Ref to json table
+
+
+
+--
+[cols="<3,<3,<3",options="header"]
+|===
+
+|subject|days_absent|days_present
+|Math|4.7|15.3
+|Physics|4.7|15.3
+|Chemistry|4.3|15.7
+
+|===
+--

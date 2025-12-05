@@ -35,7 +35,7 @@
                     "memory_per_time":"row['Memory_MB'] / row['Time_s']"
                 },
                 "format":{
-                    "Time_s":"%.0f",
+                    "Time_s":"%i",
                     "memory_per_time":"%.2f",
                     "result":{"pass": "🟢", "fail": "🔴"}
                 }
@@ -51,6 +51,38 @@
                     "agg":{"days_absent":"mean", "days_present":"mean"}
                 },
                 "format":{ "days_absent":"%.1f", "days_present":"%.1f" }
+            }
+        },
+        {
+            "name":"myDataRefFromFile",
+            "ref":"myFileDataTable",
+            "table_options":{
+                "group_by":{
+                    "columns":["result"],
+                    "agg":{
+                        "Scenario":"count",
+                        "Memory_MB":"sum"
+                    }
+                }
+            }
+        },
+        {
+            "name":"myDataRefFromInline",
+            "ref":"myInlineDataTable",
+            "table_options":{
+                "filter":[
+                    { "column":"power_temp_sum", "op":">", "value":40 }
+                ]
+            }
+        },
+        {
+            "name":"myDataRefFromJson",
+            "ref":"myFileDataTableFromJSON",
+            "table_options":{
+                "sort":[
+                    { "column":"days_absent","ascending":false },
+                    { "column":"subject","ascending":true }
+                ]
             }
         }
     ],
@@ -101,6 +133,11 @@
                         },
                         "filter":{ "placeholder":"Filter testcases..." }
                     }]
+                },
+                {
+                    "type":"section",
+                    "title":"Ref to inline",
+                    "contents":[{ "type":"table", "ref":"myDataRefFromInline" }]
                 }
             ]
         },
@@ -110,14 +147,14 @@
             "contents":[
                 {
                     "type":"section",
-                    "title":"Default inline table",
+                    "title":"Default file table",
                     "contents":[
                         {"type":"table","ref":"myFileDataTable"}
                     ]
                 },
                 {
                     "type":"section",
-                    "title":"Styled inline table",
+                    "title":"Styled file table",
                     "contents":[{
                         "type":"table",
                         "ref":"myFileDataTable",
@@ -131,6 +168,11 @@
                         },
                         "filter":{ "placeholder":"Filter testcases..." }
                     }]
+                },
+                {
+                    "type":"section",
+                    "title":"Ref to file table",
+                    "contents":[{ "type":"table", "ref":"myDataRefFromFile" }]
                 }
             ]
         },
@@ -160,6 +202,11 @@
                         "filter":{ "placeholder":"Filter testcases..." }
                     }
                     ]
+                },
+                {
+                    "type":"section",
+                    "title":"Ref to json table",
+                    "contents":[{ "type":"table", "ref":"myDataRefFromJson" }]
                 }
             ]
         }
