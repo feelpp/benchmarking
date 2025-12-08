@@ -9,7 +9,6 @@ from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 
 def main_cli():
     parser = Parser()
-    parser.printArgs()
 
     machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
 
