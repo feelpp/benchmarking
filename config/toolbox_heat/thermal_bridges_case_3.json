@@ -1,6 +1,6 @@
 {
     "executable": "feelpp_toolbox_heat",
-    "output_directory": "{{machine.output_app_dir}}/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/ThermalBridgesENISO10211/Case3",
     "use_case_name": "ThermalBridgesENISO10211",
     "timeout":"0-00:10:00",
     "resources":{
@@ -9,14 +9,13 @@
         "memory":"{{parameters.memory.value}}"
     },
     "input_file_dependencies":{
-        "solver_cfg":"{{use_case_name}}/{{parameters.solver.value}}.cfg",
-        "mesh_json":"{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json",
-        "mesh_hdf5":"{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.h5"
+        "solver_cfg":"feelpp_toolboxes/{{use_case_name}}/{{parameters.solver.value}}.cfg",
+        "mesh_json":"feelpp_toolboxes/{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json",
+        "mesh_hdf5":"feelpp_toolboxes/{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.h5"
     },
     "platforms": {
         "apptainer":{
             "image": {
-                "url":"oras://ghcr.io/feelpp/feelpp:v0.111.0-preview.10-noble-sif",
                 "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
             },
             "input_dir":"/input_data",
