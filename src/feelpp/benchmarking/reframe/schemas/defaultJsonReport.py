@@ -23,7 +23,7 @@ DEFAULT_DATA = [
         "table_options":{
             "computed_columns":{ "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'" },
             "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
-            "format":{ "testcases.time_total":"%.3f", "result":{"pass": "🟢", "fail": "🔴"} }
+            "format":{ "testcases.time_total":"%.3f", "result":{"pass": "🟢", "fail": "🔴", "abort": "🟠"} }
         }
     }
 ]
