@@ -98,13 +98,18 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence": [32,64,128,256]
+                    "sequence": [1,2,4,8,16,32,64,128,256,384,512]
                 }
             ]
         },
         {
             "name":"mesh",
-            "sequence":["M1","M2","M3"]
+            "sequence":["M1","M2","M3"],
+            "conditions":{
+                "M1": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
+                "M2": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
+                "M3": [ {"resources.tasks":[ 32,64,128,256,384 ] } ]
+            }
         },
         {
             // P1 -> M1: <50, M2: 50 , M3: 400
