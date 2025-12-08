@@ -7,6 +7,31 @@
                     "description_link":"f'link:descriptions/{row[\"testcases.hashcode\"]}.html[Description]'"
                 }
             }
+        },
+        {
+            "name":"mesh_stats",
+            "columns":[
+                {"name":"Tag","values":["M1","M2","M3"]},
+                {"name":"# points","values":[194000,1400000,10600000]},
+                {"name":"# edges","values":[1300000,9780000,75300000]},
+                {"name":"# faces","values":[2460000,16600000,129000000]},
+                {"name":"# elements","values":[1060000,16600000,129000000]},
+                {"name":"P1","values":[194000,1400000,10600000]},
+                {"name":"P2","values":[1490000,11200000,85900000]},
+                {"name":"P3","values":[4960000,37500000,290000000]}
+            ],
+            "table_options":{
+                "format":{
+                    "Tag":"%.2E",
+                    "# points":"%.2E",
+                    "# edges":"%.2E",
+                    "# faces":"%.2E",
+                    "# elements":"%.2E",
+                    "P1":"%.2E",
+                    "P2":"%.2E",
+                    "P3":"%.2E"
+                }
+            }
         }
     ],
     "contents": [
@@ -71,308 +96,404 @@
             ]
         },
         {
-            "type": "section",
-            "title": "Case Overview",
-            "contents": [
+            "type":"section",
+            "title":"Benchmark: Elliptic linear PDE: Thermal Bridges",
+            "contents":[
                 {
-                    "type": "text",
-                    "text": "This report analyzes the performance and accuracy of the Feel++ Toolbox when simulating the standard Heat Thermal Bridges Case 3, a critical benchmark in thermal analysis. The study evaluates convergence against mesh levels and parallel efficiency across various polynomial discretizations."
-                },
-                {
-                    "type": "image",
-                    "src": "https://docs.feelpp.org/toolboxes/latest/heat/_images/ISO_10211_2007/iso10211-2007-thermal-bridge-3d.png",
-                    "caption": "ISO 10211 thermal bridge geometry mesh.",
-                    "alt": "Thermal bridge geometry"
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "title": "Mathematical Formulation",
-            "contents": [
-                {
-                    "type":"text",
-                    "text":"This simulation solves the steady state heat equation which can be represented by the partial differential equation (PDE):"
-                },
-                {
-                    "type": "latex",
-                    "latex": "\\nabla \\cdot (k \\nabla T) = 0, \\quad \\text{where } \\begin{cases} T &\\text{is the temperature} \\\\ k &\\text{is the thermal conductivity} \\end{cases}"
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "title": "Validation Analysis",
-            "contents": [
-                {
-                    "type": "section",
-                    "title": "Heat Flux Convergence",
-                    "contents": [
+                    "type":"section",
+                    "title":"Description",
+                    "contents":[
                         {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Validation measures (Heat flux)",
-                                "plot_types": [ "scatter" ],
-                                "xaxis": { "parameter": "mesh", "label": "mesh levels" },
-                                "yaxis": { "label": "Heat flow [W]" },
-                                "color_axis":{ "parameter": "discretization", "label":"Discretization" },
-                                "secondary_axis":{
-                                    "parameter": "perfvalue",
-                                    "label": "Measures",
-                                    "filter": [
-                                        {"Outputs_Normal_Heat_Flux_alpha":"Alpha"},
-                                        {"Outputs_Normal_Heat_Flux_beta":"Beta"},
-                                        {"Outputs_Normal_Heat_Flux_gamma":"Gamma"}
-                                    ]
-                                },
-                                "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
-                            }
+                            "type":"text",
+                            "text":"The benchmark known as \"thermal bridges\" is an example of an application that enables us to validate numerical simulation tools using Feel++. We have developed tests based on the ISO 10211:2017 standard (ISO 10211:2017 - Thermal bridges in building construction — Heat flows and surface temperatures — Detailed calculations, 2017), which provides methodologies for evaluating thermal bridges in building construction."
                         },
                         {
-                            "type": "text",
-                            "text": "The validation plot for heat flux demonstrates solution convergence across increasing mesh levels (refinement) for different finite element discretizations (P1, P2, P3). Consistency in heat flow values across methods validates the numerical model."
+                            "type":"text",
+                            "text": "Thermal bridges are areas within a building envelope where heat flow is different compared to adjacent areas, often resulting in increased heat loss or unwanted condensation. The standard is intended to ensure that thermal bridges simulation are accurately computed. It provides reference values (and tolerance) on heat temperature and heat flux at several location of the geometry."
+                        },
+                        {
+                            "type":"text",
+                            "text": "At the mathematical level, this application requires finding the numerical solution of an elliptic linear PDE (i.e. the heat equation). We employ a finite element method based on continuous Lagrange Finite Element of order 1,2 and 3 (denoted by P1,P2,P3). And we analyzed the execution time of the main components of the simulation."
+                        },
+                        {
+                            "type":"text",
+                            "text":"The Figure 4.3 represents the geometry of this benchmark and the domain decomposition by material."
+                        },
+                        { //TODO: Improve figure viz. allow side by side and subimages
+                            "type":"image",
+                            "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-thermalbridges-geom.png",
+                            "caption":"Figure 4.3: Thermal Bridges benchmarks - geometry and materials"
+                        },
+                        {
+                            "type":"image",
+                            "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-thermalbridges-geom2.png",
+                            "caption":"Figure 4.3: Thermal Bridges benchmarks - geometry and materials"
                         }
                     ]
                 },
                 {
-                    "type": "section",
-                    "title": "Temperature Validation",
-                    "contents": [
+                    "type":"section",
+                    "title":"Benchmarking Tools Used",
+                    "contents":[
                         {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Validation measures (Temperatures)",
-                                "plot_types": [ "scatter" ],
-                                "xaxis": { "parameter": "mesh", "label": "mesh levels" },
-                                "yaxis": { "label": "Temperature [°C]" },
-                                "color_axis":{ "parameter": "discretization", "label":"Discretization" },
-                                "secondary_axis":{
-                                    "parameter": "perfvalue",
-                                    "label": "Measures",
-                                    "filter":[
-                                        {"Outputs_Points_alpha_max_field_temperature":"Alpha (max)"},
-                                        {"Outputs_Points_alpha_min_field_temperature":"Alpha (min)"},
-                                        {"Outputs_Points_beta_max_field_temperature":"Beta (max)"},
-                                        {"Outputs_Points_beta_min_field_temperature":"Beta (min)"}
-                                    ]
-                                },
-                                "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
-                            }
+                            "type":"text",
+                            "ref":"reframe_json",
+                            "text": "The benchmark was performed on the @{runs.0.testcases.0.system}@ supercomputer (see Section 10.1). The performance tools integrated into the Feel++-toolboxes framework were used to measure the execution time. Moreover, we need to note that we have used here Apptainer with Feel++ SIF image based on Ubuntu noble OS."
                         },
                         {
-                            "type": "text",
-                            "text": "Temperature validation metrics, including maximum and minimum values at key points (alpha and beta), show the expected stable behavior as the mesh is refined. This confirms the accuracy of the thermal solution."
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "title": "Parallel Performance and Scaling",
-            "contents": [
-                {
-                    "type": "section",
-                    "title": "P1 Discretization Performance",
-                    "contents": [
-                        {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Performance (P1)",
-                                "plot_types": [ "stacked_bar", "grouped_bar" ],
-                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-                                "color_axis":{
-                                    "parameter":"perfvalue",
-                                    "label":"Performance Variable",
-                                    "filter":[
-                                        {"Constructor_init":"Preprocessing"},
-                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
-                                        {"Solve_algebraic-solve":"Algebraic solve"},
-                                        {"PostProcessing_exportResults":"Postprocess"}
-                                    ]
-                                },
-                                "yaxis": { "label": "execution time (s)" },
-                                "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
-                            }
+                            "type":"text",
+                            "text":"This benchmark was done using feelpp.benchmarking, version {{feelpp_benchmarking_version}}"
                         },
                         {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Speedup (P1)",
-                                "plot_types": [ "scatter" ],
-                                "transformation": "speedup",
-                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-                                "color_axis":{
-                                    "parameter":"perfvalue",
-                                    "label":"Performance Variable",
-                                    "filter":[
-                                        {"Constructor_init":"Preprocessing"},
-                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
-                                        {"Solve_algebraic-solve":"Algebraic solve"},
-                                        {"PostProcessing_exportResults":"Postprocess"}
-                                    ]
-                                },
-                                "yaxis": { "label": "Speedup" },
-                                "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
-                            }
+                            "type":"text",
+                            "text":"This benchmark was done using feelpp.benchmarking, version *{{feelpp_benchmarking_version}}*"
                         },
                         {
-                            "type": "text",
-                            "text": "The performance analysis for P1 discretization measures execution time across various simulation stages (Preprocessing, Assembly, Solve, Postprocess) as the number of tasks increases. The speedup plot indicates strong scaling efficiency for the P1 method, with the algebraic solve phase typically dominating total execution time."
+                            "type":"text",
+                            "text":"The metrics measured are the execution time of the main components of the simulation. We enumerate these parts in the following:"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "*Init*: load mesh from filesystem and initialize heat toolbox (finite element context and algebraic data structure)",
+                                "*Assembly*: calculate and assemble the matrix and rhs values obtained using the finite element method",
+                                "*Solve*: the linear system by using a preconditioned GMRES.",
+                                "*PostProcess*: compute validation measures (temperature at points and heat flux) and export on the filesystem a visualization format (EnsighGold) of the solution."
+                            ]
                         }
                     ]
                 },
                 {
-                    "type": "section",
-                    "title": "P2 Discretization Performance",
-                    "contents": [
+                    "type":"section",
+                    "title":"Input/Output Dataset Description",
+                    "contents":[
                         {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Performance (P2)",
-                                "plot_types": [ "stacked_bar", "grouped_bar" ],
-                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-                                "color_axis":{
-                                    "parameter":"perfvalue",
-                                    "label":"Performance Variable",
-                                    "filter":[
-                                        {"Constructor_init":"Preprocessing"},
-                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
-                                        {"Solve_algebraic-solve":"Algebraic solve"},
-                                        {"PostProcessing_exportResults":"Postprocess"}
+                            "type":"section",
+                            "title":"Input Data",
+                            "contents":[
+                                {
+                                    "type":"itemize",
+                                    "items":[
+                                        "Meshes: We have generated three levels of mesh called M1, M2 and M3. These meshes are stored in GMSH format. The statistics can be found in Table 4.6. We  have also prepared for each mesh level a collection of partitioned mesh. The format used is an in-house mesh format of Feel++ based on JSON+HDF5 file type. The Gmsh meshes and the partitioned meshes can be found on our Girder database management, in the Feel++ collections.",
+                                        "Setup: Use standard setup of Feel++ toolboxes. It corresponds to a cfg file and JSON file. These config files are present in the Github of feelpp.",
+                                        "Sif image: feelpp:v0.111.0-preview.10-noble-sif (stored in the Github registry of Feel++)"
                                     ]
                                 },
-                                "yaxis": { "label": "execution time (s)" },
-                                "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
-                            }
+                                {
+                                    "type":"table", "ref":"mesh_stats"
+                                }
+                            ]
                         },
                         {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Speedup (P2)",
-                                "plot_types": [ "scatter" ],
-                                "transformation": "speedup",
-                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-                                "color_axis":{
-                                    "parameter":"perfvalue",
-                                    "label":"Performance Variable",
-                                    "filter":[
-                                        {"Constructor_init":"Preprocessing"},
-                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
-                                        {"Solve_algebraic-solve":"Algebraic solve"},
-                                        {"PostProcessing_exportResults":"Postprocess"}
-                                    ]
-                                },
-                                "yaxis": { "label": "Speedup" },
-                                "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
-                            }
-                        },
-                        {
-                            "type": "text",
-                            "text": "Similar performance and speedup trends are observed for the higher-order P2 discretization. While P2 offers higher accuracy per degree of freedom, the time complexity, particularly in the assembly phase, is higher, which is reflected in the execution time charts."
+                            "type":"section",
+                            "title":"Output Data",
+                            "contents":[
+                                {
+                                    "type":"text",
+                                    "text":"The output includes the computed values of validation measure in CSV files format, export visualization files (mesh, partitioning, temperature), and the time taken to perform each simulation step."
+                                }
+                            ]
                         }
                     ]
                 },
                 {
-                    "type": "section",
-                    "title": "P3 Discretization Performance",
-                    "contents": [
+                    "type":"section",
+                    "title":"Results Summary",
+                    "contents":[
                         {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Performance (P3)",
-                                "plot_types": [ "stacked_bar", "grouped_bar" ],
-                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-                                "color_axis":{
-                                    "parameter":"perfvalue",
-                                    "label":"Performance Variable",
-                                    "filter":[
-                                        {"Constructor_init":"Preprocessing"},
-                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
-                                        {"Solve_algebraic-solve":"Algebraic solve"},
-                                        {"PostProcessing_exportResults":"Postprocess"}
-                                    ]
-                                },
-                                "yaxis": { "label": "execution time (s)" },
-                                "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
-                            }
+                            "type":"text",
+                            "text":"We start by showing in fig. 4.4 an example of numeric solution and mesh partitioning that we have obtained in the simulation pipeline. The partitioning process is considered an offline process here but requires some time and memory consumption. This should be explicitly described in a future work. With fig. 4.5, we have validated the simulation run by checking measures compared to reference values."
+                        },
+                        { //TODO: Improve figure viz. allow side by side and subimages
+                            "type":"image",
+                            "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-thermalbridges-solution.png",
+                            "caption":"Figure 4.4: Thermal bridges benchmarks - temperature solution"
                         },
                         {
-                            "type": "plot",
-                            "plot": {
-                                "title": "Speedup (P3)",
-                                "plot_types": [ "scatter" ],
-                                "transformation": "speedup",
-                                "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-                                "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
-                                "color_axis":{
-                                    "parameter":"perfvalue",
-                                    "label":"Performance Variable",
-                                    "filter":[
-                                        {"Constructor_init":"Preprocessing"},
-                                        {"Solve_algebraic-assembly":"Algebraic assembly"},
-                                        {"Solve_algebraic-solve":"Algebraic solve"},
-                                        {"PostProcessing_exportResults":"Postprocess"}
-                                    ]
-                                },
-                                "yaxis": { "label": "Speedup" },
-                                "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
-                            }
+                            "type":"image",
+                            "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-thermalbridges-pid.png",
+                            "caption":"Figure 4.4: Thermal bridges benchmarks - partitioning example"
                         },
                         {
-                            "type": "text",
-                            "text": "For the P3 discretization, parallel efficiency and speedup are analyzed. This section highlights the trade-offs between increased computational cost (due to higher polynomial order) and achieving optimal parallel scaling on multi-core resources."
+                            "type":"text",
+                            "text":"The benchmark performance results are summarized in Figure 4.6, Figure 4.7, Figure 4.8 which correspond respectively to choice of the mesh M1, M2 and M3. Moreover, for each mesh, we have experimented with several finite element discretizations called P1, P2 and P3. For each order of finite element approximation, we have selected a set of number of CPU cores. Concerning the mesh M1, considered a coarse mesh, we note that the scalability scaling is not good, especially for low order. This is simply because the problem is too small for so many HPC resources. MPI communications and IO effects are non-negligible. For the mesh M2 and M3, results are better (but not ideal), and we can rapidly see the limit reached by the scalability test. Finally, the fined mesh M3, illustrates the best scalability on this benchmarking experiment. We see a reduction in computational cost by increasing the computation resources. However, due to the fast execution, the time goes fast to the limit."
+                        },
+                        {
+                            "type":"text",
+                            "text":"With these benchmarking experiences, we have also seen that we have some variability in  performance measures. Some aspects such as the filesystem and network load, are not under our control, it can explain a part of this (when computational time belongs small locally)."
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "title": "Solver Metrics",
-            "contents": [
-                {
-                    "type": "plot",
-                    "plot": {
-                        "title": "Algebraic-solve execution time",
-                        "plot_types": [ "grouped_bar" ],
-                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
-                        "yaxis": { "label": "execution time (s)" },
-                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
-                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
-                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_algebraic-solve"} ]
-                    }
                 },
                 {
-                    "type": "plot",
-                    "plot": {
-                        "title":"Number of iterations of GMRES",
-                        "plot_types":["scatter"],
-                        "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
-                        "yaxis":{ "label":"Number of iterations" },
-                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
-                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
-                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
-                    }
+                    "type":"section",
+                    "title":"Challenges Identified",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"Several challenges were encountered during the benchmarking process:"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "*Memory Usage:* Reduce the memory footprint",
+                                "*Parallelization Inefficiencies:* Understand and improve performance when MPI communication and filesystem IO will be dominant"
+                            ]
+                        },
+                        {
+                            "type":"text",
+                            "text":"To conclude, we have realized HPC performance tests of benchmark called thermal bridges. We have realized with success the execution of several simulations on significant resources and demonstrated the validation of Feel++ framework in the elliptic PDE context. We have also validated the deployment of Feel++ with container support. Now, we need to provide more refined measures to detect and analyze reasons for performance degradation. And also compare to other software installations, like Spack."
+                        }
+                    ]
                 },
                 {
-                    "type": "text",
-                    "text": "To understand the parallel scalability, two key solver metrics are presented: the absolute execution time for the algebraic solve step and the number of iterations required by the GMRES solver. Stable or decreasing iteration counts with mesh refinement and strong scaling in solve time are essential indicators of an efficient preconditioner and solver configuration."
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "title": "Conclusion",
-            "contents": [
-                {
-                    "type": "text",
-                    "text": "This comprehensive analysis provides insight into the validation accuracy and parallel efficiency of the Feel++ simulation for the Heat Thermal Bridges Case 3. The results highlight effective scaling up to the P3 discretization and the robust convergence behavior of the numerical scheme."
+                    "type":"section",
+                    "title":"Results",
+                    "contents":[
+                        {
+                            "type":"section",
+                            "title":"Convergence of validation measures",
+                            "contents":[
+                                {
+                                    "type": "section",
+                                    "title": "Heat Flux Convergence",
+                                    "contents": [
+                                        {
+                                            "type": "plot",
+                                            "plot": {
+                                                "title": "Validation measures (Heat flux)",
+                                                "plot_types": [ "scatter" ],
+                                                "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+                                                "yaxis": { "label": "Heat flow [W]" },
+                                                "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+                                                "secondary_axis":{
+                                                    "parameter": "perfvalue",
+                                                    "label": "Measures",
+                                                    "filter": [
+                                                        {"Outputs_Normal_Heat_Flux_alpha":"Alpha"},
+                                                        {"Outputs_Normal_Heat_Flux_beta":"Beta"},
+                                                        {"Outputs_Normal_Heat_Flux_gamma":"Gamma"}
+                                                    ]
+                                                },
+                                                "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
+                                            }
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "The validation plot for heat flux demonstrates solution convergence across increasing mesh levels (refinement) for different finite element discretizations (P1, P2, P3). Consistency in heat flow values across methods validates the numerical model."
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "section",
+                                    "title": "Temperature Validation",
+                                    "contents": [
+                                        {
+                                            "type": "plot",
+                                            "plot": {
+                                                "title": "Validation measures (Temperatures)",
+                                                "plot_types": [ "scatter" ],
+                                                "xaxis": { "parameter": "mesh", "label": "mesh levels" },
+                                                "yaxis": { "label": "Temperature [°C]" },
+                                                "color_axis":{ "parameter": "discretization", "label":"Discretization" },
+                                                "secondary_axis":{
+                                                    "parameter": "perfvalue",
+                                                    "label": "Measures",
+                                                    "filter":[
+                                                        {"Outputs_Points_alpha_max_field_temperature":"Alpha (max)"},
+                                                        {"Outputs_Points_alpha_min_field_temperature":"Alpha (min)"},
+                                                        {"Outputs_Points_beta_max_field_temperature":"Beta (max)"},
+                                                        {"Outputs_Points_beta_min_field_temperature":"Beta (min)"}
+                                                    ]
+                                                },
+                                                "aggregations":[ {"column":"resources.tasks","agg":"max"} ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "section",
+                            "title": "P1 Discretization Performance",
+                            "contents": [
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Performance (P1)",
+                                        "plot_types": [ "stacked_bar", "grouped_bar" ],
+                                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "color_axis":{
+                                            "parameter":"perfvalue",
+                                            "label":"Performance Variable",
+                                            "filter":[
+                                                {"Constructor_init":"Preprocessing"},
+                                                {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                                {"Solve_algebraic-solve":"Algebraic solve"},
+                                                {"PostProcessing_exportResults":"Postprocess"}
+                                            ]
+                                        },
+                                        "yaxis": { "label": "execution time (s)" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+                                    }
+                                },
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Speedup (P1)",
+                                        "plot_types": [ "scatter" ],
+                                        "transformation": "speedup",
+                                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "color_axis":{
+                                            "parameter":"perfvalue",
+                                            "label":"Performance Variable",
+                                            "filter":[
+                                                {"Constructor_init":"Preprocessing"},
+                                                {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                                {"Solve_algebraic-solve":"Algebraic solve"},
+                                                {"PostProcessing_exportResults":"Postprocess"}
+                                            ]
+                                        },
+                                        "yaxis": { "label": "Speedup" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "section",
+                            "title": "P2 Discretization Performance",
+                            "contents": [
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Performance (P2)",
+                                        "plot_types": [ "stacked_bar", "grouped_bar" ],
+                                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "color_axis":{
+                                            "parameter":"perfvalue",
+                                            "label":"Performance Variable",
+                                            "filter":[
+                                                {"Constructor_init":"Preprocessing"},
+                                                {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                                {"Solve_algebraic-solve":"Algebraic solve"},
+                                                {"PostProcessing_exportResults":"Postprocess"}
+                                            ]
+                                        },
+                                        "yaxis": { "label": "execution time (s)" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
+                                    }
+                                },
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Speedup (P2)",
+                                        "plot_types": [ "scatter" ],
+                                        "transformation": "speedup",
+                                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "color_axis":{
+                                            "parameter":"perfvalue",
+                                            "label":"Performance Variable",
+                                            "filter":[
+                                                {"Constructor_init":"Preprocessing"},
+                                                {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                                {"Solve_algebraic-solve":"Algebraic solve"},
+                                                {"PostProcessing_exportResults":"Postprocess"}
+                                            ]
+                                        },
+                                        "yaxis": { "label": "Speedup" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "section",
+                            "title": "P3 Discretization Performance",
+                            "contents": [
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Performance (P3)",
+                                        "plot_types": [ "stacked_bar", "grouped_bar" ],
+                                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "color_axis":{
+                                            "parameter":"perfvalue",
+                                            "label":"Performance Variable",
+                                            "filter":[
+                                                {"Constructor_init":"Preprocessing"},
+                                                {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                                {"Solve_algebraic-solve":"Algebraic solve"},
+                                                {"PostProcessing_exportResults":"Postprocess"}
+                                            ]
+                                        },
+                                        "yaxis": { "label": "execution time (s)" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
+                                    }
+                                },
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Speedup (P3)",
+                                        "plot_types": [ "scatter" ],
+                                        "transformation": "speedup",
+                                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "color_axis":{
+                                            "parameter":"perfvalue",
+                                            "label":"Performance Variable",
+                                            "filter":[
+                                                {"Constructor_init":"Preprocessing"},
+                                                {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                                {"Solve_algebraic-solve":"Algebraic solve"},
+                                                {"PostProcessing_exportResults":"Postprocess"}
+                                            ]
+                                        },
+                                        "yaxis": { "label": "Speedup" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P3"} ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "section",
+                            "title": "Solver Metrics",
+                            "contents": [
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Algebraic-solve execution time",
+                                        "plot_types": [ "grouped_bar" ],
+                                        "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                        "yaxis": { "label": "execution time (s)" },
+                                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_algebraic-solve"} ]
+                                    }
+                                },
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title":"Number of iterations of GMRES",
+                                        "plot_types":["scatter"],
+                                        "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
+                                        "yaxis":{ "label":"Number of iterations" },
+                                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
+                                    }
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "To understand the parallel scalability, two key solver metrics are presented: the absolute execution time for the algebraic solve step and the number of iterations required by the GMRES solver. Stable or decreasing iteration counts with mesh refinement and strong scaling in solve time are essential indicators of an efficient preconditioner and solver configuration."
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }
