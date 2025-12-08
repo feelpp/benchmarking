@@ -22,7 +22,6 @@
             "options": [
                 "--home {{machine.output_app_dir}}",
                 "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
-                "--bind /data/home/chabannes/datasets/feelpp_toolboxes/:/data/home/chabannes/datasets/feelpp_toolboxes/",
                 "--env OMP_NUM_THREADS=1"
             ],
             "append_app_option":[]
@@ -107,12 +106,9 @@
             "name":"mesh",
             "sequence":["M1","M2","M3"],
             "conditions":{
-                // "M1": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
-                // "M2": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
-                // "M3": [ {"resources.tasks":[ 32,64,128,256,384 ] } ]
-                "M1": [ {"resources.tasks":[ 1 ], "discretization":["P1"] } ],
-                "M2": [ {"resources.tasks":[ ] } ],
-                "M3": [ {"resources.tasks":[ ] } ]
+                "M1": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
+                "M2": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
+                "M3": [ {"resources.tasks":[ 32,64,128,256,384 ] } ]
             }
         },
         {
