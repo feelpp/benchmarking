@@ -9,7 +9,7 @@ site_configuration = {
                 {
                     'name': 'production',
                     'scheduler': 'squeue',
-                    'launcher': 'mpiexec',
+                    'launcher': 'srun',
                     'max_jobs': 8,
                     'access': ['--partition=production'],
                     'environs': ['default','hpcx'],
