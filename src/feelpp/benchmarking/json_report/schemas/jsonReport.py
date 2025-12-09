@@ -36,6 +36,7 @@ class PlotNode(ReportNode):
 
 class TableNode(ReportNode):
     type: Literal["table"]
+    caption: Optional[str] = None
     layout: Optional[TableLayout] = TableLayout()
     filter: Optional[FilterInput] = None
     style: Optional[TableStyle] = TableStyle()
