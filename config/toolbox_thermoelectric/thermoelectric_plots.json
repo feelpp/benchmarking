@@ -307,7 +307,16 @@
                                         "xaxis":{"parameter":"tasks","label":"Number of CPU core"},
                                         "yaxis": { "label": "execution time (s)" },
                                         "secondary_axis":{"parameter":"discretization", "label":"Discretization"},
-                                        "color_axis":{ "label":"Performance Variables" }
+                                        "color_axis":{
+                                            "label":"Performance Variables",
+                                            "filter":[
+                                                {"Constructor_init": "Init"},
+                                                {"Constructor_createMesh": "Create Mesh"},
+                                                {"Constructor_createExporters": "Create Exporters"},
+                                                {"PostProcessing_exportResults": "Export"},
+                                                {"Solve_solve":"Solve"}
+                                            ]
+                                        }
                                     }
                                 },
                                 {
@@ -319,7 +328,16 @@
                                         "xaxis":{"parameter":"tasks","label":"Number of CPU core"},
                                         "yaxis": { "label": "Speedup" },
                                         "secondary_axis":{"parameter":"discretization", "label":"Discretization"},
-                                        "color_axis":{ "label":"Performance Variables" }
+                                        "color_axis":{
+                                            "label":"Performance Variables",
+                                            "filter":[
+                                                {"Constructor_init": "Init"},
+                                                {"Constructor_createMesh": "Create Mesh"},
+                                                {"Constructor_createExporters": "Create Exporters"},
+                                                {"PostProcessing_exportResults": "Export"},
+                                                {"Solve_solve":"Solve"}
+                                            ]
+                                        }
                                     }
                                 }
                             ]
