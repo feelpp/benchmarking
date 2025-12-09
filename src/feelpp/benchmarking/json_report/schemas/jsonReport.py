@@ -26,7 +26,7 @@ class ImageNode(ReportNode):
     src: str
     caption: Optional[str] = None
     alt: Optional[str] = None
-
+    style: Optional[List[str]] = ["img-fluid"]
 
 class PlotNode(ReportNode):
     type: Literal["plot"]
