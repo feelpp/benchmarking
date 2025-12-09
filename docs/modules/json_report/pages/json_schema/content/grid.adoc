@@ -1,0 +1,39 @@
+= Grid Node
+
+The **Grid Node** is a layout node that can be used to structure content into a grid.
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"grid"`.|`"grid"`
+|`contents`|array of objects| A list of other (non-recursive) content nodes.|[]
+|columns|int| Number of columns for the grid. Must be between 1 and 4.| 1
+|gap|int| Must be beween 1 and 3| 2.
+|justify| string("start","center","end")|horizontal alignment of the grid items.| "start"
+|align| string("start","center","end")|vertical alignment of the grid items.| "start"
+|===
+
+[IMPORTANT]
+Only non-nested types are allowed as children. This node's content CANNOT be of type `section` nor `grid`.
+
+== Example
+
+[source,json]
+----
+{
+    "contents":[
+        {
+            "type":"grid",
+            "columns":3,
+            "gap":2,
+            "align":"center",
+            "justify":"center",
+            "contents":[
+                {"type":"image","src":"...","caption":"Image 1"}
+                {"type":"image","src":"...","caption":"Image 2"}
+                {"type":"image","src":"...","caption":"Image 3"}
+            ]
+        }
+    ]
+}
+----
