@@ -82,7 +82,7 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
                             "ref":"reframe_df",
                             "plot": DefaultPlot.model_validate(item["plot"])
                         }
-                    elif isinstance(item, dict) and item.get("type") == "section":
+                    elif isinstance(item, dict) and (item.get("type") == "section" or item.get("type")=="grid"):
                         item = cls.applyDefaultPlots(item)
                     new_content.append(item)
 
