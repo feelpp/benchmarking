@@ -57,13 +57,34 @@ class ListNode(ReportNode):
         self.items = parsedItems
         return self
 
-Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode, ListNode]
+Node = Union[TextNode, "SectionNode", PlotNode, LatexNode, ImageNode, TableNode, ListNode, "GridNode"]
 
 class SectionNode(ReportNode):
     type:Literal["section"]
     title:str
     contents: Optional[List[Node]] = []
 
+class GridNode(ReportNode):
+    type: Literal["grid"]
+    contents: Optional[List[Node]] = []
+    columns: Optional[int] = 1
+    justify: Optional[Literal["start","center","end"]] = "start"
+    align: Optional[Literal["start","center","end"]] = "start"
+    gap: Optional[int] = 2
+
+    @field_validator("columns",mode="after")
+    @classmethod
+    def validateColumns(cls,v):
+        if v < 1 or v > 4:
+            raise ValueError(f"Number of columns must be between 1 and 4. Got : {v}")
+        return v
+
+    @field_validator("gap",mode="after")
+    @classmethod
+    def validateGap(cls,v):
+        if v < 1 or v > 3:
+            raise ValueError(f"Gap must be between 1 and 3. Got : {v}")
+        return v
 
 DataTypes = Union[DataTable, DataObject, DataRaw, DataRef]
 
