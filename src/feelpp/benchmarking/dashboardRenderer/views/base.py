@@ -127,7 +127,7 @@ class View:
         """
         for prefix, path in self.partials.items():
             local_partial_path = os.path.join(base_dir,prefix)
-            shutil.copytree(path, local_partial_path)
+            shutil.copytree(path, local_partial_path,dirs_exist_ok=True)
             self.updateTemplateData({prefix:os.path.relpath(local_partial_path,pages_dir)})
 
     def renderExtra( self, base_dir:str ) -> None:
