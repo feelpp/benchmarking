@@ -180,9 +180,17 @@
                             "text":"We show in Figure 4.17 the distribution of the computed temperature over the eyeball in the standing position on a vertical cut. The temperature is higher at the back part of the eye, as this part is inside the human body, while the front part, where heat exchanges with the ambient air are present, is colder. The temperature distribution is consistent with previous findings from literature (Ooi & Ng, 2008; Wang, Qian, Song, Zhang, & Liu, 2016). Moreover, we present in Figure 4.18 the results of the simulation for various postural orientations of the eye, namely standing, prone, and supine positions. The main striking result is the difference in the flow patterns: it follows the gravitational force and is more important in the standing position (Figure 4.18a). Moreover, we notice the formation of Krukenberg's spindle and phenomena of recirculation in the anterior chamber, as observed in the literature (Abdelhafid et al., 2021; Wang et al., 2016). These results have been obtained with the mesh Mr4 and the P1-P2 P1 discretization."
                         },
                         {
-                            "type":"image",
-                            "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-heatfluid-resheat.png",
-                            "caption":"Figure 4.17: Distribution of the computed temperature over the eyeball in the standing position, on a vertical cut. Mesh discretization is also presented"
+                            "type":"grid",
+                            "columns":1,
+                            "align":"center",
+                            "justify":"center",
+                            "contents":[
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-heatfluid-resheat.png",
+                                    "caption":"Figure 4.17: Distribution of the computed temperature over the eyeball in the standing position, on a vertical cut. Mesh discretization is also presented"
+                                }
+                            ]
                         },
                         {
                             "type":"grid",
@@ -247,13 +255,13 @@
                                 "yaxis":{"label":"Computational time[s]"},
                                 "secondary_axis":{"parameter":"mesh","label":"Mesh"},
                                 "color_axis":{"label":"Step",
-                                    // "filter":[
-                                    //     {"mesh":"Mesh"},
-                                    //     {"":"Data Structures"},
-                                    //     {"Solve_assembly":"Assembly"},
-                                    //     {"Solve_solve":"Solve"},
-                                    //     {"PostProcessing_exportResults":"Post Process"}
-                                    // ]
+                                    "filter":[
+                                        {"Constructor_initMesh":"initMesh"},
+                                        {"Constructor_matrixVector":"Data Structures"},
+                                        {"Solve_assembly":"Assembly"},
+                                        {"Solve_solve":"Solve"},
+                                        {"PostProcessing_exportResults":"Post Process"}
+                                    ]
                                 }
                             }
                         },
@@ -267,13 +275,13 @@
                                 "yaxis":{"label":"Computational time[s]"},
                                 "secondary_axis":{"parameter":"mesh","label":"Mesh"},
                                 "color_axis":{"label":"Step",
-                                    // "filter":[
-                                    //     {"mesh":"Mesh"},
-                                    //     {"":"Data Structures"},
-                                    //     {"Solve_assembly":"Assembly"},
-                                    //     {"Solve_solve":"Solve"},
-                                    //     {"PostProcessing_exportResults":"Post Process"}
-                                    // ]
+                                    "filter":[
+                                        {"Constructor_initMesh":"initMesh"},
+                                        {"Constructor_matrixVector":"Data Structures"},
+                                        {"Solve_assembly":"Assembly"},
+                                        {"Solve_solve":"Solve"},
+                                        {"PostProcessing_exportResults":"Post Process"}
+                                    ]
                                 }
                             }
                         }
