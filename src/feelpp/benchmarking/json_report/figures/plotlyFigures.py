@@ -264,22 +264,18 @@ class PlotlyStackedBarFigure(PlotlyFigure):
                 go.Figure. Containing a stacked and grouped bar traces for a multiindex dataframe
         """
         xaxis = self.transformation_strategy.dimensions["xaxis"].parameter
-        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
+        secondary = self.transformation_strategy.dimensions["secondary_axis"].parameter
 
-        fig = px.bar(
-            df.reset_index().astype({
-                secondary_axis:"str",
-                xaxis:"str"
-            }).rename(
-                columns = {
-                    xaxis:self.config.xaxis.label,
-                    secondary_axis:self.config.secondary_axis.label
-                },
-            ),
-            x=self.config.secondary_axis.label,
-            y=df.columns,
-            facet_col=self.config.xaxis.label,
-        )
+        df2 = df.reset_index()
+
+        long = df2.melt( id_vars=[xaxis, secondary], value_vars=df.columns, var_name="series", value_name="value" )
+
+        long[xaxis] = long[xaxis].astype(str)
+        long[secondary] = long[secondary].astype(str)
+
+        fig = px.bar( long, x=secondary, y="value", color="series",facet_col=xaxis )
+
+        fig.update_layout(barmode="stack")
         return fig
 
     def createSimpleFigure(self,df):
