@@ -478,7 +478,7 @@
                                     "type": "plot",
                                     "plot": {
                                         "title": "Algebraic-solve execution time",
-                                        "plot_types": [ "grouped_bar" ],
+                                        "plot_types": [ "grouped_bar","marked_scatter" ],
                                         "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
                                         "yaxis": { "label": "execution time (s)" },
                                         "color_axis":{ "parameter":"mesh", "label":"Mesh" },
@@ -490,17 +490,13 @@
                                     "type": "plot",
                                     "plot": {
                                         "title":"Number of iterations of GMRES",
-                                        "plot_types":["scatter"],
+                                        "plot_types":["scatter","marked_scatter"],
                                         "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
                                         "yaxis":{ "label":"Number of iterations" },
                                         "color_axis":{ "parameter":"mesh", "label":"Mesh" },
                                         "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
                                         "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
                                     }
-                                },
-                                {
-                                    "type": "text",
-                                    "text": "To understand the parallel scalability, two key solver metrics are presented: the absolute execution time for the algebraic solve step and the number of iterations required by the GMRES solver. Stable or decreasing iteration counts with mesh refinement and strong scaling in solve time are essential indicators of an efficient preconditioner and solver configuration."
                                 }
                             ]
                         }
