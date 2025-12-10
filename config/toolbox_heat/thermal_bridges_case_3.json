@@ -27,8 +27,7 @@
         }
     },
     "options": [
-        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg",
-        "--directory {{output_directory}}/{{instance}}",
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solver_cfg}}",        "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--heat.scalability-save=1",
         "--repository.append.np 0",
