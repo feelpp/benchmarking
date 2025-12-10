@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Reframe Report for Feel++ heat toolbox on Gaya :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/reports/2024_12_10T11_47_24Z0100.html">
+    <meta name="description" content="Performance report for Gaya on 2024-12-10T11:47:24+0100">
+    <meta name="generator" content="Antora 3.1.14">
+<link rel="stylesheet" href="../../_/css/site.css">
+
+<!-- Font Awesome webfont CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../_'</script>
+
+  </head>
+  <body class="article">
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../training/index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../training/reframe/index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../training/reframe/handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/reframe/handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../training/advanced/index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/advanced/containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/advanced/remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/advanced/file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/advanced/custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/advanced/memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/advanced/visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../training/advanced/workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../training/advanced/handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="2024_12_10T11_47_24Z0100.html">Reframe Report for Feel++ heat toolbox on Gaya</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/ROOT/pages/reports/2024_12_10T11_47_24Z0100.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+      <li>
+        <a href="#"
+           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
+          <img class="jupyter-file-icon icon" src="../../_/img/jupyter-logo.svg"/> .ipynb
+        </a>
+      </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Reframe Report for Feel++ heat toolbox on Gaya</h1>
+<div class="sect1">
+<h2 id="_test_summary"><a class="anchor" href="#_test_summary"></a>1. Test Summary</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Total Tests: 1</p>
+</li>
+<li>
+<p>Failures: 0</p>
+</li>
+</ul>
+</div>
+<style>
+.scrollable {
+  overflow-x: auto;
+}
+</style>
+<div class="openblock scrollable">
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 8.3337%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nb_tasks.tasks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nb_tasks.tasks_per_node</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nb_tasks.exclusive_access</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">meshes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">discretization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">solver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">result</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">time_total</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">num_nodes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">num_tasks_per_node</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">num_tasks</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">True</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gamg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">success</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">27.31395196914673</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">None</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../descriptions/gaya/feelpp_toolbox_heat/ThermalBridgesENISO10211/2024_12_10T11_47_24Z0100/55473afe.html" class="xref page">Description</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<style>
+.figure-container {
+    position: relative;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.subfigure-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.subfigure-container.active {
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.subfigure-container.inactive {
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Tabs container: display buttons inline with a bottom border to indicate grouping */
+.tabs-container {
+    display: flex;
+    border-bottom: 2px solid #007acc;
+    margin-bottom: 0.5rem;
+}
+
+/* Figure tab button styling */
+.figure-tab {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0.5rem 1rem;
+    margin-right: 0.3rem;
+    font-size: 1rem;
+    color: #007acc;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.figure-tab:hover,
+.figure-tab.active {
+    background-color: #007acc;
+    color: #fff;
+}
+
+.export-container button {
+    background-color: #007acc;
+    color: #fff;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    margin-right: 0.4rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.export-container button:hover {
+    background-color: #005fa3;
+}</style>
+
+<div class='figure-container'>
+
+      <div class="subfigure-container active" id="subfig_1_1">
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": "meshes,P1\nM1,43.66448984966594\n", "title": "Normal_Heat_Flux_alpha"}, {"data": "meshes,P1\nM1,13.234932791681242\n", "title": "Normal_Heat_Flux_beta"}, {"data": "meshes,P1\nM1,-57.48518457279949\n", "title": "Normal_Heat_Flux_gamma"}, {"data": "meshes,P1\nM1,17.902221778476274\n", "title": "Points_alpha_max_field_temperature"}, {"data": "meshes,P1\nM1,11.304866748371033\n", "title": "Points_alpha_min_field_temperature"}, {"data": "meshes,P1\nM1,16.84278824394343\n", "title": "Points_beta_max_field_temperature"}, {"data": "meshes,P1\nM1,11.082223374054381\n", "title": "Points_beta_min_field_temperature"}, {"data": "meshes,P1\nM1,17.902169122052477\n", "title": "Statistics_temperature_alpha_max"}, {"data": "meshes,P1\nM1,11.371955934523315\n", "title": "Statistics_temperature_alpha_min"}, {"data": "meshes,P1\nM1,16.842741157278965\n", "title": "Statistics_temperature_beta_max"}, {"data": "meshes,P1\nM1,11.112161834358306\n", "title": "Statistics_temperature_beta_min"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepgfplotslibrary{fillbetween}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ mesh levels }, ylabel={ Heat flow [W] },\n      xtick=data, xtick align=outside,\n      ymajorgrids=true, yminorgrids=true,\n      xticklabels from table={#2}{meshes},\n      cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n      \\addplot table [x expr=\\coordindex, y=P1] {#2} ;\n      \\addlegendentry{ P1 }\n\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\\pgfplotstableread[col sep=comma]{Normal_Heat_Flux_alpha.csv}\\dataA\n\\pgfplotstableread[col sep=comma]{Normal_Heat_Flux_beta.csv}\\dataB\n\\pgfplotstableread[col sep=comma]{Normal_Heat_Flux_gamma.csv}\\dataC\n\\pgfplotstableread[col sep=comma]{Points_alpha_max_field_temperature.csv}\\dataD\n\\pgfplotstableread[col sep=comma]{Points_alpha_min_field_temperature.csv}\\dataE\n\\pgfplotstableread[col sep=comma]{Points_beta_max_field_temperature.csv}\\dataF\n\\pgfplotstableread[col sep=comma]{Points_beta_min_field_temperature.csv}\\dataG\n\\pgfplotstableread[col sep=comma]{Statistics_temperature_alpha_max.csv}\\dataH\n\\pgfplotstableread[col sep=comma]{Statistics_temperature_alpha_min.csv}\\dataI\n\\pgfplotstableread[col sep=comma]{Statistics_temperature_beta_max.csv}\\dataJ\n\\pgfplotstableread[col sep=comma]{Statistics_temperature_beta_min.csv}\\dataK\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n  \\caption{ Measures=Normal_Heat_Flux_alpha }\n  \\plot{\\dataB}\n  \\caption{ Measures=Normal_Heat_Flux_beta }\n  \\plot{\\dataC}\n  \\caption{ Measures=Normal_Heat_Flux_gamma }\n  \\plot{\\dataD}\n  \\caption{ Measures=Points_alpha_max_field_temperature }\n  \\plot{\\dataE}\n  \\caption{ Measures=Points_alpha_min_field_temperature }\n  \\plot{\\dataF}\n  \\caption{ Measures=Points_beta_max_field_temperature }\n  \\plot{\\dataG}\n  \\caption{ Measures=Points_beta_min_field_temperature }\n  \\plot{\\dataH}\n  \\caption{ Measures=Statistics_temperature_alpha_max }\n  \\plot{\\dataI}\n  \\caption{ Measures=Statistics_temperature_alpha_min }\n  \\plot{\\dataJ}\n  \\caption{ Measures=Statistics_temperature_beta_max }\n  \\plot{\\dataK}\n  \\caption{ Measures=Statistics_temperature_beta_min }\n\\caption{ Validation measures }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": "meshes,P1\nM1,43.66448984966594\n", "title": "Normal_Heat_Flux_alpha"}, {"data": "meshes,P1\nM1,13.234932791681242\n", "title": "Normal_Heat_Flux_beta"}, {"data": "meshes,P1\nM1,-57.48518457279949\n", "title": "Normal_Heat_Flux_gamma"}, {"data": "meshes,P1\nM1,17.902221778476274\n", "title": "Points_alpha_max_field_temperature"}, {"data": "meshes,P1\nM1,11.304866748371033\n", "title": "Points_alpha_min_field_temperature"}, {"data": "meshes,P1\nM1,16.84278824394343\n", "title": "Points_beta_max_field_temperature"}, {"data": "meshes,P1\nM1,11.082223374054381\n", "title": "Points_beta_min_field_temperature"}, {"data": "meshes,P1\nM1,17.902169122052477\n", "title": "Statistics_temperature_alpha_max"}, {"data": "meshes,P1\nM1,11.371955934523315\n", "title": "Statistics_temperature_alpha_min"}, {"data": "meshes,P1\nM1,16.842741157278965\n", "title": "Statistics_temperature_beta_max"}, {"data": "meshes,P1\nM1,11.112161834358306\n", "title": "Statistics_temperature_beta_min"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="1603ddcc-0969-4771-9c59-252eafcccd16" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("1603ddcc-0969-4771-9c59-252eafcccd16")) {                    Plotly.newPlot(                        "1603ddcc-0969-4771-9c59-252eafcccd16",                        [{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"amveAA7VRUA="},"type":"scatter"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"Measures = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Normal_Heat_Flux_alpha","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Normal_Heat_Flux_beta","method":"animate"},{"args":[["frame_2"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Normal_Heat_Flux_gamma","method":"animate"},{"args":[["frame_3"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Points_alpha_max_field_temperature","method":"animate"},{"args":[["frame_4"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Points_alpha_min_field_temperature","method":"animate"},{"args":[["frame_5"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Points_beta_max_field_temperature","method":"animate"},{"args":[["frame_6"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Points_beta_min_field_temperature","method":"animate"},{"args":[["frame_7"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Statistics_temperature_alpha_max","method":"animate"},{"args":[["frame_8"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Statistics_temperature_alpha_min","method":"animate"},{"args":[["frame_9"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Statistics_temperature_beta_max","method":"animate"},{"args":[["frame_10"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"Statistics_temperature_beta_min","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[43.22784495116928,44.1011347481626],"title":{"text":"Heat flow [W]"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Validation measures"},"xaxis":{"title":{"text":"mesh levels"}},"legend":{"title":{"text":"Discretization"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('1603ddcc-0969-4771-9c59-252eafcccd16', [{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"amveAA7VRUA="},"type":"scatter"}],"layout":{"yaxis":{"range":[43.22784495116928,44.1011347481626]}},"name":"frame_0"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"zg5iHEl4KkA="},"type":"scatter"}],"layout":{"yaxis":{"range":[13.102583463764429,13.367282119598055]}},"name":"frame_1"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"SVkwhxq+TMA="},"type":"scatter"}],"layout":{"yaxis":{"range":[-56.9103327270715,-58.06003641852748]}},"name":"frame_2"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"aEuoAfjmMUA="},"type":"scatter"}],"layout":{"yaxis":{"range":[17.723199560691512,18.081243996261037]}},"name":"frame_3"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"bMiTfhecJkA="},"type":"scatter"}],"layout":{"yaxis":{"range":[11.191818080887323,11.417915415854743]}},"name":"frame_4"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"uDBp+MDXMEA="},"type":"scatter"}],"layout":{"yaxis":{"range":[16.674360361503997,17.011216126382866]}},"name":"frame_5"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"iQ+dLhkqJkA="},"type":"scatter"}],"layout":{"yaxis":{"range":[10.971401140313837,11.193045607794925]}},"name":"frame_6"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"Kq06jvTmMUA="},"type":"scatter"}],"layout":{"yaxis":{"range":[17.723147430831954,18.081190813273]}},"name":"frame_7"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"WakcAnG+JkA="},"type":"scatter"}],"layout":{"yaxis":{"range":[11.258236375178083,11.485675493868548]}},"name":"frame_8"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"oIFt4r3XMEA="},"type":"scatter"}],"layout":{"yaxis":{"range":[16.674313745706176,17.011168568851755]}},"name":"frame_9"},{"data":[{"name":"P1","x":["M1"],"y":{"dtype":"f8","bdata":"SdukRm05JkA="},"type":"scatter"}],"layout":{"yaxis":{"range":[11.001040216014722,11.223283452701889]}},"name":"frame_10"}]);
+                        })                };            </script>        </div>
+    </div>
+</div>
+
+<div class='figure-container'>
+    <div class='tabs-container'>
+        <button class='figure-tab' onclick='switchTab(2,1)' >stacked_bar</button>
+        <button class='figure-tab' onclick='switchTab(2,2)' >grouped_bar</button>
+    </div>
+
+      <div class="subfigure-container active" id="subfig_2_1">
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": "nb_tasks.tasks,Constructor_init,PostProcessing_exportResults,Solve_algebraic-assembly\n128,9.69808106,3.14609965,0.208467942\n", "title": "M1"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepackage{underscore}\n\n\\makeatletter\n\\newcommand\\resetstackedplots{\n\\makeatletter\n\\pgfplots@stacked@isfirstplottrue\n\\makeatother\n}\n\n\\begin{document}\n\n\\pgfplotstableread[col sep=comma]{M1.csv}\\dataA\n\n\n\\begin{figure}\n\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of tasks }, ylabel={ execution time (s) },\n      xticklabels from table={\\dataA}{nb_tasks.tasks},\n      xtick=data, xtick align=outside,\n      ymajorgrids=true, yminorgrids=true,\n      bar width=7pt,\n      ybar stacked,\n      legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n\n      \\addplot+[ybar, bar width=0.2,point meta=y,draw=black,fill=red ] table [x expr=\\coordindex+0.25*1, y=Constructor_init] {\\dataA} ;\n      \\addlegendentry{ Constructor_init }\n      \\addplot+[ybar, bar width=0.2,point meta=y,draw=black,fill=green ] table [x expr=\\coordindex+0.25*1, y=PostProcessing_exportResults] {\\dataA} ;\n      \\addlegendentry{ PostProcessing_exportResults }\n      \\addplot+[ybar, bar width=0.2,point meta=y,draw=black,fill=blue ] table [x expr=\\coordindex+0.25*1, y=Solve_algebraic-assembly] {\\dataA} ;\n      \\addlegendentry{ Solve_algebraic-assembly }\n\n    \\end{axis}\n  \\end{tikzpicture}\n\n  \\caption{ Performance (P1) }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": "nb_tasks.tasks,Constructor_init,PostProcessing_exportResults,Solve_algebraic-assembly\n128,9.69808106,3.14609965,0.208467942\n", "title": "M1"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="8960352a-da17-42d5-8210-281495686d2a" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("8960352a-da17-42d5-8210-281495686d2a")) {                    Plotly.newPlot(                        "8960352a-da17-42d5-8210-281495686d2a",                        [{"hovertemplate":"variable=Constructor_init\u003cbr\u003eNumber of tasks=128\u003cbr\u003eMesh level=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"Constructor_init","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"Constructor_init","orientation":"v","showlegend":true,"textposition":"auto","x":["M1"],"xaxis":"x","y":{"dtype":"f8","bdata":"ZFB14WplI0A="},"yaxis":"y","type":"bar"},{"hovertemplate":"variable=PostProcessing_exportResults\u003cbr\u003eNumber of tasks=128\u003cbr\u003eMesh level=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"PostProcessing_exportResults","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"PostProcessing_exportResults","orientation":"v","showlegend":true,"textposition":"auto","x":["M1"],"xaxis":"x","y":{"dtype":"f8","bdata":"CKgVSzYrCUA="},"yaxis":"y","type":"bar"},{"hovertemplate":"variable=Solve_algebraic-assembly\u003cbr\u003eNumber of tasks=128\u003cbr\u003eMesh level=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"Solve_algebraic-assembly","marker":{"color":"#00cc96","pattern":{"shape":""}},"name":"Solve_algebraic-assembly","orientation":"v","showlegend":true,"textposition":"auto","x":["M1"],"xaxis":"x","y":{"dtype":"f8","bdata":"McST2BOvyj8="},"yaxis":"y","type":"bar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Mesh level"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"execution time (s)"}},"annotations":[{"font":{},"showarrow":false,"text":"Number of tasks=128","x":0.5,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"}],"legend":{"title":{"text":"Performance variable"},"tracegroupgap":0},"margin":{"t":60},"barmode":"relative","title":{"text":"Performance (P1)"}},                        {"responsive": true}                    )                };            </script>        </div>
+    </div>
+      <div class="subfigure-container inactive" id="subfig_2_2">
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": "nb_tasks.tasks,Constructor_init,PostProcessing_exportResults,Solve_algebraic-assembly\n128,9.69808106,3.14609965,0.208467942\n", "title": "M1"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of tasks }, ylabel={ execution time (s) },\n      xtick=data, xtick align=outside,\n      xticklabels from table={#2}{nb_tasks.tasks},\n      ymajorgrids=true, yminorgrids=true,\n      bar width=7pt,\n      cycle list name=color list,\n      ybar,\n      legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n      \\addplot table [x expr=\\coordindex, y=Constructor_init] {#2} ;\n      \\addlegendentry{ Constructor_init }\n      \\addplot table [x expr=\\coordindex, y=PostProcessing_exportResults] {#2} ;\n      \\addlegendentry{ PostProcessing_exportResults }\n      \\addplot table [x expr=\\coordindex, y=Solve_algebraic-assembly] {#2} ;\n      \\addlegendentry{ Solve_algebraic-assembly }\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\\pgfplotstableread[col sep=comma]{M1.csv}\\dataA\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n  \\caption{ Mesh level=M1 }\n\\caption{ Performance (P1) }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": "nb_tasks.tasks,Constructor_init,PostProcessing_exportResults,Solve_algebraic-assembly\n128,9.69808106,3.14609965,0.208467942\n", "title": "M1"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="cd0b222b-6678-47c4-9fcb-680e1461cbc9" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("cd0b222b-6678-47c4-9fcb-680e1461cbc9")) {                    Plotly.newPlot(                        "cd0b222b-6678-47c4-9fcb-680e1461cbc9",                        [{"name":"Constructor_init","x":["128"],"y":{"dtype":"f8","bdata":"ZFB14WplI0A="},"type":"bar"},{"name":"PostProcessing_exportResults","x":["128"],"y":{"dtype":"f8","bdata":"CKgVSzYrCUA="},"type":"bar"},{"name":"Solve_algebraic-assembly","x":["128"],"y":{"dtype":"f8","bdata":"McST2BOvyj8="},"type":"bar"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"Mesh level = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"M1","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.20638326257999998,9.70016573942],"title":{"text":"execution time (s)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Performance (P1)"},"xaxis":{"title":{"text":"Number of tasks"}},"legend":{"title":{"text":"Performance variable"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('cd0b222b-6678-47c4-9fcb-680e1461cbc9', [{"data":[{"name":"Constructor_init","x":["128"],"y":{"dtype":"f8","bdata":"ZFB14WplI0A="},"type":"bar"},{"name":"PostProcessing_exportResults","x":["128"],"y":{"dtype":"f8","bdata":"CKgVSzYrCUA="},"type":"bar"},{"name":"Solve_algebraic-assembly","x":["128"],"y":{"dtype":"f8","bdata":"McST2BOvyj8="},"type":"bar"}],"layout":{"yaxis":{"range":[0.20638326257999998,9.70016573942]}},"name":"frame_0"}]);
+                        })                };            </script>        </div>
+    </div>
+</div>
+
+<div class='figure-container'>
+
+      <div class="subfigure-container active" id="subfig_3_1">
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": "nb_tasks.tasks,Constructor_init,PostProcessing_exportResults,Solve_algebraic-assembly,optimal,half-optimal\n128,1.0,1.0,1.0,1.0,1.0\n", "title": "M1"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepgfplotslibrary{fillbetween}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of tasks }, ylabel={ Speedup },\n      xtick=data, xtick align=outside,\n      ymajorgrids=true, yminorgrids=true,\n      xticklabels from table={#2}{nb_tasks.tasks},\n      cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n      \\addplot table [x expr=\\coordindex, y=Constructor_init] {#2} ;\n      \\addlegendentry{ Constructor_init }\n      \\addplot table [x expr=\\coordindex, y=PostProcessing_exportResults] {#2} ;\n      \\addlegendentry{ PostProcessing_exportResults }\n      \\addplot table [x expr=\\coordindex, y=Solve_algebraic-assembly] {#2} ;\n      \\addlegendentry{ Solve_algebraic-assembly }\n\n      \\addplot[black, name path=optimal] table [x expr=\\coordindex, y=optimal] {#2} ;\n      \\addlegendentry{ optimal }\n      \\addplot[black, name path=half-optimal] table [x expr=\\coordindex, y=half-optimal] {#2} ;\n      \\addlegendentry{ half-optimal }\n        \\addplot[black, fill opacity=0.2] fill between[of=optimal and half-optimal];\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\\pgfplotstableread[col sep=comma]{M1.csv}\\dataA\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n  \\caption{ Mesh level=M1 }\n\\caption{ Speedup (P1) }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": "nb_tasks.tasks,Constructor_init,PostProcessing_exportResults,Solve_algebraic-assembly,optimal,half-optimal\n128,1.0,1.0,1.0,1.0,1.0\n", "title": "M1"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="1dc8d64e-fe15-4c08-88a8-1709eab1586b" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("1dc8d64e-fe15-4c08-88a8-1709eab1586b")) {                    Plotly.newPlot(                        "1dc8d64e-fe15-4c08-88a8-1709eab1586b",                        [{"line":{"color":"black","dash":"dash"},"mode":"lines","name":"optimal","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"fill":"tonexty","line":{"color":"black","dash":"dash"},"mode":"lines","name":"half-optimal","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"name":"Constructor_init","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"name":"PostProcessing_exportResults","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"name":"Solve_algebraic-assembly","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"Mesh level = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"M1","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.99,1.01],"title":{"text":"Speedup"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Speedup (P1)"},"xaxis":{"title":{"text":"Number of tasks"}},"legend":{"title":{"text":"Performance variable"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('1dc8d64e-fe15-4c08-88a8-1709eab1586b', [{"data":[{"line":{"color":"black","dash":"dash"},"mode":"lines","name":"optimal","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"fill":"tonexty","line":{"color":"black","dash":"dash"},"mode":"lines","name":"half-optimal","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"name":"Constructor_init","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"name":"PostProcessing_exportResults","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"},{"name":"Solve_algebraic-assembly","x":{"dtype":"i2","bdata":"gAA="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8="},"type":"scatter"}],"layout":{"yaxis":{"range":[0.99,1.01]}},"name":"frame_0"}]);
+                        })                };            </script>        </div>
+    </div>
+</div>
+
+<div class='figure-container'>
+    <div class='tabs-container'>
+        <button class='figure-tab' onclick='switchTab(4,1)' >stacked_bar</button>
+        <button class='figure-tab' onclick='switchTab(4,2)' >grouped_bar</button>
+    </div>
+
+      <div class="subfigure-container active" id="subfig_4_1">
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepackage{underscore}\n\n\\makeatletter\n\\newcommand\\resetstackedplots{\n\\makeatletter\n\\pgfplots@stacked@isfirstplottrue\n\\makeatother\n}\n\n\\begin{document}\n\n\n\n\\begin{figure}\n\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of tasks }, ylabel={ execution time (s) },\n      xticklabels from table={\\dataA}{nb_tasks.tasks},\n      xtick=data, xtick align=outside,\n      ymajorgrids=true, yminorgrids=true,\n      bar width=7pt,\n      ybar stacked,\n      legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n\n\n    \\end{axis}\n  \\end{tikzpicture}\n\n  \\caption{ Performance (P2) }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="5a6def8a-2eaa-4ce2-bbac-cc01fbcbb4d9" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("5a6def8a-2eaa-4ce2-bbac-cc01fbcbb4d9")) {                    Plotly.newPlot(                        "5a6def8a-2eaa-4ce2-bbac-cc01fbcbb4d9",                        [],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"Mesh level"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"execution time (s)"}},"legend":{"tracegroupgap":0,"title":{"text":"Performance variable"}},"margin":{"t":60},"barmode":"relative","title":{"text":"Performance (P2)"}},                        {"responsive": true}                    )                };            </script>        </div>
+    </div>
+      <div class="subfigure-container inactive" id="subfig_4_2">
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of tasks }, ylabel={ execution time (s) },\n      xtick=data, xtick align=outside,\n      xticklabels from table={#2}{nb_tasks.tasks},\n      ymajorgrids=true, yminorgrids=true,\n      bar width=7pt,\n      cycle list name=color list,\n      ybar,\n      legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n\\caption{ Performance (P2) }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="1e901a6a-b4bb-40dc-8405-239d0e84da34" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("1e901a6a-b4bb-40dc-8405-239d0e84da34")) {                    Plotly.newPlot(                        "1e901a6a-b4bb-40dc-8405-239d0e84da34",                        [],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Performance (P2)"},"xaxis":{"title":{"text":"Number of tasks"}},"yaxis":{"title":{"text":"execution time (s)"}},"legend":{"title":{"text":"Performance variable"}}},                        {"responsive": true}                    )                };            </script>        </div>
+    </div>
+</div>
+
+<div class='figure-container'>
+
+      <div class="subfigure-container active" id="subfig_5_1">
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": ",optimal,half-optimal\n", "title": "Speedup (P2)"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepgfplotslibrary{fillbetween}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of tasks }, ylabel={ Speedup },\n      xtick=data, xtick align=outside,\n      ymajorgrids=true, yminorgrids=true,\n      xticklabels from table={#2}{nb_tasks.tasks},\n      cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n\n      \\addplot[black, name path=optimal] table [x expr=\\coordindex, y=optimal] {#2} ;\n      \\addlegendentry{ optimal }\n      \\addplot[black, name path=half-optimal] table [x expr=\\coordindex, y=half-optimal] {#2} ;\n      \\addlegendentry{ half-optimal }\n        \\addplot[black, fill opacity=0.2] fill between[of=optimal and half-optimal];\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\\pgfplotstableread[col sep=comma]{Speedup (P2).csv}\\dataA\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n\\caption{ Speedup (P2) }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": ",optimal,half-optimal\n", "title": "Speedup (P2)"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="ab30295f-7e61-429c-a547-896ac5e72b26" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("ab30295f-7e61-429c-a547-896ac5e72b26")) {                    Plotly.newPlot(                        "ab30295f-7e61-429c-a547-896ac5e72b26",                        [{"line":{"color":"black","dash":"dash"},"mode":"lines","name":"optimal","x":[],"y":[],"type":"scatter"},{"fill":"tonexty","line":{"color":"black","dash":"dash"},"mode":"lines","name":"half-optimal","x":[],"y":[],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Speedup (P2)"},"xaxis":{"title":{"text":"Number of tasks"}},"yaxis":{"title":{"text":"Speedup"}},"legend":{"title":{"text":"Performance variable"}}},                        {"responsive": true}                    )                };            </script>        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script type="text/javascript">
+function downloadData(data, filename) {
+    if (data.length == 1) {
+        if (data[0].content.length == 1) {
+            d = data[0].content[0];
+            const blob = new Blob([d.data], { type: "plain/text;charset=utf-8" });
+            downloadBlob(blob, `${d.title}.${data[0].format}`);
+        }
+        else {
+            downloadFilesAsZip(data[0].content, filename);
+        }
+    }
+    else if (data.length > 1) {
+        downloadFilesAsZip(data, filename);
+    }
+    else {
+        alert("No data to download");
+    }
+}
+
+
+function downloadFilesAsZip(data, zipFilename) {
+    const zip = new JSZip();
+    data.forEach((d) => {
+        d.content.forEach((c) => {
+            const filename = `${c.title}.${d.format}`;
+            zip.file(filename, c.data);
+        });
+    });
+    zip.generateAsync({ type: "blob" }).then((blob) => downloadBlob(blob, zipFilename));
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+
+
+function switchTab(figureIndex, tabIndex) {
+    let subfigures = document.querySelectorAll(`[id^="subfig_${figureIndex}_"]`);
+    subfigures.forEach(subfig => {
+        subfig.classList.remove('active');
+        subfig.classList.add('inactive');
+    });
+
+    let activeSubfig = document.getElementById(`subfig_${figureIndex}_${tabIndex}`);
+    if(activeSubfig){
+        activeSubfig.classList.remove('inactive');
+        activeSubfig.classList.add('active');
+    }
+}</script>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+
+
+<!-- Font Awesome JS removed to use webfont icons only -->
+<script async src="../../_/js/vendor/highlight.js"></script>
+
+<script src="../../_/js/vendor/lunr.js"></script>
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>
