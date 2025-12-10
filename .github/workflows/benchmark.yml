@@ -142,7 +142,7 @@ jobs:
             run: echo "reports_base_dir=${{matrix.system_config.reports_base_dir}}" | sed "s|\$PWD|${{ github.workspace }}|g" >> $GITHUB_OUTPUT
 
         -   name: Upload reframe report
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v5
             with:
                 name: benchmark-results-${{matrix.machine}}
                 path: ${{steps.parse_reports_path.outputs.reports_base_dir}}
