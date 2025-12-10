@@ -12,7 +12,7 @@ jobs:
             GIRDER_API_KEY: ${{ secrets.GIRDER }}
         name: Move to production
         steps:
-        -   uses: actions/checkout@v4
+        -   uses: actions/checkout@v5
 
         -   name: Create Virtual Environment
             run: |
@@ -69,7 +69,7 @@ jobs:
 
         name: Move to denied
         steps:
-        -   uses: actions/checkout@v4
+        -   uses: actions/checkout@v5
 
         -   name: Create Virtual Environment
             run: |
