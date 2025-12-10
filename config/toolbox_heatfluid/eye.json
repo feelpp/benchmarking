@@ -16,12 +16,12 @@
     "platforms": {
         "apptainer":{
             "image": {
-                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
             },
             "input_dir":"/input_data/",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
+                "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}"
             ]
         },
         "builtin":{
@@ -37,7 +37,7 @@
         "--heat-fluid.heat.scalability-save=1",
         "--heat-fluid.fluid.scalability-save=1",
         "--repository.append.np 0",
-        "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"{{input_file_dependencies.mesh_json}}\" }'"
+        "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh_json}}\" }'"
     ],
     "additional_files":{
         "description_filepath":"{{output_directory}}/description.adoc",
@@ -67,7 +67,15 @@
                 "format": "tsv",
                 "units":{
                     "*":"s",
-                    "ksp-niter":"iter"
+                    "snes-niter":"iter"
+                }
+            },
+            {
+                "name":"Measures",
+                "filepath":"heatfluid.measures/values.csv",
+                "format":"csv",
+                "units":{
+                    "*":"K"
                 }
             }
         ],
@@ -83,11 +91,12 @@
     "parameters": [
         {
             "name": "tasks",
-            "sequence": [128,256,384]
+            // "sequence": [128,256,384]
+            "sequence": [128]
         },
         {
             "name": "mesh",
-            "sequence": ["M3","M4","M5"]
+            "sequence": ["M0"]
             // "sequence": ["M0","M1", "M2","M2", "M4","M5","M6"]
         },
         {
