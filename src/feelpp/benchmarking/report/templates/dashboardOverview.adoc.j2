@@ -24,7 +24,7 @@
 {%set agg = dict(agg,**{"use_cases":"first"}) %}
 {% endif %}
 
-{%set df = aggregated["data"].groupby("leaves").agg(agg).reset_index(drop=True).sort_values("date",ascending=False).head(15) %}
+{%set df = aggregated["data"].groupby("leaves").agg(agg).reset_index(drop=False).sort_values("date",ascending=False).head(15) %}
 {% endif %}
 
 
@@ -35,7 +35,8 @@
 | Status | Date | machine | application | Use Case
 
 {% for row in df.to_dict(orient="records") %}
-|{% if row["runs.num_failures"] == 0 %}🟢{% else %}🔴{% endif %} | {{ row["date"] }} | {{ row["machines"] }} | {{ row["applications"] }} | {{ row["use_cases"] }}
+{% set row_url = "leaves/"+row["leaves"]+"/leaf.adoc" %}
+|{% if row["runs.num_failures"] == 0 %}🟢{% else %}🔴{% endif %} | xref:{{row_url}}[{{ row["date"] }}] | {{ row["machines"] }} | {{ row["applications"] }} | {{ row["use_cases"] }}
 {% endfor %}
 
 |===
