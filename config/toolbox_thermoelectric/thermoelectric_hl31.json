@@ -23,6 +23,10 @@
                 "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
             ]
+        },
+        "builtin":{
+            "input_dir":"{{machine.input_dataset_base_dir}}/feelpp_toolboxes/{{use_case_name}}/",
+            "append_app_option":[]
         }
     },
     "options": [
