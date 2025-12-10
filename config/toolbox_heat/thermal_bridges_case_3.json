@@ -88,15 +88,13 @@
             "zip":[
                 {
                     "name":"tasks",
-                    // "sequence": [1,2,4,8,16,32,64,128,256,384,512]
-                    "sequence": [1,2,4,8,16]
+                    "sequence": [1,2,4,8,16,32,64,128,256,384,512]
                 }
             ]
         },
         {
             "name":"mesh",
-            "sequence":["M2","M3"],
-            // "sequence":["M1","M2","M3"],
+            "sequence":["M1","M2","M3"],
             "conditions":{
                 "M1": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
                 "M2": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
@@ -118,8 +116,7 @@
          },
         {
             "name":"discretization",
-            // "sequence":["P1","P2","P3"]
-            "sequence":["P3"]
+            "sequence":["P1","P2","P3"]
             // "conditions":{
             //     "P1":[{ "resources.tasks":[64,128] }],
             //     "P2":[{ "resources.tasks":[] }],
