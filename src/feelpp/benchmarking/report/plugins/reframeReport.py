@@ -48,8 +48,12 @@ class ReframeReportPlugin:
             num_runs=("num_runs", "sum"),
             num_cases=("num_cases", "sum"),
             num_failures=("num_failures", "sum"),
-            result=("result", "first")
+            result=("result", "first"),
+            latest=("date","max")
         )
+
+        latest_leaf_map = ( leaf_summary.groupby("repo_value")["date"].idxmax().astype(str) )
+        repo_summary["latest_leaf"] = ( repo_summary.index.map(latest_leaf_map) )
 
         return repo_summary.reset_index().rename(columns={"repo_value": repository_type}).set_index(repository_type)
 
