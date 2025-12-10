@@ -27,7 +27,7 @@
         }
     },
     "options": [
-        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solver_cfg}}",
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--heat.scalability-save=1",
@@ -89,13 +89,15 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence": [1,2,4,8,16,32,64,128,256,384,512]
+                    // "sequence": [1,2,4,8,16,32,64,128,256,384,512]
+                    "sequence": [1,2,4,8,16]
                 }
             ]
         },
         {
             "name":"mesh",
-            "sequence":["M1","M2","M3"],
+            "sequence":["M2","M3"],
+            // "sequence":["M1","M2","M3"],
             "conditions":{
                 "M1": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
                 "M2": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
@@ -117,7 +119,8 @@
          },
         {
             "name":"discretization",
-            "sequence":["P1","P2","P3"]
+            // "sequence":["P1","P2","P3"]
+            "sequence":["P3"]
             // "conditions":{
             //     "P1":[{ "resources.tasks":[64,128] }],
             //     "P2":[{ "resources.tasks":[] }],
