@@ -1,86 +1,285 @@
 {
+    "data":[
+        {
+            "name":"ext_parameter_table","ref":"parameter_table",
+            "table_options":{
+                "computed_columns":{
+                    "description_link":"f'link:descriptions/{row[\"testcases.hashcode\"]}.html[Description]'"
+                }
+            }
+        },
+        {
+            "name":"mesh_stats",
+            "columns":[
+                {"name":"Tag","values":["Mr0","Mr1","Mr2","Mr3","Mr4","Mr5","Mr6"]},
+                {"name":"hmin","values":[0.000125, 0.000137, 0.0000654, 0.0000329, 0.0000255, 0.0000312, 0.0000282]},
+                {"name":"hmax","values":[  0.00400, 0.00363, 0.0016, 0.000959, 0.000529, 0.00015, 0.000000994]},
+                {"name":"hmean","values":[0.000923, 0.000772, 0.000467, 0.000417, 0.000288, 0.000277, 0.000184]},
+                {"name":"# elements", "values":[ 192000, 282000, 747000, 1400000, 6040000, 43900000, 151000000]},
+                {"name":"T","values":[37470, 51753,131000, 242000, 1030000, 7370000, 25200000]},
+                {"name":"u","values":[84966, 117000, 590000, 708000, 1020000, 4620000, 14700000]},
+                {"name":"p","values":[4615, 6155, 28548, 34304, 48534, 205000, 637000] }
+            ],
+            "table_options":{
+                "format":{
+                    "hmin":"%.2E", "hmax":"%.2E", "hmean":"%.2E",
+                    "# elements":"%.2E", "T":"%.2E", "u":"%.2E","p":"%.2E"
+                }
+            }
+        }
+    ],
+    "contents":[
+        {
+            "type":"section",
+            "title":"Benchmark Execution Summary",
+            "contents": [
+                {
+                    "type":"section",
+                    "title":"Session",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.hostname}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Cases",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Total: @{session_info.num_cases}@ ",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Parametrization",
+                    "contents":[
+                        {
+                            "type":"table",
+                            "ref": "ext_parameter_table",
+                            "layout":{
+                                "column_order":["result","testcases.hashcode","tasks", "mesh", "testcases.time_total", "description_link","logs_link"],
+                                "rename":{
+                                    "testcases.time_total":"Total Time (s)", "testcases.hashcode":"Hash",
+                                    "result":"", "description_link":"", "logs_link":""
+                                }
+                            },
+                            "style":{
+                                "column_align":{ "result":"center" },
+                                "column_width":{ "result":1,"logs_link":1,"description_link":2},
+                                "classnames":["scrollable","sortable"]
+                            },
+                            "filter":{ "placeholder":"Filter testcases..." }
+                        }
+                    ]
+                }
+            ]
+        },
 
-    "plots": [
+
         {
-            "title": "Performance",
-            "plot_types": [ "stacked_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_assembly",
-                "Solve_solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "meshes",
-                "label": "Mesh"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
-            }
-        },
-        {
-            "title": "Relative Performance",
-            "plot_types": [ "stacked_bar" ],
-            "transformation": "relative_performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_assembly",
-                "Solve_solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "meshes",
-                "label": "Mesh"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
-            }
-        },
-        {
-            "title": "Speedup",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "variables": [
-                "Constructor_init",
-                "Solve_assembly",
-                "Solve_solve",
-                "PostProcessing_exportResults"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "meshes",
-                "label": "Mesh"
-            },
-            "yaxis": {
-                "label": "Speedup"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
-            }
+            "type":"section",
+            "title":"Benchmark: Thermo-Electric Coupling",
+            "contents":[
+                {
+                    "type":"section",
+                    "title":"Description",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"This benchmark models the steady aqueous humor (AH) flow in the posterior and anterior chambers of the human eyeball, coupled with the overall heat transfer, adapted from (Ooi & Ng, 2008; Abdelhafid, Guidoboni, Okumura, Koizumi, & Srinivas, 2021). The full model description is available in (Saigre, Prud'Homme, Szopos, & Chabannes, 2024). It it run with the toolbox heatfluid of Feel++."
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Benchmarking Tools Used",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"This benchmark was done using feelpp.benchmarking, version *{feelpp_benchmarking_version}*"
+                        },
+                        {
+                            "type":"text",
+                            "text":"The following tools were used for performance profiling and analysis:"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "*Feel++*:the performance tools integrated into the Feel++ framework were used to measure the execution time.",
+                                "*Gaya*: the benchmark was performed on the Gaya supercomputer"
+                            ]
+                        },
+                        {
+                            "type":"text",
+                            "text":"The metrics measured are the execution time to: (i) load and initialize the mesh that is already partitioned on the disk, (ii) initialize the data structures, (iii) assembly algebraic objects of the linear system, (iv) solve the non-linear algebraic system, and (v) export the results."
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Input/Output Dataset Description",
+                    "contents":[
+                        {
+                            "type":"section",
+                            "title":"Input Data",
+                            "contents":[
+                                {
+                                    "type":"text",
+                                    "text":"The input dataset consists of a family of 3D tetrahedral meshes generated through the process described in (Chabannes et al., 2024), and denoted Mr0 to Mr6, with an increasing number of elements. Table 4.9 presents the characteristics of these meshes. The mesh Mr4 is presented in Figure 4.17, amond results. The input data also provides the configuration files necessary to run the simulations."
+                                },
+                                {
+                                    "type":"table", "ref":"mesh_stats",
+                                    "caption":"Table 4.9: Characteristics of meshes used for the convergence study and number of degrees of freedom for temperature T, velocity u, and pressure fields p, with the discretization P1 - P2 P1."
+                                }
+                            ]
+                        },
+
+                        {
+                            "type":"section",
+                            "title":"Output Data",
+                            "contents":[
+                                {
+                                    "type":"text",
+                                    "text":"The output includes the computed temperature, velocity, and pressure fields for each mesh, stored in HDF5 format, as well as the time taken to perform each step of the simulation."
+                                }
+                            ]
+                        },
+                        {
+                            "type":"section",
+                            "title":"Data Repository",
+                            "contents":[
+                                {
+                                    "type":"text",
+                                    "text":"All input and output datasets are available in a Zenodo repository (Saigre, Prud'homme, Szopos, & Chabannes, 2024), accessible through DOI: 10.5281/ZENODO. 13886143."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Results Summary",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"We show in Figure 4.17 the distribution of the computed temperature over the eyeball in the standing position on a vertical cut. The temperature is higher at the back part of the eye, as this part is inside the human body, while the front part, where heat exchanges with the ambient air are present, is colder. The temperature distribution is consistent with previous findings from literature (Ooi & Ng, 2008; Wang, Qian, Song, Zhang, & Liu, 2016). Moreover, we present in Figure 4.18 the results of the simulation for various postural orientations of the eye, namely standing, prone, and supine positions. The main striking result is the difference in the flow patterns: it follows the gravitational force and is more important in the standing position (Figure 4.18a). Moreover, we notice the formation of Krukenberg's spindle and phenomena of recirculation in the anterior chamber, as observed in the literature (Abdelhafid et al., 2021; Wang et al., 2016). These results have been obtained with the mesh Mr4 and the P1-P2 P1 discretization."
+                        },
+                        {
+                            "type":"image",
+                            "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-heatfluid-resheat.png",
+                            "caption":"Figure 4.17: Distribution of the computed temperature over the eyeball in the standing position, on a vertical cut. Mesh discretization is also presented"
+                        },
+                        {
+                            "type":"grid",
+                            "columns":3,
+                            "contents":[
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-heatfluid-flowstanding.png",
+                                    "caption":"Standing position"
+                                },
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-heatfluid-flowprone.png",
+                                    "caption":"Prone position"
+                                },
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-heatfluid-flowsupine.png",
+                                    "caption":"Supine position"
+                                }
+                            ]
+
+                        },
+                        {
+                            "type":"text",
+                            "text":"The results of the benchmark are summarized in Figure 4.19a and Figure 4.19b, showing the computational time and relative computational time for each component of the simulation, respectively. The results are presented for the three biggest meshed of the family, namely Mr4, Mr5, and Mr6. Note that for Mr6, the simulation dit not complete on 1 node (128 cores) due to memory limitations."
+                        },
+                        {
+                            "type":"text",
+                            "text":"We observe that the resolution of the non-linear algebraic system is the most time-consuming part of the simulation, followed by the assembly of the linear system. Moreover, even though the relative time is globally similar when the number of cores is increased, we note a decrease in the absolute time for various components of the simulation, except for the Post process part, which involves writing the results to disk. The assembly time remains significant compared to other parts of the simulation, with a noticeable increase in the time spent resolving the non-linearsystem , which forms the largest portion of the computation. As the number of cores increases, we also observe a proportional increase in time dedicated to I/O operations, particularly in the Post process phase, due to the larger volumes of data being written to disk."
+                        }
+                    ]
+                },
+
+                {
+                    "type":"section",
+                    "title":"Challenges Identified",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"Several challenges were encountered during the benchmarking process:"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "*Memory Usage*: Memory usage should be better monitored espcially when creating the solver and preconditioner objects.",
+                                "*Parallelization Inefficiencies*: We need to test on large configuration in terms of mesh sizes and number of cores as well as increase the polynomial order to identify potential parallelization and I/O bottlenecks."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Results",
+                    "contents":[
+                        {
+                            "type":"plot",
+                            "plot":{
+                                "title":"Computational time for the coupled heat-fluid testcase",
+                                "plot_types":["stacked_bar"],
+                                "xaxis":{"parameter":"tasks","label":"Nproc"},
+                                "yaxis":{"label":"Computational time[s]"},
+                                "secondary_axis":{"parameter":"mesh","label":"Mesh"},
+                                "color_axis":{"label":"Step",
+                                    // "filter":[
+                                    //     {"mesh":"Mesh"},
+                                    //     {"":"Data Structures"},
+                                    //     {"Solve_assembly":"Assembly"},
+                                    //     {"Solve_solve":"Solve"},
+                                    //     {"PostProcessing_exportResults":"Post Process"}
+                                    // ]
+                                }
+                            }
+                        },
+                        {
+                            "type":"plot",
+                            "plot":{
+                                "title":"Computational time for the coupled heat-fluid testcase",
+                                "plot_types":["stacked_bar"],
+                                "xaxis":{"parameter":"tasks","label":"Nproc"},
+                                "transformation":"relative_performance",
+                                "yaxis":{"label":"Computational time[s]"},
+                                "secondary_axis":{"parameter":"mesh","label":"Mesh"},
+                                "color_axis":{"label":"Step",
+                                    // "filter":[
+                                    //     {"mesh":"Mesh"},
+                                    //     {"":"Data Structures"},
+                                    //     {"Solve_assembly":"Assembly"},
+                                    //     {"Solve_solve":"Solve"},
+                                    //     {"PostProcessing_exportResults":"Post Process"}
+                                    // ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
