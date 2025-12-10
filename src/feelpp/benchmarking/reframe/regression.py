@@ -36,26 +36,6 @@ class RegressionTest(ReframeSetup):
         )
 
     @run_before('performance')
-    def setPerfVars(self):
-        self.perf_variables = {}
-        if not self.scalability_handler:
-            return
-        self.perf_variables.update(
-            self.scalability_handler.getPerformanceVariables(self.num_tasks)
-        )
-        self.perf_variables.update(
-            self.scalability_handler.getCustomPerformanceVariables(self.perf_variables)
-        )
-
-    @run_before('performance')
-    def copyParametrizedFiles(self):
-        FileHandler.copyResource(
-            self.app_reader.config.additional_files.parameterized_descriptions_filepath,
-            os.path.join(self.report_dir_path,"partials"),
-            self.hashcode
-        )
-
-    @run_before('performance')
     def renderLogs(self):
         logs_data = {}
         with open(os.path.join(self.stagedir, self.job.script_filename), 'r') as f:
@@ -80,6 +60,27 @@ class RegressionTest(ReframeSetup):
         renderer = TemplateRenderer(os.path.join(os.path.dirname(__file__),"templates"),"logs.adoc.j2")
         renderer.render(os.path.join(self.stagedir,"logs.adoc"),logs_data)
 
+
+    @run_before('performance')
+    def copyParametrizedFiles(self):
+        FileHandler.copyResource(
+            self.app_reader.config.additional_files.parameterized_descriptions_filepath,
+            os.path.join(self.report_dir_path,"partials"),
+            self.hashcode
+        )
+
+
+    @run_before('performance')
+    def setPerfVars(self):
+        self.perf_variables = {}
+        if not self.scalability_handler:
+            return
+        self.perf_variables.update(
+            self.scalability_handler.getPerformanceVariables(self.num_tasks)
+        )
+        self.perf_variables.update(
+            self.scalability_handler.getCustomPerformanceVariables(self.perf_variables)
+        )
 
     @run_before("cleanup")
     def removeDirectories(self):
