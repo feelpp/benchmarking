@@ -1,0 +1,98 @@
+{
+    "executable":"feelpp_toolbox_hdg_elasticity",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/elasticity/NAFEM_LE10",
+    "use_case_name": "NAFEM_LE10",
+    "timeout":"0-01:00:00",
+    "resources":{
+        "tasks":"{{parameters.resources.tasks.value}}",
+        "exclusive_access":true
+    },
+    "input_file_dependencies":{
+        "mesh_json":"",
+        "mesh_hdf5":""
+    },
+    "platforms": {
+        "apptainer":{
+            "image": {
+                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
+            },
+            "input_dir":"/input_data",
+            "options": [
+                "--home {{machine.output_app_dir}}",
+                "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
+                "--env OMP_NUM_THREADS=1"
+            ]
+        }
+    },
+    "options": [
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/hdg/cases/elasticity/quarterturn/quarterturn3D.cfg",
+        "--directory {{output_directory}}/{{instance}}",
+        "--repository.case {{use_case_name}}",
+        "--heat.scalability-save=1",
+        "--repository.append.np 0",
+        "--case.discretization {{parameters.discretization.value}}",
+        "--heat.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heat/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh_json}}\" }'"
+    ],
+    "additional_files":{
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc",
+        "custom_logs":[
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_heat.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_heat.WARNING"
+        ]
+    },"scalability": {
+        "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "clean_directory":true,
+        "stages": [
+            {
+                "name": "Constructor",
+                "filepath": "heat.scalibility.HeatConstructor.data",
+                "format": "tsv"
+            },
+            {
+                "name": "PostProcessing",
+                "filepath": "heat.scalibility.HeatPostProcessing.data",
+                "format": "tsv"
+            },
+            {
+                "name": "Solve",
+                "filepath": "heat.scalibility.HeatSolve.data",
+                "format": "tsv",
+                "units":{
+                    "*":"s",
+                    "ksp-niter":"iter"
+                }
+            },
+            {
+                "name":"Outputs",
+                "filepath": "heat.measures/values.csv",
+                "format": "csv",
+                "units":{
+                    "*":"W"
+                }
+            }
+        ],
+        "custom_variables": [
+            {
+                "name":"Total",
+                "columns":["Constructor_init","Solve_solve","PostProcessing_exportResults" ],
+                "op":"sum",
+                "unit":"s"
+            }
+        ]
+    },
+    "parameters": [
+        {
+            "name":"tasks",
+            "sequence": [32,64]
+            // "sequence": [32,64,128,256,384,215]
+        },
+        {
+            "name":"mesh",
+            "sequence":["M2","M3","M4"]
+        },
+        {
+            "name":"discretization",
+            "sequence":["P1","P2"]
+        }
+    ]
+}
