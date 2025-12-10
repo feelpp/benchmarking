@@ -27,13 +27,6 @@ class RegressionTest(ReframeSetup):
         if self.is_dry_run():
             self.skip("ReFrame is in dry-run mode, perormance and sanity are not going to be evaluated.")
 
-    @run_before('performance')
-    def copyLogs(self):
-        FileHandler.copyResource(
-            os.path.join(self.stagedir,"logs.adoc"),
-            os.path.join(self.report_dir_path,"logs"),
-            self.hashcode
-        )
 
     @run_before('performance')
     def renderLogs(self):
@@ -60,6 +53,13 @@ class RegressionTest(ReframeSetup):
         renderer = TemplateRenderer(os.path.join(os.path.dirname(__file__),"templates"),"logs.adoc.j2")
         renderer.render(os.path.join(self.stagedir,"logs.adoc"),logs_data)
 
+    @run_before('performance')
+    def copyLogs(self):
+        FileHandler.copyResource(
+            os.path.join(self.stagedir,"logs.adoc"),
+            os.path.join(self.report_dir_path,"logs"),
+            self.hashcode
+        )
 
     @run_before('performance')
     def copyParametrizedFiles(self):
