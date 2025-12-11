@@ -6,7 +6,10 @@ function downloadData(data, filename) {
             downloadBlob(blob, `${d.title}.${data[0].format}`);
         }
         else {
-            downloadFilesAsZip(data[0].content, filename);
+            downloadFilesAsZip(
+                [{ format: data[0].format, content: data[0].content }],
+                filename
+            );
         }
     }
     else if (data.length > 1) {
