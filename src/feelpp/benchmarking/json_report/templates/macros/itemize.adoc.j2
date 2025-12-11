@@ -1,0 +1,9 @@
+{% import "macros/text.adoc.j2"  as text %}
+
+{% macro render(listNode,data) %}
+
+{% for item in listNode.items %}
+- {{text.render(item,data)}}
+{% endfor %}
+
+{% endmacro %}

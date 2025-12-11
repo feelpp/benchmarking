@@ -1,0 +1,404 @@
+= Including Data
+
+The `data` field in the root report schema is an array of `DataField` derived objects, which instruct the renderer how to load data from different sources and make it available for content generation. Data can be specified inline, can come from files that can be located on the disk or on remote locations.
+
+[NOTE]
+Remote file handling is not yet implemented. Remote locations coming soon : Girder, CKAN, github
+
+== Base DataField Schema
+
+The base schema for loading data is defined in the following table.
+
+|===
+|Field|Type|Description|Default Value
+
+|`name`|string|A **unique identifier** used to reference this data in content nodes (e.g., in a table or plot).|*Required*
+|`type`|string("DataTable","Object","Raw")| The type for how to load and process the data.|It is inferred from the format or the schema. Only provide it when you need custom casting (e.g. load a json as a Table)
+|`preprocessor`|string or object ("`module``:`my.function`")|Defines a Python function to preprocess the loaded data.  |`null`
+
+|===
+
+== Loading Inline Data
+
+It is possible to specify the data directly on the JSON configuration, allowing users to refactor and mantain their configuration files clean.
+
+
+Three inline types are supported at the moment:
+
+- *`Raw`* : Treated as a string
+- *`Object`* : Treated as a python dictionary
+- *`DataTable`* : Treated as a pandas dataframe
+
+=== Raw Inline data
+Inline data can be loaded by using the `value` field.
+
+.Setting inline text in data
+[.examp#examp:1]
+****
+[source,json]
+----
+{
+  "data":[
+    {"name":"myCustomText", "value":" Some text I want to access across my report."}
+  ]
+}
+
+----
+
+Later, users can reference this text with :
+[source,json]
+----
+{
+  "contents":[
+    {
+      "type":"text", "ref":"myCustomText",
+      "text":" Here, the text defined in the data section will appear : @{myCustomText}@"
+    }
+  ]
+}
+
+----
+****
+
+=== Object Inline data
+
+Object (dict) data can be loaded by using the `object` field.
+
+.Setting inline objects in data
+[.examp#examp:2]
+****
+[source,json]
+----
+{
+  "data":[{
+    "name":"myCustomObject",
+    "object":{
+      "students":{
+        "Robert" : { "score":"50", "grade":"D" },
+        "John": { "score":"100", "grade":"A" }
+      }
+    }
+  }]
+}
+
+----
+
+Later, users can reference this object with :
+[source,json]
+----
+{
+  "contents":[{
+    "type":"text", "ref":"myCustomObject",
+    "itemize":[
+      "Robert had a score of @{students.Robert.score}@ and a grade @{students.Robert.grade}@",
+      "John had a score of @{students.John.score}@ and a grade @{students.John.grade}@"
+    ]
+  }]
+}
+----
+****
+
+=== Table Inline data
+
+Inline tables can be loaded using the `columns` field, which is a *list* of objects following the format
+
+[source,json]
+----
+{ "columns":[ { "name":"", "values":[] } ] }
+----
+
+.Setting inline tables in data
+[.examp#examp:3]
+****
+[source,json]
+----
+{
+  "data":[{
+    "name":"myInlineTable",
+    "columns":[
+      { "name":"time", "values":[1.2,2.3,3.4,4.5] },
+      { "name":"power", "values":[10,20,30,40] },
+      { "name":"temperature", "values":[22.5,23.0,21.3,22.1] },
+      { "name":"comfort", "values":[0.5,0.6,0.7,0.8] }
+    ],
+  }]
+}
+
+----
+
+Later, users can render this table with its reference:
+[source,json]
+----
+{
+  "contents":[
+    { "type":"table", "ref":"myInlineTable" }
+  ]
+}
+----
+****
+
+[WARNING]
+When providing inline tables, the values for each column should have exactly the same length. An exception will be raised if not the case.
+
+[NOTE]
+Multiple options can be provided to table objects when loading to perform some preprocessing. See the <<Table options>> section for more information.
+
+
+== Loading File Data
+
+Files can be loaded into the report by providing `filepath` key in the Data Object. It can either be an absolute path, or a path relative to the report file location. Additionally, the `format` can be specified, otherwise it will be inferred from the file extension.
+
+The fields are also specified in this table.
+
+|===
+|Field|Type|Description|Default Value
+
+|`filepath`|string|The path to the data file. Relative paths are resolved relative to the JSON report file.|*Required*
+|`format`|string (`"json"`, `"csv"`, `"raw"`)|The format of the file. If omitted, it is inferred from the file extension (`.json`, `.csv`).|Inferred from `filepath`
+|===
+
+
+[WARNING]
+Any file extension other than `json` and `csv` will be treated as `raw` data.
+
+
+.Loading files on the disk
+[.examp#examp:4]
+****
+[source,json]
+----
+{
+  "data":[
+    { "name":"my_table", "filepath":"tabular_data.csv" },
+    { "name":"my_json_data", "filepath":"my_data.json" },
+    { "name":"my_error_log", "filepath":"./logs/log.err" } //The err extension will default to raw text
+  ]
+}
+
+----
+****
+
+== Table options
+
+Table options can *optionally* be provided to data objects of type `DataTable`, using the `table_options` field. It does not matter if data is loaded from a file or provided inline.
+It is used to preprocess the data in a sequential pipeline, just after loading.
+
+
+[source, json]
+----
+{
+  "name":"my_processed_table", "filepath":"my_data.csv",
+  "table_options":{
+    "filter":[...],
+    "computed_columns":{...},
+    "group_by":{...},
+    "pivot":{...},
+    "sort":[...],
+    "format":{...},
+  }
+}
+----
+
+
+[IMPORTANT]
+.Validation Rules
+The engine enforces validation rules: `pivot` and `group_by` are mutually exclusive, and sorting is discouraged after pivoting due to ambiguous results.
+
+
+Operations are executed in this strict order:
+
+1.  **Filter:** Row reduction based on conditions.
+2.  **Computed Columns:** Creation of new columns via Python expressions.
+3.  **Group By / Pivot:** Data aggregation or structural reshaping (mutually exclusive).
+4.  **Sort:** Ordering of final rows.
+5.  **Format:** Value presentation (e.g., decimal precision, value substitution).
+
+=== Filtering
+
+
+The `filter` field is a list of conditions used to exclude rows from the initial dataset.
+
+|===
+| Condition Field | Type | Description
+
+| `column` | `string` | The column name to apply the condition to.
+| `op` | `string` | The comparison operator. Supported: `==`, `!=`, `>`, `<`, `>=`, `<=`, `in`, `not in`.
+| `value` | `object` | The value(s) to compare against. Use an array for `in`/`not in` operators.
+|===
+
+.Filtering a table
+[.examp#examp:5]
+****
+[source,json]
+----
+"filter": [
+  {"column": "Time", "op": "<", "value": 50.0},
+  {"column": "Method", "op": "in", "value": ["A", "B"]}
+]
+----
+****
+
+=== Creating New Columns
+
+You can define new columns based on existing row values using Python expressions.
+
+
+.Creating new columns
+[.examp#examp:6]
+****
+[source,json]
+----
+"computed_columns": {
+  "Speedup": "row['Time_Ref'] / row['Time']",
+  "Max_Memory_KB": "row['Memory_MB'] * 1024"
+}
+----
+****
+
+=== GroupBy
+
+Used to group rows by categorical columns and apply aggregation functions to columns.
+
+|===
+| Field | Type | Description
+
+| `columns` | `array of strings` | The columns to group the data by.
+| `agg` | `object` or `string` | The aggregation function (e.g., `"mean"`, `"sum"`, `"max", "count"`). Can be a single string for all columns, or a map like `{"Time_s": "mean"}`.
+|===
+
+=== Pivoting
+
+This option is used to create cross-tabulation tables by transforming unique column values into new column headers.
+
+|===
+| Field | Type | Description
+
+| `index` | `array of strings` | The column(s) for the new row headers.
+| `columns` | `array of strings` | The column(s) whose unique values will become the new column headers.
+| `values` | `string` | The column providing the data for the new cell values.
+| `agg` | `string` | The aggregation function applied to cell values (e.g., `"mean"`).
+|===
+
+
+=== Sorting
+
+The `sort` field is a list of instructions defining the final order of rows.
+
+|===
+| Instruction Field | Type | Description | Default Value
+
+| `column` | `string` | The column name to sort by. |
+| `ascending` | `boolean` | If `true`, sorts ascending (A-Z, 0-9). If `false`, sorts descending. | `true`
+|===
+
+
+.Sorting columns
+[.examp#examp:7]
+****
+[source,json]
+----
+"sort": [
+  {"column": "Configuration", "ascending": true},
+  {"column": "Time", "ascending": false}
+]
+----
+****
+
+=== Formatting
+
+The `format` field is used to parse the content columns. Specific values can also be subsituted.
+
+
+.Formating Time and result columns
+[.examp#examp:8]
+****
+[source,json]
+----
+"format":{
+  "Time": "%.3f", //Cast to string and format the number to 3 decimal places
+  "result":{ //Will look for 'true' and 'false" in the "result" column and will replace those values by Success and Failure
+    "true":"Success",
+    "false":"Failure"
+  }
+}
+----
+****
+
+== Using a preprocessor
+
+The `preprocessor` field allows for custom data manipulation after loading. It can be a string in the format `"module_name:function_name"` or an object `{"module":"module_name", "function":"function_name"}`
+
+Function names can be splitted with a dot (`.`) to access specific methods. For example `"builtins:str.lower"` will access the `lower()` method of the `str` class in the `builtins` module.
+
+This field should only be used to perform complex processing that cannot be done using the available fields described in <<Table options>>.
+
+[WARNING]
+.Security Implication
+The preprocessor feature involves dynamic module loading and function execution. Ensure that preprocessors originate from a trusted source.
+
+.Using a preprocessor
+[.examp#examp:9]
+****
+[source,json]
+----
+{
+  "data": [
+    {
+      "name": "benchmark_results",
+      "filepath": "data/timing_data.csv",
+      "preprocessor": "my_data_utils:clean_data"
+    },
+  ]
+}
+----
+
+In this example above, `my_data_utils.py` must contain a function `clean_data(df: pandas.DataFrame) -> pandas.DataFrame`.
+****
+
+
+Note that it can also be used to cast your data to other types (e.g. you want to transform a nested JSON into a dataframe).
+
+
+== Data Referencing
+
+The report schema supports referencing one data object from another. This allows you to create derived data fields or avoid duplicating data definitions. References are specified using the ref field inside a `DataField` object.
+
+=== Creating a reference
+
+To reference an existing data field, define a new `DataField` with the `ref` key pointing to the `name` of another data object:
+
+[source,json]
+----
+{
+  "data":[
+    { "name":"raw_results", "filepath":"results.csv" },
+    { "name":"processed_results", "ref":"raw_results", "table_options":{...} }
+  ]
+}
+----
+
+In this example:
+
+- processed_results will perform some preprocessing using "table_options" to the data loaded from `raw_results`, without modifying the actual "raw_results" field.
+- Users can reference these two data fields in the content independently.
+- The type of the reference is automatically inferred from the parent (`raw_results`).
+
+[TIP]
+References can be chained: a data field can reference another reference.
+
+[NOTE]
+All processing from the referenced data field is performed *before*, preserving the logical order.
+
+
+=== Type Resolution
+
+- If the type is not explicitly defined, it is inferred from the referenced field.
+- The system supports DataTable, Object, and Raw types.
+- The reference inherits the type and can be cast automatically to the correct subclass (`DataTable`, `Object`, or `Raw`) after resolution.
+
+
+=== Caching and Reuse
+
+- Resolved references are cached in the dependency graph to avoid redundant computation.
+- This ensures efficiency when multiple fields reference the same source data.
+- Circular references are detected and will raise a `ReferenceError`.

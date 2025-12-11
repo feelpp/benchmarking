@@ -1,17 +1,17 @@
 {
     "executable": "feelpp_toolbox_heat",
-    "output_directory": "{{machine.output_app_dir}}/javier_test/toolboxes/heat/ThermalBridgesENISO10211/Case3",
+    "output_directory": "{{machine.output_app_dir}}/toolboxes/heat/ThermalBridgesENISO10211/Case3",
     "use_case_name": "ThermalBridgesENISO10211",
-    "timeout":"0-00:10:00",
+    "timeout":"0-00:20:00",
     "resources":{
         "tasks":"{{parameters.resources.tasks.value}}",
-        "exclusive_access":"{{parameters.resources.exclusive_access.value}}",
+        "exclusive_access":true,
         "memory":"{{parameters.memory.value}}"
     },
     "input_file_dependencies":{
-        "solver_cfg":"{{use_case_name}}/{{parameters.solver.value}}.cfg",
-        "mesh_json":"{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json",
-        "mesh_hdf5":"{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.h5"
+        "solver_cfg":"feelpp_toolboxes/{{use_case_name}}/{{parameters.solver.value}}.cfg",
+        "mesh_json":"feelpp_toolboxes/{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.json",
+        "mesh_hdf5":"feelpp_toolboxes/{{use_case_name}}/partitioning/case3/{{parameters.mesh.value}}/case3_p{{parameters.resources.tasks.value}}.h5"
     },
     "platforms": {
         "apptainer":{
@@ -23,17 +23,11 @@
                 "--home {{machine.output_app_dir}}",
                 "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
                 "--env OMP_NUM_THREADS=1"
-            ],
-            "append_app_option":[]
-        },
-        "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}",
-            "append_app_option":[]
+            ]
         }
     },
     "options": [
-        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solver_cfg}}",
-        "--directory {{output_directory}}/{{instance}}",
+        "--config-files /usr/share/feelpp/data/testcases/toolboxes/heat/cases/Building/ThermalBridgesENISO10211/case3.cfg {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solver_cfg}}",        "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--heat.scalability-save=1",
         "--repository.append.np 0",
@@ -43,8 +37,8 @@
     "additional_files":{
         "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heat.information.adoc",
         "custom_logs":[
-            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.INFO",
-            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/{{executable}}.WARNING"
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_heat.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_heat.WARNING"
         ]
     },
     "scalability": {
@@ -78,11 +72,15 @@
                     "*":"W"
                 }
             }
+        ],
+        "custom_variables": [
+            {
+                "name":"Total",
+                "columns":["Constructor_init","Solve_solve","PostProcessing_exportResults" ],
+                "op":"sum",
+                "unit":"s"
+            }
         ]
-    },
-    "sanity": {
-        "success": [],
-        "error": []
     },
     "parameters": [
         {
@@ -90,38 +88,43 @@
             "zip":[
                 {
                     "name":"tasks",
-                    "sequence":[64,128]
-                },
-                {
-                    "name":"exclusive_access",
-                    "repeat":{"value":true,"count":10}
+                    "sequence": [1,2,4,8,16,32,64,128,256,384,512]
                 }
             ]
         },
         {
             "name":"mesh",
-            "sequence":["M1","M2","M3"]
-        },
-        {
-            "name":"memory",
-            "sequence":[200, 300, 3000],
+            "sequence":["M1","M2","M3"],
             "conditions":{
-                "200": [ { "discretization": ["P1","P2"], "mesh": ["M1","M2"] }, { "discretization": ["P2"], "mesh": ["M3"] } ],
-                "300": [ { "discretization": ["P1"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M1","M2"] } ],
-                "3000": [ { "discretization": ["P3"], "mesh": ["M3"] } ]
+                "M1": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
+                "M2": [ {"resources.tasks":[ 1,2,4,8,16,32,64,128 ] } ],
+                "M3": [ {"resources.tasks":[ 32,64,128,256,384 ] } ]
             }
         },
+        {
+            // P1 -> M1: <50, M2: 50 , M3: 400
+            // P2 -> M1: <100, M2:<200, M3: 1200 (to check)
+            // P3 -> M1: <200, M2: 1000: M3: ???
+            "name":"memory",
+            "sequence": [50, 200,400,1200],
+            "conditions":{
+                 "50": [ { "discretization": ["P1"], "mesh": ["M1","M2"] } ],
+                 "200": [ { "discretization": ["P2"], "mesh": ["M1","M2"] }, { "discretization": ["P3"], "mesh": ["M1"] } ],
+                 "400": [ { "discretization": ["P1"], "mesh": ["M3"] } ],
+                 "1200": [ { "discretization": ["P2"], "mesh": ["M3"] }, { "discretization": ["P3"], "mesh": ["M2"] } ]
+              }
+         },
         {
             "name":"discretization",
-            "sequence":["P1","P2","P3"],
-            "conditions":{
-                "P1":[{ "resources.tasks":[64,128] }],
-                "P2":[{ "resources.tasks":[] }],
-                "P3":[{ "resources.tasks":[] }]
-            }
+            "sequence":["P1","P2","P3"]
+            // "conditions":{
+            //     "P1":[{ "resources.tasks":[64,128] }],
+            //     "P2":[{ "resources.tasks":[] }],
+            //     "P3":[{ "resources.tasks":[] }]
+            // }
         },
         {
-            "name": "solver",
+             "name": "solver",
             "sequence": ["gamg"]
         }
     ]

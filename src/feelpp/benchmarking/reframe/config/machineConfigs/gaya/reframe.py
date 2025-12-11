@@ -9,7 +9,7 @@ site_configuration = {
                 {
                     'name': 'production',
                     'scheduler': 'squeue',
-                    'launcher': 'mpiexec',
+                    'launcher': 'srun',
                     'max_jobs': 8,
                     'access': ['--partition=production'],
                     'environs': ['default','hpcx'],
@@ -20,12 +20,6 @@ site_configuration = {
                     'processor': {
                         'num_cpus': 128
                     },
-                    'resources': [
-                        {
-                            'name':'launcher_options',
-                            'options':['-bind-to','core']
-                        }
-                    ],
                     'devices': [
                         {
                             'type': 'cpu',
@@ -44,7 +38,7 @@ site_configuration = {
                 {
                     'name': 'public',
                     'scheduler': 'squeue',
-                    'launcher': 'mpiexec',
+                    'launcher': 'srun',
                     'max_jobs': 8,
                     'access': ['--partition=public'],
                     'environs': ['default','hpcx'],
@@ -55,12 +49,6 @@ site_configuration = {
                     'processor': {
                         'num_cpus': 128
                     },
-                    'resources': [
-                        {
-                            'name':'launcher_options',
-                            'options':['-bind-to','core']
-                        }
-                    ],
                     'devices': [
                         {
                             'type': 'cpu',
@@ -79,7 +67,7 @@ site_configuration = {
                 {
                     'name':'gpu',
                     'scheduler':'squeue',
-                    'launcher':'mpiexec',
+                    'launcher':'srun',
                     'max_jobs':4,
                     'access': ['--partition=gpu'],
                     'environs': ['default'],

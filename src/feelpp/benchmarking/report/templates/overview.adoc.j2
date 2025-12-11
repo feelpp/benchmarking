@@ -1,0 +1,22 @@
+
+== Overview
+
+{% include "summaryTable.adoc.j2" %}
+
+{% for repository_type in aggregated["children_repositories"] %}
+
+    {% if plots %}
+
+    {% set plots_by_child_repo = plots.get(repository_type,{}) %}
+
+    {% for key,key_plots in plots_by_child_repo.items() %}
+
+        {%if self_id in key.split("|") %}
+            {% with report_data = {"aggregated_data":aggregated.get("data")}, report = ValidateJsonReport(key_plots)%}
+                {% include "json2adoc_report.adoc.j2" %}
+            {% endwith %}
+
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+{% endfor %}

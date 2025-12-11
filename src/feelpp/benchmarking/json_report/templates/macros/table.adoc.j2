@@ -1,0 +1,43 @@
+{% macro render(tableNode, data) %}
+
+{%set table_controller = TableController(data.get(tableNode.ref),tableNode.layout, tableNode.style) %}
+{%set table = table_controller.generate() %}
+
+
+{% if tableNode.caption %}
+.{{tableNode.caption}}
+{% endif %}
+{% if tableNode.style.classnames %}
+[{% for classname in tableNode.style.classnames %}.{{classname}}{% endfor %}]
+{% endif %}
+--
+[cols="{{ table_controller.getColsAlignment() }}",options="header"]
+|===
+
+{% for col in table.columns %}|{{ col }}{% endfor %}
+
+{% for row in table.itertuples(index=False) %}
+{% for cell in row %}|{{ cell }}{% endfor %}
+
+{% endfor %}
+
+|===
+{%if tableNode.filter %}
+++++
+<input type="text" id="filter_{{tableNode.ref}}_table" placeholder="{{tableNode.filter.placeholder}}" style="{{tableNode.filter.style}}">
+++++
+{% endif %}
+--
+
+{% if 'sortable' in tableNode.style.classnames %}
+++++
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.sortable table');
+    initTable(table, 'filter_{{tableNode.ref}}_table');
+  });
+</script>
+++++
+{% endif %}
+
+{% endmacro %}

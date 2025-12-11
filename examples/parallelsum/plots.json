@@ -1,54 +1,151 @@
 {
-    "plots":[
+    "contents": [
         {
-            "title": "Absolute performance",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [ "computation_time" ],
-            "names": ["Time"],
-            "xaxis":{
-                "parameter":"tasks",
-                "label":"Number of tasks"
-            },
-            "yaxis":{"label":"Execution time (s)"},
-            "secondary_axis":{
-                "parameter":"elements",
-                "label":"N"
-            }
+            "type": "section",
+            "title": "Description",
+            "contents": [
+                {
+                    "type": "text",
+                    "text": "This report analyzes the performance of the parallel sum benchmark for different array sizes (N) and levels of task parallelism. We compare computation and communication times and evaluate how execution time and speedup evolve with increasing workloads."
+                },
+                {
+                    "type": "section",
+                    "title": "Session",
+                    "contents": [
+                        {
+                            "type": "itemize",
+                            "ref": "reframe_json",
+                            "items": [
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.user}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "Cases",
+                    "contents": [
+                        {
+                            "type": "itemize",
+                            "ref": "reframe_json",
+                            "items": [
+                                "Total: @{session_info.num_cases}@",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "title": "Absolute performance",
-            "plot_types": [ "stacked_bar", "table" ],
-            "transformation": "performance",
-            "variables": [ "computation_time" ],
-            "names": ["Time"],
-            "xaxis":{
-                "parameter":"elements",
-                "label":"N"
-            },
-            "yaxis":{"label":"Execution time (s)"},
-            "secondary_axis":{
-                "parameter":"tasks",
-                "label":"Number of tasks"
-            }
+            "type": "section",
+            "title": "Parametrization",
+            "contents": [
+                {
+                    "type": "table",
+                    "ref": "reframe_df",
+                    "layout": {
+                        "columns": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total"],
+                        "computed_columns":{
+                            "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
+                        },
+                        "rename": {
+                            "testcases.time_total": "Total Time (s)",
+                            "testcases.hashcode": "Hash",
+                            "result": "",
+                            "logs_link":""
+                        },
+                        "group_by": { "columns": ["testcases.hashcode"], "agg": "first" },
+                        "format": {
+                            "testcases.time_total": "%.3f",
+                            "tasks":"%.0f",
+                            "elements":"%.0f",
+                            "result": { "pass": "🟢", "fail": "🔴" }
+                        },
+                        "column_order": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total","logs_link"],
+                        "style": {
+                            "column_align": { "result": "center" },
+                            "column_width":{ "result":1,"logs_link":1},
+                            "classnames": ["scrollable", "sortable"]
+                        }
+                    },
+                    "filter": { "placeholder": "Filter testcases..." }
+                }
+            ]
         },
         {
-            "title": "Speedup",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "variables": [ "computation_time" ],
-            "names": ["Time"],
-            "xaxis": {
-                "parameter": "tasks",
-                "label": "Number of tasks"
-            },
-            "yaxis": {
-                "label": "Execution time (s)"
-            },
-            "secondary_axis":{
-                "parameter":"elements",
-                "label":"N"
-            }
+            "type": "section",
+            "title": "Performance Analysis",
+            "contents": [
+                {
+                    "type": "section",
+                    "title": "Execution Time vs Number of Tasks",
+                    "contents": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Absolute performance",
+                                "plot_types": ["stacked_bar", "grouped_bar"],
+                                "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+                                "yaxis": { "label": "Execution time (s)" },
+                                "color_axis": { "filter": { "computation_time": "Time" } },
+                                "secondary_axis": { "parameter": "elements", "label": "N" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "This plot shows the execution time breakdown as the number of tasks increases. It highlights parallel scaling behavior for different array sizes."
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "Execution Time vs Problem Size (N)",
+                    "contents": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Absolute performance",
+                                "plot_types": ["stacked_bar", "table"],
+                                "xaxis": { "parameter": "elements", "label": "N" },
+                                "yaxis": { "label": "Execution time (s)" },
+                                "color_axis": { "filter": { "computation_time": "Time" } },
+                                "secondary_axis": { "parameter": "tasks", "label": "Number of tasks" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "This plot illustrates how execution time scales with array size N under different task counts. It helps identify compute bottlenecks and memory throughput constraints."
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "Speedup Analysis",
+                    "contents": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Speedup",
+                                "plot_types": ["scatter"],
+                                "transformation": "speedup",
+                                "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+                                "yaxis": { "label": "Speedup" },
+                                "color_axis": { "filter": { "computation_time": "Time" } },
+                                "secondary_axis": { "parameter": "elements", "label": "N" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "This speedup plot shows how effectively the computation accelerates when increasing task parallelism. It highlights the scaling behavior of the parallel sum benchmark."
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

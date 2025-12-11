@@ -3,25 +3,34 @@
     "output_directory": "{{machine.output_app_dir}}/toolboxes/thermoelectric/HL_31",
     "use_case_name": "HL_31",
     "timeout":"0-01:00:00",
+    "resources":{
+        "tasks":"{{parameters.tasks.value}}",
+        "exclusive_access":true
+    },
+    "input_file_dependencies":{
+        "case_cfg":"feelpp_toolboxes/{{use_case_name}}/HL-31.cfg",
+        "mesh_json":"feelpp_toolboxes/{{use_case_name}}/HL-31_p{{parameters.tasks.value}}.json",
+        "mesh_hdf5":"feelpp_toolboxes/{{use_case_name}}/HL-31_p{{parameters.tasks.value}}.h5"
+    },
     "platforms": {
         "apptainer":{
             "image": {
-                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
             },
-            "input_dir":"/input_data/",
+            "input_dir":"/input_data",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
-            ],
-            "append_app_option":[]
+                "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}",
+                "--env OMP_NUM_THREADS=1"
+            ]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
+            "input_dir":"{{machine.input_dataset_base_dir}}/feelpp_toolboxes/{{use_case_name}}/",
             "append_app_option":[]
         }
     },
     "options": [
-        "--config-files {{platforms.{{machine.platform}}.input_dir}}/HL-31.cfg",
+        "--config-files {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.case_cfg}}",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -30,14 +39,18 @@
         "--thermo-electric.electric.scalability-save=1",
         "--repository.append.np 0",
         "--case.discretization {{parameters.discretization.value}}",
-        "--thermo-electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/thermoelectric/Import/filename\",\"value\": \"$cfgdir/HL-31_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+        "--thermo-electric.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/thermoelectric/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh_json}}\" }'"
     ],
-    "outputs": [],
     "additional_files":{
-        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/thermoelectric.information.adoc"
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/thermoelectric.information.adoc",
+        "custom_logs":[
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_thermoelectric.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_thermoelectric.WARNING"
+        ]
     },
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "clean_directory":true,
         "stages": [
             {
                 "name": "Constructor",
@@ -52,26 +65,18 @@
             {
                 "name": "Solve",
                 "filepath": "thermo-electric.scalibility.ThermoElectricSolve.data",
-                "format": "tsv"
+                "format": "tsv",
+                "units":{
+                    "*":"s",
+                    "ksp-niter":"iter"
+                }
             }
         ]
     },
-    "sanity": {
-        "success": [],
-        "error": []
-    },
     "parameters": [
         {
-            "name": "nb_tasks",
-            "sequence": [
-                {"tasks":4,"nodes":1,"exclusive_access":true},
-                {"tasks":8,"nodes":1,"exclusive_access":true},
-                {"tasks":16,"nodes":1,"exclusive_access":true},
-                {"tasks":32,"nodes":1,"exclusive_access":true},
-                {"tasks":64,"nodes":1,"exclusive_access":true},
-                {"tasks":128,"nodes":1,"exclusive_access":true},
-                {"tasks":256,"nodes":2,"exclusive_access":true}
-            ]
+            "name": "tasks",
+            "sequence": [4,8,16,32,64,128,256]
         },
         {
             "name": "discretization",

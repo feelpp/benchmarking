@@ -1,0 +1,378 @@
+{
+    "data":[
+        {
+            "name":"ext_parameter_table","ref":"parameter_table",
+            "table_options":{
+                "computed_columns":{
+                    "description_link":"f'link:descriptions/{row[\"testcases.hashcode\"]}.html[Description]'"
+                }
+            }
+        },
+        {
+            "name":"mesh_stats",
+            "columns":[
+                {"name":"Tag","values":["Mr0","Mr1","Mr2","Mr3","Mr4","Mr5","Mr6"]},
+                {"name":"hmin","values":[0.000125, 0.000137, 0.0000654, 0.0000329, 0.0000255, 0.0000312, 0.0000282]},
+                {"name":"hmax","values":[  0.00400, 0.00363, 0.0016, 0.000959, 0.000529, 0.00015, 0.000000994]},
+                {"name":"hmean","values":[0.000923, 0.000772, 0.000467, 0.000417, 0.000288, 0.000277, 0.000184]},
+                {"name":"# elements", "values":[ 192000, 282000, 747000, 1400000, 6040000, 43900000, 151000000]},
+                {"name":"T","values":[37470, 51753,131000, 242000, 1030000, 7370000, 25200000]},
+                {"name":"u","values":[84966, 117000, 590000, 708000, 1020000, 4620000, 14700000]},
+                {"name":"p","values":[4615, 6155, 28548, 34304, 48534, 205000, 637000] }
+            ],
+            "table_options":{
+                "format":{
+                    "hmin":"%.2E", "hmax":"%.2E", "hmean":"%.2E",
+                    "# elements":"%.2E", "T":"%.2E", "u":"%.2E","p":"%.2E"
+                }
+            }
+        }
+    ],
+    "contents":[
+        {
+            "type":"section",
+            "title":"Benchmark Execution Summary",
+            "contents": [
+                {
+                    "type":"section",
+                    "title":"Session",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.hostname}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Cases",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Total: @{session_info.num_cases}@ ",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Parametrization",
+                    "contents":[
+                        {
+                            "type":"table",
+                            "ref": "ext_parameter_table",
+                            "layout":{
+                                "column_order":["result","testcases.hashcode","tasks", "mesh", "discretization", "testcases.time_total", "description_link","logs_link"],
+                                "rename":{
+                                    "testcases.time_total":"Total Time (s)", "testcases.hashcode":"Hash",
+                                    "result":"", "description_link":"", "logs_link":""
+                                }
+                            },
+                            "style":{
+                                "column_align":{ "result":"center" },
+                                "column_width":{ "result":1,"logs_link":1,"description_link":2},
+                                "classnames":["scrollable","sortable"]
+                            },
+                            "filter":{ "placeholder":"Filter testcases..." }
+                        }
+                    ]
+                }
+            ]
+        },
+
+
+
+        {
+            "type":"section",
+            "title":"Benchmark: Linear elasticity: NAFEMS LE10",
+            "contents":[
+                {
+                    "type":"section",
+                    "title":"Description",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"The NAFEMS LE10 benchmark is a reference test designed to assess the capabilities  of finite element analysis (FEM) software for modeling bending structures. This benchmark is part of the NAFEMS benchmarks, commonly used to verify the accuracy and reliability of numerical simulation codes in mechanical and civil engineering."
+                        },
+                        {
+                            "type":"text",
+                            "text":"The LE10 benchmark aims to test the ability of software to solve a beam bending problem in the context of structural analysis. It aims to compare the results obtained by simulation software with analytical or theoretical results, as well as with other calculation methods"
+                        },
+                        {
+                            "type":"text",
+                            "text":"The benchmark consists of analyzing a thin plate in flexion subjected to given loads and fixed to some edges. The underlying physics model used is a linear elasticity model. At the numeric level, we use the continuous Galerkin method with Lagrange finite element of order 1 and 2. The validation of the NAFEMS LE10 benchmark asks to compute the normal stress in the y direction at a point of the geometry."
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Benchmarking Tools Used",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"This benchmark was done using feelpp.benchmarking, version *{feelpp_benchmarking_version}*"
+                        },
+                        {
+                            "type":"text",
+                            "ref":"reframe_json",
+                            "text":"The benchmark was performed on the @{runs.0.testcases.0.system}@ supercomputer  (see Section 10.1). The performance tools integrated into the Feel++-toolboxes framework were used to measure the execution time. Moreover, we need to note that we have used here Apptainer with Feel++ SIF image based on Ubuntu noble OS."
+                        },
+                        {
+                            "type":"text",
+                            "text":"The metrics measured are the execution time of the main components of the simulation. We enumerate these parts in the following:"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "*Init*: load mesh from filesystem and initialize solid toolbox (finite element context and algebraic data structure)",
+                                "*Assembly*: calculate and assemble the matrix and rhs values obtained using the finite element method",
+                                "*Solve*: the linear system by using a preconditioned GMRES. Results are presented in Section 6.2.3.2.",
+                                "*PostProcess*: compute validation measures (normal stress at a point) and export on the filesystem a visualization format (EnsighGold) of the solution and other fields of interest such as von Mises yield, Tresca criterion and principal stresses."
+                            ]
+                        }
+                    ]
+                },
+
+                {
+                    "type":"section",
+                    "title":"Input/Output Dataset Description",
+                    "contents":[
+                        {
+                            "type":"section",
+                            "title":"Input Data",
+                            "contents":[
+                                {
+                                    "type":"itemize",
+                                    "items":[
+                                        "Meshes: We have generated three levels of mesh called M2, M3 and M4. These meshes are stored in GMSH format. The statistics can be found in Table 4.7. We have also prepared for each mesh level a collection of partitioned mesh. The format used is an in-house mesh format of Feel++ based on JSON+HDF5 file type. The Gmsh meshes and the partitioned meshes can be found on our Girder database management, in the Feel++ collections",
+                                        "Setup: Use standard setup of Feel++ toolboxes. It corresponds to a cfg file and JSON file. These config files are present in the Github of feelpp",
+                                        "Sif image: feelpp:v0.111.0-preview.10-noble-sif (stored in the Github registry of Feel++)"
+                                    ]
+                                },
+                                {
+                                    "type":"table", "ref":"mesh_stats",
+                                    "caption":"Table 4.7: NAFEMS LE10 benchmark - Statistics on meshes and number of degrees of freedom with respect to finite element approximation"
+                                }
+                            ]
+                        },
+                        {
+                            "type":"section",
+                            "title":"Output Data",
+                            "contents":[
+                                {
+                                    "type":"text",
+                                    "text":"The output includes the computed values of validation measure in CSV files format, export visualization files (mesh, partitioning, displacement, ...), and the time taken to perform each simulation step."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Results Summary",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"We start by showing Figure 4.9 that illustrate the numerical results quality of this in silico experiments. We can see the displacement filed and some quantities of interest in figs. 4.9a to 4.9c. Moreover, we have fig. 4.9d which show the validity and quality of the solution for each discretization."
+                        },
+                        {
+                            "type":"text",
+                            "text":"In terms of performance, we have plotted the execution times related to the WP1 context. These results, illustrating the Init, Assembly and PostProcess components, can be found in figs. 4.10 to 4.12. The behavior is very good, we can see the a good scalability, up to a limit as usual when the problem size become too small. We can notice some jump with the Init part in cases of large number tasks. We think that is due to filesystem load, particularly because we load the mesh file from non-fast storage. Outputs are written on fast storage but not input datasets because of reduced quota limits on this fast disk."
+                        },
+                        {
+                            "type":"grid",
+                            "columns":3,
+                            "content":[
+                                {
+                                    "type":"image",
+                                    "src":"",
+                                    "caption":"(a) Displacement"
+                                },
+                                {
+                                    "type":"image",
+                                    "src":"",
+                                    "caption":"(b) von Mises yield criterion"
+                                },
+                                {
+                                    "type":"image",
+                                    "src":"",
+                                    "caption":"(c) Tresca criterion on the deformed domain (magnified by 1000)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Challenges Identified",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"HPC experiments with other kinds of discretizations:"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "Displacement/pressure formulation",
+                                "HDG method",
+                                "Nonlinear models"
+                            ]
+                        },
+                        {
+                            "type":"text",
+                            "text":"Go to extreme HPC scale : Partitioning and IO issues"
+                        }
+                    ]
+                },
+
+                {
+                    "type":"section",
+                    "title":"Results",
+                    "contents":[
+                        {
+                            "type":"section",
+                            "title":"Convergence of validation measures",
+                            "contents":[
+                                {
+                                    "type":"plot",
+                                    "plot":{
+                                        "title":"Output Measures",
+                                        "plot_types":["scatter"],
+                                        "xaxis":{"parameter":"mesh","label":"Mesh levels"},
+                                        "yaxis":{"label":"Normal stress (\\sigma_yy ) [Pa]"},
+                                        "color_axis":{"parameter":"discretization","label":"Discretization level"},
+                                        "secondary_axis":{"parameter":"tasks","label":"Tasks"},
+                                        "aggregations":[
+                                            {"column":"perfvalues","agg":"filter:Output_stress"}
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type":"section",
+                            "title":"P1 Discretizaion performance",
+                            "contents":[
+                                {
+                                    "type":"plot",
+                                    "plot":{
+                                        "title":"Performance (P1)",
+                                        "plot_types":["grouped_bar","scatter"],
+                                        "xaxis": { "parameter": "tasks", "label": "Number of CPU core" },
+                                        "yaxis":{"label":"Execution time [s]"},
+                                        "color_axis":{"label":"Step", "filter":[
+                                            {"Constructor_init":"Init"},
+                                            {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                            {"Solve_algebraic-solve":"Algebraic solve"},
+                                            {"PostProcessing_exportResults":"Postprocess"}
+                                        ]},
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+                                    }
+                                },
+                                {
+                                    "type":"plot",
+                                    "plot":{
+                                        "title":"Performance (P1)",
+                                        "transformation":"speedup",
+                                        "plot_types":["scatter"],
+                                        "xaxis": { "parameter": "tasks", "label": "Number of CPU core" },
+                                        "yaxis":{"label":"Execution time [s]"},
+                                        "color_axis":{"label":"Step", "filter":[
+                                            {"Constructor_init":"Init"},
+                                            {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                            {"Solve_algebraic-solve":"Algebraic solve"},
+                                            {"PostProcessing_exportResults":"Postprocess"}
+                                        ]},
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P1"} ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type":"section",
+                            "title":"P2 Discretizaion performance",
+                            "contents":[
+                                {
+                                    "type":"plot",
+                                    "plot":{
+                                        "title":"Performance (P2)",
+                                        "plot_types":["grouped_bar","scatter"],
+                                        "xaxis": { "parameter": "tasks", "label": "Number of CPU core" },
+                                        "yaxis":{"label":"Execution time [s]"},
+                                        "color_axis":{"label":"Step", "filter":[
+                                            {"Constructor_init":"Init"},
+                                            {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                            {"Solve_algebraic-solve":"Algebraic solve"},
+                                            {"PostProcessing_exportResults":"Postprocess"}
+                                        ]},
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
+                                    }
+                                },
+                                {
+                                    "type":"plot",
+                                    "plot":{
+                                        "title":"Performance (P2)",
+                                        "transformation":"speedup",
+                                        "plot_types":["scatter"],
+                                        "xaxis": { "parameter": "tasks", "label": "Number of CPU core" },
+                                        "yaxis":{"label":"Execution time [s]"},
+                                        "color_axis":{"label":"Step", "filter":[
+                                            {"Constructor_init":"Init"},
+                                            {"Solve_algebraic-assembly":"Algebraic assembly"},
+                                            {"Solve_algebraic-solve":"Algebraic solve"},
+                                            {"PostProcessing_exportResults":"Postprocess"}
+                                        ]},
+                                        "secondary_axis": { "parameter": "mesh", "label": "Mesh level" },
+                                        "aggregations":[ {"column":"discretization","agg":"filter:P2"} ]
+                                    }
+                                }
+                            ]
+                        },{
+                            "type": "section",
+                            "title": "Solver Metrics",
+                            "contents": [
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title": "Algebraic-solve execution time",
+                                        "plot_types": [ "grouped_bar","marked_scatter" ],
+                                        "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+                                        "yaxis": { "label": "execution time (s)" },
+                                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_algebraic-solve"} ]
+                                    }
+                                },
+                                {
+                                    "type": "plot",
+                                    "plot": {
+                                        "title":"Number of iterations of GMRES",
+                                        "plot_types":["scatter","marked_scatter"],
+                                        "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+                                        "yaxis":{ "label":"Number of iterations" },
+                                        "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                                        "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                                        "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-from feelpp.benchmarking.reframe.config.configSchemas import Sanity
+from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import Sanity
 
 class TestSanity:
     pass

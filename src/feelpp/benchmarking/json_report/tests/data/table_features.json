@@ -1,0 +1,214 @@
+{
+    "data": [
+        {
+            "name": "students", "filepath": "students.csv",
+            "table_options":{
+                "computed_columns": {
+                    "grade": "('A' if row['score'] >= 90 else 'B' if row['score'] >= 80 else 'C' if row['score'] >= 70 else 'D')"
+                },
+                "format": {
+                    "score": "%.1f",
+                    "passed": { "True": "✔️", "False": "❌" }
+                }
+            }
+        },
+        {
+            "type":"DataTable",
+            "name":"myInlineDataTable",
+            "columns":[
+                { "name":"time", "values":[1.2,2.3,3.4,4.5] },
+                { "name":"power", "values":[10,20,30,40] },
+                { "name":"temperature", "values":[22.5,23.0,21.3,22.1] },
+                { "name":"comfort", "values":[0.5,0.6,0.7,0.8] }
+            ],
+            "table_options":{
+                "computed_columns":{
+                    "power_temp_sum":"row['temperature'] + row['power']"
+                }
+            }
+        },
+        {
+            "name":"myFileDataTable",
+            "filepath":"my_data.csv",
+            "table_options":{
+                "computed_columns":{
+                    "memory_per_time":"row['Memory_MB'] / row['Time_s']"
+                },
+                "format":{
+                    "Time_s":"%i",
+                    "memory_per_time":"%.2f",
+                    "result":{"pass": "🟢", "fail": "🔴"}
+                }
+            }
+        },
+        {
+            "type":"DataTable",
+            "name":"myFileDataTableFromJSON",
+            "filepath":"my_data.json",
+            "table_options":{
+                "group_by":{
+                    "columns":["subject"],
+                    "agg":{"days_absent":"mean", "days_present":"mean"}
+                },
+                "format":{ "days_absent":"%.1f", "days_present":"%.1f" }
+            }
+        },
+        {
+            "name":"myDataRefFromFile",
+            "ref":"myFileDataTable",
+            "table_options":{
+                "group_by":{
+                    "columns":["result"],
+                    "agg":{
+                        "Scenario":"count",
+                        "Memory_MB":"sum"
+                    }
+                }
+            }
+        },
+        {
+            "name":"myDataRefFromInline",
+            "ref":"myInlineDataTable",
+            "table_options":{
+                "filter":[
+                    { "column":"power_temp_sum", "op":">", "value":40 }
+                ]
+            }
+        },
+        {
+            "name":"myDataRefFromJson",
+            "ref":"myFileDataTableFromJSON",
+            "table_options":{
+                "sort":[
+                    { "column":"days_absent","ascending":false },
+                    { "column":"subject","ascending":true }
+                ]
+            }
+        }
+    ],
+    "contents": [
+        {
+            "type": "section",
+            "title": "Student Performance",
+            "contents": [
+                {
+                    "type": "table",
+                    "ref": "students",
+                    "layout": {
+                        "rename": { "name": "Student", "subject": "Subject", "score": "Score", "passed": "Passed", "grade": "Grade" },
+                        "column_order": ["name", "subject", "score", "grade", "passed"]
+                    },
+                    "style": {
+                        "column_align": { "grade": "center", "passed": "center" },
+                        "column_width": { "grade": 1, "passed": 1 },
+                        "classnames": ["sortable"]
+                    },
+                    "filter": { "placeholder": "Filter students..." }
+                }
+            ]
+        },{
+            "type":"section",
+            "title":"Inline Table",
+            "contents":[
+                {
+                    "type":"section",
+                    "title":"Default inline table",
+                    "contents":[
+                        {"type":"table","ref":"myInlineDataTable"}
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Styled inline table",
+                    "contents":[{
+                        "type":"table",
+                        "ref":"myInlineDataTable",
+                        "layout":{
+                            "column_order":["time","power","temperature","power_temp_sum","comfort"]
+                        },
+                        "style":{
+                            "column_align":{ "time":"center" },
+                            "column_width":{ "time":1},
+                            "classnames":["scrollable","sortable"]
+                        },
+                        "filter":{ "placeholder":"Filter testcases..." }
+                    }]
+                },
+                {
+                    "type":"section",
+                    "title":"Ref to inline",
+                    "contents":[{ "type":"table", "ref":"myDataRefFromInline" }]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"File Table",
+            "contents":[
+                {
+                    "type":"section",
+                    "title":"Default file table",
+                    "contents":[
+                        {"type":"table","ref":"myFileDataTable"}
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Styled file table",
+                    "contents":[{
+                        "type":"table",
+                        "ref":"myFileDataTable",
+                        "layout":{
+                            "column_order":["result","Scenario","memory_per_time"]
+                        },
+                        "style":{
+                            "column_align":{ "result":"center" },
+                            "column_width":{ "result":1},
+                            "classnames":["scrollable","sortable"]
+                        },
+                        "filter":{ "placeholder":"Filter testcases..." }
+                    }]
+                },
+                {
+                    "type":"section",
+                    "title":"Ref to file table",
+                    "contents":[{ "type":"table", "ref":"myDataRefFromFile" }]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Table from Json",
+            "contents":[
+                {
+                    "type":"section",
+                    "title":"Default table from json",
+                    "contents":[{"type":"table","ref":"myFileDataTableFromJSON"}]
+                },
+                {
+                    "type":"section",
+                    "title":"Styled table from json",
+                    "contents":[{
+                        "type":"table","ref":"myFileDataTableFromJSON",
+                        "layout":{
+                            "rename":{
+                                "days_absent":"Absents (Days)",
+                                "days_present":"Present (Days)"
+                            }
+                        },
+                        "style":{
+                            "column_align":{"days_absent":"right","days_present":"right"}
+                        },
+                        "filter":{ "placeholder":"Filter testcases..." }
+                    }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Ref to json table",
+                    "contents":[{ "type":"table", "ref":"myDataRefFromJson" }]
+                }
+            ]
+        }
+    ]
+}

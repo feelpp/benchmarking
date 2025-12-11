@@ -1,0 +1,33 @@
+= Image Node
+:navtitle: Image
+
+The **Image Node** is used to embed static, pre-rendered image files into the report. It translates directly to the AsciiDoc image macro, supporting essential attributes like source, caption, and alternative text.
+
+[TIP]
+.Path Resolution
+The `src` file path is typically resolved relative to the passed configuration file.
+
+== ImageNode Schema
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"image"`.|`"image"`
+|`src`|string|The file path or URL of the image to embed.|*Required*
+|`caption`|string|An optional caption displayed beneath the image. If provided, the image is rendered using the `title` attribute in AsciiDoc.|`null`
+|`alt`|string|Alternative text for the image, used for accessibility and when the image cannot be displayed.|`null`
+|`styles`|List[strin]|List of classnames to style the image. See https://feelpp.github.io/antora-ui/feelpp-antora-ui/grid.html[Feel++ Antora UI] for the complete list.|["img-fluid"]
+|===
+
+== Example
+
+
+[source,json]
+----
+{
+  "type": "image",
+  "src": "figures/my_simulation_output.png",
+  "caption": "Figure 3. Simulation domain with boundary conditions.",
+  "alt": "Diagram of the domain geometry."
+}
+----

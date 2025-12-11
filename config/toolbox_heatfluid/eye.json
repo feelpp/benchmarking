@@ -3,25 +3,33 @@
     "output_directory": "{{machine.output_app_dir}}/toolboxes/heatlfuid/eye",
     "use_case_name": "eye",
     "timeout":"0-01:00:00",
+    "resources":{
+        "tasks":"{{parameters.tasks.value}}",
+        "exclusive_access":true
+    },
+    "input_file_dependencies":{
+        "case_cfg":"feelpp_toolboxes/{{use_case_name}}/eye-{{parameters.position.value}}.cfg",
+        "solver_cfg":"feelpp_toolboxes/{{use_case_name}}/pc_{{parameters.solver.value}}.cfg",
+        "mesh_json":"feelpp_toolboxes/{{use_case_name}}/{{parameters.mesh.value}}/Eye_Mesh3D_p{{parameters.tasks.value}}.json",
+        "mesh_hdf5":"feelpp_toolboxes/{{use_case_name}}/{{parameters.mesh.value}}/Eye_Mesh3D_p{{parameters.tasks.value}}.h5"
+    },
     "platforms": {
         "apptainer":{
             "image": {
-                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp.sif"
+                "filepath":"{{machine.containers.apptainer.image_base_dir}}/feelpp-noble.sif"
             },
             "input_dir":"/input_data/",
             "options": [
                 "--home {{machine.output_app_dir}}",
-                "--bind {{machine.input_dataset_base_dir}}/{{use_case_name}}/:{{platforms.apptainer.input_dir}}"
-            ],
-            "append_app_option":[]
+                "--bind {{machine.input_dataset_base_dir}}/:{{platforms.apptainer.input_dir}}"
+            ]
         },
         "builtin":{
-            "input_dir":"{{machine.input_dataset_base_dir}}/{{use_case_name}}/",
-            "append_app_option":[]
+            "input_dir":"{{machine.input_dataset_base_dir}}/feelpp_toolboxes/{{use_case_name}}/"
         }
     },
     "options": [
-        "--config-files {{platforms.{{machine.platform}}.input_dir}}/eye-{{parameters.position.value}}.cfg {{platforms.{{machine.platform}}.input_dir}}/pc_{{parameters.solver.value}}.cfg",
+        "--config-files {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.case_cfg}} {{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.solve_cfg}}",
         "--directory {{output_directory}}/{{instance}}",
         "--repository.case {{use_case_name}}",
         "--fail-on-unknown-option 1",
@@ -29,15 +37,19 @@
         "--heat-fluid.heat.scalability-save=1",
         "--heat-fluid.fluid.scalability-save=1",
         "--repository.append.np 0",
-        "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"/data/home/saigre/pulications/mesh.eye/mesh/Mr/{{parameters.meshes.value}}/Eye_Mesh3D_p{{parameters.nb_tasks.tasks.value}}.json\" }'"
+        "--heat-fluid.json.patch='{\"op\": \"replace\",\"path\": \"/Meshes/heatfluid/Import/filename\",\"value\": \"{{platforms.{{machine.platform}}.input_dir}}/{{input_file_dependencies.mesh_json}}\" }'"
     ],
     "additional_files":{
         "description_filepath":"{{output_directory}}/description.adoc",
-        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heatfluid.information.adoc"
+        "parameterized_descriptions_filepath":"{{output_directory}}/{{instance}}/{{use_case_name}}/heatfluid.information.adoc",
+        "custom_logs":[
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_thermoelectric.INFO",
+            "{{output_directory}}/{{instance}}/{{use_case_name}}/logs/feelpp_toolbox_thermoelectric.WARNING"
+        ]
     },
-    "outputs": [],
     "scalability": {
         "directory": "{{output_directory}}/{{instance}}/{{use_case_name}}",
+        "clean_directory":true,
         "stages": [
             {
                 "name": "Constructor",
@@ -52,7 +64,19 @@
             {
                 "name": "Solve",
                 "filepath": "heat-fluid.scalibility.HeatFluidSolve.data",
-                "format": "tsv"
+                "format": "tsv",
+                "units":{
+                    "*":"s",
+                    "snes-niter":"iter"
+                }
+            },
+            {
+                "name":"Measures",
+                "filepath":"heatfluid.measures/values.csv",
+                "format":"csv",
+                "units":{
+                    "*":"K"
+                }
             }
         ],
         "custom_variables": [
@@ -64,30 +88,26 @@
             }
         ]
     },
-    "sanity": {
-        "success": [],
-        "error": []
-    },
     "parameters": [
         {
-            "name": "nb_tasks",
-            "sequence": [
-                {"tasks":128,"nodes":1,"exclusive_access":true},
-                {"tasks":256,"nodes":2,"exclusive_access":true},
-                {"tasks":384,"nodes":3,"exclusive_access":true}
-            ]
+            "name": "tasks",
+            // "sequence": [128,256,384]
+            "sequence": [128]
         },
         {
-            "name": "meshes",
-            "sequence": ["M3","M4","M5"]
+            "name": "mesh",
+            "sequence": ["M0"]
+            // "sequence": ["M0","M1", "M2","M2", "M4","M5","M6"]
         },
         {
             "name": "position",
             "sequence": ["prone"]
+            // "sequence": ["prone","standing","supine"]
         },
         {
             "name": "solver",
             "sequence": ["simple"]
+            // "sequence": ["simple","lsc"]
         }
     ]
 }

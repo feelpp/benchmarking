@@ -1,0 +1,149 @@
+{
+    "data":[
+        { "name":"MyCustomTextFromFile", "filepath":"my_data.txt" },
+
+        {
+            "type":"Raw",
+            "name":"MyCustomInlineRaw",
+            "value":"Some data i want to refactor across nodes"
+        },
+
+        { "name":"MyCustomObjectFromFile", "filepath":"my_json_obj.json" },
+
+        {
+            "type":"Object",
+            "name":"MyCustomInlineObject",
+            "object":{ "data1":"my data value" }
+        },
+
+        { "name":"myRefFromTextFile", "ref":"MyCustomTextFromFile" },
+        { "name":"myProcessedRefFromTextFile", "ref":"MyCustomTextFromFile", "preprocessor":"builtins:str.lower" },
+        { "name":"myRefFromInline", "ref":"MyCustomInlineRaw" },
+        { "name":"myProcessedRefFromInline", "ref":"MyCustomInlineRaw", "preprocessor":"builtins:str.upper" },
+
+        { "name":"myObjectRefFromFile", "ref":"MyCustomObjectFromFile"},
+        { "type":"Raw","name":"myProcessedObjectRefFromFile", "ref":"MyCustomObjectFromFile", "preprocessor":"json:dumps" },
+
+        { "name":"myObjectRefInline", "ref":"MyCustomInlineObject"},
+        { "type":"Raw", "name":"myProcessedObjectRefInline", "ref":"MyCustomInlineObject" }
+
+
+    ],
+    "contents": [
+        {
+            "type": "section",
+            "title": "Introduction",
+            "contents": [
+                {
+                    "type": "text",
+                    "text": "This is a basic end-to-end test to verify that plain text and sections render correctly."
+                },
+                {
+                    "type": "section",
+                    "title": "Subsection",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": "Nested sections should appear with correct formatting."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Raw Object",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"MyCustomTextFromFile",
+                    "text":"Custom from file : @{MyCustomTextFromFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"MyCustomInlineRaw",
+                    "text":"Custom from inline : @{MyCustomInlineRaw}@"
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Object from file",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"MyCustomObjectFromFile",
+                    "text":"Number of students @{students | length}@"
+                },
+                {
+                    "type":"itemize",
+                    "ref":"MyCustomObjectFromFile",
+                    "items":[
+                        "Javier: @{students.javier.score}@ (@{students.javier.grade}@)",
+                        "Oscar: @{students.oscar.score}@ (@{students.oscar.grade}@)"
+                    ]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Inline Object",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"MyCustomInlineObject",
+                    "text":"Value @{data1}@"
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"References",
+            "contents":[
+                {
+                    "type":"text",
+                    "ref":"myRefFromTextFile",
+                    "text":"Unchanged reference : @{myRefFromTextFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedRefFromTextFile",
+                    "text":"Reference lower : @{myProcessedRefFromTextFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myRefFromInline",
+                    "text":"Inline ref : @{myRefFromInline}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedRefFromInline",
+                    "text":"Inline UPPER : @{myProcessedRefFromInline}@"
+                },
+                {
+                    "type":"itemize",
+                    "ref":"myObjectRefFromFile",
+                    "items":[
+                        "Javier Copy: @{students.javier.score}@ (@{students.javier.grade}@)",
+                        "Oscar Copy: @{students.oscar.score}@ (@{students.oscar.grade}@)"
+                    ]
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedObjectRefFromFile",
+                    "text":"Dumped json : @{myProcessedObjectRefFromFile}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myObjectRefInline",
+                    "text":"Inline object from ref: @{data1}@"
+                },
+                {
+                    "type":"text",
+                    "ref":"myProcessedObjectRefInline",
+                    "text":"Object Casted to raw: @{myProcessedObjectRefInline}@"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,88 @@
+{
+    "dashboard_metadata": {
+        "template": "${TEMPLATE_DIR}/dashboardOverview.adoc.j2",
+        "data": {"title": "feelpp.benchmarking"}
+    },
+    "views": {
+        "machines": {"applications":"use_cases"},
+        "applications": {"use_cases":"machines"}
+    },
+    "template_defaults":{
+        "repositories":{
+            "template": "${TEMPLATE_DIR}/overview.adoc.j2",
+            "data":{"filepath":"./reports/overview.json","prefix":"plots"}
+        },
+        "components":{
+            "all": {
+                "template": "${TEMPLATE_DIR}/overview.adoc.j2"
+            },
+            "machines": {
+                "template": "${TEMPLATE_DIR}/machineOverview.adoc.j2",
+                "data": { "card_type": "machine", "card_image": "fa-solid fa-microchip" }
+            },
+            "applications": { "card_type": "application", "card_image": "fa-solid fa-diagram-project" },
+            "use_cases": { "card_type": "usecase", "card_image": "fa-solid fa-briefcase" }
+        },
+        "leaves":{
+            "template": "${TEMPLATE_DIR}/reframeReport.adoc.j2",
+            "data": [
+                { "filepath": "report.json", "prefix": "report", "action": "json2adoc" },
+                { "filepath": "partials/", "action": "copy", "prefix": "descriptions" },
+                { "filepath": "logs/", "action": "copy", "prefix": "logs" }
+            ]
+        }
+    },
+    "repositories":{
+        "machines": {"title": "Supercomputers", "description": "Systems", "card_type":"machine"},
+        "applications": {"title": "Applications", "description": "Applications","card_type":"application"},
+        "use_cases":{"title":"Use Cases", "description":"Use Cases","card_type":"usecase"}
+    },
+    "components": {
+        "machines":{
+            "gaya": { "title": "gaya", "description": "Strasbourg - France", "nodes":"6","cores_per_node":"128"},
+            "discoverer": { "title": "Discoverer", "description": "Sofia - Bulgaria", "nodes":"1128","cores_per_node":"128"},
+            "default": { "title": "Default", "description": "Local system" }
+        },
+        "applications":{
+            "sortingApp": { "title": "sortingApp", "description": "Sorting algorithms", "card_image":"fa-solid fa-arrow-up-wide-short" },
+            "fibonacci": {"title": "fibonacci", "description": "n-th Fibonacci number", "card_image":"fa-solid fa-fan"},
+            "matrixvector": {"title": "matrixvector", "description": "Operations between Matrix and Vector","card_image":"fa-solid fa-table-list" },
+            "parallelSum": {"title": "parallelSum", "description": "Compute the sum of an array using MPI","card_image":"fa-solid fa-plus" }
+        },
+        "use_cases":{
+            "multiplication": {"title":"multiplication", "description":"Multiplication between different objects", "card_image":"fa-solid fa-times"}
+        }
+
+    },
+    "component_map": {
+        "component_order": [ "machines", "applications", "use_cases" ],
+        "mapping": {
+            "gaya": {
+                "sortingApp": {
+                    "path": "./reports/sortingApp/sorting/gaya",
+                    "template_info": { "application": "sortingApp", "machine": "gaya" }
+                },
+                "fibonacci": {
+                    "path": "./reports/fibonacci/Fibonacci/gaya",
+                    "template_info": { "application": "fibonacci", "machine": "gaya" }
+                },
+                "matrixvector": {
+                    "multiplication":{
+                        "path": "./reports/matrixvector/Multiplication/gaya",
+                        "template_info": { "application": "matrixvector", "machine": "gaya", "use_case":"multiplication"}
+                    }
+                },
+                "parallelSum": {
+                    "path": "./reports/parallelSum/parallel_sum/gaya",
+                    "template_info": { "application": "parallelSum", "machine": "gaya" }
+                }
+            },
+            "discoverer":{
+                "fibonacci": {
+                    "path": "./reports/fibonacci/Fibonacci/discoverer",
+                    "template_info": { "application": "fibonacci", "machine": "discoverer" }
+                }
+            }
+        }
+    }
+}

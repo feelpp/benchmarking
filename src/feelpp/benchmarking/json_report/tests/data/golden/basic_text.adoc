@@ -1,0 +1,58 @@
+:docdatetime: <TIMESTAMP>
+
+== Introduction
+
+This is a basic end-to-end test to verify that plain text and sections render correctly.
+
+
+=== Subsection
+
+Nested sections should appear with correct formatting.
+
+
+== Raw Object
+
+Custom from file : SOME RAW TEST
+
+Custom from inline : Some data i want to refactor across nodes
+
+
+
+== Object from file
+
+Number of students 2
+
+
+- Javier: 100 (B)
+
+- Oscar: 90 (C)
+
+
+
+
+
+== Inline Object
+
+Value my data value
+
+
+== References
+
+Unchanged reference : SOME RAW TEST
+
+Reference lower : some raw test
+
+Inline ref : Some data i want to refactor across nodes
+
+Inline UPPER : SOME DATA I WANT TO REFACTOR ACROSS NODES
+
+
+- Javier Copy: 100 (B)
+
+- Oscar Copy: 90 (C)
+
+Dumped json : {"students": {"javier": {"score": "100", "grade": "B"}, "oscar": {"score": "90", "grade": "C"}}}
+
+Inline object from ref: my data value
+
+Object Casted to raw: {"data1": "my data value"}

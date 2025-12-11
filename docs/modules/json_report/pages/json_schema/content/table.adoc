@@ -1,0 +1,135 @@
+= Table Node
+:navtitle: Table
+
+The **Table Node** is a powerful mechanism for defining, processing, and styling tabular data extracted from a loaded data source. It leverages a comprehensive pipeline of data transformations (filtering, grouping, pivoting) before the data is rendered.
+
+The structure is composed of the `TableNode` container and the nested `Table` configuration object.
+
+== TableNode Schema (Container)
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"table"`.|`"table"`
+|`ref`|string|The unique reference of the data file (from the root `data` list) containing the table to be rendered.|*Required*
+|`caption`|string|*Optional.* Table caption.| `null`
+|`layout`|object|*Optional.* A layout configuration object defining renaming and ordering operations.| {}
+|`style`|object|*Optional.* A style configuration object allowing column alignment, resizing and custom styling | {}
+|`filter`|object|*Optional.* Configuration for an interactive **filter input** element added above the table (if supported by the target format/template).|`null`
+|===
+
+---
+
+== Table layout
+
+The `layout` field allows users to rename table columns when rendering, as well as change the column order.
+
+
+|===
+| Field | Type | Description | Default
+
+| `rename` | `Dict[str,str]` | Map of `{"old_col_name": "new_col_name"}`| {}
+| `column_order` | `List[str]` | List of column names to render respecting the order. If not provided, all columns will be shown. | `null`
+|===
+
+
+=== Renaming
+
+To rename columns, pass a dictionary containing the original column names as keys and the new names as values.
+
+[source,json]
+----
+"layout":{
+  "rename":{
+    "ntask":"Number of Tasks (x10)",
+    "avg_v":"Average Computation Load",
+    "datetime":""
+  }
+}
+----
+
+[TIP]
+Columns can be renamed into an empty string `""` to hide the header name.
+
+=== Column ordering
+
+To order the way the columns appear on the rendered table, you can use the `column_order` field.
+
+This field also controls which columns appear and which are hidden on the tables.
+
+By default, all columns are shown.
+
+It follows the conventions:
+
+- If `column_order` is not provided, all columns are rendered in the same way they are loaded.
+- If `column_order` is `[]`. No column will be shown on the table.
+- If `column_order` is a non-empty list, only the provided columns will be rendered, in the same order as in the list.
+
+
+== Styling and Interactivity
+
+The `style` object defines presentation attributes that are converted into AsciiDoc table attributes and HTML class names for dynamic behavior.
+
+|===
+| Field | Type | Description
+
+| `column_align` | `object` | Map of `{"column_name": "alignment"}` where alignment is `"left"`, `"center"`, or `"right"`. Used to build the AsciiDoc `cols` attribute.
+| `column_width` | `object` | Map of `{"column_name": integer}` defining the relative width of columns (used in the AsciiDoc `cols` attribute).
+| `classnames` | `List[str]` | List of class names to apply to the table
+|===
+
+
+=== Interactive Classnames
+
+The `classnames` field applies CSS classes to the table, enabling client-side interactive features when the output format supports it (e.g., HTML/Antora with JavaScript).
+
+Users can customize their own classes, but the framework provides the following built-in functionalities.
+
+|===
+| Classname | Purpose
+
+| **`sortable`** | Enables client-side **sorting** by clicking on column headers.
+| **`filterable`** | Enables client-side **filtering** or searching over the table content.
+|===
+
+[source,json]
+----
+"style": {
+    "column_align": {"Time": "right", "Config": "center"},
+    "classnames": ["sortable", "filterable", "grid"]
+}
+----
+
+== Searching and filtering
+
+If using the `filterable` classname, users can provide the `filter` field to customize the text input appearing on the bottom of the table.
+
+|===
+|Field| Type| Description |Default
+
+|placeholder| str| The placeholder for the text input| "Filter..."
+|style| str | Optional inline css to include in the `<input/>` object. | `margin-bottom:0.5em;padding:0.3em;width:50%;`
+|===
+
+== Example: renaming, ordering, interactivity and custom style
+
+The following example assume a data file was loaded with the name `"batch_data"`.
+
+This example renames the `Time` column, and orders the column to appear in the order `Method`, "Time", "Status" from left to right.
+
+It also enables **interactive sorting and filtering** for the final HTML output.
+
+[source,json]
+----
+{
+  "type": "table", "ref": "batch_data",
+  "layout": {
+    "column_order": ["Method", "Time", "Status"],
+    "rename": { "Time": "Execution Time (s)" },
+  },
+  "style": {
+    "column_align": { "Time": "right" },
+    "classnames": ["sortable", "filterable"]
+  }
+}
+----

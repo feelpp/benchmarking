@@ -17,33 +17,33 @@ jobs:
     if:  "!contains(github.event.head_commit.message, 'wheel skip')"
     steps:
 
-    - name: Checkout
-      uses: actions/checkout@v6
 
-    - name: Create Virtual Environment
-      run: |
-        python3 -m venv .venv
-        source .venv/bin/activate
-        pip3 install -r requirements.txt
+    - uses: actions/checkout@v6
 
-    - name: Compile
-      run: |
-        source .venv/bin/activate
-        python3 -m build --wheel
+    - uses: astral-sh/setup-uv@v5
 
-    - name: Upload Artifact
+    - name: Sync deps
+      run: uv sync
+
+
+    - name: Build
+      run: uv build
+
+    - name: Upload Wheel
       uses: actions/upload-artifact@v5
       with:
         name: wheel-artifacts
         path: dist/*.whl
 
-  tests:
+  unit_tests:
     runs-on: self-feelpp
-    name: Integration Tests
+    name: Unit Tests
     needs: build_wheel
-    if: "!contains(github.event.head_commit.message, 'tests skip')"
+    if: "!contains(github.event.head_commit.message, 'unit_tests skip')"
     steps:
     - uses: actions/checkout@v6
+
+    - uses: astral-sh/setup-uv@v5
 
     - name: Download packages
       uses: actions/download-artifact@v6
@@ -53,27 +53,62 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        python -m venv .venv
-        source .venv/bin/activate
-        python3 -m pip install --upgrade pip
-        python3 -m pip install pytest
-        python3 -m pip install dist/*.whl
+        uv sync --extra test
+        uv pip install dist/*.whl
 
     - name: Unit tests
-      run: |
-        source .venv/bin/activate
-        python3 -m pytest
+      run: uv run pytest
       env:
         GIRDER_API_KEY: ${{secrets.GIRDER}}
+
+  integration_tests:
+    runs-on: self-feelpp
+    name: Integration Tests
+    needs: build_wheel
+    if: "!contains(github.event.head_commit.message, 'integration_tests skip')"
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: astral-sh/setup-uv@v5
+
+    - name: Download packages
+      uses: actions/download-artifact@v4
+      with:
+        name: wheel-artifacts
+        path: dist/
+
+    - name: Install Python dependencies
+      run: |
+        uv sync --extra test
+        uv pip install dist/*.whl
 
     - name: Compile test applications
       run: |
         mpic++ -std=c++17 -O3 examples/parallelsum/parallelSum.cpp -o examples/parallelsum/parallelSum
+        mpic++ -std=c++17 -O3 examples/matrixvector/matrixvector.cpp -o examples/matrixvector/matrixvector
 
-    - name: Test benchmarks
+    - name: Test ParallelSum Case
       run: |
         source .venv/bin/activate
         feelpp-benchmarking-exec -mc examples/machines/default.json -bc examples/parallelsum/parallelSum.json -pc examples/parallelsum/plots.json
+        echo $?
+
+    - name: Test Fibonacci Case
+      run: |
+        source .venv/bin/activate
+        feelpp-benchmarking-exec -mc examples/machines/default.json -bc examples/fibonacci/benchmark.json -pc examples/fibonacci/plots.json
+        echo $?
+
+    - name: Test MatrixVector Case
+      run: |
+        source .venv/bin/activate
+        feelpp-benchmarking-exec -mc examples/machines/default.json -bc examples/matrixvector/matrixvector.json -pc examples/matrixvector/plots.json
+        echo $?
+
+    - name: Test Sorting Case
+      run: |
+        source .venv/bin/activate
+        feelpp-benchmarking-exec -mc examples/machines/default.json -bc examples/sorting/sorting.json -pc examples/sorting/plots.json
         echo $?
 
     - name: Dry-run reports
@@ -83,9 +118,9 @@ jobs:
 
     - name: Check files
       run: | #TODO: check if not empty (maybe)
-        nb_rfm_report_files=$(ls -1q reports/parallelSum/parallel_sum/default|wc -l)
-        nb_doc_reports=$(ls -1q docs/modules/ROOT/pages/reports/|wc -l)
-        if [ "$nb_rfm_report_files" -ne 1 ] || [ "$nb_doc_reports" -ne 1 ]; then
+        nb_rfm_report_files=$(ls -1q reports|wc -l)
+        nb_doc_reports=$(ls -1q docs/modules/ROOT/pages/leaves/|wc -l)
+        if [ "$nb_rfm_report_files" -ne 5 ] || [ "$nb_doc_reports" -ne 4 ]; then
           echo "Reports where not rendered."
           exit 1
         fi
@@ -97,6 +132,8 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'docs skip')"
     steps:
 
+
+    - uses: astral-sh/setup-uv@v5
     - uses: actions/checkout@v6
 
     - name: Install credentials
@@ -115,9 +152,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          pip3 install dist/*.whl
+        uv sync --no-dev
 
     - name: Download website config
       run: |
@@ -189,7 +224,7 @@ jobs:
   release:
     runs-on: self-feelpp
     name: Release
-    needs: [tests]
+    needs: [unit_tests,integration_tests]
     if: startsWith(github.ref ,'refs/tags/v')
     permissions:
       contents: write

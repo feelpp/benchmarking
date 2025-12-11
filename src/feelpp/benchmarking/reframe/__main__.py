@@ -1,15 +1,14 @@
 import os, json, subprocess, shutil
 from feelpp.benchmarking.reframe.parser import Parser
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader, FileHandler
-from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
-from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
-from feelpp.benchmarking.reframe.reporting import WebsiteConfig
+from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import ConfigFile
+from feelpp.benchmarking.reframe.schemas.machines import MachineConfig
+from feelpp.benchmarking.report.websiteConfigcreator import WebsiteConfigCreator
 from feelpp.benchmarking.reframe.commandBuilder import CommandBuilder
-from feelpp.benchmarking.report.config.handlers import GirderHandler
+from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 
 def main_cli():
     parser = Parser()
-    parser.printArgs()
 
     machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
 
@@ -27,15 +26,15 @@ def main_cli():
 
     os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.machine_config
 
-    website_config = WebsiteConfig(machine_reader.config.reports_base_dir)
+    website_config = WebsiteConfigCreator(machine_reader.config.reports_base_dir)
 
     for config_filepath in parser.args.benchmark_config:
         os.environ["APP_CONFIG_FILEPATH"] = config_filepath
 
 
-        configs = [config_filepath]
+        configs = [{"":config_filepath}]
         if parser.args.plots_config:
-            configs += [parser.args.plots_config]
+            configs += [{"json_report":parser.args.plots_config}]
         app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
 
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
@@ -91,8 +90,8 @@ def main_cli():
 
 
         #============ CREATING RESULT ITEM ================#
-        with open(os.path.join(report_folder_path,"plots.json"),"w") as f:
-            f.write(json.dumps([p.model_dump() for p in app_reader.config.plots]))
+        with open(os.path.join(report_folder_path,"report.json"),"w") as f:
+            f.write(json.dumps(app_reader.config.json_report.model_dump()))
 
         #Copy use case description if existant
         FileHandler.copyResource(
@@ -102,17 +101,23 @@ def main_cli():
         )
         #===============================================#
 
-        # ============== LAUNCH REFRAME =======================#
-        reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
-        exit_code = subprocess.run(reframe_cmd, shell=True)
-        #======================================================#
+        try:
+            # ============== LAUNCH REFRAME =======================#
+            reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
+            exit_code = subprocess.run(reframe_cmd, shell=True)
+            #======================================================#
+        finally:
+            if not os.path.exists(os.path.join(report_folder_path,"reframe_report.json")):
+                if os.path.exists(os.path.join(report_folder_path,"report.json")):
+                    os.remove(os.path.join(report_folder_path,"report.json"))
+                os.rmdir(report_folder_path)
 
         # ================== MOVE RESULTS (OPTION)============#
         if parser.args.move_results:
             if not os.path.exists(parser.args.move_results):
                 os.makedirs(parser.args.move_results)
             os.rename(os.path.join(report_folder_path,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
-            os.rename(os.path.join(report_folder_path,"plots.json"),os.path.join(parser.args.move_results,"plots.json"))
+            os.rename(os.path.join(report_folder_path,"report.json"),os.path.join(parser.args.move_results,"report.json"))
         #======================================================#
 
     if parser.args.website:

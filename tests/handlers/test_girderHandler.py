@@ -1,6 +1,6 @@
 """Tests related to girder """
 
-from feelpp.benchmarking.report.config.handlers import GirderHandler
+from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 import pytest
 import os, tempfile
 from requests.exceptions import HTTPError

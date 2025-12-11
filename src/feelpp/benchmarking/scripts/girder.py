@@ -1,4 +1,4 @@
-from feelpp.benchmarking.report.config.handlers import GirderHandler
+from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 from argparse import ArgumentParser
 import requests, os
 

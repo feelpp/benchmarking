@@ -8,15 +8,25 @@
             "append_app_option":[]
         }
     },
+    //own line comment
+    /*Comment  */
+    // Comment
     "options": [],
     "scalability": {
         "directory":"",
+        //
         "stages":[]
     },
+    /*Multi
+        Line
+            Comment
+    */
     "resources":{
         "tasks": "{{parameters.resources.tasks.value}}",
+        /*comment*/ //Another comment
         "tasks_per_node": "{{parameters.resources.tasks_per_node.value}}",
-        "exclusive_access": "{{parameters.resources.exclusive_access.value}}"
+        "exclusive_access": "{{parameters.resources.exclusive_access.value}}",
+        /*"another_field":{} Comment making a trailing on previous field*/
     },
     "sanity": { "success": [], "error": [] },
     "parameters": [
@@ -24,11 +34,15 @@
             "name": "resources",
             "sequence": [
                 {"tasks":1,"tasks_per_node":128,"exclusive_access":true},
-                {"tasks":2,"tasks_per_node":128,"exclusive_access":true},
+                {"tasks":2,"tasks_per_node":128,"exclusive_access":true}, /*Inline comment*/
                 {"tasks":3,"tasks_per_node":128,"exclusive_access":true},
-                {"tasks":4,"tasks_per_node":128,"exclusive_access":true}
+                {"tasks":4,"tasks_per_node":128,"exclusive_access":true}, //Inline comment
+                //Comment making orphan comma appear
             ]
         },
+        /*
+        Multi line Comment
+        */
         {
             "name": "param1",
             "sequence": ["value1_1","value1_2","value1_3"]

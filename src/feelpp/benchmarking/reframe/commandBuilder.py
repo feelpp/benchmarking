@@ -59,7 +59,7 @@ class CommandBuilder:
             f'--prefix={self.machine_config.reframe_base_dir}',
             f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
             f"{self.buildJobOptions(timeout)}",
-            f'--perflogdir={os.path.join(self.machine_config.reframe_base_dir,"logs")}',
+            f'--perflogdir=logs',
             f'{self.buildExecutionMode()}'
         ]
         cmd = ' '.join(cmd)

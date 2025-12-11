@@ -1,0 +1,23 @@
+= LaTeX Node
+
+The **LaTeX Node** is designed for the direct embedding of mathematical formulas, equations, or complex typesetting commands into the final report.
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"latex"`.|`"latex"`
+|`latex`|string|The raw LaTeX content (e.g., a mathematical equation or a custom LaTeX block).|*Required*
+|`ref`|string|The `name` of the data field to reference for dynamic placeholder resolution.|`null`
+|===
+
+== Example
+
+This example demonstrates including a multi-line equation and an inline mathematical expression.
+
+[source,json]
+----
+{
+  "type": "latex",
+  "latex": "\\begin{equation*}\n  \\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\epsilon_0}\n\\end{equation*}\n\nAn inline expression is also supported, such as $E=mc^2$."
+}
+----

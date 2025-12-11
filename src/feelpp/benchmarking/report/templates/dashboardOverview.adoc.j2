@@ -1,0 +1,54 @@
+
+- Feel++ Benchmarking Version : {{feelpp_benchmarking_version}}
+
+== Overview
+
+=== Latest benchmarks
+
+{%if aggregated and aggregated.get("data") is not none %}
+{% if "leaves" in aggregated["data"] %}
+{% set agg = {
+    "date":"first",
+    "runs.num_failures": "max"
+} %}
+
+{% if "machines" in aggregated["data"].columns %}
+{%set agg = dict(agg,**{"machines":"first"}) %}
+{% endif %}
+
+{% if "applications" in aggregated["data"].columns %}
+{%set agg = dict(agg,**{"applications":"first"}) %}
+{% endif %}
+
+{% if "use_cases" in aggregated["data"].columns %}
+{%set agg = dict(agg,**{"use_cases":"first"}) %}
+{% endif %}
+
+{%set df = aggregated["data"].groupby("leaves").agg(agg).reset_index(drop=False).sort_values("date",ascending=False).head(15) %}
+{% endif %}
+
+
+[.scrollable]
+--
+[cols="^1,^2,^1,^1,^1, options="header"]
+|===
+| Status | Date | machine | application | Use Case
+
+{% for row in df.to_dict(orient="records") %}
+{% set row_url = "leaves/"+row["leaves"]+"/leaf.adoc" %}
+|{% if row["runs.num_failures"] == 0 %}🟢{% else %}🔴{% endif %} | xref:{{row_url}}[{{ row["date"] }}] | {{ row["machines"] }} | {{ row["applications"] }} | {{ row["use_cases"] }}
+{% endfor %}
+
+|===
+--
+{% endif %}
+
+++++
+<input type="text" class="filter-button" id="filterParamTable" placeholder="Filter testcases..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.scrollable table');
+    initTable(table, 'filterParamTable');
+  });
+</script>
+++++

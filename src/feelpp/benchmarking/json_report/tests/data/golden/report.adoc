@@ -1,0 +1,145 @@
+:docdatetime: <TIMESTAMP>
+
+
+
+
+
+== Report Overview
+
+This report analyzes students' performance, attendance, and remarks across multiple subjects. We summarize scores, compute averages, and visualize trends.
+
+Placeholders in this report allow dynamic insertion of values from the datasets. For example, total students: 9.
+
+
+
+== Student Table
+
+
+
+
+[.scrollable.sortable]
+--
+[cols="<3,<3,>5,^3,^3",options="header"]
+|===
+
+|name|subject
+|ALICE|Math
+|BOB|Math
+|CHARLIE|Math
+|ALICE|Physics
+|BOB|Physics
+|CHARLIE|Physics
+|ALICE|Chemistry
+|BOB|Chemistry
+|CHARLIE|Chemistry
+
+|===
+
+++++
+<input type="text" id="filter_students_table" placeholder="Filter students..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+++++
+--
+
+++++
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.sortable table');
+    initTable(table, 'filter_students_table');
+  });
+</script>
+++++
+
+
+
+
+== Attendance
+
+
+
+[.sortable]
+--
+[cols="<3,<3,<3,<3,<3",options="header"]
+|===
+
+|name|subject
+|Alice|Math
+|Bob|Math
+|Charlie|Math
+|Alice|Physics
+|Bob|Physics
+|Charlie|Physics
+|Alice|Chemistry
+|Bob|Chemistry
+|Charlie|Chemistry
+
+|===
+
+++++
+<input type="text" id="filter_attendance_table" placeholder="Filter attendance..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+++++
+--
+
+++++
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.sortable table');
+    initTable(table, 'filter_attendance_table');
+  });
+</script>
+++++
+
+
+
+
+== Performance Analysis
+
+
+++++
+
+<div class='figure-container'>
+
+      <div class="subfigure-container active" data-subfigure="1">
+        <div class='export-container'>
+            <button class="csv-btn">CSV</button>
+            <button class="latex-btn">LaTeX</button>
+        </div>
+        <div>
+            <div>FIGURE</div>
+            <script></script>
+        </div>
+    </div>
+</div>
+
+++++
+
+
+
+++++
+
+<div class='figure-container'>
+
+      <div class="subfigure-container active" data-subfigure="1">
+        <div class='export-container'>
+            <button class="csv-btn">CSV</button>
+            <button class="latex-btn">LaTeX</button>
+        </div>
+        <div>
+            <div>FIGURE</div>
+            <script></script>
+        </div>
+    </div>
+</div>
+
+++++
+
+
+The scatter plot shows average scores per subject, while the bar chart shows average attendance rates for each student.
+
+
+
+== Teacher Notes
+
+Teacher remarks (loaded from a raw text file with preprocessing applied): Excellent performance by Alice in most subjects. Bob shows consistent improvement. Charlie needs attention in Math but is improving in Physics and Chemistry.
+
+
+

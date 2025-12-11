@@ -1,13 +1,99 @@
 {
-    "plots":[
+    "contents": [
         {
-            "title":"Time Complexity",
-            "plot_types":["scatter"],
-            "transformation":"performance",
-            "variables": ["elapsed"],
-            "xaxis":{ "parameter":"n", "label":"N" },
-            "yaxis": {"label":"Execution time (s)"},
-            "color_axis":{"parameter":"method","label":"Method"}
+            "type": "section",
+            "title": "Description",
+            "contents": [
+                {
+                    "type": "text",
+                    "text": "This report presents benchmark results for computing Fibonacci numbers using different methods. We compare recursive and iterative implementations for various input sizes."
+                },
+                {
+                    "type":"section",
+                    "title":"Session",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.hostname}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Cases",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Total: @{session_info.num_cases}@ ",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type":"section",
+            "title":"Parametrization",
+            "contents":[
+                {
+                    "type":"table",
+                    "ref": "parameter_table",
+                    "layout":{
+                        "rename":{
+                            "testcases.time_total":"Total Time (s)",
+                            "testcases.hashcode":"Hash",
+                            "result":"",
+                            "logs_link":""
+                        },
+                        "column_order":["result","testcases.hashcode","n", "method", "testcases.time_total","logs_link"]
+                    },
+                    "style":{
+                        "column_align":{ "result":"center" },
+                        "column_width":{ "result":1,"logs_link":1},
+                        "classnames":["scrollable","sortable"]
+                    },
+                    "filter":{ "placeholder":"Filter testcases..." }
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Complexity Analysis",
+            "contents": [
+                {
+                    "type": "section",
+                    "title": "Time Complexity",
+                    "contents": [
+                        {
+                            "type": "plot",
+                            "ref": "reframe_df",
+                            "plot": {
+                                "title": "Time Complexity",
+                                "plot_types": [ "scatter" ],
+                                "transformation": "performance",
+                                "aggregations": [ { "column": "perfvalue", "agg": "filter:elapsed" } ],
+                                "xaxis": {"parameter": "n","label": "N"},
+                                "yaxis": { "parameter": "value", "label": "Execution time (s)"},
+                                "color_axis": { "parameter": "method", "label": "Method" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "The plot above shows execution time for each Fibonacci method as a function of input size N. Recursive implementation grows exponentially, while iterative grows linearly."
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

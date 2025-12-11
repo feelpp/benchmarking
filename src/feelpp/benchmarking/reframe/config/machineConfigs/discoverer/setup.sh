@@ -10,7 +10,7 @@ lfs quota -g $PROJECT_ID /disco2fs
 echo "==============================================="
 
 
-/opt/software/python/3.9.7/bin/python3 -m venv .venv
-source .venv/bin/activate
-.venv/bin/python3.9 -m pip install --upgrade pip
-.venv/bin/python3.9 -m pip install -I -r requirements.txt
+# /opt/software/python/3.9.7/bin/python3 -m venv .venv
+# source .venv/bin/activate
+# .venv/bin/python3.9 -m pip install --upgrade pip
+# .venv/bin/python3.9 -m pip install -I -r requirements.txt

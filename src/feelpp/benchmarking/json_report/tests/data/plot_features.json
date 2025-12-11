@@ -1,0 +1,47 @@
+{
+    "data": [
+        {"name": "students","filepath": "students.csv"}
+    ],
+    "contents": [
+        {
+            "type": "section",
+            "title": "Score Analysis",
+            "contents": [
+                {
+                    "type": "plot",
+                    "ref": "students",
+                    "plot": {
+                        "title": "Scores by Subject",
+                        "plot_types": ["scatter"],
+                        "transformation": "performance",
+                        "aggregations": [
+                            { "column": "score", "agg": "mean" }
+                        ],
+                        "xaxis": { "parameter": "subject", "label": "Subject" },
+                        "yaxis": { "parameter": "score", "label": "Average Score" },
+                        "color_axis": { "parameter": "name", "label": "Student" }
+                    }
+                },
+                {
+                    "type": "plot",
+                    "ref": "students",
+                    "plot": {
+                        "title": "Pass Rate per Subject",
+                        "plot_types": ["grouped_bar", "stacked_bar"],
+                        "transformation": "performance",
+                        "aggregations": [
+                            { "column": "passed", "agg": "sum" }
+                        ],
+                        "xaxis": { "parameter": "subject", "label": "Subject" },
+                        "yaxis": { "parameter": "passed", "label": "Number of Passes" },
+                        "color_axis": { "parameter": "name", "label": "Student" }
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "The scatter plot shows the average score per subject for each student, while the stacked bar plot visualizes how many subjects each student passed."
+                }
+            ]
+        }
+    ]
+}

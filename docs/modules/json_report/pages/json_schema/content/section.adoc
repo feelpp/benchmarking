@@ -1,0 +1,41 @@
+= Section Node
+
+The **Section Node** is the fundamental building block for structuring your report. It defines a titled, hierarchical container that organizes other content nodes into logical chapters and subsections.
+
+|===
+|Field|Type|Description|Default Value
+
+|`type`|string|Must be set to `"section"`.|`"section"`
+|`title`|string|The title of the section.|*Required*
+|`contents`|array of objects|A recursive list of other content nodes, including nested `SectionNode`s.| []
+|===
+
+== Example
+
+[source,json]
+----
+{
+  "contents": [
+    {
+      "type": "section",
+      "title": "Introduction",
+      "contents": [
+        // Text, Tables, Images, etc.
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Detailed Results",
+      "contents": [
+        {
+          "type": "section",
+          "title": "Timing Analysis",
+          "contents": [
+            // Plots and Tables
+          ]
+        }
+      ]
+    }
+  ]
+}
+----

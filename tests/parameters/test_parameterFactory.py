@@ -2,7 +2,7 @@
 
 import pytest
 from feelpp.benchmarking.reframe.parameters import ParameterFactory, LinspaceParameter, RangeParameter, GeomspaceParameter, SequenceParameter, RepeatParameter, GeometricParameter, ZipParameter
-from feelpp.benchmarking.reframe.config.configParameters import Parameter
+from feelpp.benchmarking.reframe.schemas.parameters import Parameter
 
 
 

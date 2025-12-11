@@ -1,0 +1,36 @@
+{% import "macros/image.adoc.j2" as image %}
+{% import "macros/plot.adoc.j2"  as plot %}
+{% import "macros/latex.adoc.j2" as latex %}
+{% import "macros/text.adoc.j2"  as text %}
+{% import "macros/table.adoc.j2" as table %}
+{% import "macros/itemize.adoc.j2"  as itemize %}
+{% import "macros/grid.adoc.j2"  as grid %}
+
+{% set handlers = {
+    "plot":   plot.render,
+    "text":   text.render,
+    "image":  image.render,
+    "latex":  latex.render,
+    "table": table.render,
+    "itemize": itemize.render
+} %}
+
+{% macro render(sectionNode, report_data, level=1) %}
+
+{%if sectionNode.title %}
+{{ '=' * level }} {{ sectionNode.title }}
+{%endif%}
+
+{% for node in sectionNode.contents %}
+{% if node.type == "section" %}
+{{ render(node, report_data, level + 1) }}
+{% elif node.type == "grid" %}
+{{ grid.render(node, report_data ) }}
+{% else %}
+{% set handler = handlers.get(node.type) %}
+{% if handler %}
+{{ handler(node,report_data.get(node.ref)) }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endmacro %}

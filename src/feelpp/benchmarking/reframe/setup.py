@@ -1,8 +1,8 @@
 
 from feelpp.benchmarking.reframe.parameters import ParameterHandler
 from feelpp.benchmarking.reframe.config.configReader import ConfigReader, TemplateProcessor, FileHandler
-from feelpp.benchmarking.reframe.config.configSchemas import ConfigFile
-from feelpp.benchmarking.reframe.config.configMachines import MachineConfig
+from feelpp.benchmarking.reframe.schemas.benchmarkSchemas import ConfigFile
+from feelpp.benchmarking.reframe.schemas.machines import MachineConfig
 from feelpp.benchmarking.reframe.resources import ResourceHandler
 
 
@@ -21,11 +21,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     #set num_nodes as variable (as not implemented in reframe) - used for exporting
     num_nodes = variable(int)
-
-    script = variable(str)
-    error_log = variable(str)
-    output_log = variable(str)
-    custom_logs = variable(list, value=[])
 
     #TODO: Find a way to avoid env variables
 
@@ -46,6 +41,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     use_case = variable(str,value=app_reader.config.use_case_name)
     platform = variable(str, value=machine_reader.config.platform)
+    check_params = variable(dict)
 
     execution_policy = variable(str,value=machine_reader.config.execution_policy)
 
@@ -70,6 +66,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_after('init')
     def pruneParameterSpace(self):
         self.parameter_handler.pruneParameterSpace(self)
+
 
 
     @run_after('setup')
@@ -112,6 +109,13 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
             for subparameter in subparameters:
                 self.app_reader.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
                 self.machine_reader.updateConfig({ f"parameters.{param_name}.{subparameter}.value":str(value[subparameter]) })
+
+    @run_before('run')
+    def setCheckParams(self):
+        params = {}
+        for param_name,subparameters in self.parameter_handler.nested_parameter_keys.items():
+            params[param_name] = getattr(self,param_name)
+        self.check_params = params
 
     @run_before('run')
     def copyInputFileDependencies(self):
@@ -157,7 +161,8 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def cleanupDirectories(self):
-        FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
+        if self.app_reader.config.scalability:
+            FileHandler.cleanupDirectory(self.app_reader.config.scalability.directory)
 
     @run_before('run')
     def setSchedOptions(self):

@@ -1,56 +1,380 @@
 {
-    "plots": [
+    "data":[
         {
-            "title": "Performance",
-            "plot_types": [ "stacked_bar", "grouped_bar" ],
-            "transformation": "performance",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "PostProcessing_exportResults"
-            ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "discretization",
-                "label": "Discretization"
-            },
-            "yaxis": {
-                "label": "execution time (s)"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+            "name":"ext_parameter_table","ref":"parameter_table",
+            "table_options":{
+                "computed_columns":{
+                    "description_link":"f'link:descriptions/{row[\"testcases.hashcode\"]}.html[Description]'"
+                }
             }
         },
         {
-            "title": "Speedup",
-            "plot_types": [ "scatter" ],
-            "transformation": "speedup",
-            "variables": [
-                "Constructor_init",
-                "Solve_algebraic-assembly",
-                "PostProcessing_exportResults"
+            "name":"mesh_stats",
+            "columns":[
+                {"name":"Tag","values":["M1"]},
+                {"name":"# points","values":[4310000]},
+                {"name":"# edges","values":[27900000]},
+                {"name":"# faces","values":[46000000]},
+                {"name":"# elements","values":[22400000]},
+                {"name":"P1 (Heat)","values":[4310000]},
+                {"name":"P2 (Heat)","values":[32200000]},
+                {"name":"P1 (electric)","values":[4300000]},
+                {"name":"P2 (electric)","values":[29500000]}
             ],
-            "names": [ ],
-            "xaxis": {
-                "parameter": "nb_tasks.tasks",
-                "label": "Number of tasks"
-            },
-            "secondary_axis": {
-                "parameter": "discretization",
-                "label": "Discretization"
-            },
-            "yaxis": {
-                "label": "Speedup"
-            },
-            "color_axis":{
-                "parameter":"performance_variable",
-                "label":"Performance variable"
+            "table_options":{
+                "format":{
+                    "# points":"%.2E", "# edges":"%.2E", "# faces":"%.2E", "# elements":"%.2E",
+                    "P1 (Heat)":"%.2E", "P2 (Heat)":"%.2E", "P1 (electric)":"%.2E", "P2 (electric)":"%.2E"
+                }
             }
+        }
+    ],
+    "contents":[
+        {
+            "type":"section",
+            "title":"Benchmark Execution Summary",
+            "contents": [
+                {
+                    "type":"section",
+                    "title":"Session",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.hostname}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Cases",
+                    "contents":[
+                        {
+                            "type":"itemize",
+                            "ref":"reframe_json",
+                            "items":[
+                                "Total: @{session_info.num_cases}@ ",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Parametrization",
+                    "contents":[
+                        {
+                            "type":"table",
+                            "ref": "ext_parameter_table",
+                            "layout":{
+                                "column_order":["result","testcases.hashcode","tasks", "discretization", "testcases.time_total", "description_link","logs_link"],
+                                "rename":{
+                                    "testcases.time_total":"Total Time (s)", "testcases.hashcode":"Hash",
+                                    "result":"", "description_link":"", "logs_link":""
+                                }
+                            },
+                            "style":{
+                                "column_align":{ "result":"center" },
+                                "column_width":{ "result":1,"logs_link":1,"description_link":2},
+                                "classnames":["scrollable","sortable"]
+                            },
+                            "filter":{ "placeholder":"Filter testcases..." }
+                        }
+                    ]
+                }
+            ]
+        },
+
+
+        {
+            "type":"section",
+            "title":"Benchmark: Thermo-Electric Coupling",
+            "contents":[
+                {
+                    "type":"section",
+                    "title":"Description",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"This benchmark models the temperature field and electric current distribution in an high field resistive magnet of the Laboratoire National des Champs Magnétiques Intenses. The magnet consist in a set of 14 copper alloys cylindrical tubes connected 2 by 2 into series by rings. In each tube, the current path is defined by 2 helical cuts of 0.2 mm width. The rings are machined to let water flow in between each tube in a channel of 0.8 mm. The magnet is operated at 12 MW with an imosed total current of 31 kA. The water flow in the magnet is about 140 l/s. The water cooling of the magnet is modelling by using Robin boundary conditions with parameters derived from classical correlation in thermo-hydraulics. A more detailled version of the full model is available in (Daversin Catty, 2016; Hild, 2020). The model is run with thermoelectric Feel++ toolbox. The geometry used in this benchmark performance is illustrated in Figure 4.13. This is a complex domain composed of a large number of components, with some very thin parts. "
+                        },
+                        {
+                            "type":"grid",
+                            "columns":2,
+                            "align":"center",
+                            "justify":"center",
+                            "contents":[
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-geo.png",
+                                    "caption":"Figure 4.13: HL-31 benchmarks - geometry"
+                                },
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-geo-zoom.png",
+                                    "caption":"Figure 4.13: HL-31 benchmarks - geometry"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Benchmarking Tools Used",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"This benchmark was done using feelpp.benchmarking, version *{feelpp_benchmarking_version}*"
+                        },
+                        {
+                            "type":"text",
+                            "ref":"reframe_json",
+                            "text": "The benchmark was performed on the @{runs.0.testcases.0.system}@ supercomputer (see Section 10.1). The performance tools integrated into the Feel++-toolboxes framework were used to measure the execution time. Moreover, we need to say that we have used several Feel++ installations."
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "*Gaya*:native application from Ubuntu packages of Jammy OS.",
+                                "*Discoverer*: Apptainer with Feel++ SIF image based on Ubuntu Noble OS."
+                            ]
+                        },
+                        {
+                            "type":"text",
+                            "text":"Note: the Feel++ version is identical but the dependencies (like Petsc) which are of course more recent with Noble."
+                        },
+                        {
+                            "type":"text",
+                            "text":"The metrics measured are the execution time of the main components of the simulation. We enumerate these parts in the following:"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "*Init*: load mesh from filesystem and initialize solid toolbox (finite element context and algebraic data structure)",
+                                "*Assembly*: calculate and assemble the matrix and rhs values obtained using the finite element method",
+                                "*Solve*: the linear system by using a preconditioned GMRES.",
+                                "*PostProcess*: Export on the filesystem a visualization format (EnsighGold) of the solution and other fields of interest such as current density and electric field."
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Input/Output Dataset Description",
+                    "contents":[
+                        {
+                            "type":"section",
+                            "title":"Input Data",
+                            "contents":[
+                                {
+                                    "type":"itemize",
+                                    "items":[
+                                        "Meshes: We have generated one mesh called M1. These meshes are stored in GMSH format. The statistics can be found in Table 4.6. We have also prepared for each mesh level a collection of partitioned mesh. The format used is an in-house mesh format of Feel++ based on JSON+HDF5 file type. The Gmsh meshes and the partitioned meshes can be found on our Girder database management, in the Feel++ collections.",
+                                        "Setup: Use standard setup of Feel++ toolboxes. It corresponds to a cfg file and JSON file. These config files are present in the Github of feelpp.",
+                                        "SIF image (Apptainer): feelpp:v0.111.0-preview.10-noble-sif (stored in the Githubregistry of Feel++)",
+                                        "Ubuntu package Jammy (Native) feelpp:v0.111.0-preview.10"
+                                    ]
+                                },
+                                {
+                                    "type":"table", "ref":"mesh_stats",
+                                    "caption":"HL-31 benchmark - Statistics on meshes and number of degrees of freedom with respect to finite element approximation"
+                                }
+                            ]
+                        },
+                        {
+                            "type":"section",
+                            "title":"Output Data",
+                            "contents":[
+                                {
+                                    "type":"text",
+                                    "text":"The output includes export visualization files (mesh, partitioning, temperature, elecric potential, current density, electric field, ...), the time taken to perform each simulation step and some integral quantities such a the total power dissipated by the magnet."
+                                }
+                            ]
+                        },
+                        {
+                            "type":"section",
+                            "title":"Data Repository",
+                            "contents":[
+                                {
+                                    "type":"text",
+                                    "text":"All inputdatasets are available in a unistra girder repository (collection HiFiMagnet, HL-31)."
+                                }
+                            ]
+                        }
+                    ]
+                },
+
+                {
+                    "type":"section",
+                    "title":"Results Summary",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"We can find in fig. 4.14 some examples of 3D visualization that represent fields obtained by solving the thermoelectric problem. We have the temperature solution and other quantities evaluated at PostProcess phase such as current density, electric potential, and electric fields."
+                        },
+                        {
+                            "type":"grid",
+                            "columns":2,
+                            "align":"center",
+                            "justify":"center",
+                            "contents":[
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-temperature.png",
+                                    "caption":"(a) Temperature"
+                                },
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-current_density.png",
+                                    "caption":"(b) Current density"
+                                }
+                            ]
+                        },
+                        {
+                            "type":"grid",
+                            "columns":2,
+                            "align":"center",
+                            "justify":"center",
+                            "contents":[
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-potential_density_streamines.png",
+                                    "caption":"(c) Electric potential and current density on streamlines of electric field"
+                                },
+                                {
+                                    "type":"image",
+                                    "src":"https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-temperature-streamlines.png",
+                                    "caption":"(d) Temperature on streamlines of electric field"
+                                }
+                            ]
+                        },
+
+                        {
+                            "type":"text",
+                            "text":"The performance analysis has been done in two supercomputers, Gaya and Discoverer. For each of them, we have run the benchmark with discretizations P1 and P2. About the Feel++ distribution, we use native Ubuntu Jammy packages for Gaya, and Apptainer (with Ubuntu) for Discoverer. The results on these machines are illustrated in figs. 4.15 and 4.16 respectively. The measures presented are the time-consuming of simulation components related to WP1, namely Init, Assembly, and PostProcess. For the Solve component, we refer to section 6.2.3.3."
+                        },
+                        {
+                            "type":"text",
+                            "text":"In each case analyzed, we have very good scalability, in the sense that we reduced significantly the execution time by increasing the number of tasks. The Init phase is the most timeconsuming, with a limit quite high compared to others. This part contains the mesh reading from the disk, which can explain some bumps sometimes when require many HPC resources."
+                        },
+                        {
+                            "type":"text",
+                            "text":"To conclude, we can say that we successfully ran this benchmark case, and we are ready to go up to larger problems and more complex modeling."
+                        }
+                    ]
+                },
+
+                {
+                    "type":"section",
+                    "title":"Challenges Identified",
+                    "contents":[
+                        {
+                            "type":"text",
+                            "text":"HPC experiments with other kinds of discretizations"
+                        },
+                        {
+                            "type":"itemize",
+                            "items":[
+                                "Modelling: nonlinear, Maxwell, ...",
+                                "HDG method",
+                                "Geometry complexity"
+                            ]
+                        },
+                        {
+                            "type":"text",
+                            "text":"Go to extreme HPC scale: Partitioning and IO issues"
+                        }
+                    ]
+                },
+                {
+                    "type":"section",
+                    "title":"Results",
+                    "contents":[
+                        {
+                            "type":"section",
+                            "title":"HL-31 benchmarks - Execution time of main simulation components",
+                            "contents":[
+                                {
+                                    "type":"plot",
+                                    "plot":{
+                                        "title": "Performance by CPU tasks and Discretization",
+                                        "plot_types":["scatter","grouped_bar"],
+                                        "xaxis":{"parameter":"tasks","label":"Number of CPU core"},
+                                        "yaxis": { "label": "execution time (s)" },
+                                        "secondary_axis":{"parameter":"discretization", "label":"Discretization"},
+                                        "color_axis":{
+                                            "label":"Performance Variables",
+                                            "filter":[
+                                                {"Constructor_init": "Init"},
+                                                {"Constructor_createMesh": "Create Mesh"},
+                                                {"Constructor_createExporters": "Create Exporters"},
+                                                {"PostProcessing_exportResults": "Export"},
+                                                {"Solve_solve":"Solve"}
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "type":"plot",
+                                    "plot":{
+                                        "title": "Speedup of main simulation components",
+                                        "plot_types":["scatter"],
+                                        "transformation":"speedup",
+                                        "xaxis":{"parameter":"tasks","label":"Number of CPU core"},
+                                        "yaxis": { "label": "Speedup" },
+                                        "secondary_axis":{"parameter":"discretization", "label":"Discretization"},
+                                        "color_axis":{
+                                            "label":"Performance Variables",
+                                            "filter":[
+                                                {"Constructor_init": "Init"},
+                                                {"Constructor_createMesh": "Create Mesh"},
+                                                {"Constructor_createExporters": "Create Exporters"},
+                                                {"PostProcessing_exportResults": "Export"},
+                                                {"Solve_solve":"Solve"}
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "section",
+                            "title": "Solver Metrics",
+                            "contents": [
+                                // {
+                                //     "type": "plot",
+                                //     "plot": {
+                                //         "title": "Algebraic-solve execution time",
+                                //         "plot_types": [ "grouped_bar","marked_scatter" ],
+                                //         "xaxis": { "parameter": "resources.tasks", "label": "Number of tasks" },
+                                //         "yaxis": { "label": "execution time (s)" },
+                                //         "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                                //         "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                                //         "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_algebraic-solve"} ]
+                                //     }
+                                // },
+                                // {
+                                //     "type": "plot",
+                                //     "plot": {
+                                //         "title":"Number of iterations of GMRES",
+                                //         "plot_types":["scatter","marked_scatter"],
+                                //         "xaxis":{ "parameter":"resources.tasks", "label":"Number of tasks" },
+                                //         "yaxis":{ "label":"Number of iterations" },
+                                //         "color_axis":{ "parameter":"mesh", "label":"Mesh" },
+                                //         "secondary_axis":{ "parameter":"discretization", "label":"Discretization" },
+                                //         "aggregations":[ {"column":"perfvalue","agg":"filter:Solve_ksp-niter"} ]
+                                //     }
+                                // }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

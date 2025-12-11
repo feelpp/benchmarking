@@ -1,0 +1,15 @@
+:imagesprefix:
+ifdef::env-github,env-browser,env-vscode[:imagesprefix: ../images/]
+= {{title}}
+:page-layout: manuals
+:page-cards-tag: benchmark,report,machine,application,usecase,example
+:page-tags: dashboard_index
+:page-cards-within-module: false
+:docdatetime: {{datetime}}
+{% for template in extra_templates %}
+    {% include template %}
+{% endfor %}
+
+{% for rendered in extra_renders %}
+include::{{ rendered }}[]
+{%endfor%}

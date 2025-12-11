@@ -1,14 +1,96 @@
 {
-    "plots":[
+    "contents": [
         {
-            "title":"Complexity",
-            "plot_types":["scatter"],
-            "transformation":"performance",
-            "variables": ["elapsed"],
-            "names":["Time"],
-            "xaxis":{ "parameter":"elements", "label":"N" },
-            "yaxis": {"label":"Execution time (s)"},
-            "color_axis":{"parameter":"algorithm","label":"Algorithm"}
+            "type": "section",
+            "title": "Description",
+            "contents": [
+                {
+                    "type": "text",
+                    "text": "This report analyzes the performance of different sorting algorithms (BubbleSort, InsertionSort, MergeSort) for various array sizes (N). We evaluate execution time and compare algorithmic complexity."
+                },
+                {
+                    "type": "section",
+                    "title": "Session",
+                    "contents": [
+                        {
+                            "type": "itemize",
+                            "ref": "reframe_json",
+                            "items": [
+                                "Hostname: @{session_info.hostname}@",
+                                "User: @{session_info.user}@",
+                                "Time Start: @{session_info.time_start}@",
+                                "Time End: @{session_info.time_end}@"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "title": "Cases",
+                    "contents": [
+                        {
+                            "type": "itemize",
+                            "ref": "reframe_json",
+                            "items": [
+                                "Total: @{session_info.num_cases}@",
+                                "Failures: @{session_info.num_failures}@",
+                                "Runs: @{runs | length}@"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Parametrization",
+            "contents": [
+                {
+                    "type": "table",
+                    "ref": "reframe_df",
+                    "layout": {
+                        "rename": {
+                            "testcases.time_total": "Execution Time (s)",
+                            "testcases.hashcode": "Hash",
+                            "result": ""
+                        },
+                        "column_order": ["result", "testcases.hashcode", "algorithm", "elements", "testcases.time_total","logs_link"]
+                    },
+                    "style": {
+                        "column_align": { "result": "center" },
+                        "column_width":{ "result":1,"logs_link":1},
+                        "classnames": ["scrollable", "sortable"]
+                    },
+                    "filter": { "placeholder": "Filter testcases..." }
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "title": "Performance Analysis",
+            "contents": [
+                {
+                    "type": "section",
+                    "title": "Execution Time vs Array Size",
+                    "contents": [
+                        {
+                            "type": "plot",
+                            "plot": {
+                                "title": "Complexity",
+                                "plot_types": ["scatter"],
+                                "transformation": "performance",
+                                "xaxis": { "parameter": "elements", "label": "N" },
+                                "yaxis": { "label": "Execution time (s)" },
+                                "color_axis": { "parameter": "algorithm", "label": "Algorithm" }
+                            }
+                        },
+                        {
+                            "type": "text",
+                            "text": "This plot compares execution times for different sorting algorithms as the array size increases, highlighting differences in algorithmic complexity."
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

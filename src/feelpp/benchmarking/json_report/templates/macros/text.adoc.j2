@@ -1,0 +1,3 @@
+{% macro render(textNode,data) %}
+{{ TextController((data or {}).get(textNode.ref),textNode.text).generate() }}
+{% endmacro %}

@@ -1,0 +1,60 @@
+= 🚀 Basic Usage
+
+The **JSON Report Engine** is designed for simple, fast report generation. There are two primary ways to interact with the engine: the command-line interface (CLI) for standalone use, and the Python API for script integration.
+
+---
+
+[.underline]#💻 CLI (Recommended Standalone Use)#
+
+The Command-Line Interface is the easiest way to generate a report from a configuration file.
+
+Run the `json-report-render` command, specifying your configuration file (`REPORT_FILE`).
+
+[source,bash]
+----
+json-report-render REPORT_FILE [OPTIONS]
+----
+
+Options :
+
+|===
+|Key Option|Description|Default
+
+|`REPORT_FILE`|The path to the JSON configuration file.|*Required*
+|`-o`, `--output-dir`|The directory to save the final report.|`.` (Current directory)
+|`-n`, `--output-name`|A specific filename for the output.|Inferred from `REPORT_FILE`
+|`-f`, `--output-format`|The format of the final document to be generated. Currently supports: adoc.|adoc
+
+|===
+
+---
+
+[.underline]#⚙️ Python API#
+
+For developers integrating the engine into automated workflows or custom Python environments, the `JsonReportController` class provides programmatic control.
+
+1.  **Initialize** the controller with the configuration file path.
+2.  **Call `.render()`** to execute the pipeline (data loading, transformation, and document generation).
+
+[source,python]
+----
+import os
+from feelpp.benchmarking.json_report.renderer import JsonReportController
+
+# 1. Paths and Initialization
+report_file = "my_report.json"
+output_dir = "report_output"
+
+controller = JsonReportController(
+    report_filepath=report_file,
+    output_format="adoc" # Defaults to "adoc"
+)
+
+# 2. Render and output the file
+output_path = controller.render(
+output_dirpath=output_dir,
+    # output_filename=None (auto-named my_report.adoc)
+)
+
+print(f"Report generated at: {output_path}")
+----

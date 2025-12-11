@@ -1,24 +1,40 @@
 {
-    "execution_mapping":{
-
+    "component_map":{
+        "component_order":[],
+        "mapping":{}
     },
-    "applications":{
-        "app1":{
-            "display_name":"App1",
-            "description":""
-        }
+    //Comment in line
+    "repositories":{
+        "applications":{},
+        "machines":{},
+        "use_cases":{},
+        //"another_field":{} Comment making an orphan comma on previous field
     },
-    "machines":{
-        "machine1":{
-            "display_name":"Machine1",
-            "description":""
+    "components":{
+        /*Comment*/
+        "applications":{
+            "app1":{
+                "display_name":"App1", //Inline comment
+                "description":"" /*Inline comment*/
+            }
+        },
+        "machines":{
+            /* */
+            "machine1":{
+                "display_name":"Machine1",
+                //
+                "description":""
+            }
+        },
+        /*Multi //Another comment
+            Line
+                Comment
+        */
+        "use_cases":{
+            "uc1":{
+                "display_name":"UseCase1",
+                "description":""
+            }
         }
-    },
-    "use_cases":{
-        "uc1":{
-            "display_name":"UseCase1",
-            "description":""
-        }
-
     }
 }
