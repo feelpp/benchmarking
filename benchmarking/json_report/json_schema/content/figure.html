@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Plot Node :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/json_report/json_schema/content/figure.html">
+    <meta name="generator" content="Antora 3.1.14">
+<link rel="stylesheet" href="../../../../_/css/site.css">
+
+<!-- Font Awesome webfont CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link rel="icon" href="../../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../../_'</script>
+
+  </head>
+  <body class="article">
+<link rel="stylesheet" href="../../../../_/css/figures.css">
+<link rel="stylesheet" href="../../../../_/css/table.css">
+
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../training/index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../training/reframe/index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../training/reframe/handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/reframe/handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../../training/advanced/index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/advanced/containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/advanced/remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/advanced/file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/advanced/custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/advanced/memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/advanced/visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../../training/advanced/workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../../training/advanced/handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../index.html">Json Report Renderer</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_report_structure">Json Report Structure</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_including_data">Including Data</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_section_node">Adding a section</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_text_node">Adding text</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_latex_node">Adding latex</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_list_node">Using lists</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_image_node">Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_table_node">Tables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../report_schema.html#_plot_node">Figures</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../../dashboard_renderer/index.html">Catalog Dashboard Renderer</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="figure.html">Plot Node</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/json_report/pages/json_schema/content/figure.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+      <li>
+        <a href="#"
+           title="Download Jupyter Notebook" data-toggle="tooltip" data-placement="left" class="jupyter-download">
+          <img class="jupyter-file-icon icon" src="../../../../_/img/jupyter-logo.svg"/> .ipynb
+        </a>
+      </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Plot Node</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <strong>Plot Node</strong> defines a data visualization within the report. It specifies the data to be used, how that data should be mapped to the figure&#8217;s axes and dimensions, and what transformations should be applied before rendering.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_plotnode_schema_container"><a class="anchor" href="#_plotnode_schema_container"></a>1. PlotNode Schema (Container)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Must be set to <code>"plot"</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"plot"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ref</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique <code>name</code>  of the data file (from the root <code>data</code> list) to reference for building the figure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>plot</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The nested configuration object (<code>Plot</code> schema) defining the figure&#8217;s dimensions, type, and transformation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_plot_configuration_plot_field"><a class="anchor" href="#_plot_configuration_plot_field"></a>2. Plot Configuration (<code>plot</code> Field)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The core configuration is provided here, defining the geometry and data logic of the figure.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The title displayed at the top of the figure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>plot_types</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array of strings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of one or more visualization types to generate from the same configuration (e.g., <code>["scatter", "table"]</code>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>transformation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines how the input data should be processed and normalized before plotting.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"performance"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aggregations</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array of objects</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A sequential list of instructions to filter and summarize the dataset before mapping to axes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>xaxis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration for the horizontal axis (<code>PlotAxis</code> schema).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yaxis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The configuration for the vertical axis (<code>PlotAxis</code> schema).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>secondary_axis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A second independent axis used for animation (sliders) or defining a third dimension.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>color_axis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The parameter used to define distinct lines or groups, mapping data values to the trace color/legend.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>extra_axes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array of objects</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional parameters used for filtering, grouping, or serving as a fourth dimension in complex plots (e.g., 3D or parallel coordinates).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>layout_modifiers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows passing raw configuration options to the underlying plotting library (Plotly) for fine-grained control (e.g., log scale).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dimensions_and_axes_plotaxis_schema"><a class="anchor" href="#_dimensions_and_axes_plotaxis_schema"></a>3. Dimensions and Axes (<code>PlotAxis</code> Schema)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All axis fields (<code>xaxis</code>, <code>yaxis</code>, <code>secondary_axis</code>, <code>color_axis</code>, <code>extra_axes</code>) use the <code>PlotAxis</code> schema to define which data column maps to which dimension.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>parameter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the data column to be mapped to this axis. Use dot notation (<code>parameter.subparameter</code>) for nested data.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>label</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The display label for the axis in the final figure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <code>parameter</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>filter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string, array, or object</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows explicit filtering or renaming of values within this dimension. (See Filtering section below.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_dimension_filtering_and_renaming"><a class="anchor" href="#_dimension_filtering_and_renaming"></a>3.1. Dimension Filtering and Renaming</h3>
+<div class="paragraph">
+<p>The <code>filter</code> field within an axis allows you to select specific values from that column to include in the plot, and optionally rename them for display.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Syntax</th>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Single string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filters by the value, keeps the value as the label.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"filter": "ValueA"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array of strings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filters by multiple values, keeps values as labels.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"filter": ["ValueA", "ValueB"]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map of strings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filters by keys, renames to values.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"filter": {"old_name": "New Label"}</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"xaxis": {
+    "parameter": "System",
+    "filter": {
+        "cluster_a": "Cluster A (Production)",
+        "dev_box": "Development System"
+    }
+}</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_data_transformations"><a class="anchor" href="#_data_transformations"></a>4. Data Transformations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>transformation</code> field defines how the data is restructured and normalized before being plotted.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Transformation</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+<th class="tableblock halign-left valign-top">Output Focus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"performance"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The base and default strategy. Data is restructured (pivoted) using the axes dimensions but values remain absolute.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Absolute Values</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"relative_performance"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data is restructured, and each value is normalized by the total sum of its row (e.g., component percentages of total time).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Percentage/Proportion</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"speedup"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Computes the speedup relative to the smallest value found along the X-axis dimension (often used to show parallel scaling).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scaling Factors</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>To explain how transformation and plot types work, we can consider the following example.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">records = [{"perfvalue": "elapsed_fill", "value": 28.9239, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 10000.0}, {"perfvalue": "elapsed_compute", "value": 1.92806, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 10000.0}, {"perfvalue": "elapsed_fill", "value": 63.0273, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 20000.0}, {"perfvalue": "elapsed_compute", "value": 3.74504, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 20000.0}, {"perfvalue": "elapsed_fill", "value": 92.358, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 30000.0}, {"perfvalue": "elapsed_compute", "value": 3.29597, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 30000.0}, {"perfvalue": "elapsed_fill", "value": 99.9142, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 40000.0}, {"perfvalue": "elapsed_compute", "value": 2.37914, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 1.0, "elements": 40000.0}, {"perfvalue": "elapsed_fill", "value": 24.8636, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 10000.0}, {"perfvalue": "elapsed_compute", "value": 0.629236, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 10000.0}, {"perfvalue": "elapsed_fill", "value": 14.9139, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 20000.0}, {"perfvalue": "elapsed_compute", "value": 0.498528, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 20000.0}, {"perfvalue": "elapsed_fill", "value": 98.9536, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 30000.0}, {"perfvalue": "elapsed_compute", "value": 2.3708, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 30000.0}, {"perfvalue": "elapsed_fill", "value": 45.4764, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 40000.0}, {"perfvalue": "elapsed_compute", "value": 1.56548, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 2.0, "elements": 40000.0}, {"perfvalue": "elapsed_fill", "value": 2.89716, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 10000.0}, {"perfvalue": "elapsed_compute", "value": 0.0434488, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 10000.0}, {"perfvalue": "elapsed_fill", "value": 36.537, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 20000.0}, {"perfvalue": "elapsed_compute", "value": 0.519222, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 20000.0}, {"perfvalue": "elapsed_fill", "value": 52.302, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 30000.0}, {"perfvalue": "elapsed_compute", "value": 1.23368, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 30000.0}, {"perfvalue": "elapsed_fill", "value": 98.397, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 40000.0}, {"perfvalue": "elapsed_compute", "value": 1.55742, "unit": "s", "result": "pass", "system": "gaya", "partition": "public", "tasks": 4.0, "elements": 40000.0}]</code></pre>
+</div>
+</div>
+<details>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import pandas as pd
+
+master_df = pd.DataFrame.from_dict(records)</code></pre>
+</div>
+</div>
+<details>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">master_df.head(5)</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>Out[0]:
+         perfvalue     value unit result system partition  tasks  elements
+0     elapsed_fill  28.92390    s   pass   gaya    public    1.0   10000.0
+1  elapsed_compute   1.92806    s   pass   gaya    public    1.0   10000.0
+2     elapsed_fill  63.02730    s   pass   gaya    public    1.0   20000.0
+3  elapsed_compute   3.74504    s   pass   gaya    public    1.0   20000.0
+4     elapsed_fill  92.35800    s   pass   gaya    public    1.0   30000.0</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>We can see that this dataframe contains the parameters:
+- system
+- result
+- tasks
+- elements
+- value
+- perfvalue
+- unit</p>
+</div>
+<div class="paragraph">
+<p>By having this common structure, we can make use of transformation strategies to manipulate values depending on the desired output.</p>
+</div>
+<div class="paragraph">
+<p>Strategies will depend on the figure axis. All strategies will create a pivot dataframe that will contain the parameter specified as <code>color_axis</code> as columns, <code>xaxis</code> as first level index and <code>secondary_axis</code> as second level index. Values of the dataframe will always be the <code>values</code> of the master dataframe.</p>
+</div>
+<div class="paragraph">
+<p>As an example, we will consider the following axis definitions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+"yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+"secondary_axis":{ "parameter":"elements", "label":"N" },
+"color_axis":{ "parameter":"perfvalue", "label":"Performance variable" }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>performance</strong></p>
+</div>
+<div class="paragraph">
+<p>This strategy should be seen as the "base" strategy. No transformation, other that a pivot, is done.
+For the given example, it produces the following dataframe</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
+plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)"},
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{"parameter":"elements", "label":"N"}
+})
+strategy = TransformationStrategyFactory.create(plot_config)
+df = strategy.calculate(master_df)
+print(df)</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>perfvalue       elapsed_compute  elapsed_fill
+elements tasks
+10000.0  1.0           1.928060      28.92390
+         2.0           0.629236      24.86360
+         4.0           0.043449       2.89716
+20000.0  1.0           3.745040      63.02730
+         2.0           0.498528      14.91390
+         4.0           0.519222      36.53700
+30000.0  1.0           3.295970      92.35800
+         2.0           2.370800      98.95360
+         4.0           1.233680      52.30200
+40000.0  1.0           2.379140      99.91420
+         2.0           1.565480      45.47640
+         4.0           1.557420      98.39700</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>relative_performance</strong></p>
+</div>
+<div class="paragraph">
+<p>The relative performance strategy computes the proportion of the time that a a <code>color_axis</code> variable takes with regards of the total.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "relative_performance",
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{"parameter":"value", "label":"Execution time (s)"},
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N"
+    }
+})
+strategy = TransformationStrategyFactory.create(plot_config)
+df = strategy.calculate(master_df)
+print(df)</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>perfvalue       elapsed_compute  elapsed_fill
+elements tasks
+10000.0  1.0           6.249392     93.750608
+         2.0           2.468286     97.531714
+         4.0           1.477544     98.522456
+20000.0  1.0           5.608670     94.391330
+         2.0           3.234584     96.765416
+         4.0           1.401174     98.598826
+30000.0  1.0           3.445722     96.554278
+         2.0           2.339812     97.660188
+         4.0           2.304407     97.695593
+40000.0  1.0           2.325801     97.674199
+         2.0           3.327843     96.672157
+         4.0           1.558130     98.441870</pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p>The sum along the column axis will always be equal to 100.</p>
+</div>
+<div class="paragraph">
+<p><strong>speedup</strong></p>
+</div>
+<div class="paragraph">
+<p>The speedup strategy computes the speedup of the <code>color_axis</code> variables. The minimum of the <code>xaxis</code> values is taken as the base of the speedup.
+For the example, this strategy will produce the following.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">plot_config = Plot(**{
+    "title": "Absolute performance",
+    "plot_types": [ "stacked_bar", "grouped_bar" ],
+    "transformation": "speedup",
+    "xaxis":{"parameter":"tasks", "label":"Number of tasks"},
+    "yaxis":{"parameter":"value", "label":"Execution time (s)"},
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{"parameter":"elements", "label":"N"}
+})
+strategy = TransformationStrategyFactory.create(plot_config)
+df = strategy.calculate(master_df)
+print(df)</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre>perfvalue       elapsed_compute  elapsed_fill  optimal  half-optimal
+elements tasks
+10000.0  1.0           1.000000      1.000000      1.0           1.0
+         2.0           3.064129      1.163303      2.0           1.5
+         4.0          44.375449      9.983536      4.0           2.5
+20000.0  1.0           1.000000      1.000000      1.0           1.0
+         2.0           7.512196      4.226078      2.0           1.5
+         4.0           7.212791      1.725027      4.0           2.5
+30000.0  1.0           1.000000      1.000000      1.0           1.0
+         2.0           1.390235      0.933347      2.0           1.5
+         4.0           2.671657      1.765860      4.0           2.5
+40000.0  1.0           1.000000      1.000000      1.0           1.0
+         2.0           1.519751      2.197056      2.0           1.5
+         4.0           1.527616      1.015419      4.0           2.5</pre>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aggregations"><a class="anchor" href="#_aggregations"></a>5. Aggregations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The optional <code>aggregations</code> field allows for data reduction and filtering across the dataset <strong>before</strong> the final pivot structure is created. <strong>The order of these instructions matters.</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Aggregation Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>column</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The column to apply the aggregation or filter to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>agg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aggregation function or filter instruction.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_available_aggregation_functions"><a class="anchor" href="#_available_aggregation_functions"></a>5.1. Available Aggregation Functions</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Function</th>
+<th class="tableblock halign-left valign-top">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Computes the arithmetic average of the column.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sum</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Computes the total sum of the column.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>max</code>, <code>min</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finds the maximum or minimum value in the column.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>count</code>, <code>nunique</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Counts the number of values or unique values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>filter:VALUE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Filters the column to keep only rows where the column value matches <code>VALUE</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"aggregations":[
+    {"column":"Date","agg":"max"}, // Keep only records with the latest date
+    {"column":"System","agg":"filter:gaya"}, // Filter to only keep the 'gaya' system
+    {"column":"Time","agg":"mean"} // Calculate the mean execution time
+]</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_plot_types"><a class="anchor" href="#_plot_types"></a>6. Plot Types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The engine supports a diverse range of visualizations, grouped into 2D, 3D, and specialized formats. The definition of each axis depends on the plot type.</p>
+</div>
+<div class="sect2">
+<h3 id="_2d_visualizations"><a class="anchor" href="#_2d_visualizations"></a>6.1. 2D Visualizations</h3>
+<div class="paragraph">
+<p>These are standard 2D plots that support the <code>xaxis</code>, <code>yaxis</code>, and often the <code>color_axis</code> and <code>secondary_axis</code> (for animation/faceting).</p>
+</div>
+<div class="paragraph">
+<p>For examples in this section, we will define the axis as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+"yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+"color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+"secondary_axis":{ "parameter":"elements", "label":"N" }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>scatter</strong>: Standard scatter plot, typically showing performance trends.</p>
+</div>
+<div class="paragraph">
+<p>Axis definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>secondary_axis</code> : represents the figure slider</p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Scatter Plot",
+    "plot_types": [ "scatter" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="aeebdf49-c189-45e4-9bf3-570830e8a68d" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("aeebdf49-c189-45e4-9bf3-570830e8a68d")) {                    Plotly.newPlot(                        "aeebdf49-c189-45e4-9bf3-570830e8a68d",                        [{"name":"elapsed_compute","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f"},"type":"scatter"},{"name":"elapsed_fill","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"P8bctYTsPEBb07zjFN04QCE82jhiLQdA"},"type":"scatter"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"N = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"10000.0","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"20000.0","method":"animate"},{"args":[["frame_2"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"30000.0","method":"animate"},{"args":[["frame_3"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"40000.0","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.043014312000000006,28.924334488],"title":{"text":"Execution time (s)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Absolute performance - Scatter Plot"},"xaxis":{"title":{"text":"Number of tasks"}},"legend":{"title":{"text":"Performance variable"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('aeebdf49-c189-45e4-9bf3-570830e8a68d', [{"data":[{"name":"elapsed_compute","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f"},"type":"scatter"},{"name":"elapsed_fill","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"P8bctYTsPEBb07zjFN04QCE82jhiLQdA"},"type":"scatter"}],"layout":{"yaxis":{"range":[0.043014312000000006,28.924334488]}},"name":"frame_0"},{"data":[{"name":"elapsed_compute","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"2bERiNf1DUB7+gj84effP4ejq3R3neA\u002f"},"type":"scatter"},{"name":"elapsed_fill","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"JJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA"},"type":"scatter"}],"layout":{"yaxis":{"range":[0.49354272000000005,63.032285279999996]}},"name":"frame_1"},{"data":[{"name":"elapsed_compute","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f"},"type":"scatter"},{"name":"elapsed_fill","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"9P3UeOkWV0DMXUvIB71YQC2yne+nJkpA"},"type":"scatter"}],"layout":{"yaxis":{"range":[1.2213432000000002,98.9659368]}},"name":"frame_2"},{"data":[{"name":"elapsed_compute","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002f"},"type":"scatter"},{"name":"elapsed_fill","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"NIC3QIL6WEA+6Nms+rxGQMUgsHJomVhA"},"type":"scatter"}],"layout":{"yaxis":{"range":[1.5418458,99.9297742]}},"name":"frame_3"}]);
+                        }).then(function(){
+                            Plotly.animate('aeebdf49-c189-45e4-9bf3-570830e8a68d', null);
+                        })                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>marked_scatter</strong>: Enhanced scatter plot where the symbol/mark shape can be mapped to an additional dimension.</p>
+</div>
+<div class="paragraph">
+<p>Axis definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>secondary_axis</code> : represents the marks</p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Marked Scatter Plot",
+    "plot_types": [ "marked_scatter" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="b7eab38a-8ba1-4b50-acf9-82e926272aa5" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("b7eab38a-8ba1-4b50-acf9-82e926272aa5")) {                    Plotly.newPlot(                        "b7eab38a-8ba1-4b50-acf9-82e926272aa5",                        [{"legendgroup":"0","marker":{"color":"red","size":10,"symbol":"circle"},"mode":"lines+markers","name":"elapsed_compute - N : 10000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f"},"type":"scatter"},{"legendgroup":"0","marker":{"color":"blue","size":10,"symbol":"circle"},"mode":"lines+markers","name":"elapsed_fill - N : 10000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"P8bctYTsPEBb07zjFN04QCE82jhiLQdA"},"type":"scatter"},{"legend":"legend2","line":{"color":"red"},"mode":"lines","name":"elapsed_compute","showlegend":true,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend2","line":{"color":"blue"},"mode":"lines","name":"elapsed_fill","showlegend":true,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend","legendgroup":"0","marker":{"color":"black","size":10,"symbol":"circle"},"mode":"markers","name":"10000.0","showlegend":true,"x":[null],"y":[null],"type":"scatter"},{"legendgroup":"1","marker":{"color":"red","size":10,"symbol":"square"},"mode":"lines+markers","name":"elapsed_compute - N : 20000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"2bERiNf1DUB7+gj84effP4ejq3R3neA\u002f"},"type":"scatter"},{"legendgroup":"1","marker":{"color":"blue","size":10,"symbol":"square"},"mode":"lines+markers","name":"elapsed_fill - N : 20000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"JJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA"},"type":"scatter"},{"legend":"legend2","line":{"color":"red"},"mode":"lines","name":"elapsed_compute","showlegend":false,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend2","line":{"color":"blue"},"mode":"lines","name":"elapsed_fill","showlegend":false,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend","legendgroup":"1","marker":{"color":"black","size":10,"symbol":"square"},"mode":"markers","name":"20000.0","showlegend":true,"x":[null],"y":[null],"type":"scatter"},{"legendgroup":"2","marker":{"color":"red","size":10,"symbol":"diamond"},"mode":"lines+markers","name":"elapsed_compute - N : 30000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f"},"type":"scatter"},{"legendgroup":"2","marker":{"color":"blue","size":10,"symbol":"diamond"},"mode":"lines+markers","name":"elapsed_fill - N : 30000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"9P3UeOkWV0DMXUvIB71YQC2yne+nJkpA"},"type":"scatter"},{"legend":"legend2","line":{"color":"red"},"mode":"lines","name":"elapsed_compute","showlegend":false,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend2","line":{"color":"blue"},"mode":"lines","name":"elapsed_fill","showlegend":false,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend","legendgroup":"2","marker":{"color":"black","size":10,"symbol":"diamond"},"mode":"markers","name":"30000.0","showlegend":true,"x":[null],"y":[null],"type":"scatter"},{"legendgroup":"3","marker":{"color":"red","size":10,"symbol":"cross"},"mode":"lines+markers","name":"elapsed_compute - N : 40000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002f"},"type":"scatter"},{"legendgroup":"3","marker":{"color":"blue","size":10,"symbol":"cross"},"mode":"lines+markers","name":"elapsed_fill - N : 40000.0","showlegend":false,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"NIC3QIL6WEA+6Nms+rxGQMUgsHJomVhA"},"type":"scatter"},{"legend":"legend2","line":{"color":"red"},"mode":"lines","name":"elapsed_compute","showlegend":false,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend2","line":{"color":"blue"},"mode":"lines","name":"elapsed_fill","showlegend":false,"x":[null],"y":[null],"type":"scatter"},{"legend":"legend","legendgroup":"3","marker":{"color":"black","size":10,"symbol":"cross"},"mode":"markers","name":"40000.0","showlegend":true,"x":[null],"y":[null],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Absolute performance - Marked Scatter Plot"},"xaxis":{"title":{"text":"Number of tasks"}},"yaxis":{"title":{"text":"Execution time (s)"}},"legend":{"title":{"text":"N"},"xref":"container","yref":"container","y":0},"legend2":{"title":{"text":"Performance variable"},"xref":"container","yref":"container","y":0.65}},                        {"responsive": true}                    )                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>stacked_bar</strong>: Displays cumulative values, useful for showing the proportion of components (e.g., <code>relative_performance</code> transformation).</p>
+</div>
+<div class="paragraph">
+<p>Axis definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>xaxis</code> : represents the subplot dimension. A subplot is created for each value in the x axis.</p>
+</li>
+<li>
+<p><code>secondary_axis</code> : represents the x axis of each subplot.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Stacked Bar Plot",
+    "plot_types": [ "stacked_bar" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="cf54eb99-6b89-4582-a508-ccfc810a14f8" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("cf54eb99-6b89-4582-a508-ccfc810a14f8")) {                    Plotly.newPlot(                        "cf54eb99-6b89-4582-a508-ccfc810a14f8",                        [{"hovertemplate":"series=elapsed_compute\u003cbr\u003etasks=1.0\u003cbr\u003eelements=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"elapsed_compute","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"elapsed_compute","orientation":"v","showlegend":true,"textposition":"auto","x":["10000.0","20000.0","30000.0","40000.0"],"xaxis":"x","y":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj\u002fZsRGI1\u002fUNQOfG9IQlXgpA8ddkjXoIA0A="},"yaxis":"y","type":"bar"},{"hovertemplate":"series=elapsed_compute\u003cbr\u003etasks=2.0\u003cbr\u003eelements=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"elapsed_compute","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"elapsed_compute","orientation":"v","showlegend":false,"textposition":"auto","x":["10000.0","20000.0","30000.0","40000.0"],"xaxis":"x2","y":{"dtype":"f8","bdata":"S+guibMi5D97+gj84effP7raiv1l9wJAXKyowTQM+T8="},"yaxis":"y2","type":"bar"},{"hovertemplate":"series=elapsed_compute\u003cbr\u003etasks=4.0\u003cbr\u003eelements=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"elapsed_compute","marker":{"color":"#636efa","pattern":{"shape":""}},"name":"elapsed_compute","orientation":"v","showlegend":false,"textposition":"auto","x":["10000.0","20000.0","30000.0","40000.0"],"xaxis":"x3","y":{"dtype":"f8","bdata":"59MZzus+pj+Ho6t0d53gPyKrWz0nvfM\u002fXi7iOzHr+D8="},"yaxis":"y3","type":"bar"},{"hovertemplate":"series=elapsed_fill\u003cbr\u003etasks=1.0\u003cbr\u003eelements=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"elapsed_fill","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"elapsed_fill","orientation":"v","showlegend":true,"textposition":"auto","x":["10000.0","20000.0","30000.0","40000.0"],"xaxis":"x","y":{"dtype":"f8","bdata":"P8bctYTsPEAkl\u002f+QfoNPQPT91HjpFldANIC3QIL6WEA="},"yaxis":"y","type":"bar"},{"hovertemplate":"series=elapsed_fill\u003cbr\u003etasks=2.0\u003cbr\u003eelements=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"elapsed_fill","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"elapsed_fill","orientation":"v","showlegend":false,"textposition":"auto","x":["10000.0","20000.0","30000.0","40000.0"],"xaxis":"x2","y":{"dtype":"f8","bdata":"W9O84xTdOED5oGez6tMtQMxdS8gHvVhAPujZrPq8RkA="},"yaxis":"y2","type":"bar"},{"hovertemplate":"series=elapsed_fill\u003cbr\u003etasks=4.0\u003cbr\u003eelements=%{x}\u003cbr\u003evalue=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"elapsed_fill","marker":{"color":"#EF553B","pattern":{"shape":""}},"name":"elapsed_fill","orientation":"v","showlegend":false,"textposition":"auto","x":["10000.0","20000.0","30000.0","40000.0"],"xaxis":"x3","y":{"dtype":"f8","bdata":"ITzaOGItB0Db+X5qvERCQC2yne+nJkpAxSCwcmiZWEA="},"yaxis":"y3","type":"bar"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"xaxis":{"anchor":"y","domain":[0.0,0.31999999999999995],"title":{"text":"elements"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"Execution time (s)"}},"xaxis2":{"anchor":"y2","domain":[0.33999999999999997,0.6599999999999999],"matches":"x","title":{"text":"elements"}},"yaxis2":{"anchor":"x2","domain":[0.0,1.0],"matches":"y","showticklabels":false},"xaxis3":{"anchor":"y3","domain":[0.6799999999999999,0.9999999999999999],"matches":"x","title":{"text":"elements"}},"yaxis3":{"anchor":"x3","domain":[0.0,1.0],"matches":"y","showticklabels":false},"annotations":[{"font":{},"showarrow":false,"text":"tasks=1.0","x":0.15999999999999998,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{},"showarrow":false,"text":"tasks=2.0","x":0.49999999999999994,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{},"showarrow":false,"text":"tasks=4.0","x":0.8399999999999999,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"}],"legend":{"title":{"text":"Performance variable"},"tracegroupgap":0},"margin":{"t":60},"barmode":"stack","title":{"text":"Absolute performance - Stacked Bar Plot"}},                        {"responsive": true}                    )                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>grouped_bar</strong>: Displays values side-by-side for easy comparison.</p>
+</div>
+<div class="paragraph">
+<p>Axis definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>secondary_axis</code> : represents the figure slider</p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Grouped Bar Plot",
+    "plot_types": [ "grouped_bar" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="d4583aab-cd7b-4dd1-a897-1e4b6ab5713b" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d4583aab-cd7b-4dd1-a897-1e4b6ab5713b")) {                    Plotly.newPlot(                        "d4583aab-cd7b-4dd1-a897-1e4b6ab5713b",                        [{"name":"elapsed_compute","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f"},"type":"bar"},{"name":"elapsed_fill","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"P8bctYTsPEBb07zjFN04QCE82jhiLQdA"},"type":"bar"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"N = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"10000.0","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"20000.0","method":"animate"},{"args":[["frame_2"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"30000.0","method":"animate"},{"args":[["frame_3"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"40000.0","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.043014312000000006,28.924334488],"title":{"text":"Execution time (s)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Absolute performance - Grouped Bar Plot"},"xaxis":{"title":{"text":"Number of tasks"}},"legend":{"title":{"text":"Performance variable"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('d4583aab-cd7b-4dd1-a897-1e4b6ab5713b', [{"data":[{"name":"elapsed_compute","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f"},"type":"bar"},{"name":"elapsed_fill","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"P8bctYTsPEBb07zjFN04QCE82jhiLQdA"},"type":"bar"}],"layout":{"yaxis":{"range":[0.043014312000000006,28.924334488]}},"name":"frame_0"},{"data":[{"name":"elapsed_compute","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"2bERiNf1DUB7+gj84effP4ejq3R3neA\u002f"},"type":"bar"},{"name":"elapsed_fill","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"JJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA"},"type":"bar"}],"layout":{"yaxis":{"range":[0.49354272000000005,63.032285279999996]}},"name":"frame_1"},{"data":[{"name":"elapsed_compute","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f"},"type":"bar"},{"name":"elapsed_fill","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"9P3UeOkWV0DMXUvIB71YQC2yne+nJkpA"},"type":"bar"}],"layout":{"yaxis":{"range":[1.2213432000000002,98.9659368]}},"name":"frame_2"},{"data":[{"name":"elapsed_compute","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002f"},"type":"bar"},{"name":"elapsed_fill","x":["1.0","2.0","4.0"],"y":{"dtype":"f8","bdata":"NIC3QIL6WEA+6Nms+rxGQMUgsHJomVhA"},"type":"bar"}],"layout":{"yaxis":{"range":[1.5418458,99.9297742]}},"name":"frame_3"}]);
+                        }).then(function(){
+                            Plotly.animate('d4583aab-cd7b-4dd1-a897-1e4b6ab5713b', null);
+                        })                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>heatmap</strong>: Displays data values as colors on a 2D grid defined by the X and Color axes.</p>
+</div>
+<div class="paragraph">
+<p>Axis definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>yaxis</code>: Is given by the color scale (I know it is counter-intuitive).</p>
+</li>
+<li>
+<p><code>xaxis</code>: Represents the columns of the heatmap</p>
+</li>
+<li>
+<p><code>color_axis</code>: Represents the rows of the heatmap</p>
+</li>
+<li>
+<p><code>secondary_axis</code> : Represents the figure slider</p>
+</li>
+</ul>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Heatmap",
+    "plot_types": [ "heatmap" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="1c3de282-bace-4285-b814-5b00097a0607" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("1c3de282-bace-4285-b814-5b00097a0607")) {                    Plotly.newPlot(                        "1c3de282-bace-4285-b814-5b00097a0607",                        [{"colorbar":{"title":{"text":"Execution time (s)"}},"x":["1.0","2.0","4.0"],"y":["elapsed_compute","elapsed_fill"],"z":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002fP8bctYTsPEBb07zjFN04QCE82jhiLQdA","shape":"2, 3"},"type":"heatmap"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"N = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"10000.0","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"20000.0","method":"animate"},{"args":[["frame_2"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"30000.0","method":"animate"},{"args":[["frame_3"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"40000.0","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.043014312000000006,28.924334488],"title":{"text":"Performance variable"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Absolute performance - Heatmap"},"xaxis":{"title":{"text":"Number of tasks"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('1c3de282-bace-4285-b814-5b00097a0607', [{"data":[{"colorbar":{"title":{"text":"Execution time (s)"}},"x":["1.0","2.0","4.0"],"y":["elapsed_compute","elapsed_fill"],"z":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002fP8bctYTsPEBb07zjFN04QCE82jhiLQdA","shape":"2, 3"},"type":"heatmap"}],"layout":{"yaxis":{"range":[0.043014312000000006,28.924334488]}},"name":"frame_0"},{"data":[{"colorbar":{"title":{"text":"Execution time (s)"}},"x":["1.0","2.0","4.0"],"y":["elapsed_compute","elapsed_fill"],"z":{"dtype":"f8","bdata":"2bERiNf1DUB7+gj84effP4ejq3R3neA\u002fJJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA","shape":"2, 3"},"type":"heatmap"}],"layout":{"yaxis":{"range":[0.49354272000000005,63.032285279999996]}},"name":"frame_1"},{"data":[{"colorbar":{"title":{"text":"Execution time (s)"}},"x":["1.0","2.0","4.0"],"y":["elapsed_compute","elapsed_fill"],"z":{"dtype":"f8","bdata":"58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f9P3UeOkWV0DMXUvIB71YQC2yne+nJkpA","shape":"2, 3"},"type":"heatmap"}],"layout":{"yaxis":{"range":[1.2213432000000002,98.9659368]}},"name":"frame_2"},{"data":[{"colorbar":{"title":{"text":"Execution time (s)"}},"x":["1.0","2.0","4.0"],"y":["elapsed_compute","elapsed_fill"],"z":{"dtype":"f8","bdata":"8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002fNIC3QIL6WEA+6Nms+rxGQMUgsHJomVhA","shape":"2, 3"},"type":"heatmap"}],"layout":{"yaxis":{"range":[1.5418458,99.9297742]}},"name":"frame_3"}]);
+                        }).then(function(){
+                            Plotly.animate('1c3de282-bace-4285-b814-5b00097a0607', null);
+                        })                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_specialized_visualizations"><a class="anchor" href="#_specialized_visualizations"></a>6.2. Specialized Visualizations</h3>
+<div class="paragraph">
+<p><strong>table</strong>: Renders the processed data directly into a styled, tabular format (similar to the Table Node, but generated through the figure pipeline).</p>
+</div>
+<div class="paragraph">
+<p>Axis definition: Columns are displayed in the following order, from left to right: [<code>extra_axes</code>] &#8594; <code>secondary_axis</code> &#8594; <code>xaxis</code> &#8594;  [all values in <code>color_axis</code>].</p>
+</div>
+<div class="paragraph">
+<p>Cell values correspond to <code>yaxis</code>.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Table",
+    "plot_types": [ "table" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="c6df28af-2171-41a0-a945-6c8f98471c18" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("c6df28af-2171-41a0-a945-6c8f98471c18")) {                    Plotly.newPlot(                        "c6df28af-2171-41a0-a945-6c8f98471c18",                        [{"cells":{"format":["",".3",".3"],"values":[[10000.0,10000.0,10000.0,20000.0,20000.0,20000.0,30000.0,30000.0,30000.0,40000.0,40000.0,40000.0],[1.0,2.0,4.0,1.0,2.0,4.0,1.0,2.0,4.0,1.0,2.0,4.0],[1.92806,0.629236,0.0434488,3.74504,0.498528,0.519222,3.29597,2.3708,1.23368,2.37914,1.56548,1.55742],[28.9239,24.8636,2.89716,63.0273,14.9139,36.537,92.358,98.9536,52.302,99.9142,45.4764,98.397]]},"header":{"values":["elements","tasks","elapsed_compute","elapsed_fill"]},"type":"table"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}}},                        {"responsive": true}                    )                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>sunburst</strong>: Displays hierarchical data as a multi-layered ring chart, useful for showing partitions.</p>
+</div>
+<div class="paragraph">
+<p><strong>Dimensions are mapped to the rings:</strong> From inner to outer:  <code>secondary_axis</code> &#8594; <code>xaxis</code>&#8594; [<code>extra_axes</code>] &#8594; <code>color_axis</code> (outer).</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Sunburst",
+    "plot_types": [ "sunburst" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="d750c130-a755-46ec-99ea-15f27692bb9e" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d750c130-a755-46ec-99ea-15f27692bb9e")) {                    Plotly.newPlot(                        "d750c130-a755-46ec-99ea-15f27692bb9e",                        [{"branchvalues":"total","domain":{"x":[0.0,1.0],"y":[0.0,1.0]},"hovertemplate":"labels=%{label}\u003cbr\u003evalue=%{value}\u003cbr\u003eparent=%{parent}\u003cbr\u003eid=%{id}\u003cextra\u003e\u003c\u002fextra\u003e","ids":["10000.0\u002f1.0\u002felapsed_compute","10000.0\u002f2.0\u002felapsed_compute","10000.0\u002f4.0\u002felapsed_compute","20000.0\u002f1.0\u002felapsed_compute","20000.0\u002f2.0\u002felapsed_compute","20000.0\u002f4.0\u002felapsed_compute","30000.0\u002f1.0\u002felapsed_compute","30000.0\u002f2.0\u002felapsed_compute","30000.0\u002f4.0\u002felapsed_compute","40000.0\u002f1.0\u002felapsed_compute","40000.0\u002f2.0\u002felapsed_compute","40000.0\u002f4.0\u002felapsed_compute","10000.0\u002f1.0\u002felapsed_fill","10000.0\u002f2.0\u002felapsed_fill","10000.0\u002f4.0\u002felapsed_fill","20000.0\u002f1.0\u002felapsed_fill","20000.0\u002f2.0\u002felapsed_fill","20000.0\u002f4.0\u002felapsed_fill","30000.0\u002f1.0\u002felapsed_fill","30000.0\u002f2.0\u002felapsed_fill","30000.0\u002f4.0\u002felapsed_fill","40000.0\u002f1.0\u002felapsed_fill","40000.0\u002f2.0\u002felapsed_fill","40000.0\u002f4.0\u002felapsed_fill","10000.0\u002f1.0","10000.0\u002f2.0","10000.0\u002f4.0","20000.0\u002f1.0","20000.0\u002f2.0","20000.0\u002f4.0","30000.0\u002f1.0","30000.0\u002f2.0","30000.0\u002f4.0","40000.0\u002f1.0","40000.0\u002f2.0","40000.0\u002f4.0","10000.0","20000.0","30000.0","40000.0"],"labels":["elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_compute","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","elapsed_fill","1.0","2.0","4.0","1.0","2.0","4.0","1.0","2.0","4.0","1.0","2.0","4.0","10000.0","20000.0","30000.0","40000.0"],"name":"","parents":["10000.0\u002f1.0","10000.0\u002f2.0","10000.0\u002f4.0","20000.0\u002f1.0","20000.0\u002f2.0","20000.0\u002f4.0","30000.0\u002f1.0","30000.0\u002f2.0","30000.0\u002f4.0","40000.0\u002f1.0","40000.0\u002f2.0","40000.0\u002f4.0","10000.0\u002f1.0","10000.0\u002f2.0","10000.0\u002f4.0","20000.0\u002f1.0","20000.0\u002f2.0","20000.0\u002f4.0","30000.0\u002f1.0","30000.0\u002f2.0","30000.0\u002f4.0","40000.0\u002f1.0","40000.0\u002f2.0","40000.0\u002f4.0","10000.0","10000.0","10000.0","20000.0","20000.0","20000.0","30000.0","30000.0","30000.0","40000.0","40000.0","40000.0","","","",""],"values":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f2bERiNf1DUB7+gj84effP4ejq3R3neA\u002f58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002fP8bctYTsPEBb07zjFN04QCE82jhiLQdAJJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA9P3UeOkWV0DMXUvIB71YQC2yne+nJkpANIC3QIL6WEA+6Nms+rxGQMUgsHJomVhACoDxDBraPkCdSgaAKn45QHGjEuhdhgdAIVnABG6xUEDN6EfDKdMuQGmoUUgyh0JAK6T8pNrpV0CitDf4wlRZQIaPiCmRxEpA9KYiFcaSWUChLedSXIVHQH6pnzcV\u002fVhAiw\u002f9JIikTUBvKlJhbM9dQEhQ\u002fBhzUG9AofMau0Qpb0A="},"type":"sunburst"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"legend":{"tracegroupgap":0},"margin":{"t":60},"title":{"text":"Absolute performance - Sunburst"}},                        {"responsive": true}                    )                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>parallelcoordinates</strong>: Displays multidimensional data where each variable is represented by a vertical axis, and data points are drawn as colored lines connecting the axes.</p>
+</div>
+<div class="paragraph">
+<p>Axes will be shown on the following order from left to right:
+<code>secondary_axis</code> &#8594; <code>xaxis</code>, [<code>extra_axes</code>] &#8594; <code>color_axis</code>.
+The <code>yaxis</code> will be shown in the line color.</p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Parallel Coordinates",
+    "plot_types": [ "parallelcoordinates" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="4abcef4d-3b66-4268-b0eb-d95c680e1a70" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("4abcef4d-3b66-4268-b0eb-d95c680e1a70")) {                    Plotly.newPlot(                        "4abcef4d-3b66-4268-b0eb-d95c680e1a70",                        [{"dimensions":[{"label":"elements","ticktext":{"dtype":"f8","bdata":"AAAAAACIw0AAAAAAAIjTQAAAAAAATN1AAAAAAACI40A="},"tickvals":{"dtype":"f8","bdata":"AAAAAACIw0AAAAAAAIjTQAAAAAAATN1AAAAAAACI40A="},"values":{"dtype":"f8","bdata":"AAAAAACIw0AAAAAAAIjDQAAAAAAAiMNAAAAAAACI00AAAAAAAIjTQAAAAAAAiNNAAAAAAABM3UAAAAAAAEzdQAAAAAAATN1AAAAAAACI40AAAAAAAIjjQAAAAAAAiONAAAAAAACIw0AAAAAAAIjDQAAAAAAAiMNAAAAAAACI00AAAAAAAIjTQAAAAAAAiNNAAAAAAABM3UAAAAAAAEzdQAAAAAAATN1AAAAAAACI40AAAAAAAIjjQAAAAAAAiONA"}},{"label":"tasks","ticktext":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"tickvals":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"values":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"}},{"label":"perfvalue","ticktext":["elapsed_compute","elapsed_fill"],"tickvals":{"dtype":"i1","bdata":"AAE="},"values":{"dtype":"i1","bdata":"AAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEB"}}],"line":{"color":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f2bERiNf1DUB7+gj84effP4ejq3R3neA\u002f58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002fP8bctYTsPEBb07zjFN04QCE82jhiLQdAJJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA9P3UeOkWV0DMXUvIB71YQC2yne+nJkpANIC3QIL6WEA+6Nms+rxGQMUgsHJomVhA"},"colorscale":[[0.0,"rgb(0,0,0)"],[0.2,"rgb(30,0,100)"],[0.4,"rgb(120,0,100)"],[0.6,"rgb(160,90,0)"],[0.8,"rgb(230,200,0)"],[1.0,"rgb(255,250,220)"]],"showscale":true},"type":"parcoords"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Absolute performance - Parallel Coordinates"},"legend":{"title":{"text":"Execution time (s)"}}},                        {"responsive": true}                    )                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
+<h3 id="_3d_visualizations"><a class="anchor" href="#_3d_visualizations"></a>6.3. 3D Visualizations</h3>
+<div class="paragraph">
+<p>These plots are used for visualizing three or four variables. <strong>At least three dimensions are required</strong> (<code>xaxis</code>, <code>yaxis</code>, and <code>secondary_axis</code>).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>scatter3d</code>: Displays individual data points in three dimensions.</p>
+</li>
+<li>
+<p><code>surface3d</code>: Displays values as a 3D surface grid.</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3D Axis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mapped Parameter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>X-axis</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>xaxis</code> parameter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Y-axis</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>secondary_axis</code> parameter (or first <code>extra_axes</code> element if provided)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Z-axis</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>yaxis</code> parameter (the measured value)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Color/Trace</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>color_axis</code> parameter</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="paragraph">
+<p><strong>scatter3d</strong></p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Scatter 3D",
+    "plot_types": [ "scatter3d" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="f6dcc70e-68f4-4e25-baf0-818a57e6f797" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("f6dcc70e-68f4-4e25-baf0-818a57e6f797")) {                    Plotly.newPlot(                        "f6dcc70e-68f4-4e25-baf0-818a57e6f797",                        [{"mode":"markers","name":"elapsed_compute","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"AAAAAACIw0AAAAAAAIjDQAAAAAAAiMNAAAAAAACI00AAAAAAAIjTQAAAAAAAiNNAAAAAAABM3UAAAAAAAEzdQAAAAAAATN1AAAAAAACI40AAAAAAAIjjQAAAAAAAiONA"},"z":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f2bERiNf1DUB7+gj84effP4ejq3R3neA\u002f58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002f"},"type":"scatter3d"},{"mode":"markers","name":"elapsed_fill","x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"AAAAAACIw0AAAAAAAIjDQAAAAAAAiMNAAAAAAACI00AAAAAAAIjTQAAAAAAAiNNAAAAAAABM3UAAAAAAAEzdQAAAAAAATN1AAAAAAACI40AAAAAAAIjjQAAAAAAAiONA"},"z":{"dtype":"f8","bdata":"P8bctYTsPEBb07zjFN04QCE82jhiLQdAJJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA9P3UeOkWV0DMXUvIB71YQC2yne+nJkpANIC3QIL6WEA+6Nms+rxGQMUgsHJomVhA"},"type":"scatter3d"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Absolute performance - Scatter 3D"},"legend":{"title":{"text":"Performance variable"}},"scene":{"xaxis":{"title":{"text":"Number of tasks"}},"yaxis":{"title":{"text":"N"}},"zaxis":{"title":{"text":"Execution time (s)"}}}},                        {"responsive": true}                    )                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+<div class="paragraph">
+<p><strong>surface3d</strong></p>
+</div>
+<div class="listingblock hide">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+figures = FigureFactory.create(Plot(**{
+    "title": "Absolute performance - Surface 3D",
+    "plot_types": [ "surface3d" ],
+    "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
+    "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
+    "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
+    "secondary_axis":{ "parameter":"elements", "label":"N" }
+}))
+fig = figures[0].createFigure(master_df)
+fig.show()</code></pre>
+</div>
+</div>
+<details open>
+<summary class="title"></summary>
+<div class="content">
+<div class="literalblock dynamic-py-result">
+<div class="content">
+<pre><html>
+<head><meta charset="utf-8" /></head>
+<body>
+    <div>                            <div id="c76e2c76-dd2f-40cf-b67a-994e4e21ac4f" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("c76e2c76-dd2f-40cf-b67a-994e4e21ac4f")) {                    Plotly.newPlot(                        "c76e2c76-dd2f-40cf-b67a-994e4e21ac4f",                        [{"name":"elapsed_compute","opacity":0.5,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"AAAAAACIw0AAAAAAAIjDQAAAAAAAiMNAAAAAAACI00AAAAAAAIjTQAAAAAAAiNNAAAAAAABM3UAAAAAAAEzdQAAAAAAATN1AAAAAAACI40AAAAAAAIjjQAAAAAAAiONA"},"z":{"dtype":"f8","bdata":"t5xLcVXZ\u002fj9L6C6JsyLkP+fTGc7rPqY\u002f2bERiNf1DUB7+gj84effP4ejq3R3neA\u002f58b0hCVeCkC62or9ZfcCQCKrWz0nvfM\u002f8ddkjXoIA0BcrKjBNAz5P14u4jsx6\u002fg\u002f"},"type":"mesh3d"},{"name":"elapsed_fill","opacity":0.5,"x":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAA8D8AAAAAAAAAQAAAAAAAABBA"},"y":{"dtype":"f8","bdata":"AAAAAACIw0AAAAAAAIjDQAAAAAAAiMNAAAAAAACI00AAAAAAAIjTQAAAAAAAiNNAAAAAAABM3UAAAAAAAEzdQAAAAAAATN1AAAAAAACI40AAAAAAAIjjQAAAAAAAiONA"},"z":{"dtype":"f8","bdata":"P8bctYTsPEBb07zjFN04QCE82jhiLQdAJJf\u002fkH6DT0D5oGez6tMtQNv5fmq8REJA9P3UeOkWV0DMXUvIB71YQC2yne+nJkpANIC3QIL6WEA+6Nms+rxGQMUgsHJomVhA"},"type":"mesh3d"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Absolute performance - Surface 3D"},"legend":{"title":{"text":"Performance variable"}},"scene":{"xaxis":{"title":{"text":"Number of tasks"}},"yaxis":{"title":{"text":"N"}},"zaxis":{"title":{"text":"Execution time (s)"}}}},                        {"responsive": true}                    )                };            </script>        </div>
+</body>
+</html></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_layouts_layout_modifiers"><a class="anchor" href="#_custom_layouts_layout_modifiers"></a>7. Custom Layouts (<code>layout_modifiers</code>)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>layout_modifiers</code> field allows expert users to pass raw configuration dictionaries to the underlying plotting engine (Plotly). This is useful for advanced styling not covered by the standard schema.</p>
+</div>
+<div class="paragraph">
+<p>These options correspond to the accepted layout reference for Plotly: <a href="https://plotly.com/python/reference/layout/">Plotly layout reference</a>
+It accepts a nested dictionnary just as Plotly does.</p>
+</div>
+<div class="paragraph">
+<p>For example, we could customize a figure to have have its x-axis on a logscale.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"layout_modifiers":{
+    "xaxis":{
+        "type":"log"
+    }
+}</code></pre>
+</div>
+</div>
+<style>
+details>.title::before, details>.title::after {
+    visibility: hidden;
+}
+details>.content>.dynamic-py-result>.content>pre {
+    max-height: 100%;
+    padding: 0;
+    margin:16px;
+    background-color: white;
+}
+</style>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="../../../../_/js/figure-helper.js"></script>
+<script src="../../../../_/js/table-filter-sort.js"></script>
+<script id="site-script" src="../../../../_/js/site.js" data-ui-root-path="../../../../_"></script>
+
+
+<!-- Font Awesome JS removed to use webfont icons only -->
+<script async src="../../../../_/js/vendor/highlight.js"></script>
+
+<script src="../../../../_/js/vendor/lunr.js"></script>
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

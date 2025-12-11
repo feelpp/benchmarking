@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Including Data :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/json_report/json_schema/data.html">
+    <meta name="generator" content="Antora 3.1.14">
+<link rel="stylesheet" href="../../../_/css/site.css">
+
+<!-- Font Awesome webfont CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+  </head>
+  <body class="article">
+<link rel="stylesheet" href="../../../_/css/figures.css">
+<link rel="stylesheet" href="../../../_/css/table.css">
+
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="body">
+<a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/reframe/index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/reframe/handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/advanced/index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../training/advanced/handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../index.html">Json Report Renderer</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_report_structure">Json Report Structure</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_including_data">Including Data</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_section_node">Adding a section</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_text_node">Adding text</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_latex_node">Adding latex</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_list_node">Using lists</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_image_node">Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_table_node">Tables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="report_schema.html#_plot_node">Figures</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../dashboard_renderer/index.html">Catalog Dashboard Renderer</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+  <button class="nav-toggle"></button>
+    <a href="../../index.html" class="home-link"></a>
+  <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="data.html">Including Data</a></li>
+  </ul>
+</nav>
+
+  
+    <div class="edit-this-page"><a href="https://github.com/feelpp/benchmarking/edit/master/docs/modules/json_report/pages/json_schema/data.adoc">Edit this Page</a></div>
+  
+  <div class="page-downloads">
+  <span class="label">Download as</span>
+  <ul class="download-options">
+    <li>
+      <a onclick="print(this)" href="#" data-toggle="tooltip" data-placement="left" title="Print to PDF"
+         class="pdf-download">
+        <img class="pdf-file-icon icon" src="../../../_/img/pdf.svg"/> .pdf
+      </a>
+    </li>
+  </ul>
+</div>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Including Data</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>data</code> field in the root report schema is an array of <code>DataField</code> derived objects, which instruct the renderer how to load data from different sources and make it available for content generation. Data can be specified inline, can come from files that can be located on the disk or on remote locations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remote file handling is not yet implemented. Remote locations coming soon : Girder, CKAN, github
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_base_datafield_schema"><a class="anchor" href="#_base_datafield_schema"></a>1. Base DataField Schema</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The base schema for loading data is defined in the following table.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <strong>unique identifier</strong> used to reference this data in content nodes (e.g., in a table or plot).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string("DataTable","Object","Raw")</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type for how to load and process the data.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It is inferred from the format or the schema. Only provide it when you need custom casting (e.g. load a json as a Table)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>preprocessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string or object (&#8220;module``:`my.function&#8221;)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines a Python function to preprocess the loaded data.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_loading_inline_data"><a class="anchor" href="#_loading_inline_data"></a>2. Loading Inline Data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is possible to specify the data directly on the JSON configuration, allowing users to refactor and mantain their configuration files clean.</p>
+</div>
+<div class="paragraph">
+<p>Three inline types are supported at the moment:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><code>Raw</code></strong> : Treated as a string</p>
+</li>
+<li>
+<p><strong><code>Object</code></strong> : Treated as a python dictionary</p>
+</li>
+<li>
+<p><strong><code>DataTable</code></strong> : Treated as a pandas dataframe</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_raw_inline_data"><a class="anchor" href="#_raw_inline_data"></a>2.1. Raw Inline data</h3>
+<div class="paragraph">
+<p>Inline data can be loaded by using the <code>value</code> field.</p>
+</div>
+<div id="examp:1" class="sidebarblock examp">
+<div class="content">
+<div class="title">Setting inline text in data</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "data":[
+    {"name":"myCustomText", "value":" Some text I want to access across my report."}
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Later, users can reference this text with :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "contents":[
+    {
+      "type":"text", "ref":"myCustomText",
+      "text":" Here, the text defined in the data section will appear : @{myCustomText}@"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_object_inline_data"><a class="anchor" href="#_object_inline_data"></a>2.2. Object Inline data</h3>
+<div class="paragraph">
+<p>Object (dict) data can be loaded by using the <code>object</code> field.</p>
+</div>
+<div id="examp:2" class="sidebarblock examp">
+<div class="content">
+<div class="title">Setting inline objects in data</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "data":[{
+    "name":"myCustomObject",
+    "object":{
+      "students":{
+        "Robert" : { "score":"50", "grade":"D" },
+        "John": { "score":"100", "grade":"A" }
+      }
+    }
+  }]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Later, users can reference this object with :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "contents":[{
+    "type":"text", "ref":"myCustomObject",
+    "itemize":[
+      "Robert had a score of @{students.Robert.score}@ and a grade @{students.Robert.grade}@",
+      "John had a score of @{students.John.score}@ and a grade @{students.John.grade}@"
+    ]
+  }]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_table_inline_data"><a class="anchor" href="#_table_inline_data"></a>2.3. Table Inline data</h3>
+<div class="paragraph">
+<p>Inline tables can be loaded using the <code>columns</code> field, which is a <strong>list</strong> of objects following the format</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{ "columns":[ { "name":"", "values":[] } ] }</code></pre>
+</div>
+</div>
+<div id="examp:3" class="sidebarblock examp">
+<div class="content">
+<div class="title">Setting inline tables in data</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "data":[{
+    "name":"myInlineTable",
+    "columns":[
+      { "name":"time", "values":[1.2,2.3,3.4,4.5] },
+      { "name":"power", "values":[10,20,30,40] },
+      { "name":"temperature", "values":[22.5,23.0,21.3,22.1] },
+      { "name":"comfort", "values":[0.5,0.6,0.7,0.8] }
+    ],
+  }]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Later, users can render this table with its reference:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "contents":[
+    { "type":"table", "ref":"myInlineTable" }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+When providing inline tables, the values for each column should have exactly the same length. An exception will be raised if not the case.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Multiple options can be provided to table objects when loading to perform some preprocessing. See the <a href="#_table_options">Table options</a> section for more information.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_loading_file_data"><a class="anchor" href="#_loading_file_data"></a>3. Loading File Data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Files can be loaded into the report by providing <code>filepath</code> key in the Data Object. It can either be an absolute path, or a path relative to the report file location. Additionally, the <code>format</code> can be specified, otherwise it will be inferred from the file extension.</p>
+</div>
+<div class="paragraph">
+<p>The fields are also specified in this table.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>filepath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The path to the data file. Relative paths are resolved relative to the JSON report file.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Required</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>format</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string (<code>"json"</code>, <code>"csv"</code>, <code>"raw"</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The format of the file. If omitted, it is inferred from the file extension (<code>.json</code>, <code>.csv</code>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inferred from <code>filepath</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Any file extension other than <code>json</code> and <code>csv</code> will be treated as <code>raw</code> data.
+</td>
+</tr>
+</table>
+</div>
+<div id="examp:4" class="sidebarblock examp">
+<div class="content">
+<div class="title">Loading files on the disk</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "data":[
+    { "name":"my_table", "filepath":"tabular_data.csv" },
+    { "name":"my_json_data", "filepath":"my_data.json" },
+    { "name":"my_error_log", "filepath":"./logs/log.err" } //The err extension will default to raw text
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_table_options"><a class="anchor" href="#_table_options"></a>4. Table options</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Table options can <strong>optionally</strong> be provided to data objects of type <code>DataTable</code>, using the <code>table_options</code> field. It does not matter if data is loaded from a file or provided inline.
+It is used to preprocess the data in a sequential pipeline, just after loading.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "name":"my_processed_table", "filepath":"my_data.csv",
+  "table_options":{
+    "filter":[...],
+    "computed_columns":{...},
+    "group_by":{...},
+    "pivot":{...},
+    "sort":[...],
+    "format":{...},
+  }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Validation Rules</div>
+The engine enforces validation rules: <code>pivot</code> and <code>group_by</code> are mutually exclusive, and sorting is discouraged after pivoting due to ambiguous results.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Operations are executed in this strict order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Filter:</strong> Row reduction based on conditions.</p>
+</li>
+<li>
+<p><strong>Computed Columns:</strong> Creation of new columns via Python expressions.</p>
+</li>
+<li>
+<p><strong>Group By / Pivot:</strong> Data aggregation or structural reshaping (mutually exclusive).</p>
+</li>
+<li>
+<p><strong>Sort:</strong> Ordering of final rows.</p>
+</li>
+<li>
+<p><strong>Format:</strong> Value presentation (e.g., decimal precision, value substitution).</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_filtering"><a class="anchor" href="#_filtering"></a>4.1. Filtering</h3>
+<div class="paragraph">
+<p>The <code>filter</code> field is a list of conditions used to exclude rows from the initial dataset.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Condition Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>column</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The column name to apply the condition to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>op</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The comparison operator. Supported: <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&#8656;</code>, <code>in</code>, <code>not in</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The value(s) to compare against. Use an array for <code>in</code>/<code>not in</code> operators.</p></td>
+</tr>
+</tbody>
+</table>
+<div id="examp:5" class="sidebarblock examp">
+<div class="content">
+<div class="title">Filtering a table</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"filter": [
+  {"column": "Time", "op": "&lt;", "value": 50.0},
+  {"column": "Method", "op": "in", "value": ["A", "B"]}
+]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_new_columns"><a class="anchor" href="#_creating_new_columns"></a>4.2. Creating New Columns</h3>
+<div class="paragraph">
+<p>You can define new columns based on existing row values using Python expressions.</p>
+</div>
+<div id="examp:6" class="sidebarblock examp">
+<div class="content">
+<div class="title">Creating new columns</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"computed_columns": {
+  "Speedup": "row['Time_Ref'] / row['Time']",
+  "Max_Memory_KB": "row['Memory_MB'] * 1024"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_groupby"><a class="anchor" href="#_groupby"></a>4.3. GroupBy</h3>
+<div class="paragraph">
+<p>Used to group rows by categorical columns and apply aggregation functions to columns.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>columns</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>array of strings</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The columns to group the data by.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>agg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>object</code> or <code>string</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aggregation function (e.g., <code>"mean"</code>, <code>"sum"</code>, <code>"max", "count"</code>). Can be a single string for all columns, or a map like <code>{"Time_s": "mean"}</code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_pivoting"><a class="anchor" href="#_pivoting"></a>4.4. Pivoting</h3>
+<div class="paragraph">
+<p>This option is used to create cross-tabulation tables by transforming unique column values into new column headers.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>index</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>array of strings</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The column(s) for the new row headers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>columns</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>array of strings</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The column(s) whose unique values will become the new column headers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>values</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The column providing the data for the new cell values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>agg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aggregation function applied to cell values (e.g., <code>"mean"</code>).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_sorting"><a class="anchor" href="#_sorting"></a>4.5. Sorting</h3>
+<div class="paragraph">
+<p>The <code>sort</code> field is a list of instructions defining the final order of rows.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Instruction Field</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>column</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The column name to sort by.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ascending</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code>, sorts ascending (A-Z, 0-9). If <code>false</code>, sorts descending.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div id="examp:7" class="sidebarblock examp">
+<div class="content">
+<div class="title">Sorting columns</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"sort": [
+  {"column": "Configuration", "ascending": true},
+  {"column": "Time", "ascending": false}
+]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_formatting"><a class="anchor" href="#_formatting"></a>4.6. Formatting</h3>
+<div class="paragraph">
+<p>The <code>format</code> field is used to parse the content columns. Specific values can also be subsituted.</p>
+</div>
+<div id="examp:8" class="sidebarblock examp">
+<div class="content">
+<div class="title">Formating Time and result columns</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"format":{
+  "Time": "%.3f", //Cast to string and format the number to 3 decimal places
+  "result":{ //Will look for 'true' and 'false" in the "result" column and will replace those values by Success and Failure
+    "true":"Success",
+    "false":"Failure"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_a_preprocessor"><a class="anchor" href="#_using_a_preprocessor"></a>5. Using a preprocessor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>preprocessor</code> field allows for custom data manipulation after loading. It can be a string in the format <code>"module_name:function_name"</code> or an object <code>{"module":"module_name", "function":"function_name"}</code></p>
+</div>
+<div class="paragraph">
+<p>Function names can be splitted with a dot (<code>.</code>) to access specific methods. For example <code>"builtins:str.lower"</code> will access the <code>lower()</code> method of the <code>str</code> class in the <code>builtins</code> module.</p>
+</div>
+<div class="paragraph">
+<p>This field should only be used to perform complex processing that cannot be done using the available fields described in <a href="#_table_options">Table options</a>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="title">Security Implication</div>
+The preprocessor feature involves dynamic module loading and function execution. Ensure that preprocessors originate from a trusted source.
+</td>
+</tr>
+</table>
+</div>
+<div id="examp:9" class="sidebarblock examp">
+<div class="content">
+<div class="title">Using a preprocessor</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "data": [
+    {
+      "name": "benchmark_results",
+      "filepath": "data/timing_data.csv",
+      "preprocessor": "my_data_utils:clean_data"
+    },
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example above, <code>my_data_utils.py</code> must contain a function <code>clean_data(df: pandas.DataFrame) &#8594; pandas.DataFrame</code>.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that it can also be used to cast your data to other types (e.g. you want to transform a nested JSON into a dataframe).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_data_referencing"><a class="anchor" href="#_data_referencing"></a>6. Data Referencing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The report schema supports referencing one data object from another. This allows you to create derived data fields or avoid duplicating data definitions. References are specified using the ref field inside a <code>DataField</code> object.</p>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_reference"><a class="anchor" href="#_creating_a_reference"></a>6.1. Creating a reference</h3>
+<div class="paragraph">
+<p>To reference an existing data field, define a new <code>DataField</code> with the <code>ref</code> key pointing to the <code>name</code> of another data object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "data":[
+    { "name":"raw_results", "filepath":"results.csv" },
+    { "name":"processed_results", "ref":"raw_results", "table_options":{...} }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>processed_results will perform some preprocessing using "table_options" to the data loaded from <code>raw_results</code>, without modifying the actual "raw_results" field.</p>
+</li>
+<li>
+<p>Users can reference these two data fields in the content independently.</p>
+</li>
+<li>
+<p>The type of the reference is automatically inferred from the parent (<code>raw_results</code>).</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+References can be chained: a data field can reference another reference.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+All processing from the referenced data field is performed <strong>before</strong>, preserving the logical order.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_type_resolution"><a class="anchor" href="#_type_resolution"></a>6.2. Type Resolution</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>If the type is not explicitly defined, it is inferred from the referenced field.</p>
+</li>
+<li>
+<p>The system supports DataTable, Object, and Raw types.</p>
+</li>
+<li>
+<p>The reference inherits the type and can be cast automatically to the correct subclass (<code>DataTable</code>, <code>Object</code>, or <code>Raw</code>) after resolution.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_caching_and_reuse"><a class="anchor" href="#_caching_and_reuse"></a>6.3. Caching and Reuse</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Resolved references are cached in the dependency graph to avoid redundant computation.</p>
+</li>
+<li>
+<p>This ensures efficiency when multiple fields reference the same source data.</p>
+</li>
+<li>
+<p>Circular references are detected and will raise a <code>ReferenceError</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="../../../_/js/figure-helper.js"></script>
+<script src="../../../_/js/table-filter-sort.js"></script>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<!-- Font Awesome JS removed to use webfont icons only -->
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+<script src="../../../_/js/vendor/lunr.js"></script>
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+  </body>
+</html>

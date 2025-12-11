@@ -19,6 +19,8 @@
 <script src="../../_/js/vendor/tabs-block-behavior.js"></script>
 
 
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -99,7 +101,10 @@ MathJax.Hub.Config({
 <script>var uiRootPath = '../../_'</script>
 
 </head>
-<body class="article docs-case-study docs-cards-layout ">
+<body class="article docs-manuals-catalog docs-cards-layout ">
+<link rel="stylesheet" href="../../_/css/figures.css">
+<link rel="stylesheet" href="../../_/css/table.css">
+
 <header class="header">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
         <div class="navbar-brand">
@@ -260,6 +265,50 @@ MathJax.Hub.Config({
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../json_report/index.html">Json Report Renderer</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_report_structure">Json Report Structure</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_including_data">Including Data</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_section_node">Adding a section</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_text_node">Adding text</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_latex_node">Adding latex</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_list_node">Using lists</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_image_node">Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_table_node">Tables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../json_report/json_schema/report_schema.html#_plot_node">Figures</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../dashboard_renderer/index.html">Catalog Dashboard Renderer</a>
+  </li>
+</ul>
+  </li>
 </ul>
   </nav>
 </div>
@@ -280,7 +329,7 @@ MathJax.Hub.Config({
   <main class="article">
     <div class="toolbar" role="navigation">
       <button class="nav-toggle"></button>
-        <a href="../index.html" class="home-link"></a>
+       <a href="../index.html" class="home-link"></a> 
       <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
@@ -291,65 +340,143 @@ MathJax.Hub.Config({
 
     <div class="content">
       <article class="doc">
-          <h1 class="page">Applications</h1>
-        
-        
-        
-          <h2>Toolboxes</h2>
-          <div class="toolboxes">
-            <div class="toolbox"><a class="page-card catalog" href="feelpp_toolbox_electric/index.html">
+         <h1 class="page">Applications</h1> 
+        <div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>1. Overview</h2>
+<div class="sectionbody">
+<div class="openblock scrollable">
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 6.25%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"></th>
+<th class="tableblock halign-center valign-top"><strong>applications</strong></th>
+<th class="tableblock halign-center valign-top">Latest</th>
+<th class="tableblock halign-center valign-top"># Runs</th>
+<th class="tableblock halign-center valign-top"># Test Cases</th>
+<th class="tableblock halign-center valign-top"># Failures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🔴</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">feelpp_toolbox_heat</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="../leaves/gaya-feelpp_toolbox_heat-ThermalBridgesENISO10211-2025_12_10T13_40_56/leaf.html" class="xref page">2025-12-10 13:40:56</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">179</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">26</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">fibonacci</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="../leaves/default-fibonacci-Fibonacci-2025_12_05T14_29_01/leaf.html" class="xref page">2025-12-05 14:29:01</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">14</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">matrixvector</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="../leaves/default-matrixvector-Multiplication-2025_12_05T14_29_59/leaf.html" class="xref page">2025-12-05 14:29:59</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">12</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">parallelSum</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="../leaves/default-parallelSum-parallel_sum-2025_12_05T14_34_27/leaf.html" class="xref page">2025-12-05 14:34:27</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">12</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">sortingApp</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="../leaves/default-sortingApp-sorting-2025_12_05T15_03_01/leaf.html" class="xref page">2025-12-05 15:03:01</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">12</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0</p></td>
+</tr>
+</tbody>
+</table>
+<input type="text" id="filter_applications_table" placeholder="Filter testcases..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+</div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.scrollable').forEach(scrollable => {
+      const table = scrollable.querySelector('table');
+      const filterInput = scrollable.querySelector('input[type="text"]');
+      initTable(table, filterInput.id);
+    });
+  });
+</script>
+</div>
+</div>
+
+                    
+                    
+                      <div class="applications">
+                            <div class="application"><a class="page-card application" href="feelpp_toolbox_heat/index.html">
   <div class="page-card-illustration">
-        <img alt="" src="../_images/feelpp_toolbox_electric.jpg"/>
+        <i class="fa-solid fa-diagram-project"></i>
   </div>
   <div class="page-card-body">
-    <h4>Feel++ electric toolbox</h4>
-    <p class="page-card-description">Feel++ electric toolbox</p>
+    <h4>Feelpp_Toolbox_Heat</h4>
+    <p class="page-card-description"></p>
   </div>
 </a>
 </div>
-            <div class="toolbox"><a class="page-card catalog" href="feelpp_toolbox_heatfluid/index.html">
+                            <div class="application"><a class="page-card application" href="fibonacci/index.html">
   <div class="page-card-illustration">
-        <img alt="" src="../_images/feelpp_toolbox_heatfluid.jpg"/>
+        <i class="fa-solid fa-diagram-project"></i>
   </div>
   <div class="page-card-body">
-    <h4>Feel++ Heat Fluid toolbox</h4>
-    <p class="page-card-description">Feel++ Heat Fluid toolbox</p>
+    <h4>Fibonacci</h4>
+    <p class="page-card-description">n-th Fibonacci number</p>
   </div>
 </a>
 </div>
-            <div class="toolbox"><a class="page-card catalog" href="feelpp_toolbox_heat/index.html">
+                            <div class="application"><a class="page-card application" href="matrixvector/index.html">
   <div class="page-card-illustration">
-        <img alt="" src="../_images/feelpp_toolbox_heat.jpg"/>
+        <i class="fa-solid fa-diagram-project"></i>
   </div>
   <div class="page-card-body">
-    <h4>Feel++ heat toolbox</h4>
-    <p class="page-card-description">Feel++ heat toolbox</p>
+    <h4>Matrixvector</h4>
+    <p class="page-card-description">Operations between Matrix and Vector</p>
   </div>
 </a>
 </div>
-            <div class="toolbox"><a class="page-card catalog" href="feelpp_toolbox_thermoelectric/index.html">
+                            <div class="application"><a class="page-card application" href="parallelSum/index.html">
   <div class="page-card-illustration">
-        <img alt="" src="../_images/feelpp_toolbox_thermoelectric.jpg"/>
+        <i class="fa-solid fa-diagram-project"></i>
   </div>
   <div class="page-card-body">
-    <h4>Feel++ Thermo-electric toolbox</h4>
-    <p class="page-card-description">Feel++ Thermo-electric toolbox</p>
+    <h4>Parallelsum</h4>
+    <p class="page-card-description">Compute the sum of an array using MPI</p>
   </div>
 </a>
 </div>
-            <div class="toolbox"><a class="page-card catalog" href="feelpp_kub_cem/index.html">
+                            <div class="application"><a class="page-card application" href="sortingApp/index.html">
   <div class="page-card-illustration">
-        <img alt="" src="../_images/feelpp_kub_cem.jpg"/>
+        <i class="fa-solid fa-diagram-project"></i>
   </div>
   <div class="page-card-body">
-    <h4>KUB</h4>
-    <p class="page-card-description">Ktirio Urban Buildings</p>
+    <h4>Sortingapp</h4>
+    <p class="page-card-description">Sorting algorithms</p>
   </div>
 </a>
 </div>
-            <div class="toolbox">  <div class="empty"></div>
-</div>
-          </div>
+                      </div>
       </article>
     </div>
   </main>
@@ -365,6 +492,10 @@ MathJax.Hub.Config({
         <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
     </div>
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="../../_/js/figure-helper.js"></script>
+<script src="../../_/js/table-filter-sort.js"></script>
 <script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
 
 
