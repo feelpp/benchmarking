@@ -17,18 +17,20 @@ jobs:
     if:  "!contains(github.event.head_commit.message, 'wheel skip')"
     steps:
 
-    - uses: actions/checkout@v5
+
+    - uses: actions/checkout@v6
 
     - uses: astral-sh/setup-uv@v5
 
     - name: Sync deps
       run: uv sync
 
+
     - name: Build
       run: uv build
 
     - name: Upload Wheel
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: wheel-artifacts
         path: dist/*.whl
@@ -39,12 +41,12 @@ jobs:
     needs: build_wheel
     if: "!contains(github.event.head_commit.message, 'unit_tests skip')"
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - uses: astral-sh/setup-uv@v5
 
     - name: Download packages
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: wheel-artifacts
         path: dist/
@@ -130,8 +132,9 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'docs skip')"
     steps:
 
+
     - uses: astral-sh/setup-uv@v5
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Install credentials
       run: echo https://$GITHUB_OAUTH:@github.com > $HOME/.git-credentials
@@ -142,7 +145,7 @@ jobs:
       run: npm ci --verbose
 
     - name: Download
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: wheel-artifacts
         path: dist/
@@ -183,7 +186,7 @@ jobs:
     runs-on: self-feelpp
     name: Build docker, tag and push
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Docker meta
       id: meta
@@ -227,10 +230,10 @@ jobs:
       contents: write
       id-token: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download Wheel Packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: wheel-artifacts
           path: dist/

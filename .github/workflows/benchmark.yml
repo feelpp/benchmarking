@@ -98,7 +98,7 @@ jobs:
         timeout-minutes: 7200
         name: ${{matrix.machine}}
         steps:
-        -   uses: actions/checkout@v5
+        -   uses: actions/checkout@v6
 
         -   uses: astral-sh/setup-uv@v5
 
@@ -147,7 +147,7 @@ jobs:
             run: echo "reports_base_dir=${{matrix.system_config.reports_base_dir}}" | sed "s|\$PWD|${{ github.workspace }}|g" >> $GITHUB_OUTPUT
 
         -   name: Upload reframe report
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v5
             with:
                 name: benchmark-results-${{matrix.machine}}
                 path: ${{steps.parse_reports_path.outputs.reports_base_dir}}
@@ -158,12 +158,12 @@ jobs:
         name: Handle results and trigger rendering
         if: ${{ github.event.inputs.upload_id == '' && github.event.client_payload.upload_id == '' }}
         steps:
-        -   uses: actions/checkout@v5
+        -   uses: actions/checkout@v6
 
         -   uses: astral-sh/setup-uv@v5
 
         -   name: Download results
-            uses: actions/download-artifact@v4
+            uses: actions/download-artifact@v6
             with:
                 pattern: benchmark-results-*
                 path: ./tmp/results/
@@ -191,7 +191,7 @@ jobs:
                 echo "use_case=$(jq -r '.use_case_name' ${{ github.event.inputs.benchmark_config || github.event.client_payload.benchmark_config }})" >> $GITHUB_OUTPUT
 
         -   name: Create Pull Request
-            uses: peter-evans/create-pull-request@v7
+            uses: peter-evans/create-pull-request@v8
             with:
                 title: "Add benchmark for ${{ steps.gather_arguments.outputs.use_case }}"
                 commit-message: "Add benchmark for ${{ steps.gather_arguments.outputs.use_case }}"
@@ -216,7 +216,7 @@ jobs:
             -   uses: astral-sh/setup-uv@v5
 
             -   name: Download results
-                uses: actions/download-artifact@v4
+                uses: actions/download-artifact@v6
                 with:
                     pattern: benchmark-results-*
                     path: ./tmp/results/
