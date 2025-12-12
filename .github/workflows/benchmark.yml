@@ -211,7 +211,7 @@ jobs:
         name: Deploy the website to a specific folder
         if: ${{ github.event.inputs.upload_id != '' || github.event.client_payload.upload_id != '' }}
         steps:
-            -   uses: actions/checkout@v5
+            -   uses: actions/checkout@v6
 
             -   uses: astral-sh/setup-uv@v5
 
