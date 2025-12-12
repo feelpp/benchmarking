@@ -23,9 +23,9 @@
       ybar,
       legend style={at={(0.5,-0.1)},anchor=north}
     ]
-    {% for var,name in zip(variables,names) %}
+    {% for var in variables %}
       \addplot table [x expr=\coordindex, y={{ var }}] {{'{#2}'}} ;
-      \addlegendentry{ {{name}} }
+      \addlegendentry{ {{var}} }
     {% endfor %}
 
     \end{axis}

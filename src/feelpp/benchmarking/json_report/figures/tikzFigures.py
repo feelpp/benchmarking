@@ -47,6 +47,7 @@ class TikzFigure(Figure):
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
             caption = self.config.title,
+            variables = df.columns.to_list(),
             secondary_axis = self.config.secondary_axis,
             anim_dimension_values = [str(dim) for dim in anim_dim_values],
             csv_filenames = [f"{dim}.csv" for dim in anim_dim_values],
@@ -64,6 +65,7 @@ class TikzFigure(Figure):
             xaxis = self.config.xaxis,
             yaxis = self.config.yaxis,
             caption = self.config.title,
+            variables = df.columns.to_list(),
             csv_filenames = [f"{self.config.title}.csv"],
             **args
         )
