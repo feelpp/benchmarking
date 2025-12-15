@@ -4,7 +4,7 @@ from pydantic import BaseModel, field_validator, model_validator
 class PlotAxis(BaseModel):
     parameter: str
     label:Optional[str] = None
-    filter:Optional[Union[str,list[str],dict[str,str],list[dict[str,str]]]] = []
+    filter:Optional[Union[str,List[str],Dict[str,str],List[Dict[str,str]]]] = []
 
     @field_validator("filter",mode="after")
     @classmethod
