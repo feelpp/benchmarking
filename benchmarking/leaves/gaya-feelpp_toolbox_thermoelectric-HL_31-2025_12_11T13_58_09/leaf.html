@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>2025-12-11 13:58:08 :: Benchmarking</title>
+    <link rel="canonical" href="https://feelpp.github.io/benchmarking/benchmarking/leaves/gaya-feelpp_toolbox_thermoelectric-HL_31-2025_12_11T13_58_09/leaf.html">
+    <meta name="description" content="gaya - feelpp_toolbox_thermoelectric - HL_31">
+    <meta name="generator" content="Antora 3.1.14">
+<link rel="stylesheet" href="../../../_/css/site.css">
+
+<!-- Font Awesome webfont CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">
+<script>!function(l,p){if(l.protocol!==p&&l.host=="docs.antora.org"){l.protocol=p}else if(/\.gitlab\.io$/.test(l.host)){l.replace(p+"//docs.antora.org"+l.pathname.substr(l.pathname.indexOf("/",1))+l.search+l.hash)}}(location,"https:")</script>
+
+<script src="../../../_/js/vendor/tabs-block-extension.js"></script>
+<script src="../../../_/js/vendor/tabs-block-behavior.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2" charset="utf-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" charset="utf-8"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+
+  TeX: {
+      Macros: {
+      bold: ["{\\bf #1}",1],
+      calTh: "{\\mathcal{T}_h}",
+      card: ["{\\operatorname{card}(#1)}",1],
+      card: ["{\\operatorname{card}(#1)}",1],
+      Ck: ["{\\mathcal{C}^{#1}}",1],
+      deformt: ["{\\mathbf{\\varepsilon(#1)}}",1],
+      diam: "{\\operatorname{diam}}",
+      dim: ["{\\operatorname{dim}(#1)}",1],
+      disp: ["{\\mathbf{#1}}",1],
+      domain: "{\\Omega}",
+      ds: "",
+      essinf: "{\\operatorname{ess}\\, \\operatorname{inf}}",
+      F:"{\\mathcal{F}}",
+      geo: "{\\mathrm{geo}}",
+      Ich: ["{\\mathcal{I}^{#1}_{c,h}#2}",2],
+      Id: "{\\mathcal{I}}",
+      Ilag: ["{\\mathcal{I}^{\\mathrm{lag}}_{#1}}",1],
+      jump: ["{[\\![ #1 ]\\!]}",1],
+      n:"{\\mathbf{n}}",
+      Ne: "{N_{\\mathrm{e}}}",
+      Next: "{\\mathrm{n}}",
+      nf: "{n_f}",
+      ngeo: "{n_{\\mathrm{geo}}}",
+      Nma: "{N_{\\mathrm{ma}}}",
+      NN: "{\\mathbb N}",
+      Nno: "{N_{\\mathrm{no}}}",
+      Nso: "{N_{\\mathrm{so}}}",
+      opdim: "{\\operatorname{dim}}",
+      p: "{\\mathrm{p}}",
+      P:"{\\mathcal{P}}",
+      Pch: ["{P^{#1}_{c,h}}",1],
+      Pcho: ["{P^{#1}_{c,h,0}}",1],
+      Pk: ["{\\mathcal{P}^{#1}}",1],
+      poly: ["{\\mathbb{#1}",1],
+      poly: ["{\\mathbb{#1}}",1],
+      prect: ["{\\left\\(#1\\right\\)}",1],
+      q:"{\\mathbf{q}}",
+      Qch: ["{Q^{#1}_{c,h}}",1],
+      Qk: ["{\\mathcal{Q}^{#1}}",1],
+      R: ["{\\mathbb{R}^{#1}}",1],
+      RR: "{\\mathbb R}",
+      set: ["{\\left\\{#1\\right\\}}",1],
+      stresst: ["{\\mathbf{\\sigma(#1)}}",1],
+      T:"{\\mathcal{T}}",
+      tr: "{\\operatorname{tr}}",
+      v:"{\\mathbf{v}}",
+      vertiii: ["\\left\\vert\\kern-0.25ex\\left\\vert\\kern-0.25ex\\left\\vert #1 \\right\\vert\\kern-0.25ex\\right\\vert\\kern-0.25ex\\right\\vert",1]
+  },
+  extensions: ["mhchem.js"] 
+  }
+});
+</script>
+<!--<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML"></script>-->
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML'></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>-->
+
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>-->
+<script>var uiRootPath = '../../../_'</script>
+
+</head>
+<body class="article docs-report ">
+<link rel="stylesheet" href="../../../_/css/figures.css">
+<link rel="stylesheet" href="../../../_/css/table.css">
+
+<header class="header">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-template-project" style="border-top: 4px solid #9E9E9E">
+        <div class="navbar-brand">
+            <div class="navbar-item feelpp-logo">
+                <a href="https://feelpp.github.io/benchmarking">Benchmarking</a>
+            </div>
+            <button class="navbar-burger" data-target="topbar-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div id="topbar-nav" class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://docs.feelpp.org/">Documentation Reference</a>
+                </div>
+                <div class="navbar-item has-dropdown is-hoverable download-item">
+                    <div class="navbar-item"><a href="https://docs.feelpp.org/user/latest/install/index.html" class="download-btn">Get Feel++</a></div>
+                </div>
+                <div class="navbar-item">
+                    <a class="navbar-brand"  href="https://www.cemosis.fr">
+                        <img class="cemosis-logo"  src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="body">
+  <a href="#" class="menu-expand-toggle"></a>
+<div class="nav-container" data-component="benchmarking" data-version="">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../../index.html">The Feel++ Benchmarking Project</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../index.html">Benchmarks</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/index.html">Documentation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../tutorial/gettingstarted.html">Getting Started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../tutorial/configuration.html">Configuration Guide</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/system.html">System Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/magicstrings.html">Magic Strings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/machine.html">Machine Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/benchmark.html">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../tutorial/configurationfiles/plots.html">Plots Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/index.html">Training</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/reframe/index.html">Introduction to <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/introduction.html">Overview</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/settings.html">System Settings</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/machine_specs.html">Machine Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/example_app.html">Example Application</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/benchmark_specs.html">Benchmark Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/plot_specs.html">Plot Specifications</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/executing.html">Executing the Benchmark</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/reframe/handsOn/index.html">Hands-on session 1</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/handsOn/exercise1.html">Exercise 1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/reframe/handsOn/exercise2.html">Exercise 2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../training/advanced/index.html">Advanced Usage of <em>feelpp.benchmarking</em></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/containers.html">Configuring Containers</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/remote_files.html">Handling Remote Files</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/file_dependencies.html">Handling File Dependencies</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/custom_perfvars.html">Custom Performance Variables</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/memory.html">Memory Management</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/visualization.html">Visualization</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../../training/advanced/workflow.html">Continuous Benchmarking Workflow</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../training/advanced/handsOn/index.html">Hands-on session 2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../../json_report/index.html">Json Report Renderer</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_report_structure">Json Report Structure</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_including_data">Including Data</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_section_node">Adding a section</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_text_node">Adding text</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_latex_node">Adding latex</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_list_node">Using lists</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_image_node">Images</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_table_node">Tables</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../../json_report/json_schema/report_schema.html#_plot_node">Figures</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../../dashboard_renderer/index.html">Catalog Dashboard Renderer</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">The Feel++ Benchmarking Project</span>
+    <span class="version"></span>
+  </div>
+  <ul class="components">
+      <li class="component is-current">
+        <a class="title" href="../../index.html">The Feel++ Benchmarking Project</a>
+      </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+  <main class="article">
+    <div class="toolbar" role="navigation">
+      <button class="nav-toggle"></button>
+       <a href="../../index.html" class="home-link"></a> 
+      <nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
+    <li><a href="leaf.html">2025-12-11 13:58:08</a></li>
+  </ul>
+</nav>
+    </div>
+
+    <div class="content">
+      <article class="doc">
+         <h1 class="page">2025-12-11 13:58:08</h1> 
+        <div class="sect1">
+<h2 id="_benchmark_execution_summary"><a class="anchor" href="#_benchmark_execution_summary"></a>1. Benchmark Execution Summary</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_session"><a class="anchor" href="#_session"></a>1.1. Session</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Hostname: gaya</p>
+</li>
+<li>
+<p>User: gaya</p>
+</li>
+<li>
+<p>Time Start: 20251211T135811+0100</p>
+</li>
+<li>
+<p>Time End: 20251212T002724+0100</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cases"><a class="anchor" href="#_cases"></a>1.2. Cases</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Total: 14</p>
+</li>
+<li>
+<p>Failures: 2</p>
+</li>
+<li>
+<p>Runs: 1</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_parametrization"><a class="anchor" href="#_parametrization"></a>1.3. Parametrization</h3>
+<div class="openblock scrollable sortable">
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 6.25%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+<col style="width: 18.75%;">
+<col style="width: 12.5%;">
+<col style="width: 6.25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"></th>
+<th class="tableblock halign-left valign-top">Hash</th>
+<th class="tableblock halign-left valign-top">tasks</th>
+<th class="tableblock halign-left valign-top">discretization</th>
+<th class="tableblock halign-left valign-top">Total Time (s)</th>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0c0d9679</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2630.907</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/0c0d9679.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/0c0d9679.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1aad25f9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1058.260</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/1aad25f9.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/1aad25f9.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1c58710c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2844.602</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/1c58710c.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/1c58710c.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2bee4b08</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2353.527</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/2bee4b08.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/2bee4b08.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">54cc6124</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2305.390</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/54cc6124.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/54cc6124.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6016d433</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">256</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">37474.588</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/6016d433.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/6016d433.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">71659d70</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1989.690</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/71659d70.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/71659d70.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">77eb0048</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1457.834</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/77eb0048.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/77eb0048.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">888f7b72</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2567.229</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/888f7b72.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/888f7b72.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a285793a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1907.830</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/a285793a.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/a285793a.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ac8f4cc2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">320.882</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/ac8f4cc2.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/ac8f4cc2.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🔴</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bbf416a6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">870.761</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/bbf416a6.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/bbf416a6.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🔴</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">f4c5efcd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1373.874</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/f4c5efcd.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/f4c5efcd.html">Logs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">🟢</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fb46b4da</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">256</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">37751.945</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="descriptions/fb46b4da.html">Description</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="logs/fb46b4da.html">Logs</a></p></td>
+</tr>
+</tbody>
+</table>
+<input type="text" id="filter_ext_parameter_table_table" placeholder="Filter testcases..." style="margin-bottom:0.5em;padding:0.3em;width:50%;">
+</div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.sortable table');
+    initTable(table, 'filter_ext_parameter_table_table');
+  });
+</script>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_benchmark_thermo_electric_coupling"><a class="anchor" href="#_benchmark_thermo_electric_coupling"></a>2. Benchmark: Thermo-Electric Coupling</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_description"><a class="anchor" href="#_description"></a>2.1. Description</h3>
+<div class="paragraph">
+<p>This benchmark models the temperature field and electric current distribution in an high field resistive magnet of the Laboratoire National des Champs Magnétiques Intenses. The magnet consist in a set of 14 copper alloys cylindrical tubes connected 2 by 2 into series by rings. In each tube, the current path is defined by 2 helical cuts of 0.2 mm width. The rings are machined to let water flow in between each tube in a channel of 0.8 mm. The magnet is operated at 12 MW with an imosed total current of 31 kA. The water flow in the magnet is about 140 l/s. The water cooling of the magnet is modelling by using Robin boundary conditions with parameters derived from classical correlation in thermo-hydraulics. A more detailled version of the full model is available in (Daversin Catty, 2016; Hild, 2020). The model is run with thermoelectric Feel++ toolbox. The geometry used in this benchmark performance is illustrated in Figure 4.13. This is a complex domain composed of a large number of components, with some very thin parts.</p>
+</div>
+<div class="openblock grid grid-2 grid-2 justify-center align-center">
+<div class="content">
+<div class="imageblock img-fluid">
+<div class="content">
+<img src="https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-geo.png" alt="Figure 4.13: HL-31 benchmarks - geometry">
+</div>
+<div class="title">Figure 1. Figure 4.13: HL-31 benchmarks - geometry</div>
+</div>
+<div class="imageblock img-fluid">
+<div class="content">
+<img src="https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-geo-zoom.png" alt="Figure 4.13: HL-31 benchmarks - geometry">
+</div>
+<div class="title">Figure 2. Figure 4.13: HL-31 benchmarks - geometry</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_benchmarking_tools_used"><a class="anchor" href="#_benchmarking_tools_used"></a>2.2. Benchmarking Tools Used</h3>
+<div class="paragraph">
+<p>This benchmark was done using feelpp.benchmarking, version <strong>4.0.0</strong></p>
+</div>
+<div class="paragraph">
+<p>The benchmark was performed on the gaya supercomputer (see Section 10.1). The performance tools integrated into the Feel-toolboxes framework were used to measure the execution time. Moreover, we need to say that we have used several Feel installations.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Gaya</strong>:native application from Ubuntu packages of Jammy OS.</p>
+</li>
+<li>
+<p><strong>Discoverer</strong>: Apptainer with Feel++ SIF image based on Ubuntu Noble OS.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note: the Feel++ version is identical but the dependencies (like Petsc) which are of course more recent with Noble.</p>
+</div>
+<div class="paragraph">
+<p>The metrics measured are the execution time of the main components of the simulation. We enumerate these parts in the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Init</strong>: load mesh from filesystem and initialize solid toolbox (finite element context and algebraic data structure)</p>
+</li>
+<li>
+<p><strong>Assembly</strong>: calculate and assemble the matrix and rhs values obtained using the finite element method</p>
+</li>
+<li>
+<p><strong>Solve</strong>: the linear system by using a preconditioned GMRES.</p>
+</li>
+<li>
+<p><strong>PostProcess</strong>: Export on the filesystem a visualization format (EnsighGold) of the solution and other fields of interest such as current density and electric field.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inputoutput_dataset_description"><a class="anchor" href="#_inputoutput_dataset_description"></a>2.3. Input/Output Dataset Description</h3>
+<div class="sect3">
+<h4 id="_input_data"><a class="anchor" href="#_input_data"></a>2.3.1. Input Data</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Meshes: We have generated one mesh called M1. These meshes are stored in GMSH format. The statistics can be found in Table 4.6. We have also prepared for each mesh level a collection of partitioned mesh. The format used is an in-house mesh format of Feel based on JSON+HDF5 file type. The Gmsh meshes and the partitioned meshes can be found on our Girder database management, in the Feel collections.</p>
+</li>
+<li>
+<p>Setup: Use standard setup of Feel++ toolboxes. It corresponds to a cfg file and JSON file. These config files are present in the Github of feelpp.</p>
+</li>
+<li>
+<p>SIF image (Apptainer): feelpp:v0.111.0-preview.10-noble-sif (stored in the Githubregistry of Feel++)</p>
+</li>
+<li>
+<p>Ubuntu package Jammy (Native) feelpp:v0.111.0-preview.10</p>
+</li>
+</ul>
+</div>
+<div class="openblock">
+<div class="title">HL-31 benchmark - Statistics on meshes and number of degrees of freedom with respect to finite element approximation</div>
+<div class="content">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1112%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tag</th>
+<th class="tableblock halign-left valign-top"># points</th>
+<th class="tableblock halign-left valign-top"># edges</th>
+<th class="tableblock halign-left valign-top"># faces</th>
+<th class="tableblock halign-left valign-top"># elements</th>
+<th class="tableblock halign-left valign-top">P1 (Heat)</th>
+<th class="tableblock halign-left valign-top">P2 (Heat)</th>
+<th class="tableblock halign-left valign-top">P1 (electric)</th>
+<th class="tableblock halign-left valign-top">P2 (electric)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">M1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.31E+06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.79E+07</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.60E+07</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.24E+07</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.31E+06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.22E+07</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.30E+06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.95E+07</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_output_data"><a class="anchor" href="#_output_data"></a>2.3.2. Output Data</h4>
+<div class="paragraph">
+<p>The output includes export visualization files (mesh, partitioning, temperature, elecric potential, current density, electric field, &#8230;&#8203;), the time taken to perform each simulation step and some integral quantities such a the total power dissipated by the magnet.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_data_repository"><a class="anchor" href="#_data_repository"></a>2.3.3. Data Repository</h4>
+<div class="paragraph">
+<p>All inputdatasets are available in a unistra girder repository (collection HiFiMagnet, HL-31).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_results_summary"><a class="anchor" href="#_results_summary"></a>2.4. Results Summary</h3>
+<div class="paragraph">
+<p>We can find in fig. 4.14 some examples of 3D visualization that represent fields obtained by solving the thermoelectric problem. We have the temperature solution and other quantities evaluated at PostProcess phase such as current density, electric potential, and electric fields.</p>
+</div>
+<div class="openblock grid grid-2 grid-2 justify-center align-center">
+<div class="content">
+<div class="imageblock img-fluid">
+<div class="content">
+<img src="https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-temperature.png" alt="(a) Temperature">
+</div>
+<div class="title">Figure 3. (a) Temperature</div>
+</div>
+<div class="imageblock img-fluid">
+<div class="content">
+<img src="https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-current_density.png" alt="(b) Current density">
+</div>
+<div class="title">Figure 4. (b) Current density</div>
+</div>
+</div>
+</div>
+<div class="openblock grid grid-2 grid-2 justify-center align-center">
+<div class="content">
+<div class="imageblock img-fluid">
+<div class="content">
+<img src="https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-potential_density_streamines.png" alt="(c) Electric potential and current density on streamlines of electric field">
+</div>
+<div class="title">Figure 5. (c) Electric potential and current density on streamlines of electric field</div>
+</div>
+<div class="imageblock img-fluid">
+<div class="content">
+<img src="https://raw.githubusercontent.com/numpex/exa-ma-d7.1/refs/heads/main/graphics/feelpp/feelpp-benchmark-HL-31-temperature-streamlines.png" alt="(d) Temperature on streamlines of electric field">
+</div>
+<div class="title">Figure 6. (d) Temperature on streamlines of electric field</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The performance analysis has been done in two supercomputers, Gaya and Discoverer. For each of them, we have run the benchmark with discretizations P1 and P2. About the Feel++ distribution, we use native Ubuntu Jammy packages for Gaya, and Apptainer (with Ubuntu) for Discoverer. The results on these machines are illustrated in figs. 4.15 and 4.16 respectively. The measures presented are the time-consuming of simulation components related to WP1, namely Init, Assembly, and PostProcess. For the Solve component, we refer to section 6.2.3.3.</p>
+</div>
+<div class="paragraph">
+<p>In each case analyzed, we have very good scalability, in the sense that we reduced significantly the execution time by increasing the number of tasks. The Init phase is the most timeconsuming, with a limit quite high compared to others. This part contains the mesh reading from the disk, which can explain some bumps sometimes when require many HPC resources.</p>
+</div>
+<div class="paragraph">
+<p>To conclude, we can say that we successfully ran this benchmark case, and we are ready to go up to larger problems and more complex modeling.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_challenges_identified"><a class="anchor" href="#_challenges_identified"></a>2.5. Challenges Identified</h3>
+<div class="paragraph">
+<p>HPC experiments with other kinds of discretizations</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Modelling: nonlinear, Maxwell, &#8230;&#8203;</p>
+</li>
+<li>
+<p>HDG method</p>
+</li>
+<li>
+<p>Geometry complexity</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Go to extreme HPC scale: Partitioning and IO issues</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_results"><a class="anchor" href="#_results"></a>2.6. Results</h3>
+<div class="sect3">
+<h4 id="_hl_31_benchmarks_execution_time_of_main_simulation_components"><a class="anchor" href="#_hl_31_benchmarks_execution_time_of_main_simulation_components"></a>2.6.1. HL-31 benchmarks - Execution time of main simulation components</h4>
+<div class='figure-container'>
+    <div class='tabs-container'>
+        <button class='figure-tab' onclick='switchTab(this, 1)'>scatter</button>
+        <button class='figure-tab' onclick='switchTab(this, 2)'>grouped_bar</button>
+    </div>
+
+      <div class="subfigure-container active" data-subfigure="1">
+
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n4,0.001292632,73.0229805,0.037928593,206.622341,58.5882472\n8,0.000883171,40.5335507,0.036907533,118.867704,30.973618\n16,0.000736395,23.491209,0.049273879,76.1535422,21.2185534\n32,0.001616041,15.3737205,0.054528852,56.6634156,12.2784278\n64,0.001771492,8.68340523,0.060116094,40.4503618,6.48530354\n128,0.003281842,6.77529385,0.088290584,39.208474,5.15740897\n256,0.003351661,3.59832053,0.094256351,30.0621604,3.19115259\n", "title": "P1"}, {"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n16,0.001077697,23.83117,0.051782441,157.470846,268.091816\n32,0.001001705,14.9810484,0.053486056,101.014527,184.377012\n64,0.001192253,8.70963307,0.06463287,65.0934999,129.518279\n128,0.003313222,6.63195657,0.08746413,53.5952819,131.675447\n256,0.001763656,3.52023304,0.090714652,37.992068,201.593605\n", "title": "P2"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepgfplotslibrary{fillbetween}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of CPU core }, ylabel={ execution time (s) },\n      xtick=data, xtick align=outside,\n      ymajorgrids=true, yminorgrids=true,\n      xticklabels from table={#2}{tasks},\n      cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\\pgfplotstableread[col sep=comma]{P1.csv}\\dataA\n\\pgfplotstableread[col sep=comma]{P2.csv}\\dataB\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n  \\caption{ Discretization=P1 }\n  \\plot{\\dataB}\n  \\caption{ Discretization=P2 }\n\\caption{ Performance by CPU tasks and Discretization }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n4,0.001292632,73.0229805,0.037928593,206.622341,58.5882472\n8,0.000883171,40.5335507,0.036907533,118.867704,30.973618\n16,0.000736395,23.491209,0.049273879,76.1535422,21.2185534\n32,0.001616041,15.3737205,0.054528852,56.6634156,12.2784278\n64,0.001771492,8.68340523,0.060116094,40.4503618,6.48530354\n128,0.003281842,6.77529385,0.088290584,39.208474,5.15740897\n256,0.003351661,3.59832053,0.094256351,30.0621604,3.19115259\n", "title": "P1"}, {"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n16,0.001077697,23.83117,0.051782441,157.470846,268.091816\n32,0.001001705,14.9810484,0.053486056,101.014527,184.377012\n64,0.001192253,8.70963307,0.06463287,65.0934999,129.518279\n128,0.003313222,6.63195657,0.08746413,53.5952819,131.675447\n256,0.001763656,3.52023304,0.090714652,37.992068,201.593605\n", "title": "P2"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="d7746e04-2931-4d61-a061-4c9865ccb26e" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d7746e04-2931-4d61-a061-4c9865ccb26e")) {                    Plotly.newPlot(                        "d7746e04-2931-4d61-a061-4c9865ccb26e",                        [{"name":"Create Exporters","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[0.001292632,0.000883171,0.000736395,0.001616041,0.001771492,0.003281842,0.003351661],"type":"scatter"},{"name":"Create Mesh","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[73.0229805,40.5335507,23.491209,15.3737205,8.68340523,6.77529385,3.59832053],"type":"scatter"},{"name":"Export","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[0.037928593,0.036907533,0.049273879,0.054528852,0.060116094,0.088290584,0.094256351],"type":"scatter"},{"name":"Init","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[206.622341,118.867704,76.1535422,56.6634156,40.4503618,39.208474,30.0621604],"type":"scatter"},{"name":"Solve","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[58.5882472,30.973618,21.2185534,12.2784278,6.48530354,5.15740897,3.19115259],"type":"scatter"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"Discretization = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"P1","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"P2","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.00072903105,206.62234836395],"title":{"text":"execution time (s)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Performance by CPU tasks and Discretization"},"xaxis":{"title":{"text":"Number of CPU core"}},"legend":{"title":{"text":"Performance Variables"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('d7746e04-2931-4d61-a061-4c9865ccb26e', [{"data":[{"name":"Create Exporters","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[0.001292632,0.000883171,0.000736395,0.001616041,0.001771492,0.003281842,0.003351661],"type":"scatter"},{"name":"Create Mesh","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[73.0229805,40.5335507,23.491209,15.3737205,8.68340523,6.77529385,3.59832053],"type":"scatter"},{"name":"Export","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[0.037928593,0.036907533,0.049273879,0.054528852,0.060116094,0.088290584,0.094256351],"type":"scatter"},{"name":"Init","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[206.622341,118.867704,76.1535422,56.6634156,40.4503618,39.208474,30.0621604],"type":"scatter"},{"name":"Solve","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[58.5882472,30.973618,21.2185534,12.2784278,6.48530354,5.15740897,3.19115259],"type":"scatter"}],"layout":{"yaxis":{"range":[0.00072903105,206.62234836395]}},"name":"frame_0"},{"data":[{"name":"Create Exporters","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[0.001077697,0.001001705,0.001192253,0.003313222,0.001763656],"type":"scatter"},{"name":"Create Mesh","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[23.83117,14.9810484,8.70963307,6.63195657,3.52023304],"type":"scatter"},{"name":"Export","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[0.051782441,0.053486056,0.06463287,0.08746413,0.090714652],"type":"scatter"},{"name":"Init","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[157.470846,101.014527,65.0934999,53.5952819,37.992068],"type":"scatter"},{"name":"Solve","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[268.091816,184.377012,129.518279,131.675447,201.593605],"type":"scatter"}],"layout":{"yaxis":{"range":[0.00099168795,268.09182601705]}},"name":"frame_1"}]);
+                        })                };            </script>        </div>
+    </div>
+      <div class="subfigure-container inactive" data-subfigure="2">
+
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n4,0.001292632,73.0229805,0.037928593,206.622341,58.5882472\n8,0.000883171,40.5335507,0.036907533,118.867704,30.973618\n16,0.000736395,23.491209,0.049273879,76.1535422,21.2185534\n32,0.001616041,15.3737205,0.054528852,56.6634156,12.2784278\n64,0.001771492,8.68340523,0.060116094,40.4503618,6.48530354\n128,0.003281842,6.77529385,0.088290584,39.208474,5.15740897\n256,0.003351661,3.59832053,0.094256351,30.0621604,3.19115259\n", "title": "P1"}, {"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n16,0.001077697,23.83117,0.051782441,157.470846,268.091816\n32,0.001001705,14.9810484,0.053486056,101.014527,184.377012\n64,0.001192253,8.70963307,0.06463287,65.0934999,129.518279\n128,0.003313222,6.63195657,0.08746413,53.5952819,131.675447\n256,0.001763656,3.52023304,0.090714652,37.992068,201.593605\n", "title": "P2"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of CPU core }, ylabel={ execution time (s) },\n      xtick=data, xtick align=outside,\n      xticklabels from table={#2}{tasks},\n      ymajorgrids=true, yminorgrids=true,\n      bar width=7pt,\n      cycle list name=color list,\n      ybar,\n      legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\\pgfplotstableread[col sep=comma]{P1.csv}\\dataA\n\\pgfplotstableread[col sep=comma]{P2.csv}\\dataB\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n  \\caption{ Discretization=P1 }\n  \\plot{\\dataB}\n  \\caption{ Discretization=P2 }\n\\caption{ Performance by CPU tasks and Discretization }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n4,0.001292632,73.0229805,0.037928593,206.622341,58.5882472\n8,0.000883171,40.5335507,0.036907533,118.867704,30.973618\n16,0.000736395,23.491209,0.049273879,76.1535422,21.2185534\n32,0.001616041,15.3737205,0.054528852,56.6634156,12.2784278\n64,0.001771492,8.68340523,0.060116094,40.4503618,6.48530354\n128,0.003281842,6.77529385,0.088290584,39.208474,5.15740897\n256,0.003351661,3.59832053,0.094256351,30.0621604,3.19115259\n", "title": "P1"}, {"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve\n16,0.001077697,23.83117,0.051782441,157.470846,268.091816\n32,0.001001705,14.9810484,0.053486056,101.014527,184.377012\n64,0.001192253,8.70963307,0.06463287,65.0934999,129.518279\n128,0.003313222,6.63195657,0.08746413,53.5952819,131.675447\n256,0.001763656,3.52023304,0.090714652,37.992068,201.593605\n", "title": "P2"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="d05a755e-d379-4fb0-af8a-1a6c2679e286" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("d05a755e-d379-4fb0-af8a-1a6c2679e286")) {                    Plotly.newPlot(                        "d05a755e-d379-4fb0-af8a-1a6c2679e286",                        [{"name":"Create Exporters","x":["4","8","16","32","64","128","256"],"y":[0.001292632,0.000883171,0.000736395,0.001616041,0.001771492,0.003281842,0.003351661],"type":"bar"},{"name":"Create Mesh","x":["4","8","16","32","64","128","256"],"y":[73.0229805,40.5335507,23.491209,15.3737205,8.68340523,6.77529385,3.59832053],"type":"bar"},{"name":"Export","x":["4","8","16","32","64","128","256"],"y":[0.037928593,0.036907533,0.049273879,0.054528852,0.060116094,0.088290584,0.094256351],"type":"bar"},{"name":"Init","x":["4","8","16","32","64","128","256"],"y":[206.622341,118.867704,76.1535422,56.6634156,40.4503618,39.208474,30.0621604],"type":"bar"},{"name":"Solve","x":["4","8","16","32","64","128","256"],"y":[58.5882472,30.973618,21.2185534,12.2784278,6.48530354,5.15740897,3.19115259],"type":"bar"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"Discretization = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"P1","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"P2","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.00072903105,206.62234836395],"title":{"text":"execution time (s)"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Performance by CPU tasks and Discretization"},"xaxis":{"title":{"text":"Number of CPU core"}},"legend":{"title":{"text":"Performance Variables"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('d05a755e-d379-4fb0-af8a-1a6c2679e286', [{"data":[{"name":"Create Exporters","x":["4","8","16","32","64","128","256"],"y":[0.001292632,0.000883171,0.000736395,0.001616041,0.001771492,0.003281842,0.003351661],"type":"bar"},{"name":"Create Mesh","x":["4","8","16","32","64","128","256"],"y":[73.0229805,40.5335507,23.491209,15.3737205,8.68340523,6.77529385,3.59832053],"type":"bar"},{"name":"Export","x":["4","8","16","32","64","128","256"],"y":[0.037928593,0.036907533,0.049273879,0.054528852,0.060116094,0.088290584,0.094256351],"type":"bar"},{"name":"Init","x":["4","8","16","32","64","128","256"],"y":[206.622341,118.867704,76.1535422,56.6634156,40.4503618,39.208474,30.0621604],"type":"bar"},{"name":"Solve","x":["4","8","16","32","64","128","256"],"y":[58.5882472,30.973618,21.2185534,12.2784278,6.48530354,5.15740897,3.19115259],"type":"bar"}],"layout":{"yaxis":{"range":[0.00072903105,206.62234836395]}},"name":"frame_0"},{"data":[{"name":"Create Exporters","x":["16","32","64","128","256"],"y":[0.001077697,0.001001705,0.001192253,0.003313222,0.001763656],"type":"bar"},{"name":"Create Mesh","x":["16","32","64","128","256"],"y":[23.83117,14.9810484,8.70963307,6.63195657,3.52023304],"type":"bar"},{"name":"Export","x":["16","32","64","128","256"],"y":[0.051782441,0.053486056,0.06463287,0.08746413,0.090714652],"type":"bar"},{"name":"Init","x":["16","32","64","128","256"],"y":[157.470846,101.014527,65.0934999,53.5952819,37.992068],"type":"bar"},{"name":"Solve","x":["16","32","64","128","256"],"y":[268.091816,184.377012,129.518279,131.675447,201.593605],"type":"bar"}],"layout":{"yaxis":{"range":[0.00099168795,268.09182601705]}},"name":"frame_1"}]);
+                        })                };            </script>        </div>
+    </div>
+</div>
+<div class='figure-container'>
+
+      <div class="subfigure-container active" data-subfigure="1">
+
+        <div class='export-container'>
+            <button onclick='downloadData([{"content": [{"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve,optimal,half-optimal\n4,1.0,1.0,1.0,1.0,1.0,1.0,1.0\n8,1.4636259569211398,1.8015441341535372,1.0276653549290329,1.738254665035004,1.8915532308818428,2.0,1.5\n16,1.7553514078721337,3.1085237247686996,0.7697505000570383,2.7132334889604124,2.761180090627667,4.0,2.5\n32,0.7998757457267482,4.749857427159548,0.6955692557033842,3.646485811208317,4.771640812189326,8.0,4.5\n64,0.7296854854551982,8.4094866663271,0.6309224448281686,5.108046796258816,9.034002315950195,16.0,8.5\n128,0.39387392811719757,10.777832241180212,0.4295881993486417,5.2698388873792945,11.360015763884633,32.0,16.5\n256,0.3856690757209634,20.29362862235066,0.40239827446746795,6.873170066646308,18.359588126119657,64.0,32.5\n", "title": "P1"}, {"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve,optimal,half-optimal\n16,,,,,,4.0,2.5\n32,,,,,,8.0,4.5\n64,,,,,,16.0,8.5\n128,,,,,,32.0,16.5\n256,,,,,,64.0,32.5\n", "title": "P2"}], "format": "csv", "prefix": "data"}],"download.zip")' >
+                CSV
+            </button>
+            <button onclick='downloadData([{"content": [{"data": "\\documentclass[12pt]{article}\n\n\\usepackage{pgf-pie}  % For pie charts\n\\usepackage{currfile} % Required for getting the current file name\n\\usepackage{tikz}     % Required for drawing graphics\n\\usepackage{pgfplots}\n\\usepackage{pgfplotstable}\n\\pgfplotsset{compat=newest}\n\\usepgfplotslibrary{fillbetween}\n\\usepackage{underscore}\n\n\\begin{document}\n\n\\newcommand{\\plot}[2][]{\n  \\begin{tikzpicture}\n    \\begin{axis}[\n      width=\\textwidth, height=0.6172\\textwidth,\n      xlabel={ Number of CPU core }, ylabel={ Speedup },\n      xtick=data, xtick align=outside,\n      ymajorgrids=true, yminorgrids=true,\n      xticklabels from table={#2}{tasks},\n      cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}\n    ]\n\n      \\addplot[black, name path=optimal] table [x expr=\\coordindex, y=optimal] {#2} ;\n      \\addlegendentry{ optimal }\n      \\addplot[black, name path=half-optimal] table [x expr=\\coordindex, y=half-optimal] {#2} ;\n      \\addlegendentry{ half-optimal }\n        \\addplot[black, fill opacity=0.2] fill between[of=optimal and half-optimal];\n\n    \\end{axis}\n  \\end{tikzpicture}\n}\n\n\n\\pgfplotstableread[col sep=comma]{P1.csv}\\dataA\n\\pgfplotstableread[col sep=comma]{P2.csv}\\dataB\n\n\n\\begin{figure}\n\n  \\plot{\\dataA}\n  \\caption{ Discretization=P1 }\n  \\plot{\\dataB}\n  \\caption{ Discretization=P2 }\n\\caption{ Speedup of main simulation components }\n\\end{figure}\n\n\\end{document}", "title": "figures"}], "format": "tex"}, {"content": [{"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve,optimal,half-optimal\n4,1.0,1.0,1.0,1.0,1.0,1.0,1.0\n8,1.4636259569211398,1.8015441341535372,1.0276653549290329,1.738254665035004,1.8915532308818428,2.0,1.5\n16,1.7553514078721337,3.1085237247686996,0.7697505000570383,2.7132334889604124,2.761180090627667,4.0,2.5\n32,0.7998757457267482,4.749857427159548,0.6955692557033842,3.646485811208317,4.771640812189326,8.0,4.5\n64,0.7296854854551982,8.4094866663271,0.6309224448281686,5.108046796258816,9.034002315950195,16.0,8.5\n128,0.39387392811719757,10.777832241180212,0.4295881993486417,5.2698388873792945,11.360015763884633,32.0,16.5\n256,0.3856690757209634,20.29362862235066,0.40239827446746795,6.873170066646308,18.359588126119657,64.0,32.5\n", "title": "P1"}, {"data": "tasks,Create Exporters,Create Mesh,Export,Init,Solve,optimal,half-optimal\n16,,,,,,4.0,2.5\n32,,,,,,8.0,4.5\n64,,,,,,16.0,8.5\n128,,,,,,32.0,16.5\n256,,,,,,64.0,32.5\n", "title": "P2"}], "format": "csv"}],"download.zip")' >
+                LaTeX
+            </button>
+        </div>
+
+        <div>                            <div id="28f3793c-d0f0-4578-b8a6-d069195685fd" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("28f3793c-d0f0-4578-b8a6-d069195685fd")) {                    Plotly.newPlot(                        "28f3793c-d0f0-4578-b8a6-d069195685fd",                        [{"line":{"color":"black","dash":"dash"},"mode":"lines","name":"optimal","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAAIEAAAAAAAAAwQAAAAAAAAEBAAAAAAAAAUEA="},"type":"scatter"},{"fill":"tonexty","line":{"color":"black","dash":"dash"},"mode":"lines","name":"half-optimal","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAD4PwAAAAAAAARAAAAAAAAAEkAAAAAAAAAhQAAAAAAAgDBAAAAAAABAQEA="},"type":"scatter"},{"name":"Create Exporters","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.4636259569211398,1.7553514078721337,0.7998757457267482,0.7296854854551982,0.39387392811719757,0.3856690757209634],"type":"scatter"},{"name":"Create Mesh","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.8015441341535372,3.1085237247686996,4.749857427159548,8.4094866663271,10.777832241180212,20.29362862235066],"type":"scatter"},{"name":"Export","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.0276653549290329,0.7697505000570383,0.6955692557033842,0.6309224448281686,0.4295881993486417,0.40239827446746795],"type":"scatter"},{"name":"Init","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.738254665035004,2.7132334889604124,3.646485811208317,5.108046796258816,5.2698388873792945,6.873170066646308],"type":"scatter"},{"name":"Solve","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.8915532308818428,2.761180090627667,4.771640812189326,9.034002315950195,11.360015763884633,18.359588126119657],"type":"scatter"}],                        {"sliders":[{"active":0,"currentvalue":{"prefix":"Discretization = "},"steps":[{"args":[["frame_0"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"P1","method":"animate"},{"args":[["frame_1"],{"mode":"immediate","frame":{"duration":0,"redraw":true}}],"label":"P2","method":"animate"}],"transition":{"duration":0}}],"yaxis":{"range":[0.38181238496375375,64.0038566907572],"title":{"text":"Speedup"}},"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"title":{"text":"Speedup of main simulation components"},"xaxis":{"title":{"text":"Number of CPU core"}},"legend":{"title":{"text":"Performance Variables"}}},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('28f3793c-d0f0-4578-b8a6-d069195685fd', [{"data":[{"line":{"color":"black","dash":"dash"},"mode":"lines","name":"optimal","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAAAQAAAAAAAABBAAAAAAAAAIEAAAAAAAAAwQAAAAAAAAEBAAAAAAAAAUEA="},"type":"scatter"},{"fill":"tonexty","line":{"color":"black","dash":"dash"},"mode":"lines","name":"half-optimal","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":{"dtype":"f8","bdata":"AAAAAAAA8D8AAAAAAAD4PwAAAAAAAARAAAAAAAAAEkAAAAAAAAAhQAAAAAAAgDBAAAAAAABAQEA="},"type":"scatter"},{"name":"Create Exporters","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.4636259569211398,1.7553514078721337,0.7998757457267482,0.7296854854551982,0.39387392811719757,0.3856690757209634],"type":"scatter"},{"name":"Create Mesh","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.8015441341535372,3.1085237247686996,4.749857427159548,8.4094866663271,10.777832241180212,20.29362862235066],"type":"scatter"},{"name":"Export","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.0276653549290329,0.7697505000570383,0.6955692557033842,0.6309224448281686,0.4295881993486417,0.40239827446746795],"type":"scatter"},{"name":"Init","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.738254665035004,2.7132334889604124,3.646485811208317,5.108046796258816,5.2698388873792945,6.873170066646308],"type":"scatter"},{"name":"Solve","x":{"dtype":"i2","bdata":"BAAIABAAIABAAIAAAAE="},"y":[1.0,1.8915532308818428,2.761180090627667,4.771640812189326,9.034002315950195,11.360015763884633,18.359588126119657],"type":"scatter"}],"layout":{"yaxis":{"range":[0.38181238496375375,64.0038566907572]}},"name":"frame_0"},{"data":[{"line":{"color":"black","dash":"dash"},"mode":"lines","name":"optimal","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":{"dtype":"f8","bdata":"AAAAAAAAEEAAAAAAAAAgQAAAAAAAADBAAAAAAAAAQEAAAAAAAABQQA=="},"type":"scatter"},{"fill":"tonexty","line":{"color":"black","dash":"dash"},"mode":"lines","name":"half-optimal","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":{"dtype":"f8","bdata":"AAAAAAAABEAAAAAAAAASQAAAAAAAACFAAAAAAACAMEAAAAAAAEBAQA=="},"type":"scatter"},{"name":"Create Exporters","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[null,null,null,null,null],"type":"scatter"},{"name":"Create Mesh","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[null,null,null,null,null],"type":"scatter"},{"name":"Export","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[null,null,null,null,null],"type":"scatter"},{"name":"Init","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[null,null,null,null,null],"type":"scatter"},{"name":"Solve","x":{"dtype":"i2","bdata":"EAAgAEAAgAAAAQ=="},"y":[null,null,null,null,null],"type":"scatter"}],"layout":{"yaxis":{"range":[2.475,64.025]}},"name":"frame_1"}]);
+                        })                };            </script>        </div>
+    </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solver_metrics"><a class="anchor" href="#_solver_metrics"></a>2.6.2. Solver Metrics</h4>
+
+</div>
+</div>
+</div>
+</div>
+      </article>
+    </div>
+  </main>
+</div>
+
+<footer class="footer" style="border-top: 2px solid #e9e9e9; background-color: #fafafa; padding-bottom: 2em; padding-top: 2em;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: 0.5em;">
+        <div>
+            <a href="https://www.cemosis.fr">
+                <img src="../../../_/img/cemosis-logo.svg" alt="Cemosis logo" height="50">
+            </a>
+        </div>
+        <span style="font-size: 0.8rem; color: #9e9e9e">© 2025 <a href="https://www.cemosis.fr" style="text-decoration: underline;">Cemosis</a>, Université de Strasbourg</span>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="../../../_/js/figure-helper.js"></script>
+<script src="../../../_/js/table-filter-sort.js"></script>
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+
+
+<!-- Font Awesome JS removed to use webfont icons only -->
+<script async src="../../../_/js/vendor/highlight.js"></script>
+
+<script src="../../../_/js/vendor/lunr.js"></script>
+
+<script type="text/javascript">
+function toggleFullScreen() {
+   var doc = window.document;
+   var docEl = doc.documentElement;
+
+   var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+   var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+   if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+       requestFullScreen.call(docEl);
+   }
+   else {
+       cancelFullScreen.call(doc);
+   }
+}
+</script>
+</body>
+</html>
+
