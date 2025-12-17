@@ -230,5 +230,5 @@ class DashboardSchema(BaseModel):
 
                 if not component_data.template:
                     component_data.template = template
-
+                component_data.data = component_data.data[::-1] #Put defaults at the start so actual values overwrite
         return self
