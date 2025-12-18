@@ -1,7 +1,7 @@
-
+from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateInfo,TemplateDataFile
 from feelpp.benchmarking.json_report.renderer import JsonReportController
-import json, os, warnings
+import json, os, warnings, tempfile
 from typing import Union, Dict,Any
 
 class DataHandler:
@@ -49,7 +49,15 @@ class TemplateDataFileHandler(DataHandler):
             UserWarning: If a file specified by `filepath` does not exist and the action is "input".
             JSONDecodeError: If the file content is not valid JSON.
         """
-        filepath = os.path.join( self.template_data_dir, data.filepath ) if self.template_data_dir else data.filepath
+        if data.platform != "local":
+            tmpdir = tempfile.mkdtemp()
+            if data.platform == "girder":
+                download_handler = GirderHandler( tmpdir )
+                download_handler.downloadFile(data.filepath,name=data.filepath)
+                local_filepath = os.path.join(tmpdir,data.filepath)
+            filepath = local_filepath
+        else :
+            filepath = os.path.join( self.template_data_dir, data.filepath ) if self.template_data_dir else data.filepath
         if data.action == "input":
             if not os.path.exists( filepath ):
                 warnings.warn(f"{filepath} does not exist. Skipping")
@@ -60,6 +68,9 @@ class TemplateDataFileHandler(DataHandler):
                     if not content:
                         content = "{}"
                     template_data = json.loads(content)
+
+            if data.platform != "local":
+                os.remove(local_filepath)
             if data.prefix:
                 return {data.prefix: template_data}
             return template_data
