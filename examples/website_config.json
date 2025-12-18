@@ -10,11 +10,12 @@
     "template_defaults":{
         "repositories":{
             "template": "${TEMPLATE_DIR}/overview.adoc.j2",
-            "data":{"filepath":"./reports/overview.json","prefix":"plots"}
+            "data":{"filepath":"./examples/overview.json","prefix":"plots"}
         },
         "components":{
             "all": {
-                "template": "${TEMPLATE_DIR}/overview.adoc.j2"
+                "template": "${TEMPLATE_DIR}/overview.adoc.j2",
+                "data":{"filepath":"./examples/overview.json","prefix":"plots"}
             },
             "machines": {
                 "template": "${TEMPLATE_DIR}/machineOverview.adoc.j2",
@@ -50,37 +51,36 @@
             "parallelSum": {"title": "parallelSum", "description": "Compute the sum of an array using MPI","card_image":"fa-solid fa-plus" }
         },
         "use_cases":{
-            "multiplication": {"title":"multiplication", "description":"Multiplication between different objects", "card_image":"fa-solid fa-times"}
+            "Fibonacci": { "title": "Fibonacci", "description": "n-th Fibonacci number", "card_image": "fa-solid fa-fan" },
+            "Multiplication": { "title": "Multiplication", "description": "Multiplication between different objects", "card_image": "fa-solid fa-times" },
+            "parallel_sum": { "title": "Parallel_Sum", "description": "Compute the sum of an array using MPI", "card_image": "fa-solid fa-plus" },
+            "sorting": { "title": "Sorting", "description": "Sorting algorithms", "card_image": "fa-solid fa-arrow-up-wide-short" }
         }
-
     },
     "component_map": {
-        "component_order": [ "machines", "applications", "use_cases" ],
-        "mapping": {
-            "gaya": {
-                "sortingApp": {
-                    "path": "./reports/sortingApp/sorting/gaya",
-                    "template_info": { "application": "sortingApp", "machine": "gaya" }
-                },
-                "fibonacci": {
-                    "path": "./reports/fibonacci/Fibonacci/gaya",
-                    "template_info": { "application": "fibonacci", "machine": "gaya" }
-                },
-                "matrixvector": {
-                    "multiplication":{
-                        "path": "./reports/matrixvector/Multiplication/gaya",
-                        "template_info": { "application": "matrixvector", "machine": "gaya", "use_case":"multiplication"}
-                    }
-                },
-                "parallelSum": {
-                    "path": "./reports/parallelSum/parallel_sum/gaya",
-                    "template_info": { "application": "parallelSum", "machine": "gaya" }
+        "default": {
+            "sortingApp": {
+                "sorting":{
+                    "path": "./reports/sortingApp/sorting/default",
+                    "template_info": { "application": "sortingApp", "machine": "default" }
                 }
             },
-            "discoverer":{
-                "fibonacci": {
-                    "path": "./reports/fibonacci/Fibonacci/discoverer",
-                    "template_info": { "application": "fibonacci", "machine": "discoverer" }
+            "fibonacci": {
+                "Fibonacci":{
+                    "path": "./reports/fibonacci/Fibonacci/default",
+                    "template_info": { "application": "fibonacci", "machine": "default" }
+                }
+            },
+            "matrixvector": {
+                "Multiplication":{
+                    "path": "./reports/matrixvector/Multiplication/default",
+                    "template_info": { "application": "matrixvector", "machine": "default", "use_case":"multiplication"}
+                }
+            },
+            "parallelSum": {
+                "parallel_sum":{
+                    "path": "./reports/parallelSum/parallel_sum/default",
+                    "template_info": { "application": "parallelSum", "machine": "default" }
                 }
             }
         }

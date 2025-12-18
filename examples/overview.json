@@ -1,64 +1,77 @@
 {
     "leaves":{
-        "fibonacci": {
+        "default|gaya":{
             "contents":[{
                 "type":"plot",
                 "ref":"aggregated_data",
                 "plot":{
-                    "title":"Performance over time",
+                    "title":"Performance over time (Max over parameters)",
                     "plot_types":["scatter"],
-                    "aggregations":[ {"column":"perfvalue","agg":"filter:elapsed"} ],
                     "xaxis":{ "parameter":"date", "label":"Date" },
                     "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "secondary_axis":{"parameter":"n","label": "N" },
-                    "color_axis":{"parameter":"method","label":"Method"}
+                    "aggregations":[{"column":"elements|n|mesh|discretization|resources.tasks|tasks","agg":"max"}],
+                    "color_axis":{"parameter":"perfvalue","label":"Performance Variable"}
                 }
             }]
         },
-        "sortingApp":{
-            "contents":[{
-                "type":"plot",
-                "ref":"aggregated_data",
-                "plot": {
-                    "title":"Performance over time",
-                    "plot_types":["scatter"],
-                    "aggregations":[ {"column":"perfvalue","agg":"filter:elapsed"} ],
-                    "xaxis":{ "parameter":"date", "label":"Date" },
-                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "secondary_axis":{"parameter":"elements","label": "N" },
-                    "color_axis":{"parameter":"algorithm","label":"Method"}
-                }
-            }]
-        },
-        "parallelSum":{
+
+        "Fibonacci":{
             "contents":[{
                 "type":"plot",
                 "ref":"aggregated_data",
                 "plot":{
-                    "title":"Performance over time",
+                    "title":"Performance over time (Max over method)",
                     "plot_types":["scatter"],
-                    "aggregations":[ {"column":"perfvalue","agg":"filter:computation_time"} ],
+                    "aggregations":[ {"column":"method","agg":"max"}],
                     "xaxis":{ "parameter":"date", "label":"Date" },
                     "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "secondary_axis":{"parameter":"elements","label": "N" },
-                    "color_axis":{"parameter":"tasks","label":"Tasks"}
+                    "color_axis":{"parameter":"n","label":"N"},
+                    "secondary_axis":{"parameter":"perfvalue","label":"Performance Variable"}
                 }
             }]
         },
-        "multiplication|matrixvector":{
+        "parallel_sum":{
             "contents":[{
                 "type":"plot",
                 "ref":"aggregated_data",
                 "plot":{
-                    "title":"Performance over time",
+                    "title":"Performance over time (Max over elements)",
                     "plot_types":["scatter"],
-                    "aggregations":[
-                        {"column":"perfvalue","agg":"filter:elapsed_compute"}
-                    ],
+                    "aggregations":[ {"column":"elements","agg":"max"} ],
                     "xaxis":{ "parameter":"date", "label":"Date" },
                     "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "secondary_axis":{"parameter":"elements","label": "N" },
-                    "color_axis":{"parameter":"tasks","label":"Tasks"}
+                    "color_axis":{"parameter":"tasks","label":"Tasks"},
+                    "secondary_axis":{"parameter":"perfvalue","label":"Performance Variable"}
+                }
+            }]
+        },
+        "Multiplication":{
+            "contents":[{
+                "type":"plot",
+                "ref":"aggregated_data",
+                "plot":{
+                    "title":"Performance over time (Max over elements)",
+                    "plot_types":["scatter"],
+                    "aggregations":[ {"column":"elements","agg":"max"} ],
+                    "xaxis":{ "parameter":"date", "label":"Date" },
+                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
+                    "color_axis":{"parameter":"tasks","label":"Tasks"},
+                    "secondary_axis":{"parameter":"perfvalue","label":"Performance Variable"}
+                }
+            }]
+        },
+        "sorting":{
+            "contents":[{
+                "type":"plot",
+                "ref":"aggregated_data",
+                "plot":{
+                    "title":"Performance over time (Max over elements)",
+                    "plot_types":["scatter"],
+                    "aggregations":[ {"column":"elements","agg":"max"} ],
+                    "xaxis":{ "parameter":"date", "label":"Date" },
+                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
+                    "color_axis":{"parameter":"algorithm","label":"Algorithm"},
+                    "secondary_axis":{"parameter":"perfvalue","label":"Performance Variable"}
                 }
             }]
         }
@@ -79,74 +92,59 @@
                 }
             }]
         },
-        "parallelSum":{
+        "Fibonacci":{
             "contents":[{
                 "type":"plot",
                 "ref":"aggregated_data",
                 "plot":{
-                    "title":"Maximum Performance over time",
-                    "plot_types":["scatter","marked_scatter"],
-                    "aggregations":[
-                        {"column":"perfvalue","agg":"filter:computation_time"},
-                        {"column":"elements","agg":"max"}
-                    ],
-                    "xaxis":{ "parameter":"date", "label":"Date" },
-                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "secondary_axis":{"label":"Tasks","parameter":"tasks"},
-                    "color_axis":{"parameter":"machines","label":"Machine"}
-                }
-            }]
-        },
-        "fibonacci":{
-            "contents":[{
-                "type":"plot",
-                "ref":"aggregated_data",
-                "plot":{
-                    "title":"Maximum Performance over time",
-                    "plot_types":["scatter","marked_scatter"],
+                    "title":"Performance of 'elapsed' over time by machine",
+                    "plot_types":["scatter"],
                     "aggregations":[
                         {"column":"perfvalue","agg":"filter:elapsed"},
                         {"column":"n","agg":"max"}
                     ],
                     "xaxis":{ "parameter":"date", "label":"Date" },
                     "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "secondary_axis":{"label":"Method","parameter":"method"},
-                    "color_axis":{"parameter":"machines","label":"Machine"}
+                    "color_axis":{"parameter":"machines","label":"Machine"},
+                    "secondary_axis":{"parameter":"use_cases","label":"Use Case"}
                 }
             }]
         },
-        "sortingApp": {
+        "parallel_sum":{
             "contents":[{
                 "type":"plot",
                 "ref":"aggregated_data",
                 "plot":{
-                    "title":"Maximum Performance over time",
-                    "plot_types":["scatter","marked_scatter"],
+                    "title":"Performance of 'computation_time' over time by machine",
+                    "plot_types":["scatter"],
                     "aggregations":[
-                        {"column":"perfvalue","agg":"filter:elapsed"},
+                        {"column":"perfvalue","agg":"filter:computation_time"},
+                        {"column":"tasks","agg":"max"},
                         {"column":"elements","agg":"max"}
                     ],
                     "xaxis":{ "parameter":"date", "label":"Date" },
                     "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "secondary_axis":{"label":"Method","parameter":"algorithm"},
-                    "color_axis":{"parameter":"machines","label":"Machine"}
+                    "color_axis":{"parameter":"machines","label":"Machine"},
+                    "secondary_axis":{"parameter":"use_cases","label":"Use Case"}
                 }
             }]
         },
-        "multiplication":{
+        "sorting|Multiplication":{
             "contents":[{
                 "type":"plot",
                 "ref":"aggregated_data",
                 "plot":{
-                    "title":"Performance over time by machine",
+                    "title":"Performance of 'elapsed_compute' over time by machine",
                     "plot_types":["scatter"],
                     "aggregations":[
                         {"column":"perfvalue","agg":"filter:elapsed_compute"},
-                        {"column":"elements|tasks","agg":"max"}
+                        {"column":"elements","agg":"max"},
+                        {"column":"algorithm|tasks","agg":"max"}
                     ],
                     "xaxis":{ "parameter":"date", "label":"Date" },
                     "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "color_axis":{"parameter":"machines","label": "Machine" }
+                    "color_axis":{"parameter":"machines","label":"Machine"},
+                    "secondary_axis":{"parameter":"use_cases","label":"Use Case"}
                 }
             }]
         }
@@ -167,7 +165,7 @@
                 }
             }]
         },
-        "gaya|discoverer":{
+        "gaya|discoverer|default":{
             "contents":[
                 {
                     "type":"plot",
@@ -196,55 +194,62 @@
                     }
                 }
             ]
-        },
-        "multiplication":{
-            "contents":[{
-                "type":"plot",
-                "ref":"aggregated_data",
-                "plot":{
-                    "title":"Performance over time by application",
-                    "plot_types":["scatter"],
-                    "aggregations":[
-                        {"column":"perfvalue","agg":"filter:elapsed_compute"},
-                        {"column":"elements|tasks","agg":"max"}
-                    ],
-                    "xaxis":{ "parameter":"date", "label":"Date" },
-                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "color_axis":{"parameter":"applications","label":"Application"}
-
-                }
-            }]
         }
     },
     "use_cases": {
-        "gaya":{
+        "fibonacci":{
             "contents":[{
                 "type":"plot",
                 "ref":"aggregated_data",
                 "plot":{
-                    "title":"Benchmarks per use case",
-                    "plot_types":["sunburst"],
-                    "aggregations":[ {"column":"leaves","agg":"nunique"} ],
-                    "xaxis":{ "parameter":"use_cases", "label":"Use Case" },
-                    "yaxis": {"label":"Number of benchmarks", "parameter":"runs.num_cases"},
-                    "color_axis":{"parameter":"applications","label":"Application"}
-                }
-            }]
-        },
-        "matrixvector|use_cases":{
-            "contents":[{
-                "type":"plot",
-                "ref":"aggregated_data",
-                "plot":{
-                    "title":"Performance over time by use case",
+                    "title":"Performance of 'elapsed' over time by use case",
                     "plot_types":["scatter"],
                     "aggregations":[
-                        {"column":"perfvalue","agg":"filter:elapsed_compute"},
-                        {"column":"elements|tasks","agg":"max"}
+                        {"column":"perfvalue","agg":"filter:elapsed"},
+                        {"column":"n","agg":"max"}
                     ],
                     "xaxis":{ "parameter":"date", "label":"Date" },
                     "yaxis": {"label":"Execution time (s)", "parameter":"value"},
-                    "color_axis":{"parameter":"use_cases","label":"Use Case"}
+                    "color_axis":{"parameter":"use_cases","label":"Use Case"},
+                    "secondary_axis":{"parameter":"machine","label":"Machine"}
+                }
+            }]
+        },
+        "parallelSum":{
+            "contents":[{
+                "type":"plot",
+                "ref":"aggregated_data",
+                "plot":{
+                    "title":"Performance of 'computation_time' over time by use case",
+                    "plot_types":["scatter"],
+                    "aggregations":[
+                        {"column":"perfvalue","agg":"filter:computation_time"},
+                        {"column":"tasks","agg":"max"},
+                        {"column":"elements","agg":"max"}
+                    ],
+                    "xaxis":{ "parameter":"date", "label":"Date" },
+                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
+                    "color_axis":{"parameter":"use_cases","label":"Use Case"},
+                    "secondary_axis":{"parameter":"machine","label":"Machines"}
+                }
+            }]
+        },
+        "sortingApp|matrixvector":{
+            "contents":[{
+                "type":"plot",
+                "ref":"aggregated_data",
+                "plot":{
+                    "title":"Performance of 'elapsed_compute' over time by use case",
+                    "plot_types":["scatter"],
+                    "aggregations":[
+                        {"column":"perfvalue","agg":"filter:elapsed_compute"},
+                        {"column":"elements","agg":"max"},
+                        {"column":"algorithm|tasks","agg":"max"}
+                    ],
+                    "xaxis":{ "parameter":"date", "label":"Date" },
+                    "yaxis": {"label":"Execution time (s)", "parameter":"value"},
+                    "color_axis":{"parameter":"use_cases","label":"Use Case"},
+                    "secondary_axis":{"parameter":"machines","label":"Machines"}
                 }
             }]
         }
