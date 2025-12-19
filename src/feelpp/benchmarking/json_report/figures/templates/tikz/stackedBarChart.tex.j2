@@ -41,10 +41,10 @@
       {% if i > 1 %}
       \resetstackedplots
       {% endif %}
-      {% for var,name,color in zip(variables,names, colors) %}
+      {% for var,color in zip(variables, colors) %}
       \addplot+[ybar, bar width=0.2,point meta=y,draw=black,fill={{color}}{% if i > 1 %}, forget plot{% endif %} ] table [x expr=\coordindex+0.25*{{i}}, y={{ var }}] {\data{{i | inttouniquestr}}} ;
       {% if i == 1%}
-      \addlegendentry{ {{name}} }
+      \addlegendentry{ {{var}} }
       {% endif %}
       {% endfor %}
     {% endfor %}

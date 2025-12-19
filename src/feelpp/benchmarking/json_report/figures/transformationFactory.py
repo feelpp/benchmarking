@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 class TransformationStrategy:
@@ -153,8 +154,26 @@ class SpeedupStrategy(PerformanceStrategy):
             return pd.DataFrame(columns=["optimal","half-optimal"])
 
         if isinstance(pivot.index, pd.MultiIndex):
-            pivot = pivot.xs(pivot.index.get_level_values(self.dimensions["xaxis"].parameter).min(),level=self.dimensions["xaxis"].parameter,axis=0) / pivot
-            pivot["optimal"] = pivot.index.get_level_values(self.dimensions["xaxis"].parameter) / pivot.index.get_level_values(self.dimensions["xaxis"].parameter).min()
+            lvl = self.dimensions["xaxis"].parameter
+            outer = [n for n in pivot.index.names if n != lvl]
+            group_level = outer[0] if len(outer) == 1 else outer
+
+            results = []
+
+            for key, subdf in pivot.groupby(level=group_level):
+                vals = subdf.index.get_level_values(lvl)
+                ref = np.nanmin(vals)
+
+                base = subdf.xs(ref, level=lvl, axis=0)
+                speed = base / subdf
+
+                speed["optimal"] = vals / ref
+                speed["half-optimal"] = (speed["optimal"] - 1) / 2 + 1
+
+                results.append(speed)
+
+            pivot = pd.concat(results)
+
         else:
             pivot = pivot.loc[pivot.index.min(),:] / pivot
             pivot["optimal"] = pivot.index / pivot.index.min()
