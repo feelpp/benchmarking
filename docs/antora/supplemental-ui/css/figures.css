@@ -79,22 +79,26 @@
 
 /* Example block styling for plots */
 .exampleblock.plot {
-  border: none;
-  padding: 0;
-  margin: 0;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.exampleblock.plot > .content {
-  padding: 0;
-  border: none;
+.exampleblock.plot>.content {
+    order: 1;
+    padding: 0;
+    border: none;
 }
 
-.exampleblock.plot > .title {
-  text-align: center;
-  font-style: italic;
-  margin-top: 0.5rem;
+.exampleblock.plot>.title {
+    order: 2;
+    text-align: center;
+    font-style: italic;
+    margin-top: 0.5rem;
 }
 
 .exampleblock.example {
-  border-left: 4px solid var(--brand-primary);
+    border-left: 4px solid var(--brand-primary);
 }
