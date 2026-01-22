@@ -8,6 +8,7 @@ from feelpp.benchmarking.json_report.schemas.dataRefs import DataTable, DataObje
 
 class ReportNode(BaseModel):
     type:str
+    id: Optional[str] = None
     ref: Optional[str] = None
 
     model_config = ConfigDict( extra="forbid" )

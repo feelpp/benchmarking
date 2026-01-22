@@ -3,8 +3,12 @@
 {% set alt = imageNode.alt or imageNode.caption or "" %}
 {% set styles = imageNode.style | join(' ')%}
 
-{% if imageNode.caption %}
+{% if imageNode.id %}
+[[{{imageNode.id}}]]
+{% elif imageNode.caption %}
 [[{{imageNode.caption | replace(' ','-')}}]]
+{% endif %}
+{% if imageNode.caption %}
 image::{{src}}[role="{{styles}}",alt={{alt}},title={{imageNode.caption}}]
 {% else %}
 image::{{src}}[role=""{{styles}}"",alt={{alt}}]
