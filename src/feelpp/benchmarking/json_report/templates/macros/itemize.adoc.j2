@@ -2,6 +2,9 @@
 
 {% macro render(listNode,data) %}
 
+{% if listNode.id %}
+[[{{listNode.id}}]]
+{% endif %}
 {% for item in listNode.items %}
 - {{text.render(item,data)}}
 {% endfor %}
