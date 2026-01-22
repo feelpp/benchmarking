@@ -20,6 +20,7 @@ class TextNode(ReportNode):
 
 class LatexNode(ReportNode):
     type:Literal["latex"]
+    is_equation: Optional[bool] = False
     latex: str
 
 class ImageNode(ReportNode):
