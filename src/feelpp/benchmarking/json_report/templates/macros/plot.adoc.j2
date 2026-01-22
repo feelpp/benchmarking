@@ -2,6 +2,9 @@
 
 
 
+{%if plotNode.caption %}
+[[{{plotNode.caption | replace(' ','-')}}]]
+{% endif %}
 [example.plot]
 {%if plotNode.caption %}
 .{{plotNode.caption}}

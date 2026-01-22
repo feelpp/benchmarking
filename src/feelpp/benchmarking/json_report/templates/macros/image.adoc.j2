@@ -4,6 +4,7 @@
 {% set styles = imageNode.style | join(' ')%}
 
 {% if imageNode.caption %}
+[[{{imageNode.caption | replace(' ','-')}}]]
 image::{{src}}[role="{{styles}}",alt={{alt}},title={{imageNode.caption}}]
 {% else %}
 image::{{src}}[role=""{{styles}}"",alt={{alt}}]
