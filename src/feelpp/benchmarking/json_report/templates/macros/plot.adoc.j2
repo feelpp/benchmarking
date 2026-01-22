@@ -1,5 +1,12 @@
 {% macro render(plotNode,data) %}
 
+
+
+[example.plot]
+{%if plotNode.caption %}
+.{{plotNode.caption}}
+{% endif %}
+====
 ++++
 
 {% for figure in FiguresController(data.get(plotNode.ref),plotNode.plot).generateAll() %}
@@ -32,5 +39,6 @@
 {% endfor %}
 
 ++++
+====
 
 {% endmacro %}

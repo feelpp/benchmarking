@@ -30,6 +30,7 @@ class ImageNode(ReportNode):
 
 class PlotNode(ReportNode):
     type: Literal["plot"]
+    caption: Optional[str] = None
     plot: Plot
 
 
