@@ -12,7 +12,9 @@ The `src` file path is typically resolved relative to the passed configuration f
 |===
 |Field|Type|Description|Default Value
 
+|`id`|string| *Optional.* Identifies the image node within the report. Used for internal cross referencing |`null`
 |`type`|string|Must be set to `"image"`.|`"image"`
+|`caption`|string|*Optional.* A descriptive caption for the image.|`null`
 |`src`|string|The file path or URL of the image to embed.|*Required*
 |`caption`|string|An optional caption displayed beneath the image. If provided, the image is rendered using the `title` attribute in AsciiDoc.|`null`
 |`alt`|string|Alternative text for the image, used for accessibility and when the image cannot be displayed.|`null`
