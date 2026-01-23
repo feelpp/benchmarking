@@ -71,6 +71,7 @@ class SectionNode(ReportNode):
 class GridNode(ReportNode):
     type: Literal["grid"]
     contents: Optional[List[Node]] = []
+    caption: Optional[str] = None
     columns: Optional[int] = 1
     justify: Optional[Literal["start","center","end"]] = "start"
     align: Optional[Literal["start","center","end"]] = "start"
