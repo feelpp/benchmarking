@@ -21,7 +21,7 @@
 {% if node.type == "image" %}
 {{ image.render(node,report_data.get(node.ref), make_block=False) }}
 {% elif node.type == "plot" %}
-{{ plot.render(node,report_data.get(node.ref)) }}
+{{ plot.render(node,report_data.get(node.ref), make_block=False) }}
 {% elif node.type == "latex" %}
 {{ latex.render(node,report_data.get(node.ref)) }}
 {% elif node.type == "text" %}
