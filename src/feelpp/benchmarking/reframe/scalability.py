@@ -3,12 +3,16 @@ import os, re,json, numbers
 from feelpp.benchmarking.reframe.config.configReader import TemplateProcessor
 
 
-class StringNumber(numbers.Number):
+class StringNumber(float):
+    def __new__(cls, value):
+        obj = float.__new__(cls, float('nan'))
+        obj.payload = value
+        return obj
     def __init__(self, value): self.value = value
     def __repr__(self): return str(self.value)
     def __str__(self): return str(self.value)
-    def __float__(self): pass
-    def __int__(self): pass
+    def __float__(self): return str(self.value)
+    def __int__(self): return str(self.value)
     def __add__(self, other): return self.value + other
     def __radd__(self, other): return other + self.value
     def __eq__(self, value): return self.value == value
