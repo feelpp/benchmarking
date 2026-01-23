@@ -82,6 +82,13 @@ class RegressionTest(ReframeSetup):
             self.scalability_handler.getCustomPerformanceVariables(self.perf_variables)
         )
 
+    @run_after('performance')
+    def restore_string_values(self):
+        for key, values in self._perfvalues.items():
+            val = values[0]
+            if isinstance(val, float) and hasattr(val, 'payload'):
+                values[0] = val.payload
+
     @run_before("cleanup")
     def removeDirectories(self):
         if self.app_reader.config.scalability and self.app_reader.config.scalability.clean_directory:
