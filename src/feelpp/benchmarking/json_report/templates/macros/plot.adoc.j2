@@ -8,11 +8,9 @@
 {% endif %}
 {% if make_block %}
 [example.plot]
-{% endif %}
 {%if plotNode.caption %}
 .{{plotNode.caption}}
 {% endif %}
-{% if make_block %}
 ====
 {% endif %}
 ++++
@@ -42,6 +40,10 @@
 
     </div>
     {% endfor %}
+
+    {%if plotNode.caption and make_block==False %}
+    <div class='plotly-figure-caption title'>{{plotNode.caption}}</div>
+    {% endif %}
 </div>
 
 {% endfor %}
