@@ -156,8 +156,12 @@ class RegexExtractor(Extractor):
 class ExtractorFactory:
     """Factory class for extractor strategies"""
     @staticmethod
-    def create(stage,directory,index=None):
-        filepath = os.path.join(directory,stage.filepath)
+    def create(stage,directory,index=None, stdout = None):
+        if stage.filepath == "stdout":
+            filepath = stdout
+        else:
+            filepath = os.path.join(directory,stage.filepath)
+
         if stage.format == "csv":
             return CsvExtractor(filepath=filepath, stage_name = stage.name, units=stage.units)
         elif stage.format == "tsv":
@@ -172,10 +176,11 @@ class ExtractorFactory:
 
 class ScalabilityHandler:
     """ Class to handle scalability related attributes"""
-    def __init__(self,scalability_config):
+    def __init__(self,scalability_config, stdout = None):
         self.directory = scalability_config.directory
         self.stages =  scalability_config.stages
         self.custom_variables = scalability_config.custom_variables
+        self.stdout = stdout
 
     def getPerformanceVariables(self,index=None):
         """ Opens and parses the performance variable values depending on the config setup.
@@ -185,7 +190,7 @@ class ScalabilityHandler:
         """
         perf_variables = {}
         for stage in self.stages:
-            extractor = ExtractorFactory.create(stage,self.directory,index)
+            extractor = ExtractorFactory.create(stage,self.directory,index, self.stdout)
             perf_variables.update( extractor.extract() )
 
         return perf_variables

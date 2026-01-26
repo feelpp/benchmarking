@@ -49,7 +49,17 @@ class CustomVariable(BaseModel):
     unit: str
 
 class Scalability(BaseModel):
-    directory: str
+    directory: Optional[str] = None
     stages: List[Stage]
     custom_variables:Optional[List[CustomVariable]] = []
     clean_directory: Optional[bool] = False
+
+    @model_validator(mode = "after")
+    def checkOptionalDirectory(self):
+        if self.directory is None:
+            #Directory should be specified if any stage has filename other than stdout
+            for stage in self.stages:
+                if stage.filepath != "stdout":
+                    raise ValueError("Directory should be specified for non-stdout output files")
+
+        return self
