@@ -4,7 +4,9 @@
 Lists all the files where performance variables can be found.
 
 directory [*str*]::
-    Common directory where files containing performance variables can be found.
+    Common directory where files containing performance variables can be found. This field is optional **only if all stages extract from `stdout`**.
+    If at least one stage extracts from a file, `directory` must be provided.
+
 
 clean_directory [*bool*] (Optional)::
     If true, it will delete the contents of inside `directory`.
@@ -13,16 +15,16 @@ clean_directory [*bool*] (Optional)::
 stages [*List[Stage]*]::
     Describes the files containing performance variables, and how to extract them.
 
-    -name [*str*]:::
+    -name [*str* (Optional)]:::
         Name to describe the stage. It is used as prefix to add to the performance variables found in the file.
-        If no prefix is needed, the name can be "".
+        If no prefix is needed, the name can be ommited.
 
-    -filepath [*str*]:::
-        Relative filepath of the file containing performance variables, relative to the `directory` field.
+    -filepath [*str*|"stdout"]:::
+        Can be either "stdout" or relative filepath of the file containing performance variables, relative to the `directory` field.
 
     -format [*str*]:::
         Format of the stage file.
-        Supported values are "csv" and "json".
+        Supported values are "regex", "csv" and "json".
 
     -units [*Dict[str,str]*] (Optional):::
         Custom units for certain performance variables.
@@ -34,6 +36,16 @@ stages [*List[Stage]*]::
     -variables_path [*str, List[str]*]:::
         Only valid if format is "json".
         Defines where, in the JSON hierrarchy, performance variables will be found. Supports the use of one or multiple wildcards (`*`).
+
+    -pattern [*str*]:::
+        Required if format is `regex`. The regular expression applied to each line. Accepts named and arbitrary capture groups.
+
+    -variable_value_group[*str|int*]:::
+        Required if format is `regex`
+        The capture group containing the performance value to extract. Can be named or an integer.
+
+    -variable_name_group[*str|int* (Optional)]:::
+        The capture group containing the performance variable name to extract. If ommited, variables are named automatically as `match_0`, `match_1`, ...
 
 custom_variables [*List[Dict[str,str]]*] (Optional)::
     Contains a list of objects describing custom performance variables to create, based on extracted ones (from stages). An aggregation will be performed using provided columns and valid operations.
@@ -62,6 +74,24 @@ Recursive creation of custom_variables is supported!
 ====
 Deeply nested and complex JSON scalability files are supported, using multiple wildcard syntax!
 ====
+
+
+== Extracting from standard output
+
+Stages may extract performance variables directly from the application standard output by setting:
+
+[source,json]
+----
+"filepath": "stdout"
+----
+
+This works with any supported file format (e.g. logging a csv on the stdout).
+
+The top-level directory field is not required if ALL stages extract from stdout.
+
+[TIP]
+Mixing `stdout` and file-based stages is allowed but requires `directory` to be set
+
 
 == Examples
 
@@ -200,3 +230,39 @@ If a full path is passed, the variable name corresponds to the key of the leaf  
 ====
 `variables_path` can be a list.
 ====
+
+
+=== Extracting performance variables using `regex`
+
+Assume the application prints the following lines to standard output:
+
+[source,text]
+----
+assembly: 0.012
+solve: 1.42
+postprocess: 0.08
+----
+
+A minimal `regex` stage extracting these values from `stdout` is shown below.
+
+[source,json]
+----
+"scalability": {
+    "stages": [
+        {
+            "name": "timers",
+            "filepath": "stdout",
+            "format": "regex",
+            "pattern": "^(?P<name>[^:\\n]+):\\s*(?P<value>[-+]?[\\d.]+(?:[eE][-+]?\\d+)?)$",
+            "variable_name_group": "name",
+            "variable_value_group": "value"
+        }
+    ]
+}
+----
+
+This configuration extracts the following performance variables:
+
+- timers_assembly : 0.012
+- timers_solve : 1.42
+- timers_postprocess : 0.08
