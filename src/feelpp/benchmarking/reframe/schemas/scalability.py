@@ -3,7 +3,7 @@ from typing import Optional,Literal,Dict,Union,List
 
 
 class Stage(BaseModel):
-    name:str
+    name:Optional[str] = None
     filepath:str
     format:Optional[Literal["csv","tsv","json","regex"]] = None
     variables_path:Optional[Union[str,List[str]]] = []
@@ -12,6 +12,13 @@ class Stage(BaseModel):
     pattern: Optional[str] = None
     variable_value_group: Optional[Union[str,int]] = None
     variable_name_group: Optional[Union[str,int]] = None
+
+    @field_validator("name",mode="after")
+    @classmethod
+    def defaultName(cls,v):
+        if v is None:
+            return ""
+        return v
 
     @field_validator("units",mode="before")
     @classmethod
