@@ -10,8 +10,8 @@ class Stage(BaseModel):
     units: Optional[Dict[str,str]] = {}
 
     pattern: Optional[str] = None
-    variable_value_group: Optional[str] = None
-    variable_name_group: Optional[str] = None
+    variable_value_group: Optional[Union[str,int]] = None
+    variable_name_group: Optional[Union[str,int]] = None
 
     @field_validator("units",mode="before")
     @classmethod
