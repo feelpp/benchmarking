@@ -5,9 +5,13 @@ from typing import Optional,Literal,Dict,Union,List
 class Stage(BaseModel):
     name:str
     filepath:str
-    format:Optional[Literal["csv","tsv","json"]] = None
+    format:Optional[Literal["csv","tsv","json","regex"]] = None
     variables_path:Optional[Union[str,List[str]]] = []
     units: Optional[Dict[str,str]] = {}
+
+    pattern: Optional[str] = None
+    variable_value_group: Optional[str] = None
+    variable_name_group: Optional[str] = None
 
     @field_validator("units",mode="before")
     @classmethod
@@ -28,7 +32,12 @@ class Stage(BaseModel):
                 raise ValueError("variables_path must be specified if format == json")
             if type(self.variables_path) == str:
                 self.variables_path = [self.variables_path]
-        elif self.format != "json":
+        elif self.format == "regex":
+            if not self.pattern:
+                raise ValueError("regex must be specified if format == regex")
+            if not self.variable_value_group:
+                raise ValueError("variable_value_group must be specified if format == regex")
+        else:
             if self.variables_path:
                 raise ValueError("variables_path cannot be specified with other format than json")
         return self
