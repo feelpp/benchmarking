@@ -36,7 +36,7 @@ class JsonReportController:
         #TODO: add more formats here (latex,html,...)
         else:
             raise ValueError(f"Output format '{self.output_format}' not supported.")
-        return os.path.join(os.path.dirname(__file__),"templates"), template_filename
+        return os.path.join(os.path.dirname(__file__),"templates",self.output_format), template_filename
 
 
     def initRenderer( self) -> TemplateRenderer:
