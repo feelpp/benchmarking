@@ -33,6 +33,8 @@ class JsonReportController:
         template_filename = None
         if self.output_format == "adoc":
             template_filename = "json2adoc_report.adoc.j2"
+        elif self.output_format == "tex":
+            template_filename = "json2tex_report.tex.j2"
         #TODO: add more formats here (latex,html,...)
         else:
             raise ValueError(f"Output format '{self.output_format}' not supported.")

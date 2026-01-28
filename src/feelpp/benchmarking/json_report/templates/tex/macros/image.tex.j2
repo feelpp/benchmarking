@@ -1,0 +1,23 @@
+{% macro render(imageNode, data) %}
+
+{% set src = imageNode.src %}
+{% set caption = imageNode.caption or "" %}
+{% set alt = imageNode.alt or "" %}
+{% set styles = imageNode.style or [] %}
+
+\begin{figure}[ht!]
+    \centering
+    {% if 'img-fluid' in styles %}
+    \includegraphics[width=\linewidth]{ {{ src }} }
+    {% else %}
+    \includegraphics{ {{ src }} }
+    {% endif %}
+    {% if caption %}
+    \caption{ {{ caption }} }
+    {% endif %}
+    {% if alt %}
+    % Alt text: {{ alt }}
+    {% endif %}
+\end{figure}
+
+{% endmacro %}

@@ -7,7 +7,15 @@ class Controller:
         self.text_config = text
         self.data = data
 
-    def generate(self):
+    def escapeText(self,text,format="adoc"):
+        if format == "adoc":
+            return str(text)
+        elif format == "tex":
+            return str(text).replace("_","\_")
+        else:
+            raise NotImplementedError(f"format not recognized during text escaping : {format}")
+
+    def generate(self, format="adoc"):
         if self.text_config.mode == "static":
             content = self.text_config.content
 
@@ -23,7 +31,7 @@ class Controller:
         else:
             content = self.text_config.content
 
-        return content
+        return self.escapeText(content,format)
 
     def _resolvePlaceHolders(self, match):
         expr = match.group(1)
