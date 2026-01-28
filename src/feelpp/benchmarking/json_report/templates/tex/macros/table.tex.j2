@@ -1,7 +1,6 @@
 {% import "macros/text.tex.j2" as text %}
 
 
-{%macro prepareCell(content) %}{{TextController({},"").escapeText(text=content,format="tex")}}{%endmacro%}
 
 {% macro render(tableNode, data) %}
 
@@ -18,10 +17,10 @@
     \label{table:{{ tableNode.ref }}}
     \begin{tabular}{ {{ cols_align }} }
     \hline
-    {% for col in table.columns %}{{ prepareCell(col) }}{% if not loop.last %} & {% endif %}{% endfor %} \\
+    {% for col in table.columns %}{{ col }}{% if not loop.last %} & {% endif %}{% endfor %} \\
     \hline
     {% for row in table.itertuples(index=False) %}
-        {% for cell in row %}{{ prepareCell(cell) }}{% if not loop.last %} & {% endif %}{% endfor %} \\
+        {% for cell in row %}{{ cell }}{% if not loop.last %} & {% endif %}{% endfor %} \\
     {% endfor %}
     \hline
     \end{tabular}
