@@ -1,6 +1,5 @@
 {% macro render(imageNode, data) %}
 
-{% set src = imageNode.src %}
 {% set caption = imageNode.caption or "" %}
 {% set alt = imageNode.alt or "" %}
 {% set styles = imageNode.style or [] %}
@@ -8,9 +7,9 @@
 \begin{figure}[ht!]
     \centering
     {% if 'img-fluid' in styles %}
-    \includegraphics[width=\linewidth]{ {{ src }} }
+    \includegraphics[width=\linewidth]{ {{ imageNode.downloadImage(".") }} }
     {% else %}
-    \includegraphics{ {{ src }} }
+    \includegraphics{ {{ imageNode.downloadImage(".") }} }
     {% endif %}
     {% if caption %}
     \caption{ {{ caption }} }

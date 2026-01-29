@@ -1,3 +1,4 @@
+import requests, warnings,os
 from typing import Literal, Union, Optional, List, Dict, Annotated, Callable, Any
 from pydantic import ValidationError, BaseModel, field_validator, model_validator, Field, ConfigDict
 from datetime import datetime
@@ -29,6 +30,25 @@ class ImageNode(ReportNode):
     caption: Optional[str] = None
     alt: Optional[str] = None
     style: Optional[List[str]] = ["img-fluid"]
+    is_remote: Optional[bool] = True
+
+
+    def downloadImage(self,dirpath:str=".") -> str:
+        if not self.is_remote:
+            warnings.warn("downloadImage() used for local image... Will return the src attr")
+            return self.src
+
+        response = requests.get(self.src)
+        image_name = os.path.basename(self.src)
+        if response.status_code != 200:
+            warnings.warn(f"Could not download image from {self.src}")
+            return image_name
+
+        os.makedirs(dirpath,exist_ok=True)
+        image_path = os.path.join(dirpath,image_name)
+        with open(image_path,"wb") as f:
+            f.write(response.content)
+        return image_path
 
 class PlotNode(ReportNode):
     type: Literal["plot"]
