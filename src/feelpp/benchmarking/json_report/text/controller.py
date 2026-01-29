@@ -43,6 +43,9 @@ class Controller:
             #links
             text = self._asciidoc_to_latex_urls(text)
 
+            #references
+            text = re.sub(r"<<\s*([^\s,>]+)\s*(?:,\s*([^>]+))?\s*>>", lambda m : f"\\hyperlink{{{m.group(1)}}}{{{m.group(2)}}}" if m.group(2) else f"\\ref{{{m.group(1)}}}", text )
+
 
         else:
             raise NotImplementedError(f"Format not recognized in text controller: {format}")

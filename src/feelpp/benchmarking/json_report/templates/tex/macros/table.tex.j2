@@ -1,7 +1,7 @@
 {% import "macros/text.tex.j2" as text %}
 
 {% macro escapeSpecialChars(text) -%}
-{{ text | string 
+{{ text | string
     | replace('\\', '\textbackslash{}')
     | replace('{', '\{')
     | replace('}', '\}')
@@ -36,7 +36,11 @@
     {% if tableNode.caption %}
     \caption{ {{ tableNode.caption }} }
     {% endif %}
-    \label{table:{{ tableNode.ref }}}
+    {% if tableNode.id %}
+    \label{{'{'}}{{tableNode.id}}{{'}'}}
+    {% elif tableNode.caption %}
+    \label{table:{{tableNode.caption | replace(' ','-')}}}
+    {% endif %}
 \end{table}
 
 {% endmacro %}

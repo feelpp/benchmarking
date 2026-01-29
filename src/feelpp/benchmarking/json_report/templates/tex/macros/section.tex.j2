@@ -15,10 +15,17 @@
     "itemize": itemize.render
 } %}
 
+{% set levelTag = [ "\\chapter","\\section","\\subsection" ]%}
+
 {% macro render(sectionNode, report_data, level=1) %}
 
-{% if sectionNode.title %}
-{% if level == 1 %}\chapter{ {{ sectionNode.title }} }{% elif level == 2 %}\section{ {{ sectionNode.title }} }{% elif level == 3 %}\subsection{ {{ sectionNode.title }} }{% else %}\paragraph{ {{ sectionNode.title }} }{% endif %}
+{% if level - 1 < levelTag | length  %}
+{{levelTag[ level -1 ]}}{{'{'}}{% if sectionNode.title %}{{sectionNode.title}}{% endif %}{{'}'}}
+{% else %}
+\paragraph{{'{'}} {% if sectionNode.title %}{{sectionNode.title}}{% endif %} {{'}'}}
+{% endif %}
+{%if sectionNode.id %}
+\label{{'{'}}{{sectionNode.id}}{{'}'}}
 {% endif %}
 
 {% for node in sectionNode.contents %}

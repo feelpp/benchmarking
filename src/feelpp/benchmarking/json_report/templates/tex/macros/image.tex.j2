@@ -18,6 +18,11 @@
     {% if alt %}
     % Alt text: {{ alt }}
     {% endif %}
+    {% if imageNode.id %}
+    \label{ {{imageNode.id}} }
+    {% elif imageNode.caption %}
+    \label{ fig:{{imageNode.caption | replace(' ','-')}} }
+    {% endif %}
 \end{figure}
 
 {% endmacro %}
