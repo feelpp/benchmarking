@@ -1,16 +1,19 @@
-{% macro render(imageNode, data) %}
+{% macro includeGraphics(imageNode,styles) %}
+{% if 'img-fluid' in styles %}
+\includegraphics[width=\linewidth]{ {{ imageNode.downloadImage(".") }} }
+{% else %}
+\includegraphics{ {{ imageNode.downloadImage(".") }} }
+{% endif %}
+{% endmacro %}
 
+{% macro render(imageNode, data, make_block = True) %}
 {% set caption = imageNode.caption or "" %}
 {% set alt = imageNode.alt or "" %}
 {% set styles = imageNode.style or [] %}
-
+{% if make_block %}
 \begin{figure}[ht!]
     \centering
-    {% if 'img-fluid' in styles %}
-    \includegraphics[width=\linewidth]{ {{ imageNode.downloadImage(".") }} }
-    {% else %}
-    \includegraphics{ {{ imageNode.downloadImage(".") }} }
-    {% endif %}
+    {{-includeGraphics(imageNode,styles)-}}
     {% if caption %}
     \caption{ {{ caption }} }
     {% endif %}
@@ -19,9 +22,17 @@
     {% endif %}
     {% if imageNode.id %}
     \label{ {{imageNode.id}} }
-    {% elif imageNode.caption %}
-    \label{ fig:{{imageNode.caption | replace(' ','-')}} }
+    {% elif caption %}
+    \label{{'{'}}fig:{{caption | replace(' ','-')}}{{'}'}}
     {% endif %}
 \end{figure}
-
+{%else%}
+{{-includeGraphics(imageNode,styles)-}}
+{% if caption %}\subcaption{{'{'}}{{caption}}{{'}'}}{% endif %}
+{% if imageNode.id %}
+\label{ {{imageNode.id}} }
+{% elif caption %}
+\label{{'{'}}fig:{{caption | replace(' ','-')}}{{'}'}}
+{% endif %}
+{% endif %}
 {% endmacro %}
