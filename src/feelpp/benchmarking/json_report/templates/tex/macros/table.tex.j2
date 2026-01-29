@@ -1,6 +1,19 @@
 {% import "macros/text.tex.j2" as text %}
 
-
+{% macro escapeSpecialChars(text) -%}
+{{ text | string 
+    | replace('\\', '\textbackslash{}')
+    | replace('{', '\{')
+    | replace('}', '\}')
+    | replace('#', '\#')
+    | replace('$', '\$')
+    | replace('%', '\%')
+    | replace('&', '\&')
+    | replace('_', '\_')
+    | replace('~', '\textasciitilde{}')
+    | replace('^', '\^{}')
+}}
+{%- endmacro %}
 
 {% macro render(tableNode, data) %}
 
@@ -13,10 +26,10 @@
     \centering
     \begin{tabular}{ {{ cols_align }} }
     \hline
-    {% for col in table.columns %}{{ col }}{% if not loop.last %} & {% endif %}{% endfor %} \\
+    {% for col in table.columns %}{{ escapeSpecialChars(col)  }}{% if not loop.last %} & {% endif %}{% endfor %} \\
     \hline
     {% for row in table.itertuples(index=False) %}
-        {% for cell in row %}{{ cell }}{% if not loop.last %} & {% endif %}{% endfor %} \\
+        {% for cell in row %}{{ escapeSpecialChars(cell) }}{% if not loop.last %} & {% endif %}{% endfor %} \\
     {% endfor %}
     \hline
     \end{tabular}
