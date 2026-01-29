@@ -1,12 +1,22 @@
-{% macro render(imageNode,data) %}
+{% macro render(imageNode,data,make_block = True) %}
 {% set src = imageNode.src %}
 {% set alt = imageNode.alt or imageNode.caption or "" %}
 {% set styles = imageNode.style | join(' ')%}
 
-{% if imageNode.caption %}
-image::{{src}}[role="{{styles}}",alt={{alt}},title={{imageNode.caption}}]
-{% else %}
-image::{{src}}[role=""{{styles}}"",alt={{alt}}]
+{% if imageNode.id %}
+[[{{imageNode.id}}]]
+{% elif imageNode.caption %}
+[[{{imageNode.caption | replace(' ','-') | replace('(','') | replace(')','') }}]]
 {% endif %}
-
+{% if imageNode.caption %}
+.{{imageNode.caption}}
+{% endif %}
+{% if make_block %}
+[example.image]
+====
+image::{{src}}[role="{{styles}}",alt={{alt}}]
+====
+{% else %}
+image::{{src}}[role="{{styles}}",alt={{alt}}]
+{% endif %}
 {% endmacro %}

@@ -1,5 +1,18 @@
-{% macro render(plotNode,data) %}
+{% macro render(plotNode,data, make_block=True) %}
 
+
+{% if plotNode.id %}
+[[{{plotNode.id}}]]
+{% elif plotNode.caption %}
+[[{{plotNode.caption | replace(' ','-')}}]]
+{% endif %}
+{% if make_block %}
+[example.plot]
+{%if plotNode.caption %}
+.{{plotNode.caption}}
+{% endif %}
+====
+{% endif %}
 ++++
 
 {% for figure in FiguresController(data.get(plotNode.ref),plotNode.plot).generateAll() %}
@@ -15,6 +28,7 @@
 
     {% for subfigure in figure.subfigures %}
       <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" data-subfigure="{{loop.index}}">
+        {{subfigure.html}}
 
         <div class='export-container'>
         {% for export in subfigure.exports %}
@@ -24,13 +38,19 @@
         {% endfor %}
         </div>
 
-        {{subfigure.html}}
     </div>
     {% endfor %}
+
+    {%if plotNode.caption and make_block==False %}
+    <div class='plotly-figure-caption title'>{{plotNode.caption}}</div>
+    {% endif %}
 </div>
 
 {% endfor %}
 
 ++++
+{% if make_block %}
+====
+{% endif %}
 
 {% endmacro %}
