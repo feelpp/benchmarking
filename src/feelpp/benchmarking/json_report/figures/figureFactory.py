@@ -1,4 +1,4 @@
-from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationFactory
 
 from feelpp.benchmarking.json_report.figures.base import CompositeFigure
 from feelpp.benchmarking.json_report.figures.tikzFigures import TikzFigure, TikzScatterFigure, TikzGroupedBarFigure, TikzStackedBarFigure, TikzTableFigure
@@ -74,7 +74,7 @@ class FigureFactory:
         Args:
             plot_config (Plot). Pydantic object with the plot configuration information
         """
-        strategy = TransformationStrategyFactory.create(plot_config)
+        strategy = TransformationFactory.create(plot_config)
         figures = []
         for plot_type in plot_config.plot_types:
             if plot_type in ["scatter","marked_scatter"]:
