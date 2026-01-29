@@ -1,16 +1,3 @@
-\documentclass[12pt]{article}
-
-\usepackage{pgf-pie}  % For pie charts
-\usepackage{currfile} % Required for getting the current file name
-\usepackage{tikz}     % Required for drawing graphics
-\usepackage{pgfplots}
-\usepackage{pgfplotstable}
-\pgfplotsset{compat=newest}
-\usepgfplotslibrary{fillbetween}
-\usepackage{underscore}
-
-\begin{document}
-
 \newcommand{\plot}[2][]{
   \begin{tikzpicture}
     \begin{axis}[
@@ -21,10 +8,10 @@
       xticklabels from table={{'{#2}'}}{{'{'}}{{xaxis.parameter}}{{'}'}},
       cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}
     ]
-    {% for var,name in zip(variables,names) %}
-      {% if var not in fill_lines %}
-      \addplot table [x expr=\coordindex, y={{ var }}] {{'{#2}'}} ;
-      \addlegendentry{ {{name}} }
+    {% for col in columns %}
+      {% if col not in fill_lines %}
+      \addplot table [x expr=\coordindex, y={{ col }}] {{'{#2}'}} ;
+      \addlegendentry{ {{col}} }
       {% endif %}
     {% endfor %}
 
@@ -58,5 +45,3 @@
 {% endif %}
 \caption{ {{caption}} }
 \end{figure}
-
-\end{document}

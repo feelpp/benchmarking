@@ -1,0 +1,12 @@
+{% macro render(plotNode,data) %}
+{% set controller = FiguresController(data.get(plotNode.ref),plotNode.plot) %}
+{% for figure in controller.figures %}
+{% for subfigure in figure %}
+
+{%set _ = subfigure.writeCsvs(controller.df,".") %}
+
+{{subfigure.createTex(controller.df)}}
+
+{% endfor %}
+{% endfor %}
+{% endmacro %}

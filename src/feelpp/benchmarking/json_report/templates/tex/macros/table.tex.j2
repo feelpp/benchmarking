@@ -11,10 +11,6 @@
 
 \begin{table}[ht!]
     \centering
-    {% if tableNode.caption %}
-    \caption{ {{ tableNode.caption }} }
-    {% endif %}
-    \label{table:{{ tableNode.ref }}}
     \begin{tabular}{ {{ cols_align }} }
     \hline
     {% for col in table.columns %}{{ col }}{% if not loop.last %} & {% endif %}{% endfor %} \\
@@ -24,6 +20,10 @@
     {% endfor %}
     \hline
     \end{tabular}
+    {% if tableNode.caption %}
+    \caption{ {{ tableNode.caption }} }
+    {% endif %}
+    \label{table:{{ tableNode.ref }}}
 \end{table}
 
 {% endmacro %}

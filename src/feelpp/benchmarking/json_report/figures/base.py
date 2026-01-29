@@ -1,3 +1,4 @@
+import os
 from pandas import MultiIndex
 
 class Figure:
@@ -63,6 +64,14 @@ class CompositeFigure:
 
     def createCsvs(self,df):
         return self.plotly_figure.createCsvs(df)
+
+    def writeCsvs(self,df, path="."):
+        csvs = self.plotly_figure.createCsvs(df)
+        os.makedirs(path,exist_ok=True)
+        for csv in csvs:
+            with open(os.path.join(path,f"{csv.get('title','data')}.csv"),"w") as f:
+                f.write(csv["data"])
+
 
     def createFigureHtml(self,df):
         return self.plotly_figure.createHtml(df)

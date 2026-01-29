@@ -1,6 +1,17 @@
 \documentclass[11pt]{report}
 
 \usepackage{graphicx}
+\usepackage{pgf-pie}  % For pie charts
+\usepackage{currfile} % Required for getting the current file name
+\usepackage{tikz}     % Required for drawing graphics
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{underscore}
+
+{% for package in report.extra_packages %}
+\usepackage{{"{"}}{{package}}{{"}"}}
+{% endfor %}
+\pgfplotsset{compat=newest}
 
 \begin{document}
 
