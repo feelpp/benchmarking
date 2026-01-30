@@ -31,9 +31,9 @@
 {% for subfigure_json_path, subfigure_csv_path in zip(figure_json_paths,figure_csv_paths) %}
     <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" data-subfigure="{{loop.index}}">
         <div id="graph-div-{{figure_ctrl.id}}-{{loop.index}}"> </div>
-    </div>
-    <div class='export-container'>
-        <a href='{% if context.attachments_base_url %}{{context.attachments_base_url}}/{{subfigure_csv_path}}{% else %}{{context.attachments_dirpath}}/{{subfigure_csv_path}}{%endif%}' download>CSV</a>
+        <div class='export-container'>
+            <a href='{% if context.attachments_base_url %}{{context.attachments_base_url}}/{{subfigure_csv_path}}{% else %}{{context.attachments_dirpath}}/{{subfigure_csv_path}}{%endif%}' download>CSV</a>
+        </div>
     </div>
 {% endfor %}
 </div>
