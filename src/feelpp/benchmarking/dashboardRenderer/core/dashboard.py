@@ -51,7 +51,7 @@ class Dashboard:
         """ Prints the hierarchical structure of the component tree for debugging or review."""
         self.tree.print()
 
-    def render( self, base_path:str, clean:bool = False, **kwargs ):
+    def render( self, base_path:str, clean:bool = False, project_name="", **kwargs ):
         """
         Triggers the rendering process, generating the final dashboard files.
         Args:
@@ -60,7 +60,7 @@ class Dashboard:
         """
         pages_dir = os.path.join( base_path, "pages" )
         attachments_dir = os.path.join( base_path, "attachments" )
-        attachments_base_url = os.path.join( "/benchmarking/_attachments" )
+        attachments_base_url = os.path.join( f"/{project_name}/_attachments" )
 
         if clean:
             if os.path.isdir(pages_dir):
