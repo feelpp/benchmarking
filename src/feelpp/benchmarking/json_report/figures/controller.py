@@ -56,7 +56,7 @@ class Controller:
             csvs = figure.createCsvs(self.data)
             with zipfile.ZipFile( file=filepath, mode="w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip_archive:
                 for csv in csvs:
-                    zip_archive.writestr(zinfo_or_arcname=f"{csv["title"]}.csv",data=csv["data"])
+                    zip_archive.writestr(zinfo_or_arcname=f"{csv['title']}.csv",data=csv['data'])
 
             filepaths.append(fig_relpath)
         return filepaths
