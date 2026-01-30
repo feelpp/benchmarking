@@ -68,7 +68,7 @@ class JsonReportController:
 
         return data
 
-    def render(self, output_dirpath: str, output_filename:str = None, **kwargs ) -> str:
+    def render(self, output_dirpath: str, output_filename:str = None, attachments_dirpath:str=None, **kwargs ) -> str:
         if not os.path.exists( output_dirpath ):
             os.makedirs( output_dirpath )
 
@@ -77,6 +77,17 @@ class JsonReportController:
 
         output_filepath = os.path.join( output_dirpath, os.path.basename(output_filename) )
 
-        self.renderer.render( output_filepath, dict(report=self.report, report_data = self.data, **kwargs))
+        if not attachments_dirpath:
+            attachments_dirpath = os.path.dirname(output_filepath)
+
+        self.renderer.render(
+            output_filepath,
+            dict(
+                report=self.report,
+                report_data = self.data,
+                attachments_dirpath = attachments_dirpath,
+                **kwargs
+            )
+        )
 
         return os.path.abspath(output_filepath)
