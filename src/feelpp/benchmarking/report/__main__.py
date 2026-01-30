@@ -62,7 +62,7 @@ def main_cli():
     project_name = extractAntoraProjectName(parser.args.antora_basepath)
 
     dashboard.tree.upstreamViewData(ReframeReportPlugin.aggregator)
-    dashboard.render(parser.args.module_path,clean=parser.args.reset_docs, project_name = project_name)
+    dashboard.render(parser.args.module_path,clean=parser.args.reset_docs, project_name = project_name, include_latex=True)
 
     if parser.args.website:
         os.chdir(parser.args.antora_basepath)

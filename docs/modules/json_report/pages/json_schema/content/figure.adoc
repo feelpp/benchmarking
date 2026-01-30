@@ -137,7 +137,7 @@ For the given example, it produces the following dataframe
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationFactory
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -147,7 +147,7 @@ plot_config = Plot(**{
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{"parameter":"elements", "label":"N"}
 })
-strategy = TransformationStrategyFactory.create(plot_config)
+strategy = TransformationFactory.create(plot_config)
 df = strategy.calculate(master_df)
 print(df)
 ----
@@ -168,7 +168,7 @@ plot_config = Plot(**{
     "secondary_axis":{ "parameter":"elements", "label":"N"
     }
 })
-strategy = TransformationStrategyFactory.create(plot_config)
+strategy = TransformationFactory.create(plot_config)
 df = strategy.calculate(master_df)
 print(df)
 ----
@@ -191,7 +191,7 @@ plot_config = Plot(**{
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{"parameter":"elements", "label":"N"}
 })
-strategy = TransformationStrategyFactory.create(plot_config)
+strategy = TransformationFactory.create(plot_config)
 df = strategy.calculate(master_df)
 print(df)
 ----

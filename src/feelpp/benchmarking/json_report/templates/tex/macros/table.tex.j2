@@ -15,7 +15,7 @@
 }}
 {%- endmacro %}
 
-{% macro render(tableNode, data) %}
+{% macro render(tableNode, data, context={}) %}
 
 {% set table_controller = TableController(data.get(tableNode.ref), tableNode.layout, tableNode.style) %}
 {% set table = table_controller.generate() %}

@@ -1,19 +1,19 @@
-{% macro includeGraphics(imageNode,styles) %}
+{% macro includeGraphics(imageNode,styles,context={}) %}
 {% if 'img-fluid' in styles %}
-\includegraphics[width=\linewidth]{ {{ imageNode.downloadImage(".") }} }
+\includegraphics[width=\linewidth]{ {{ imageNode.downloadImage(context.attachments_dirpath) }} }
 {% else %}
-\includegraphics{ {{ imageNode.downloadImage(".") }} }
+\includegraphics{ {{ imageNode.downloadImage(context.attachments_dirpath) }} }
 {% endif %}
 {% endmacro %}
 
-{% macro render(imageNode, data, make_block = True) %}
+{% macro render(imageNode, data, make_block = True,context={}) %}
 {% set caption = imageNode.caption or "" %}
 {% set alt = imageNode.alt or "" %}
 {% set styles = imageNode.style or [] %}
 {% if make_block %}
 \begin{figure}[ht!]
     \centering
-    {{-includeGraphics(imageNode,styles)-}}
+    {{-includeGraphics(imageNode,styles,context = context)-}}
     {% if caption %}
     \caption{ {{ caption }} }
     {% endif %}
@@ -27,7 +27,7 @@
     {% endif %}
 \end{figure}
 {%else%}
-{{-includeGraphics(imageNode,styles)-}}
+{{-includeGraphics(imageNode,styles,context = context)-}}
 {% if caption %}\subcaption{{'{'}}{{caption}}{{'}'}}{% endif %}
 {% if imageNode.id %}
 \label{ {{imageNode.id}} }

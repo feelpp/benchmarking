@@ -19,6 +19,21 @@ class JsonReportController:
         self.exposed:dict = dict()
         self.data:dict = self.loadReportData()
 
+
+    @classmethod
+    def initFromLoaded( cls, report: JsonReportSchema, report_data:dict, output_format:str="adoc" )->"JsonReportController":
+        json_report_ctrl = cls.__new__(cls)
+        json_report_ctrl.data = report_data
+        json_report_ctrl.report = report
+        json_report_ctrl.output_format = output_format
+        json_report_ctrl.report_filepath = None
+
+        json_report_ctrl.exposed = {}
+
+        json_report_ctrl.renderer = json_report_ctrl.initRenderer()
+
+        return json_report_ctrl
+
     def loadReport( self, report_filepath: str ) -> JsonReportSchema:
         if not os.path.exists( report_filepath ):
             warnings.warn(f"Report file '{report_filepath}' does not exist.")
@@ -46,6 +61,7 @@ class JsonReportController:
         renderer = TemplateRenderer( template_paths=template_path, template_filename=template_filename )
         renderer.env.globals.update( {
             "zip":zip,
+            "JsonReportController":JsonReportController,
             "FiguresController":FiguresController,
             "TableController":TableController,
             "TextController":TextController

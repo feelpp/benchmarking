@@ -17,7 +17,7 @@
 
 {% set levelTag = [ "\\chapter","\\section","\\subsection" ]%}
 
-{% macro render(sectionNode, report_data, level=1) %}
+{% macro render(sectionNode, report_data, level=1, context={}) %}
 
 {% if level - 1 < levelTag | length  %}
 {{levelTag[ level -1 ]}}{{'{'}}{% if sectionNode.title %}{{sectionNode.title}}{% endif %}{{'}'}}
@@ -30,13 +30,13 @@
 
 {% for node in sectionNode.contents %}
 {% if node.type == "section" %}
-{{ render(node, report_data, level + 1) }}
+{{ render(node, report_data, level + 1, context=context) }}
 {% elif node.type == "grid" %}
-{{ grid.render(node, report_data ) }}
+{{ grid.render(node, report_data, context=context) }}
 {% else %}
 {% set handler = handlers.get(node.type) %}
 {% if handler %}
-{{ handler(node, report_data.get(node.ref)) }}
+{{ handler(node, report_data.get(node.ref),context=context) }}
 {% endif %}
 {% endif %}
 {% endfor %}

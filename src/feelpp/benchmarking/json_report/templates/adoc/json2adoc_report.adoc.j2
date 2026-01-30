@@ -9,8 +9,16 @@
 
 {% set context = {
     "attachments_dirpath": attachments_dirpath,
-    "attachments_base_url": attachments_base_url
+    "attachments_base_url": attachments_base_url,
 } %}
+
+{% if include_latex %}
+{%set json_report_ctrl = JsonReportController.initFromLoaded( report, report_data, output_format="tex" )%}
+{% set rendered_latex_path = json_report_ctrl.render(attachments_dirpath,"report.tex",attachments_dirpath=attachments_dirpath~"/data" ) %}
+++++
+<a href="{{rendered_latex_path}} dowload> LaTeX </a>"
+++++
+{% endif %}
 
 {% import "macros/section.adoc.j2"    as section %}
 {{ section.render(report, report_data, 1, context=context) }}

@@ -1,3 +1,8 @@
+{% set context = {
+    "attachments_dirpath": attachments_dirpath,
+    "attachments_base_url": attachments_base_url,
+} %}
+
 \documentclass[11pt]{report}
 
 \usepackage{graphicx}
@@ -25,6 +30,6 @@
 
 {% import "macros/section.tex.j2"    as section %}
 
-{{ section.render(report, report_data, 1) }}
+{{ section.render(report, report_data, 1,context=context) }}
 
 \end{document}

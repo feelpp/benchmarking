@@ -1,10 +1,10 @@
 {% import "macros/text.tex.j2" as text %}
 
-{% macro render(listNode, data) %}
+{% macro render(listNode, data,context={}) %}
 
 \begin{itemize}
 {% for item in listNode.items %}
-  \item {{ text.render(item, data) }}
+  \item {{ text.render(item, data,context=context) }}
 {% endfor %}
 \end{itemize}
 
