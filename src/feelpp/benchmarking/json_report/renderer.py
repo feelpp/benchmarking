@@ -78,7 +78,7 @@ class JsonReportController:
         output_filepath = os.path.join( output_dirpath, os.path.basename(output_filename) )
 
         if not attachments_dirpath:
-            attachments_dirpath = os.path.dirname(output_filepath)
+            attachments_dirpath = os.path.join(os.path.dirname(output_filepath),"data")
 
         self.renderer.render(
             output_filepath,
