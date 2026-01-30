@@ -1,4 +1,4 @@
-{% macro render(plotNode,data, make_block=True) %}
+{% macro render(plotNode,data, make_block=True, context={}) %}
 
 
 {% if plotNode.id %}
@@ -15,38 +15,45 @@
 {% endif %}
 ++++
 
-{% for figure in FiguresController(data.get(plotNode.ref),plotNode.plot).generateAll() %}
+{% set figure_ctrl = FiguresController(data.get(plotNode.ref),plotNode.plot) %}
+{% set figure_json_paths = figure_ctrl.dumpFigureJsons(context.attachments_dirpath) %}
+{% set figure_csv_paths = figure_ctrl.dumpFigureCsvs(context.attachments_dirpath) %}
 <div class='figure-container'>
-    {% if figure.plot_types | length > 1%}
+    {% if figure_ctrl.plot_config.plot_types | length > 1%}
     <div class='tabs-container'>
-    {% for plot_type in figure.plot_types %}
+    {% for plot_type in figure_ctrl.plot_config.plot_types %}
     {% set plot_type_i = loop.index %}
         <button class='figure-tab' onclick='switchTab(this, {{plot_type_i}})'>{{plot_type}}</button>
     {% endfor %}
     </div>
     {% endif %}
 
-    {% for subfigure in figure.subfigures %}
-      <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" data-subfigure="{{loop.index}}">
-        {{subfigure.html}}
-
-        <div class='export-container'>
-        {% for export in subfigure.exports %}
-            <button onclick='downloadData({{export.data | tojson | stripquotes}},"download.zip")' >
-                {{export.display_text}}
-            </button>
-        {% endfor %}
-        </div>
-
+{% for subfigure_json_path, subfigure_csv_path in zip(figure_json_paths,figure_csv_paths) %}
+    <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" data-subfigure="{{loop.index}}">
+        <div id="graph-div-{{figure_ctrl.id}}-{{loop.index}}"> </div>
     </div>
-    {% endfor %}
-
-    {%if plotNode.caption and make_block==False %}
-    <div class='plotly-figure-caption title'>{{plotNode.caption}}</div>
-    {% endif %}
+    <div class='export-container'>
+        <a href='{% if context.attachments_base_url %}{{context.attachments_base_url}}/{{subfigure_csv_path}}{% else %}{{context.attachments_dirpath}}/{{subfigure_csv_path}}{%endif%}' download>CSV<a/>
+    </div>
+{% endfor %}
 </div>
 
+
+<script>
+{% for subfigure_json_path in figure_json_paths %}
+    fetch('{% if context.attachments_base_url %}{{context.attachments_base_url}}/{{subfigure_json_path}}{% else %}{{context.attachments_dirpath}}/{{subfigure_json_path}}{%endif%}')
+    .then(response => response.json())
+    .then(figure_json => {
+        Plotly.newPlot('graph-div-{{figure_ctrl.id}}-{{loop.index}}',figure_json);
+    })
+    .catch(err => console.error(err));
 {% endfor %}
+</script>
+
+{%if plotNode.caption and make_block==False %}
+<div class='plotly-figure-caption title'>{{plotNode.caption}}</div>
+{% endif %}
+
 
 ++++
 {% if make_block %}

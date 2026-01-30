@@ -5,7 +5,7 @@
 {% import "macros/table.adoc.j2" as table %}
 {% import "macros/itemize.adoc.j2"  as itemize %}
 
-{% macro render(gridNode,report_data) %}
+{% macro render(gridNode,report_data, context={}) %}
 {% if gridNode.id %}
 [[{{gridNode.id}}]]
 {% endif %}
@@ -19,17 +19,17 @@
 :figure-caption!:
 {%for node in gridNode.contents%}
 {% if node.type == "image" %}
-{{ image.render(node,report_data.get(node.ref), make_block=False) }}
+{{ image.render(node,report_data.get(node.ref), make_block=False, context=context) }}
 {% elif node.type == "plot" %}
-{{ plot.render(node,report_data.get(node.ref), make_block=False) }}
+{{ plot.render(node,report_data.get(node.ref), make_block=False, context=context) }}
 {% elif node.type == "latex" %}
-{{ latex.render(node,report_data.get(node.ref)) }}
+{{ latex.render(node,report_data.get(node.ref), context=context) }}
 {% elif node.type == "text" %}
-{{ text.render(node,report_data.get(node.ref)) }}
+{{ text.render(node,report_data.get(node.ref), context=context) }}
 {% elif node.type == "table" %}
-{{ table.render(node,report_data.get(node.ref)) }}
+{{ table.render(node,report_data.get(node.ref), context=context) }}
 {% elif node.type == "itemize" %}
-{{ itemize.render(node,report_data.get(node.ref)) }}
+{{ itemize.render(node,report_data.get(node.ref), context=context) }}
 {% endif %}
 {% endfor %}
 :figure-caption: Figure

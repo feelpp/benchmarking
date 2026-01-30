@@ -45,6 +45,7 @@ class JsonReportController:
         template_path, template_filename = self.getTemplatePath( )
         renderer = TemplateRenderer( template_paths=template_path, template_filename=template_filename )
         renderer.env.globals.update( {
+            "zip":zip,
             "FiguresController":FiguresController,
             "TableController":TableController,
             "TextController":TextController
