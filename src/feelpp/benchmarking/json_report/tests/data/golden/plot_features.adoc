@@ -9,17 +9,24 @@
 
 <div class='figure-container'>
 
-      <div class="subfigure-container active" data-subfigure="1">
-        <div>
-            <div>FIGURE</div>
-            <script></script>
-        </div>
+    <div class="subfigure-container active" data-subfigure="1">
+        <div id="graph-div-<FIGURE_ID>-1"> </div>
         <div class='export-container'>
-            <button class="csv-btn">CSV</button>
-            <button class="latex-btn">LaTeX</button>
+            <a href='<ZIPPATH>' download>CSV</a>
         </div>
     </div>
 </div>
+
+
+<script>
+    fetch('<JSONPATH>')
+    .then(response => response.json())
+    .then(figure_json => {
+        Plotly.newPlot('graph-div-<FIGURE_ID>-1',figure_json);
+    })
+    .catch(err => console.error(err));
+</script>
+
 
 ++++
 ====
@@ -37,30 +44,38 @@
         <button class='figure-tab' onclick='switchTab(this, 2)'>stacked_bar</button>
     </div>
 
-      <div class="subfigure-container active" data-subfigure="1">
-        <div>
-            <div>FIGURE</div>
-            <script></script>
-        </div>
-        <div class='export-container'>
-            <button>CSV</button>
-            <button>LaTeX</button>
-        </div>
 
+    <div class="subfigure-container active" data-subfigure="1">
+        <div id="graph-div-<FIGURE_ID>-1"> </div>
+        <div class='export-container'>
+            <a href='<ZIPPATH>' download>CSV</a>
+        </div>
     </div>
 
-      <div class="subfigure-container inactive" data-subfigure="2">
-        <div>
-            <div>FIGURE</div>
-            <script></script>
-        </div>
+    <div class="subfigure-container inactive" data-subfigure="2">
+        <div id="graph-div-<FIGURE_ID>-2"> </div>
         <div class='export-container'>
-            <button>CSV</button>
-            <button>LaTeX</button>
+            <a href='<ZIPPATH>' download>CSV</a>
         </div>
-
     </div>
+
 </div>
+
+
+<script>
+    fetch('<JSONPATH>')
+    .then(response => response.json())
+    .then(figure_json => {
+        Plotly.newPlot('graph-div-<FIGURE_ID>-1',figure_json);
+    })
+    .catch(err => console.error(err));
+    fetch('<JSONPATH>')
+    .then(response => response.json())
+    .then(figure_json => {
+        Plotly.newPlot('graph-div-<FIGURE_ID>-2',figure_json);
+    })
+    .catch(err => console.error(err));
+</script>
 
 
 ++++
