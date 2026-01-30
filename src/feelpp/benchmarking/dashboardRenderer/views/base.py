@@ -130,7 +130,7 @@ class View:
             shutil.copytree(path, local_partial_path,dirs_exist_ok=True)
             self.updateTemplateData({prefix:os.path.relpath(local_partial_path,pages_dir)})
 
-    def renderExtra( self, base_dir:str ) -> None:
+    def renderExtra( self, base_dir:str, **kwargs) -> None:
         """
         Renders all extra renderers associated with this view.
         Each extra renderer is expected to have its own rendering logic and output path.
@@ -140,12 +140,12 @@ class View:
         """
         extra_renders = []
         for prefix,renderer in self.extra_renderers.items():
-            output_filepath = renderer.render( base_dir )
+            output_filepath = renderer.render( base_dir, **kwargs )
             self.updateTemplateData({prefix:os.path.relpath(output_filepath,base_dir)})
             extra_renders.append(os.path.relpath(output_filepath,base_dir))
         self.updateTemplateData({"extra_renders":extra_renders})
 
-    def render( self, output_dirpath:str, filename:Optional[str] = None ) -> None:
+    def render( self, output_dirpath:str, filename:Optional[str] = None, **kwargs ) -> None:
         """ Executes the final rendering step, writing the output to a file.
 
         Args:
@@ -161,7 +161,7 @@ class View:
         if not os.path.isdir(output_dirpath):
             os.mkdir(output_dirpath)
 
-        self.renderer.render(os.path.join(output_dirpath,filename),self.template_data)
+        self.renderer.render(os.path.join(output_dirpath,filename),self.template_data,**kwargs)
 
     def processPlugins( self ) -> None:
         """
