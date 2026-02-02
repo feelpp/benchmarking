@@ -1,5 +1,5 @@
 {% macro render(plotNode,data,context={}) %}
-{% set controller = FiguresController(data.get(plotNode.ref),plotNode.plot) %}
+{% set controller = FiguresController(data.get(plotNode.ref),plotNode.plot,context.uuid) %}
 {% for figure in controller.figures %}
 
 {%set _ = figure.writeCsvs(controller.data,context.attachments_dirpath) %}

@@ -8,9 +8,10 @@ from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 
 class Controller:
-    def __init__(self, data:pd.DataFrame, plot_config: Union[Dict,Plot]):
+    def __init__(self, data:pd.DataFrame, plot_config: Union[Dict,Plot], report_uuid:str = None):
         """
         """
+        self.report_uuid = report_uuid
         self.id = uuid4().hex
         if not isinstance(data,pd.DataFrame):
             raise NotImplementedError(f"Data type {type(data)} not supported for Figures")
@@ -32,7 +33,11 @@ class Controller:
         plotly_figs = [fig.createFigure(self.data) for fig in self.figures]
         filepaths = []
         for plotly_fig,plot_type in zip(plotly_figs,self.plot_config.plot_types):
-            fig_relpath = os.path.join(self.id,f"{plot_type}.json")
+            if self.report_uuid:
+                fig_relpath = os.path.join(self.report_uuid,self.id,f"{plot_type}.json")
+            else:
+                fig_relpath = os.path.join(self.id,f"{plot_type}.json")
+
             filepath = os.path.join(outdir,fig_relpath)
 
             os.makedirs(os.path.dirname(filepath),exist_ok=True)
@@ -48,7 +53,11 @@ class Controller:
         """ Returns the path relative to outdir """
         filepaths = []
         for figure,plot_type in zip(self.figures,self.plot_config.plot_types):
-            fig_relpath = os.path.join(self.id,f"{plot_type}.zip")
+            if self.report_uuid:
+                fig_relpath = os.path.join(self.report_uuid,self.id,f"{plot_type}.zip")
+            else:
+                fig_relpath = os.path.join(self.id,f"{plot_type}.zip")
+
             filepath = os.path.join(outdir,fig_relpath)
 
             os.makedirs(os.path.dirname(filepath), exist_ok=True)

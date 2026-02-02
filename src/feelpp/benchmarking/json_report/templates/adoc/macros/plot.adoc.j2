@@ -15,7 +15,7 @@
 {% endif %}
 ++++
 
-{% set figure_ctrl = FiguresController(data.get(plotNode.ref),plotNode.plot) %}
+{% set figure_ctrl = FiguresController(data.get(plotNode.ref),plotNode.plot, context.uuid) %}
 {% set figure_json_paths = figure_ctrl.dumpFigureJsons(context.attachments_dirpath) %}
 {% set figure_csv_paths = figure_ctrl.dumpFigureCsvs(context.attachments_dirpath) %}
 <div class='figure-container'>

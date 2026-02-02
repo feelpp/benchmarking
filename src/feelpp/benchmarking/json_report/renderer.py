@@ -1,5 +1,5 @@
 import json, os, warnings
-import pandas as pd
+from uuid import uuid4
 
 from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
@@ -18,6 +18,7 @@ class JsonReportController:
 
         self.exposed:dict = dict()
         self.data:dict = self.loadReportData()
+        self.id = uuid4().hex
 
 
     @classmethod
@@ -61,7 +62,6 @@ class JsonReportController:
         renderer = TemplateRenderer( template_paths=template_path, template_filename=template_filename )
         renderer.env.globals.update( {
             "zip":zip,
-            "JsonReportController":JsonReportController,
             "FiguresController":FiguresController,
             "TableController":TableController,
             "TextController":TextController
@@ -99,6 +99,7 @@ class JsonReportController:
         self.renderer.render(
             output_filepath,
             dict(
+                uuid = self.id,
                 report=self.report,
                 report_data = self.data,
                 attachments_dirpath = attachments_dirpath,
