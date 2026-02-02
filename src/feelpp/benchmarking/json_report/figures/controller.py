@@ -4,97 +4,85 @@ import pandas as pd
 from uuid import uuid4
 
 from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationFactory
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory as PlotlyFigureFactory
+from feelpp.benchmarking.json_report.figures.tikz.figureFactory import FigureFactory as TikzFigureFactory
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 
 class Controller:
+    """
+        One semantic figure:
+        - same data
+        - multiple transformations
+        - multiple views
+        - multiple exports
+    """
     def __init__(self, data:pd.DataFrame, plot_config: Union[Dict,Plot], report_uuid:str = None):
-        """
-        """
         self.report_uuid = report_uuid
         self.id = uuid4().hex
         if not isinstance(data,pd.DataFrame):
             raise NotImplementedError(f"Data type {type(data)} not supported for Figures")
+        self.plot_config = self.coercePlotConfig(plot_config)
 
-        if isinstance(plot_config,Plot):
-            self.plot_config = plot_config
-        elif isinstance(plot_config,Dict):
-            self.plot_config = Plot(**plot_config)
+        #TODO: allow multiple transformations in the future
+        self.transformed = { self.plot_config.transformation : TransformationFactory.create(self.plot_config).calculate(data) }
+
+        self.figure_views = {
+            plot_type : {
+                "plotly": PlotlyFigureFactory.create(plot_type,plot_config=self.plot_config),
+                "latex": TikzFigureFactory.create(plot_type,plot_config=self.plot_config),
+            }
+            for plot_type in self.plot_config.plot_types
+        }
+
+    def coercePlotConfig(self, config):
+        if isinstance(config,Plot):
+            plot_config = config
+        elif isinstance(config,Dict):
+            plot_config = Plot(**config)
         else:
-            raise TypeError(f"plot_config must be a Dict or a Plot model, got {type(plot_config)}")
-
-        self.data = data #TransformationFactory.create(self.plot_config).calculate(data)
-
-        self.figures = FigureFactory.create(self.plot_config)
+            raise TypeError(f"plot_config must be a Dict or a Plot model, got {type(config)}")
+        return plot_config
 
 
-    def dumpFigureJsons(self,outdir:str = ".") -> str:
-        """ Returns the path relative to outdir """
-        plotly_figs = [fig.createFigure(self.data) for fig in self.figures]
-        filepaths = []
-        for plotly_fig,plot_type in zip(plotly_figs,self.plot_config.plot_types):
-            if self.report_uuid:
-                fig_relpath = os.path.join(self.report_uuid,self.id,f"{plot_type}.json")
-            else:
-                fig_relpath = os.path.join(self.id,f"{plot_type}.json")
+    def renderFigure(self, plot_type, backend, transformation, data_dir = "." ):
+        figure = self.figure_views[plot_type][backend]
+        if not figure:
+            return None
+        return figure.createFigure(self.transformed[transformation],data_dir)
 
-            filepath = os.path.join(outdir,fig_relpath)
+    def exportFigureData(self, plot_type, backend, transformation, formats=["csv"], outdir:str = ".") -> list[dict[str,str]]:
+        figure = self.figure_views[plot_type][backend]
+        if not figure:
+            return None
+        if self.report_uuid:
+            relpath = os.path.join(self.report_uuid,self.id,f"{plot_type}")
+        else:
+            relpath = os.path.join(self.id,f"{plot_type}")
 
-            os.makedirs(os.path.dirname(filepath),exist_ok=True)
+        filepath = os.path.join(outdir,relpath)
 
-            with open(filepath,"w") as f:
-                f.write(plotly_fig.to_json())
+        os.makedirs(os.path.dirname(filepath),exist_ok=True)
 
-            filepaths.append(fig_relpath)
-        return filepaths
+        exported_paths = {}
+        if "json" in formats:
+            with open(f"{filepath}.json","w") as f:
+                f.write(figure.createJson(self.transformed[transformation]))
 
+            exported_paths["json"] = f"{relpath}.json"
+        if "csv" in formats:
+            os.mkdir(filepath)
+            csvs = figure.createCsvs(self.transformed[transformation])
+            for csv in csvs:
+                csv_fn = os.path.join(filepath,f"{csv['title']}.csv")
+                with open(csv_fn,"w") as f:
+                    f.write(csv['data'])
+            exported_paths["csv"] = relpath
 
-    def dumpFigureCsvs(self, outdir:str = ".") -> str:
-        """ Returns the path relative to outdir """
-        filepaths = []
-        for figure,plot_type in zip(self.figures,self.plot_config.plot_types):
-            if self.report_uuid:
-                fig_relpath = os.path.join(self.report_uuid,self.id,f"{plot_type}.zip")
-            else:
-                fig_relpath = os.path.join(self.id,f"{plot_type}.zip")
-
-            filepath = os.path.join(outdir,fig_relpath)
-
-            os.makedirs(os.path.dirname(filepath), exist_ok=True)
-
-            csvs = figure.createCsvs(self.data)
-            with zipfile.ZipFile( file=filepath, mode="w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip_archive:
+        if "zip_csv" in formats:
+            csvs = figure.createCsvs( self.transformed[transformation] )
+            with zipfile.ZipFile( file=f"{filepath}.zip", mode="w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip_archive:
                 for csv in csvs:
                     zip_archive.writestr(zinfo_or_arcname=f"{csv['title']}.csv",data=csv['data'])
+            exported_paths["zip_csv"] = f"{relpath}.zip"
 
-            filepaths.append(fig_relpath)
-        return filepaths
-
-    # def generateAll(self):
-    #     if self.df is None or self.df.empty:
-    #         return []
-    #     return [
-    #         self.generateFigure(figure,plot_config.plot_types)
-    #         for figure,plot_config in zip(self.figures,self.plots_config)
-    #     ]
-
-    # def generateFigure(self,figure,plot_types):
-    #     return {
-    #         "plot_types": plot_types,
-    #         "subfigures": [self.generateSubfigure(subfigure) for subfigure in figure]
-    #     }
-
-    # def generateSubfigure(self, subfigure):
-    #     return {
-    #         "exports": [
-    #             { "display_text":"CSV", "data":[
-    #                 { "format":"csv", "prefix":"data","content":subfigure.createCsvs(self.df)}
-    #             ]},
-    #             { "display_text":"LaTeX", "data":[
-    #                 {"format":"tex","content":[{ "data":subfigure.createTex(self.df), "title":"figures" }]},
-    #                 {"format":"csv","content":subfigure.createCsvs(self.df)}
-
-    #             ]},
-    #         ],
-    #         "html": subfigure.createFigureHtml(self.df)
-    #     }
+        return exported_paths

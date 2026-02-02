@@ -2,9 +2,8 @@ import os
 from pandas import MultiIndex
 
 class Figure:
-    def __init__(self,plot_config,transformation_strategy):
+    def __init__(self,plot_config):
         self.config = plot_config
-        self.transformation_strategy = transformation_strategy
 
     def getIdealRange(self,df):
         """ Computes the [(min - eps), (max+eps)] interval for optimal y-axis display
@@ -15,10 +14,10 @@ class Figure:
         range_epsilon= 0.01
         return [ df.min().min() - df.min().min()*range_epsilon, df.max().max() + df.min().min()*range_epsilon ]
 
-    def createMultiindexFigure(self,df):
+    def createMultiindexFigure(self,df,data_dirpath):
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
-    def createSimpleFigure(self,df):
+    def createSimpleFigure(self,df,data_dirpath):
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
     def createCsvs(self,df):
@@ -29,49 +28,24 @@ class Figure:
             list[dict[str,str]]: A list of dictionaries containing the csv strings and their corresponding titles.
             Schema: [{"title":str, "data":str}]
         """
-        df = self.transformation_strategy.calculate(df)
         if isinstance(df.index,MultiIndex):
             return [{"title":key, "data":df.xs(key, level=0).to_csv()} for key in df.index.levels[0]]
         else:
             return [{"title":self.config.title, "data":df.to_csv()}]
 
-    def createFigure(self,df, **args):
+    def createFigure(self,df,data_dirpath, **args):
         """ Creates a figure from the master dataframe
         Args:
             df (pd.DataFrame). The master dataframe containing all reframe test data
         Returns:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
-        df = self.transformation_strategy.calculate(df)
         if isinstance(df.index,MultiIndex):
-            figure = self.createMultiindexFigure(df, **args)
+            figure = self.createMultiindexFigure(df,data_dirpath, **args)
         else:
-            figure = self.createSimpleFigure(df, **args)
+            figure = self.createSimpleFigure(df, data_dirpath, **args)
 
         return figure
 
-
-class CompositeFigure:
-    def createFigure(self, df):
-        return self.plotly_figure.createFigure(df)
-
-    def createTex(self, df):
-        if self.tikz_figure is not None:
-            return self.tikz_figure.createFigure(df)
-        else:
-            print(f"Warning: Tikz figure not implemented for plot type {self.__class__.__name__}")
-            return None
-
-    def createCsvs(self,df):
-        return self.plotly_figure.createCsvs(df)
-
-    def writeCsvs(self,df, path="."):
-        csvs = self.plotly_figure.createCsvs(df)
-        os.makedirs(path,exist_ok=True)
-        for csv in csvs:
-            with open(os.path.join(path,f"{csv.get('title','data')}.csv"),"w") as f:
-                f.write(csv["data"])
-
-
-    def createFigureHtml(self,df):
-        return self.plotly_figure.createHtml(df)
+    def createJson(self,df):
+        raise NotImplementedError
