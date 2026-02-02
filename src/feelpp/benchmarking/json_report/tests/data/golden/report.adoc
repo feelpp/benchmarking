@@ -103,21 +103,16 @@ Placeholders in this report allow dynamic insertion of values from the datasets.
 
     <div class="subfigure-container active" data-subfigure="1">
         <div id="graph-div-<FIGURE_ID>-1"> </div>
-        <div class='export-container'>
-            <a href='<ZIPPATH>' download>CSV</a>
-        </div>
+        <div class='export-container'> <a href='<ZIPPATH>' download>CSV</a> </div>
     </div>
+    <script>
+        fetch('<JSONPATH>')
+        .then(response => response.json())
+        .then(figure_json => { Plotly.newPlot('graph-div-<FIGURE_ID>-1',figure_json); })
+        .catch(err => console.error(err));
+    </script>
+
 </div>
-
-
-<script>
-    fetch('<JSONPATH>')
-    .then(response => response.json())
-    .then(figure_json => {
-        Plotly.newPlot('graph-div-<FIGURE_ID>-1',figure_json);
-    })
-    .catch(err => console.error(err));
-</script>
 
 ++++
 ====
@@ -131,21 +126,16 @@ Placeholders in this report allow dynamic insertion of values from the datasets.
 
     <div class="subfigure-container active" data-subfigure="1">
         <div id="graph-div-<FIGURE_ID>-1"> </div>
-        <div class='export-container'>
-            <a href='<ZIPPATH>' download>CSV</a>
-        </div>
+        <div class='export-container'> <a href='<ZIPPATH>' download>CSV</a> </div>
     </div>
+    <script>
+        fetch('<JSONPATH>')
+        .then(response => response.json())
+        .then(figure_json => { Plotly.newPlot('graph-div-<FIGURE_ID>-1',figure_json); })
+        .catch(err => console.error(err));
+    </script>
+
 </div>
-
-
-<script>
-    fetch('<JSONPATH>')
-    .then(response => response.json())
-    .then(figure_json => {
-        Plotly.newPlot('graph-div-<FIGURE_ID>-1',figure_json);
-    })
-    .catch(err => console.error(err));
-</script>
 
 ++++
 ====
