@@ -1,4 +1,4 @@
-import json, os, warnings
+import json, os, warnings, tempfile, shutil
 from uuid import uuid4
 
 from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
@@ -22,8 +22,9 @@ class JsonReportController:
 
 
     @classmethod
-    def initFromLoaded( cls, report: JsonReportSchema, report_data:dict, output_format:str="adoc" )->"JsonReportController":
+    def initFromLoaded( cls, id, report: JsonReportSchema, report_data:dict, output_format:str="adoc" )->"JsonReportController":
         json_report_ctrl = cls.__new__(cls)
+        json_report_ctrl.id = id
         json_report_ctrl.data = report_data
         json_report_ctrl.report = report
         json_report_ctrl.output_format = output_format
@@ -62,6 +63,7 @@ class JsonReportController:
         renderer = TemplateRenderer( template_paths=template_path, template_filename=template_filename )
         renderer.env.globals.update( {
             "zip":zip,
+            "JsonReportController":JsonReportController,
             "FiguresController":FiguresController,
             "TableController":TableController,
             "TextController":TextController
@@ -108,3 +110,17 @@ class JsonReportController:
         )
 
         return os.path.abspath(output_filepath)
+
+    def exportAsZip( self, output_dirpath: str, output_filename:str = None, **kwargs ) -> str:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            report_path = self.render(
+                output_dirpath=tmpdir,
+                output_filename=f"{output_filename}.{self.output_format}",
+                attachments_dirpath=os.path.join(tmpdir,"data"),
+                attachments_base_url = "./data",
+                **kwargs
+            )
+
+            shutil.make_archive(os.path.join(output_dirpath,output_filename),"zip",tmpdir)
+
+        return os.path.join(output_dirpath,output_filename)

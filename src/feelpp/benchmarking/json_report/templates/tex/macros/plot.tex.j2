@@ -10,11 +10,13 @@
     formats = ["csv"],
     outdir = context.attachments_dirpath
 )%}
+{% set data_url = (context.attachments_base_url or context.attachments_dirpath)~"/"~exported_paths["csv"] %}
+
 {%set fig = figure_ctrl.renderFigure(
     plot_type = plot_type,
     backend = "latex",
     transformation = plotNode.plot.transformation,
-    data_dir = context.attachments_dirpath~"/"~exported_paths["csv"]
+    data_dir = data_url
 ) %}
 
 {%if fig %}

@@ -1,6 +1,6 @@
 
-{%set json_report_ctrl = JsonReportController.initFromLoaded( report, report_data, output_format="tex" )%}
-{% set rendered_latex_path = json_report_ctrl.render(attachments_dirpath,"report.tex",attachments_dirpath=attachments_dirpath~"/data" ) %}
+{%set json_report_ctrl = JsonReportController.initFromLoaded(uuid, report, report_data, output_format="tex" )%}
+{% set rendered_latex_path = json_report_ctrl.exportAsZip(attachments_dirpath~"/"~uuid,"report" ) %}
 ++++
-<a href="{{rendered_latex_path}} dowload> LaTeX </a>"
+<a href="{{attachments_base_url~"/"~uuid~"/report.zip"}}" dowload> LaTeX </a>
 ++++
