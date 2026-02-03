@@ -24,7 +24,7 @@
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{ {{ cols_align }} }
+    \resizebox{\textwidth}{!}{\begin{tabular}{ {{ cols_align }} }
     \hline
     {% for col in table.columns %}{{ escapeSpecialChars(col)  }}{% if not loop.last %} & {% endif %}{% endfor %} \\
     \hline
@@ -32,7 +32,7 @@
         {% for cell in row %}{{ escapeSpecialChars(cell) }}{% if not loop.last %} & {% endif %}{% endfor %} \\
     {% endfor %}
     \hline
-    \end{tabular}
+    \end{tabular}}
     {% if tableNode.caption %}
     \caption{ {{ tableNode.caption }} }
     {% endif %}
