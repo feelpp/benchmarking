@@ -9,7 +9,7 @@ class Controller:
 
     @staticmethod
     def _asciidoc_to_latex_urls(text: str) -> str:
-        pattern = re.compile(r'([(<]*)(\S+?)\[(.*?)\]([)>.,;!?:]*)')
+        pattern = re.compile(r'([(<]*)([a-zA-Z][a-zA-Z0-9+.-]*:\S+?)\[(.*?)\]([)>.,;!?:]*)')
 
         def repl(m):
             pre, url, label, post = m.groups()
@@ -32,7 +32,7 @@ class Controller:
             text = re.sub( r"stem:\[\s*(.*?)\s*\]", r"$\1$", text )
 
             #italics
-            text = re.sub(r"(?<![A-Za-z0-9])_(\S(?:.*?\S)?)_(?![A-Za-z0-9])", r"\\textit{\1}", text )
+            re.sub(r'(?<![A-Za-z0-9\$])_(\S(?:.*?\S)?)_(?![A-Za-z0-9\$])', r'\\textit{\1}', text)
 
             #bold
             text = re.sub(r"(?<![A-Za-z0-9])\*(.+?)\*(?![A-Za-z0-9])", r"\\textbf{\1}", text )
