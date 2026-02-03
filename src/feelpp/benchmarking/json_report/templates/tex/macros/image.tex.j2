@@ -1,8 +1,10 @@
 {% macro includeGraphics(imageNode,styles,context={}) %}
+{% set img_filename = imageNode.downloadImage(context.attachments_dirpath~"/"~context.uuid) %}
+{% set img_url = (context.attachments_base_url or context.attachments_dirpath)~"/"~context.uuid~"/"~img_filename %}
 {% if 'img-fluid' in styles %}
-\includegraphics[width=\linewidth]{ {{ imageNode.downloadImage(context.attachments_dirpath) }} }
+\includegraphics[width=\linewidth]{ {{img_url}} }
 {% else %}
-\includegraphics{ {{ imageNode.downloadImage(context.attachments_dirpath) }} }
+\includegraphics{ {{img_url}} }
 {% endif %}
 {% endmacro %}
 

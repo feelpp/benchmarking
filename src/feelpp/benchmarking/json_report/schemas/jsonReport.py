@@ -48,7 +48,7 @@ class ImageNode(ReportNode):
         image_path = os.path.join(dirpath,image_name)
         with open(image_path,"wb") as f:
             f.write(response.content)
-        return image_path
+        return image_name
 
 class PlotNode(ReportNode):
     type: Literal["plot"]
