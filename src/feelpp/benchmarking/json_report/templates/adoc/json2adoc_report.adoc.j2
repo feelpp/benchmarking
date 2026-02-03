@@ -16,9 +16,10 @@
 {% import "macros/section.adoc.j2"    as section %}
 {{ section.render(report, report_data, 1, context=context) }}
 
-
-{%set json_report_ctrl = JsonReportController.initFromLoaded(uuid, report, report_data, output_format="tex" )%}
+{% if include_latex_download %}
+{% set json_report_ctrl = JsonReportController.initFromLoaded(uuid, report, report_data, output_format="tex" ) %}
 {% set rendered_latex_path = json_report_ctrl.exportAsZip(attachments_dirpath~"/"~uuid,"report" ) %}
 ++++
-<a href="{{attachments_base_url~"/"~uuid~"/report.zip"}}" dowload> LaTeX </a>
+<a class="download-btn latex-btn" href="{{attachments_base_url~"/"~uuid~"/report.zip"}}" dowload> LaTeX </a>
 ++++
+{% endif %}
