@@ -73,7 +73,7 @@ class Controller:
             os.mkdir(filepath)
             csvs = figure.createCsvs(self.transformed[transformation])
             for csv in csvs:
-                csv_fn = os.path.join(filepath,f"{csv['title']}.csv")
+                csv_fn = os.path.join(filepath,f"{csv['filename']}")
                 with open(csv_fn,"w") as f:
                     f.write(csv['data'])
             exported_paths["csv"] = relpath
@@ -82,7 +82,7 @@ class Controller:
             csvs = figure.createCsvs( self.transformed[transformation] )
             with zipfile.ZipFile( file=f"{filepath}.zip", mode="w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip_archive:
                 for csv in csvs:
-                    zip_archive.writestr(zinfo_or_arcname=f"{csv['title']}.csv",data=csv['data'])
+                    zip_archive.writestr(zinfo_or_arcname=f"{csv['filename']}",data=csv['data'])
             exported_paths["zip_csv"] = f"{relpath}.zip"
 
         return exported_paths

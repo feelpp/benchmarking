@@ -52,7 +52,7 @@ class TikzFigure(Figure):
             columns = df.columns.tolist(),
             secondary_axis = self.config.secondary_axis,
             anim_dimension_values = [str(dim) for dim in anim_dim_values],
-            csv_filenames = [os.path.join(data_dirpath,f"{dim}.csv") for dim in anim_dim_values],
+            csv_filenames = [os.path.join(data_dirpath,self.sanitizeFilename(f"{dim}.csv")) for dim in anim_dim_values],
             **args
         )
 
@@ -69,7 +69,7 @@ class TikzFigure(Figure):
             color_axis = self.config.color_axis,
             caption = self.config.title,
             columns = df.columns.tolist(),
-            csv_filenames = [os.path.join(data_dirpath,f"{self.config.title}.csv")],
+            csv_filenames = [os.path.join(data_dirpath,self.sanitizeFilename(f"{self.config.title}.csv"))],
             **args
         )
 

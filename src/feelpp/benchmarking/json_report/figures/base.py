@@ -20,18 +20,23 @@ class Figure:
     def createSimpleFigure(self,df,data_dirpath):
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
 
+    def sanitizeFilename(self,title:str):
+        """Creates a FS friendly filename. Mostly used to be latex compatible"""
+        t = str(title).replace(" ","-").replace("_","-")
+        return "".join(x for x in t if x.isalnum() or x in ["-","."])
+
     def createCsvs(self,df):
         """Creates the corresponding csv strings for the figure
         Args:
             df (pd.DataFrame). The master dataframe containing all reframe test data
         Returns:
             list[dict[str,str]]: A list of dictionaries containing the csv strings and their corresponding titles.
-            Schema: [{"title":str, "data":str}]
+            Schema: [{"filename":str, "data":str}]
         """
         if isinstance(df.index,MultiIndex):
-            return [{"title":key, "data":df.xs(key, level=0).to_csv()} for key in df.index.levels[0]]
+            return [{"filename":f"{self.sanitizeFilename(key)}.csv", "data":df.xs(key, level=0).to_csv()} for key in df.index.levels[0]]
         else:
-            return [{"title":self.config.title, "data":df.to_csv()}]
+            return [{"filename":f"{self.sanitizeFilename(self.config.title)}.csv", "data":df.to_csv()}]
 
     def createFigure(self,df,data_dirpath, **args):
         """ Creates a figure from the master dataframe
