@@ -22,8 +22,8 @@ class Figure:
 
     def sanitizeFilename(self,title:str):
         """Creates a FS friendly filename. Mostly used to be latex compatible"""
-        t = str(title).replace(" ","-").replace("_","-")
-        return "".join(x for x in t if x.isalnum() or x in ["-","."])
+        t = str(title).replace(" ","-")
+        return "".join(x for x in t if x.isalnum() or x in ["_","-","."])
 
     def createCsvs(self,df):
         """Creates the corresponding csv strings for the figure
