@@ -24,8 +24,6 @@
     {% endif %}
     {% if imageNode.id %}
     \label{ {{imageNode.id}} }
-    {% elif caption %}
-    \label{{'{'}}fig:{{caption | replace(' ','-')}}{{'}'}}
     {% endif %}
 \end{figure}
 {%else%}
@@ -33,8 +31,6 @@
 {% if caption %}\subcaption{{'{'}}{{caption}}{{'}'}}{% endif %}
 {% if imageNode.id %}
 \label{ {{imageNode.id}} }
-{% elif caption %}
-\label{{'{'}}fig:{{caption | replace(' ','-')}}{{'}'}}
 {% endif %}
 {% endif %}
 {% endmacro %}
