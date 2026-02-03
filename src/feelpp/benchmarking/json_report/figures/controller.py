@@ -28,8 +28,8 @@ class Controller:
 
         self.figure_views = {
             plot_type : {
-                "plotly": PlotlyFigureFactory.create(plot_type,plot_config=self.plot_config),
-                "latex": TikzFigureFactory.create(plot_type,plot_config=self.plot_config),
+                "plotly": lambda pt=plot_type : PlotlyFigureFactory.create(pt,plot_config=self.plot_config),
+                "latex":  lambda pt=plot_type : TikzFigureFactory.create(pt,plot_config=self.plot_config)
             }
             for plot_type in self.plot_config.plot_types
         }
@@ -45,13 +45,13 @@ class Controller:
 
 
     def renderFigure(self, plot_type, backend, transformation, data_dir = "." ):
-        figure = self.figure_views[plot_type][backend]
+        figure = self.figure_views[plot_type][backend]()
         if not figure:
             return None
         return figure.createFigure(self.transformed[transformation],data_dir)
 
     def exportFigureData(self, plot_type, backend, transformation, formats=["csv"], outdir:str = ".") -> list[dict[str,str]]:
-        figure = self.figure_views[plot_type][backend]
+        figure = self.figure_views[plot_type][backend]()
         if not figure:
             return None
         if self.report_uuid:
