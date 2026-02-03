@@ -2,7 +2,8 @@
 
 {% set figure_ctrl = FiguresController(data.get(plotNode.ref),plotNode.plot, context.uuid) %}
 
-{% for plot_type in figure_ctrl.figure_views.keys() %}
+{# CURRENTLY ONLY THE FIRST PLOT TYPE IS EXPORTED #}
+{% set plot_type = plotNode.plot.plot_types[0] %}
 {% set exported_paths = figure_ctrl.exportFigureData(
     plot_type = plot_type,
     backend = "latex",
@@ -23,5 +24,4 @@
 {{fig}}
 {% endif %}
 
-{% endfor %}
 {% endmacro %}

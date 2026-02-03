@@ -1,16 +1,21 @@
 \DeclareRobustCommand{\plot}[2][]{
   \begin{tikzpicture}
     \begin{axis}[
-      width=\textwidth, height=0.6172\textwidth,
+      width=0.95\textwidth, height=\linewidth,
       xlabel={ {{xaxis.label}} }, ylabel={ {{yaxis.label}} },
       xtick=data, xtick align=outside,
+      ylabel style={font=\small},
       ymajorgrids=true, yminorgrids=true,
       xticklabels from table={{'{#2}'}}{{'{'}}{{xaxis.parameter}}{{'}'}},
-      cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}
+      xticklabel style={rotate=45, anchor=east, font=\scriptsize},
+      yticklabel style={font=\scriptsize},
+      cycle list name=color list,
+      legend to name=customlegend,
+      legend style={font=\small}
     ]
     {% for col in columns %}
       {% if col not in fill_lines %}
-      \addplot table [x expr=\coordindex, y={{ col }}] {{'{#2}'}} ;
+      \addplot+[mark=*,mark size=0.7pt] table [x expr=\coordindex, y={{ col }}] {{'{#2}'}} ;
       \addlegendentry{ {{col}} }
       {% endif %}
     {% endfor %}
@@ -34,14 +39,28 @@
 
 
 \begin{figure}[H]
+  \centering
+  {% if anim_dimension_values %}
+    {% set n = anim_dimension_values | length %}
+    {% set ncols = (n**0.5) | round(0, 'ceil') %}
+    {% set nrows = (n / ncols) | round(0, 'ceil') %}
+    {% set subfig_width = ((0.95 / ncols) | round(3)) %}
 
-{% if anim_dimension_values %}
-  {% for dim in anim_dimension_values %}
-  \plot{\data{{ loop.index | inttouniquestr }}}
-  \caption{ {{secondary_axis.label}}={{dim}} }
-  {% endfor %}
-{% else %}
-  \plot{\data{{1 | inttouniquestr }}}
-{% endif %}
-\caption{ {{caption}} }
+    {% for dim in anim_dimension_values %}
+      \begin{subfigure}[t]{ {{subfig_width}}\textwidth} % adjust width as needed
+        \centering
+        \plot{\data{{ loop.index | inttouniquestr }}}
+        \caption{ {{secondary_axis.label}}={{dim}} }
+      \end{subfigure}
+      {% if (loop.index0 + 1)  % ncols == 0 %}
+        \par\vspace{1em}
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    \plot{\data{{1 | inttouniquestr }}}
+  {% endif %}
+  \vspace{1em}
+  \centering
+  \pgfplotslegendfromname{customlegend}
+  \caption{ {{caption}} }
 \end{figure}
