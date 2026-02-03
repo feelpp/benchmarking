@@ -28,6 +28,9 @@ class Controller:
         if format == "adoc":
             pass
         elif format == "tex":
+            #Escape comments
+            text = text.replace("%","\%")
+
             # stem
             text = re.sub( r"stem:\[\s*(.*?)\s*\]", r"$\1$", text )
 
