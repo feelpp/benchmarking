@@ -27,7 +27,7 @@
 
 
 {% for fn in csv_filenames %}
-\pgfplotstableread[col sep=comma]{{'{\detokenize{'}}{{fn}}{{'}}'}}\data{{loop.index | inttouniquestr }}
+\pgfplotstableread[col sep=comma]{{'{\\detokenize{'}}{{fn}}{{'}}'}}\data{{loop.index | inttouniquestr }}
 {% endfor %}
 
 
