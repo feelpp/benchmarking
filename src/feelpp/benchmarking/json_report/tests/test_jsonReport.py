@@ -23,6 +23,12 @@ def normalizeReport(content: str) -> str:
         content, flags=re.DOTALL
     )
 
+    content = re.sub(
+        r"\\detokenize\{[^}]*\}",
+        r"\\detokenize{<LOCALPATH>}",
+        content, flags=re.DOTALL
+    )
+
 
     lines = [line.rstrip() for line in content.splitlines() if line.strip()]
     return "\n".join(lines)
@@ -47,7 +53,8 @@ def assert_report_matches_golden(output_file: str, golden_file: str):
 @pytest.mark.parametrize("report_filename",
     ["basic_text.json", "list_with_data.json", "table_features.json", "plot_features.json","preprocessor.json","report.json" ]
 )
-def test_jsonReportCases(report_filename,output_format="adoc"):
+@pytest.mark.parametrize("output_format",["adoc","tex"])
+def test_jsonReportCases(report_filename,output_format):
     data_dir = os.path.join(os.path.dirname(__file__),"data")
     controller = JsonReportController(
         report_filepath=os.path.join(data_dir,report_filename),
@@ -55,6 +62,6 @@ def test_jsonReportCases(report_filename,output_format="adoc"):
     )
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        output_file = controller.render(output_dirpath=os.path.join(data_dir,tmpdir))
+        output_file = controller.render(output_dirpath=os.path.join(data_dir,"outputs"))
         golden_file = os.path.join(data_dir,"golden",report_filename.replace(".json",f".{output_format}"))
         assert_report_matches_golden(output_file,golden_file)

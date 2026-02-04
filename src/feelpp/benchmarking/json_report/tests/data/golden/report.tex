@@ -1,0 +1,163 @@
+\documentclass[11pt]{report}
+
+\usepackage{graphicx}
+\usepackage{pgf-pie}
+\usepackage{currfile}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{underscore}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[parfill]{parskip}
+
+
+\setlength{\parindent}{0pt}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=newest}
+
+
+\begin{document}
+
+\chapter{}
+
+\section{Report Overview}
+
+This report analyzes students' performance, attendance, and remarks across multiple subjects. We summarize scores, compute averages, and visualize trends.
+
+Placeholders in this report allow dynamic insertion of values from the datasets. For example, total students: 9.
+
+\section{Student Table}
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l r c c }
+    \hline
+name & subject \\
+    \hline
+ALICE & Math \\
+BOB & Math \\
+CHARLIE & Math \\
+ALICE & Physics \\
+BOB & Physics \\
+CHARLIE & Physics \\
+ALICE & Chemistry \\
+BOB & Chemistry \\
+CHARLIE & Chemistry \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+\section{Attendance}
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l l l }
+    \hline
+name & subject \\
+    \hline
+Alice & Math \\
+Bob & Math \\
+Charlie & Math \\
+Alice & Physics \\
+Bob & Physics \\
+Charlie & Physics \\
+Alice & Chemistry \\
+Bob & Chemistry \\
+Charlie & Chemistry \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+\section{Performance Analysis}
+
+\DeclareRobustCommand{\plot}[2][]{
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.95\textwidth, height=\linewidth,
+      xlabel={ Subject }, ylabel={ Average Score },
+      xtick=data, xtick align=outside,
+      ylabel style={font=\scriptsize},
+      xlabel style={font=\scriptsize},
+      ymajorgrids=true, yminorgrids=true,
+      xticklabels from table={#2}{subject},
+      xticklabel style={rotate=45, anchor=east, font=\scriptsize},
+      yticklabel style={font=\scriptsize},
+      cycle list name=color list,
+      legend to name=customlegend,
+      legend style={font=\small}
+    ]
+      \addplot+[mark=*,mark size=0.7pt] table [x expr=\coordindex, y=ALICE] {#2} ;
+      \addlegendentry{ ALICE }
+      \addplot+[mark=*,mark size=0.7pt] table [x expr=\coordindex, y=BOB] {#2} ;
+      \addlegendentry{ BOB }
+      \addplot+[mark=*,mark size=0.7pt] table [x expr=\coordindex, y=CHARLIE] {#2} ;
+      \addlegendentry{ CHARLIE }
+
+
+    \end{axis}
+  \end{tikzpicture}
+}
+
+\pgfplotstableread[col sep=comma]{\detokenize{<LOCALPATH>}}\dataA
+
+\begin{figure}[H]
+  \centering
+    \plot{\dataA}
+  \vspace{1em}
+  \centering
+  \pgfplotslegendfromname{customlegend}
+  \caption{ Average Scores by Subject }
+\end{figure}
+
+\DeclareRobustCommand{\plot}[2][]{
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.95\textwidth, height=0.6172\textwidth,
+      xlabel={ Student }, ylabel={ Attendance (%) },
+      xtick=data, xtick align=outside,
+      ylabel style={font=\scriptsize},
+      xlabel style={font=\scriptsize},
+      xticklabels from table={#2}{name},
+      xticklabel style={rotate=45, anchor=east, font=\scriptsize},
+      yticklabel style={font=\scriptsize},
+      ymajorgrids=true, yminorgrids=true,
+      bar width=7pt,
+      cycle list name=color list,
+      ybar,
+      legend to name=customlegend,
+      legend style={font=\small}
+    ]
+      \addplot table [x expr=\coordindex, y=Chemistry] {#2} ;
+      \addlegendentry{ Chemistry }
+      \addplot table [x expr=\coordindex, y=Math] {#2} ;
+      \addlegendentry{ Math }
+      \addplot table [x expr=\coordindex, y=Physics] {#2} ;
+      \addlegendentry{ Physics }
+
+    \end{axis}
+  \end{tikzpicture}
+}
+
+\pgfplotstableread[col sep=comma]{\detokenize{<LOCALPATH>}}\dataA
+
+\begin{figure}[H]
+  \centering
+    \plot{\dataA}
+  \vspace{1em}
+  \centering
+  \pgfplotslegendfromname{customlegend}
+  \caption{ Attendance Rate by Student }
+\end{figure}
+
+The scatter plot shows average scores per subject, while the bar chart shows average attendance rates for each student.
+
+\section{Teacher Notes}
+
+Teacher remarks (loaded from a raw text file with preprocessing applied): Excellent performance by Alice in most subjects. Bob shows consistent improvement. Charlie needs attention in Math but is improving in Physics and Chemistry.
+
+\end{document}
