@@ -48,9 +48,12 @@ class TemplateRenderer:
         """Configures global variables available to all templates loaded by this environment."""
         self.env.globals["renderTemplate"] = self.renderTemplate
         self.env.globals["ValidateJsonReport"] = JsonReportSchema.model_validate
+
+        from feelpp.benchmarking.json_report.renderer import JsonReportController
         self.env.globals.update( {
             "FiguresController":FiguresController,
-            "TableController":TableController
+            "TableController":TableController,
+            "JsonReportController":JsonReportController
         } )
 
     def setFilters( self ) -> None:
