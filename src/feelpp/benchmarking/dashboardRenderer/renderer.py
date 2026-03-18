@@ -118,7 +118,8 @@ class BaseRendererFactory:
             )
         template_dirs = [
             os.path.join(Path(__file__).resolve().parent,"templates"),
-            os.path.join(files("feelpp.benchmarking.json_report"),"templates")
+            os.path.join(files("feelpp.benchmarking.json_report"),"templates","adoc"),
+            os.path.join(files("feelpp.benchmarking.json_report"),"templates","tex")
         ]
         if extra_templated_dir:
             template_dirs += [extra_templated_dir]
