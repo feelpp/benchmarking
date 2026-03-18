@@ -134,7 +134,7 @@ class ComponentTree(TreeNode):
         super().render(base_path,None,renderLeaves=False)
         self.leaf_repository.render(base_path)
 
-    def patchTemplateInfo( self, patches:list[str], targets:str, prefix:str, save:bool = False ):
+    def patchTemplateInfo( self, patches:List[str], targets:str, prefix:str, save:bool = False ):
         """
         Applies template patches to specific leaf components based on the given target criteria.
 

@@ -1,7 +1,25 @@
 import reframe.utility.sanity as sn
-import os, re,json
+import os, re,json, numbers
 from feelpp.benchmarking.reframe.config.configReader import TemplateProcessor
 
+
+class StringNumber(float):
+    def __new__(cls, value):
+        obj = float.__new__(cls, float('nan'))
+        obj.payload = value
+        return obj
+    def __init__(self, value): self.value = value
+    def __repr__(self): return str(self.value)
+    def __str__(self): return str(self.value)
+    def __float__(self): return str(self.value)
+    def __int__(self): return str(self.value)
+    def __add__(self, other): return self.value + other
+    def __radd__(self, other): return other + self.value
+    def __eq__(self, value): return self.value == value
+    def __le__(self, other): return self.value
+    def __lt__(self, other): return self.value
+    def __ge__(self, other): return self.value
+    def __gt__(self, other): return self.value
 
 class Extractor:
     def __init__(self,filepath,stage_name, units):
@@ -24,7 +42,14 @@ class Extractor:
                 perfvar_name = f"{self.stage_name}_{col}" if self.stage_name else col
                 if nb_rows > 1:
                     perfvar_name = f"{perfvar_name}_{line}"
-                perf_variables[perfvar_name] = sn.make_performance_function(vars[line][i],unit=self.units.get(col,self.units["*"]))
+
+                val = vars[line][i]
+                unit = self.units.get(col, self.units["*"])
+
+                if isinstance(val.evaluate(), str):
+                    val = sn.defer(StringNumber(val.evaluate()))
+
+                perf_variables[perfvar_name] = sn.make_performance_function(val,unit=unit)
 
         return perf_variables
 
