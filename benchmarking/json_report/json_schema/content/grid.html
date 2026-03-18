@@ -358,7 +358,7 @@ MathJax.Hub.Config({
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <strong>Grid Node</strong> is a layout node that can be used to structure content into a grid.</p>
+<p>The <strong>Grid Node</strong> is a layout node that can be used to structure content into a grid. Mainly used to arrange images, plots, or tables side by side in a visually appealing manner. Sub figures or sub plots can be created using this node, but numbering and labeling must be handled manually within the captions of the child nodes.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -377,10 +377,22 @@ MathJax.Hub.Config({
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Optional.</strong> Identifies the grid node within the report. Used for internal cross referencing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Must be set to <code>"grid"</code>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>"grid"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>caption</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Optional.</strong> A descriptive caption for the grid.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>contents</code></p></td>

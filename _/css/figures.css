@@ -1,31 +1,26 @@
 .figure-container {
     position: relative;
-    margin: 1.5rem auto;
-    padding: 1rem;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 1.2rem 0;
+    background: none;
+    box-shadow: none;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .subfigure-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-top: none;
-    border-radius: 0 0 8px 8px;
+    inset: 0;
+    background: none;
+    padding: 0;
+    border: none;
 }
 
 .subfigure-container.active {
     position: relative;
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 1;
 }
 
 .subfigure-container.inactive {
@@ -37,42 +32,76 @@
 /* Tabs container: display buttons inline with a bottom border to indicate grouping */
 .tabs-container {
     display: flex;
-    border-bottom: 2px solid #007acc;
-    margin-bottom: 0.5rem;
+    justify-content: flex-start;
+    gap: 0;
+    margin-bottom: 0.4rem;
 }
 
-/* Figure tab button styling */
+
 .figure-tab {
-    background: transparent;
+    background: none;
     border: none;
-    outline: none;
-    padding: 0.5rem 1rem;
-    margin-right: 0.3rem;
-    font-size: 1rem;
-    color: #007acc;
+    font-size: 0.9rem;
+    color: #444;
     cursor: pointer;
-    border-radius: 4px 4px 0 0;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    border: 1px solid #ccc;
+    padding: 0.2rem 0.5rem;
 }
 
-.figure-tab:hover,
-.figure-tab.active {
-    background-color: #007acc;
-    color: #fff;
+.figure-tab:hover {
+    color: #000;               /* subtle darkening on hover */
+    background: none;          /* no hover background */
+}
+
+
+.export-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.3rem;
+    margin-bottom: 0.3rem;
 }
 
 .export-container button {
-    background-color: #007acc;
-    color: #fff;
+    background: none;
+    color: #666;
     border: none;
-    padding: 0.4rem 0.8rem;
-    margin-right: 0.4rem;
-    border-radius: 4px;
+    padding: 0;
+    font-size: 0.75rem;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
+    text-decoration: underline;
 }
 
 .export-container button:hover {
-    background-color: #005fa3;
+    color: #000;
+}
+
+.exampleblock.plot{
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Example block styling for plots */
+.exampleblock.plot,.exampleblock.grid,.exampleblock.image {
+    border: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.exampleblock.plot>.content,.exampleblock.grid>.content ,.exampleblock.image>.content {
+    order: 1;
+    padding: 0;
+    border: none;
+}
+
+.exampleblock.plot>.title,.exampleblock.grid>.title,.exampleblock.image>.title, .plotly-figure-caption{
+    order: 2;
+    text-align: center;
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+.exampleblock.example {
+    border-left: 4px solid var(--brand-primary);
 }
