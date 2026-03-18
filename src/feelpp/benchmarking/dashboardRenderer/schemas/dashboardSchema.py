@@ -124,11 +124,11 @@ class TemplateDefaults(BaseModel):
 
 
 class DashboardSchema(BaseModel):
-    dashboard_metadata:Optional[Union[dict[str,str],TemplateInfo]] = TemplateInfo(data={})
+    dashboard_metadata:Optional[Union[Dict[str,str],TemplateInfo]] = TemplateInfo(data={})
     component_map: Union[ComponentMap,Dict]
-    components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
+    components: Dict[str,Dict[str, Union[Dict[str,str],TemplateInfo]]]
     views : Optional[Dict[str,Union[Dict,str]]] = None
-    repositories : Optional[Dict[str,Union[dict[str,str],TemplateInfo]]] = None
+    repositories : Optional[Dict[str,Union[Dict[str,str],TemplateInfo]]] = None
     template_defaults: Optional[TemplateDefaults] = TemplateDefaults()
 
     @model_validator(mode="after")
