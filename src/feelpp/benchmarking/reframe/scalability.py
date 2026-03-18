@@ -27,6 +27,13 @@ class Extractor:
         self.stage_name = stage_name
         self.units = units
 
+    @staticmethod
+    def _tryCastFloat(x):
+        try:
+            return float(x)
+        except ValueError:
+            return x
+
     def _getPerfVars(self,columns,vars):
         perf_variables = {}
         nb_rows = len(vars.evaluate())
@@ -145,27 +152,60 @@ class JsonExtractor(Extractor):
         return items.keys(),sn.defer([[sn.defer(v) for v in items.values()]])
 
 
+class RegexExtractor(Extractor):
+    def __init__(self, filepath, stage_name, units, pattern, variable_name_group, variable_value_group):
+        super().__init__(filepath, stage_name, units)
+        self.pattern = pattern
+        self.variable_name_group = variable_name_group
+        self.variable_value_group = variable_value_group
+
+    def _extractVariables(self):
+        if self.variable_name_group:
+            tags = (self.variable_name_group, self.variable_value_group)
+            conv = (str,self._tryCastFloat)
+        else:
+            tags = self.variable_value_group
+            conv = self._tryCastFloat
+
+        raw_results = sn.extractall(rf"{self.pattern}", self.filepath, tags, conv=conv)
+
+        if self.variable_name_group:
+            columns = [x[0].strip() for x in raw_results]
+            matches = [x[1] for x in raw_results]
+        else:
+            matches = [x for x in raw_results]
+            columns = [f"match_{i}" for i in range(len(matches))]
+
+        return columns, sn.defer([matches])
+
 class ExtractorFactory:
     """Factory class for extractor strategies"""
     @staticmethod
-    def create(stage,directory,index=None):
-        filepath = os.path.join(directory,stage.filepath)
+    def create(stage,directory,index=None, stdout = None):
+        if stage.filepath == "stdout":
+            filepath = stdout
+        else:
+            filepath = os.path.join(directory,stage.filepath)
+
         if stage.format == "csv":
             return CsvExtractor(filepath=filepath, stage_name = stage.name, units=stage.units)
         elif stage.format == "tsv":
             return TsvExtractor(filepath=filepath,stage_name = stage.name,index=index, units=stage.units)
         elif stage.format == "json":
             return JsonExtractor(filepath=filepath,stage_name = stage.name, variables_path=stage.variables_path, units=stage.units)
+        elif stage.format == "regex":
+            return RegexExtractor(filepath=filepath,stage_name = stage.name, pattern=stage.pattern, units=stage.units, variable_name_group=stage.variable_name_group, variable_value_group=stage.variable_value_group)
         else:
             raise NotImplementedError
 
 
 class ScalabilityHandler:
     """ Class to handle scalability related attributes"""
-    def __init__(self,scalability_config):
+    def __init__(self,scalability_config, stdout = None):
         self.directory = scalability_config.directory
         self.stages =  scalability_config.stages
         self.custom_variables = scalability_config.custom_variables
+        self.stdout = stdout
 
     def getPerformanceVariables(self,index=None):
         """ Opens and parses the performance variable values depending on the config setup.
@@ -175,7 +215,7 @@ class ScalabilityHandler:
         """
         perf_variables = {}
         for stage in self.stages:
-            extractor = ExtractorFactory.create(stage,self.directory,index)
+            extractor = ExtractorFactory.create(stage,self.directory,index, self.stdout)
             perf_variables.update( extractor.extract() )
 
         return perf_variables
