@@ -59,7 +59,7 @@ class LocalLeafLoader(LeafLoader):
         if not os.path.exists( location ):
             warnings.warn(f"{location} does not contain any files")
 
-    def load(self,repository:Repository, parent_ids:list[str]) -> None:
+    def load(self,repository:Repository, parent_ids:List[str]) -> None:
         """
         Load local leaf components (in the filesystem) into the repository.
         It iterates over subdirectories in the `self.location`, treating each as a separate leaf component, and uses the `ViewFactory` to create a view for it.
