@@ -4,13 +4,18 @@
 {%set table = table_controller.generate() %}
 
 
-{% if tableNode.caption %}
-.{{tableNode.caption}}
-{% endif %}
 {% if tableNode.style.classnames %}
 [{% for classname in tableNode.style.classnames %}.{{classname}}{% endfor %}]
 {% endif %}
 --
+{% if tableNode.id %}
+[[{{tableNode.id}}]]
+{% elif tableNode.caption %}
+[[{{tableNode.caption | replace(' ','-')}}]]
+{% endif %}
+{% if tableNode.caption %}
+.{{tableNode.caption}}
+{% endif %}
 [cols="{{ table_controller.getColsAlignment() }}",options="header"]
 |===
 
