@@ -21,10 +21,10 @@
       xticklabels from table={{'{#2}'}}{{'{'}}{{xaxis.parameter}}{{'}'}},
       cycle list name=color list, legend style={at={(0.5,-0.1)},anchor=north}
     ]
-    {% for var,name in zip(variables,names) %}
+    {% for var in variables %}
       {% if var not in fill_lines %}
       \addplot table [x expr=\coordindex, y={{ var }}] {{'{#2}'}} ;
-      \addlegendentry{ {{name}} }
+      \addlegendentry{ {{var}} }
       {% endif %}
     {% endfor %}
 
