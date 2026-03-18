@@ -1,0 +1,83 @@
+= Internal Cross References
+
+It is possible to assign an optional unique identifier to any content node within the JSON report schema. This identifier can then be used to create internal cross-references within the report, allowing for easy navigation between different sections or elements.
+
+== Assigning Identifiers
+
+To assign an identifier to a content node, include the `id` field in the node's JSON object. The value of this field should be a unique string that serves as the identifier for that node.
+
+[source,json]
+----
+{
+  "type": "section",
+  "id": "introduction",
+  "title": "Introduction",
+  "contents": [
+    // Other content nodes
+  ]
+}
+----
+In this example, the section node is assigned the identifier `"introduction"`.
+
+[IMPORTANT]
+Ensure that each id contains only alphanumeric characters, underscores, or hyphens, and does not start with a number. This ensures compatibility with AsciiDoc cross-referencing conventions.
+
+== Figure and Table Numbering
+
+Tables, figures and images are automatically numbered in the order they appear in the report. However, tables will be prefixed with "Table", figures, plots and images will be prefixed with "Figure". This means that automatic numbering will be independent between tables and figures/images.
+
+[IMPORTANT]
+Elements included inside a grid node are NOT automatically numbered. You must manually include numbering in the caption if desired (e.g. "Figure 1a: ..."). The counter for the automatic numbering will not be incremented for these elements.
+
+== Creating Cross-References
+
+To create a cross-reference to a content node with an assigned identifier, use the link:https://docs.asciidoctor.org/asciidoc/latest/macros/xref/#internal-cross-references[AsciiDoc cross-referencing syntax]. The format is `\<<id, Display Text>>`, where `id` is the identifier of the target node, and `Display Text` is the text that will be displayed as the link in the report.
+
+[source,asciidoc]
+----
+See <<introduction, Introduction Section>> for more details.
+----
+
+In this example, the text "Introduction Section" will be a clickable link that navigates to the section with the identifier `"introduction"`.
+
+[TIP]
+For images, figures and tables, it is possible to reference via their caption without the use of an explicit id (though it is discouraged for clarity). To do so, remove any parentheses from the reference, and replace spaces with hyphens. For example, if a table has the caption "Performance Metrics", you can reference it using `\<<Performance-Metrics>>`.
+
+[IMPORTANT]
+Ensure that the identifiers used in cross-references match exactly with those assigned to the content nodes, including case sensitivity. Mismatched identifiers will result in broken links in the final report.
+
+== Example
+
+[source,json]
+----
+{
+  "contents": [
+    {
+        "type":"text",
+        "id":"intro_text",
+        "text":"Welcome to the report."
+    },
+    {
+        "type":"section",
+        "id":"data_analysis",
+        "title":"Data Analysis",
+        "contents":[
+            {
+                "type":"table",
+                "id":"results_table",
+                "ref":"results_data",
+                "caption":"Results Overview"
+            },
+            {
+                "type":"text",
+                "text":"Refer to <<intro_text, the introduction>> for context."
+            }
+        ]
+    },
+    {
+        "type":"text",
+        "text":"See <<results_table, the results table>> for detailed metrics."
+    }
+  ]
+}
+----

@@ -47,33 +47,22 @@
             "contents": [
                 {
                     "type": "table",
-                    "ref": "reframe_df",
+                    "ref": "parameter_table",
                     "layout": {
-                        "columns": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total"],
-                        "computed_columns":{
-                            "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'"
-                        },
                         "rename": {
                             "testcases.time_total": "Total Time (s)",
                             "testcases.hashcode": "Hash",
                             "result": "",
                             "logs_link":""
                         },
-                        "group_by": { "columns": ["testcases.hashcode"], "agg": "first" },
-                        "format": {
-                            "testcases.time_total": "%.3f",
-                            "tasks":"%.0f",
-                            "elements":"%.0f",
-                            "result": { "pass": "🟢", "fail": "🔴" }
-                        },
-                        "column_order": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total","logs_link"],
-                        "style": {
-                            "column_align": { "result": "center" },
-                            "column_width":{ "result":1,"logs_link":1},
-                            "classnames": ["scrollable", "sortable"]
-                        }
+                        "column_order": ["result", "testcases.hashcode", "tasks", "elements", "testcases.time_total","logs_link"]
                     },
-                    "filter": { "placeholder": "Filter testcases..." }
+                    "filter": { "placeholder": "Filter testcases..." },
+                    "style": {
+                        "column_align": { "result": "center" },
+                        "column_width":{ "result":1,"logs_link":1},
+                        "classnames": ["scrollable", "sortable"]
+                    }
                 }
             ]
         },

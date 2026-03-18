@@ -1,8 +1,17 @@
 {% macro render(latexNode,data) %}
 
+{% if latexNode.id %}
+[[{{latexNode.id}}]]
+{% endif %}
 [stem]
 ++++
+{%if latexNode.is_equation %}
+\begin{equation}
 {{ latexNode.latex }}
+\end{equation}
+{% else %}
+{{ latexNode.latex }}
+{% endif %}
 ++++
 
 {% endmacro %}

@@ -17,6 +17,9 @@
 
 {% macro render(sectionNode, report_data, level=1) %}
 
+{% if sectionNode.id %}
+[[{{sectionNode.id}}]]
+{% endif %}
 {%if sectionNode.title %}
 {{ '=' * level }} {{ sectionNode.title }}
 {%endif%}
