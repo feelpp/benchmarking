@@ -1,28 +1,17 @@
-\documentclass[12pt]{article}
-
-\usepackage{pgf-pie}  % For pie charts
-\usepackage{currfile} % Required for getting the current file name
-\usepackage{tikz}     % Required for drawing graphics
-\usepackage{pgfplots}
-\usepackage{pgfplotstable}
-\pgfplotsset{compat=newest}
-\usepackage{underscore}
 
 \makeatletter
-\newcommand\resetstackedplots{
+\DeclareRobustCommand\resetstackedplots{
 \makeatletter
 \pgfplots@stacked@isfirstplottrue
 \makeatother
 }
 
-\begin{document}
-
 {% for fn in csv_filenames %}
-\pgfplotstableread[col sep=comma]{{'{'}}{{fn}}{{'}'}}\data{{loop.index | inttouniquestr }}
+\pgfplotstableread[col sep=comma]{{'{\\detokenize{'}}{{fn}}{{'}}'}}\data{{loop.index | inttouniquestr }}
 {% endfor %}
 
 
-\begin{figure}
+\begin{figure}[H]
 
   \begin{tikzpicture}
     \begin{axis}[
@@ -41,10 +30,10 @@
       {% if i > 1 %}
       \resetstackedplots
       {% endif %}
-      {% for var,color in zip(variables, colors) %}
-      \addplot+[ybar, bar width=0.2,point meta=y,draw=black,fill={{color}}{% if i > 1 %}, forget plot{% endif %} ] table [x expr=\coordindex+0.25*{{i}}, y={{ var }}] {\data{{i | inttouniquestr}}} ;
+      {% for col,color in zip(columns, colors) %}
+      \addplot+[ybar, bar width=0.2,point meta=y,draw=black,fill={{color}}{% if i > 1 %}, forget plot{% endif %} ] table [x expr=\coordindex+0.25*{{i}}, y={{ col }}] {\data{{i | inttouniquestr}}} ;
       {% if i == 1%}
-      \addlegendentry{ {{var}} }
+      \addlegendentry{ {{col}} }
       {% endif %}
       {% endfor %}
     {% endfor %}
@@ -54,5 +43,3 @@
 
   \caption{ {{caption}} }
 \end{figure}
-
-\end{document}

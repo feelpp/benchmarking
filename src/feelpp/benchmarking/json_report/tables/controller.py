@@ -25,13 +25,24 @@ class Controller:
         return df
 
 
-    def getColsAlignment(self) -> str:
+    def getColsAlignment(self,format="adoc") -> str:
         """
         Generate the AsciiDoc cols="..." string based on column_align in style.
         Defaults to 'left' if not specified.
         Returns a string like: "c,l,r,l,r"
         """
-        align_map = {"left": "<", "center": "^", "right": ">"}
+        if format=="adoc":
+            align_map = {"left": "<", "center": "^", "right": ">"}
+            default_align = "<"
+            separator=","
+            formatter = lambda align,width : f"{align}{width}"
+        elif format=="tex":
+            align_map = {"left": "l", "center": "c", "right": "r"}
+            default_align = "l"
+            separator=" "
+            formatter = lambda align,width : f"{align}"
+        else:
+            raise NotImplementedError(f"Format not recognized during table column alignment extraction.. : {format}")
 
         cols = []
         column_align = self.style.column_align
@@ -39,9 +50,9 @@ class Controller:
         for col in self.layout.column_order or []:
             a = column_align.get(col)
             w = column_width.get(col,3)
-            cols.append(f"{align_map.get(a,'<')}{w}")
+            cols.append(formatter(align_map.get(a,default_align),w))
 
-        return ",".join(cols)
+        return separator.join(cols)
 
     def _renameColumns(self, df: pd.DataFrame) -> pd.DataFrame:
         if self.layout.rename:

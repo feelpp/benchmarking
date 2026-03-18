@@ -1,12 +1,10 @@
-{% macro render(imageNode,data,make_block = True) %}
+{% macro render(imageNode,data,make_block = True, context={}) %}
 {% set src = imageNode.src %}
 {% set alt = imageNode.alt or imageNode.caption or "" %}
 {% set styles = imageNode.style | join(' ')%}
 
 {% if imageNode.id %}
 [[{{imageNode.id}}]]
-{% elif imageNode.caption %}
-[[{{imageNode.caption | replace(' ','-') | replace('(','') | replace(')','') }}]]
 {% endif %}
 {% if imageNode.caption %}
 .{{imageNode.caption}}

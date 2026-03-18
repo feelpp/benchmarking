@@ -1,0 +1,129 @@
+
+\documentclass[11pt]{report}
+
+\usepackage{graphicx}
+\usepackage{pgf-pie}
+\usepackage{currfile}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{underscore}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[parfill]{parskip}
+
+\setlength{\parindent}{0pt}
+\usepgfplotslibrary{fillbetween}
+
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+
+\chapter{}
+
+
+\section{Score Analysis}
+
+
+\DeclareRobustCommand{\plot}[2][]{
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.95\textwidth, height=\linewidth,
+      xlabel={ Subject }, ylabel={ Average Score },
+      xtick=data, xtick align=outside,
+      ylabel style={font=\scriptsize},
+      xlabel style={font=\scriptsize},
+      ymajorgrids=true, yminorgrids=true,
+      xticklabels from table={#2}{subject},
+      xticklabel style={rotate=45, anchor=east, font=\scriptsize},
+      yticklabel style={font=\scriptsize},
+      cycle list name=color list,
+      legend to name=customlegend,
+      legend style={font=\small}
+    ]
+      \addplot+[mark=*,mark size=0.7pt] table [x expr=\coordindex, y=Alice] {#2} ;
+      \addlegendentry{ Alice }
+      \addplot+[mark=*,mark size=0.7pt] table [x expr=\coordindex, y=Bob] {#2} ;
+      \addlegendentry{ Bob }
+      \addplot+[mark=*,mark size=0.7pt] table [x expr=\coordindex, y=Charlie] {#2} ;
+      \addlegendentry{ Charlie }
+
+
+    \end{axis}
+  \end{tikzpicture}
+}
+
+
+\pgfplotstableread[col sep=comma]{\detokenize{<LOCALPATH>}}\dataA
+
+
+\begin{figure}[H]
+  \centering
+    \plot{\dataA}
+  \vspace{1em}
+  \centering
+  \pgfplotslegendfromname{customlegend}
+  \caption{ Scores by Subject }
+\end{figure}
+
+
+
+
+
+
+\DeclareRobustCommand{\plot}[2][]{
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=0.95\textwidth, height=0.6172\textwidth,
+      xlabel={ Subject }, ylabel={ Number of Passes },
+      xtick=data, xtick align=outside,
+      ylabel style={font=\scriptsize},
+      xlabel style={font=\scriptsize},
+      xticklabels from table={#2}{subject},
+      xticklabel style={rotate=45, anchor=east, font=\scriptsize},
+      yticklabel style={font=\scriptsize},
+      ymajorgrids=true, yminorgrids=true,
+      bar width=7pt,
+      cycle list name=color list,
+      ybar,
+      legend to name=customlegend,
+      legend style={font=\small}
+    ]
+      \addplot table [x expr=\coordindex, y=Alice] {#2} ;
+      \addlegendentry{ Alice }
+      \addplot table [x expr=\coordindex, y=Bob] {#2} ;
+      \addlegendentry{ Bob }
+      \addplot table [x expr=\coordindex, y=Charlie] {#2} ;
+      \addlegendentry{ Charlie }
+
+    \end{axis}
+  \end{tikzpicture}
+}
+
+
+\pgfplotstableread[col sep=comma]{\detokenize{<LOCALPATH>}}\dataA
+
+
+\begin{figure}[H]
+  \centering
+    \plot{\dataA}
+  \vspace{1em}
+  \centering
+  \pgfplotslegendfromname{customlegend}
+  \caption{ Pass Rate per Subject }
+\end{figure}
+
+
+The scatter plot shows the average score per subject for each student, while the stacked bar plot visualizes how many subjects each student passed.
+
+
+
+
+
+
+\end{document}
