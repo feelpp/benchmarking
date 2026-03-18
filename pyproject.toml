@@ -6,7 +6,15 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-'feelpp.benchmarking' = ['json_report/templates/**','dashboardRenderer/templates/**','json_report/figures/tikz/templates/**','report/templates/**','scripts/data/*','scripts/data/website_images/*', 'reframe/templates/**']
+'feelpp.benchmarking' = [
+  'json_report/templates/**/*',
+  'json_report/figures/tikz/templates/**',
+  'dashboardRenderer/templates/**',
+  'report/templates/**',
+  'scripts/data/*',
+  'scripts/data/website_images/*',
+  'reframe/templates/**'
+]
 
 [project]
 name = "feelpp-benchmarking"
