@@ -1,0 +1,44 @@
+{% import "macros/text.tex.j2" as text %}
+
+{% macro escapeSpecialChars(text) -%}
+{{ text | string
+    | replace('\\', '\textbackslash{}')
+    | replace('{', '\\{')
+    | replace('}', '\\}')
+    | replace('#', '\\#')
+    | replace('$', '\\$')
+    | replace('%', '\\%')
+    | replace('&', '\\&')
+    | replace('_', '\\_')
+    | replace('~', '\\textasciitilde{}')
+    | replace('^', '\\^{}')
+}}
+{%- endmacro %}
+
+{% macro render(tableNode, data, context={}) %}
+
+{% set table_controller = TableController(data.get(tableNode.ref), tableNode.layout, tableNode.style) %}
+{% set table = table_controller.generate() %}
+{% set cols_align = table_controller.getColsAlignment(format="tex") %}
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ {{ cols_align }} }
+    \hline
+    {% for col in table.columns %}{{ escapeSpecialChars(col)  }}{% if not loop.last %} & {% endif %}{% endfor %} \\
+    \hline
+    {% for row in table.itertuples(index=False) %}
+        {% for cell in row %}{{ escapeSpecialChars(cell) }}{% if not loop.last %} & {% endif %}{% endfor %} \\
+    {% endfor %}
+    \hline
+    \end{tabular}}
+    {% if tableNode.caption %}
+    \caption{ {{ tableNode.caption }} }
+    {% endif %}
+    {% if tableNode.id %}
+    \label{{'{'}}{{tableNode.id}}{{'}'}}
+    {% endif %}
+\end{table}
+
+{% endmacro %}

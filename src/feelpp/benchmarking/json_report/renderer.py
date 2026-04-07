@@ -1,5 +1,5 @@
-import json, os, warnings
-import pandas as pd
+import json, os, warnings, tempfile, shutil
+from uuid import uuid4
 
 from feelpp.benchmarking.jsonWithComments import JSONWithCommentsDecoder
 from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
@@ -18,6 +18,23 @@ class JsonReportController:
 
         self.exposed:dict = dict()
         self.data:dict = self.loadReportData()
+        self.id = uuid4().hex
+
+
+    @classmethod
+    def initFromLoaded( cls, id, report: JsonReportSchema, report_data:dict, output_format:str="adoc" )->"JsonReportController":
+        json_report_ctrl = cls.__new__(cls)
+        json_report_ctrl.id = id
+        json_report_ctrl.data = report_data
+        json_report_ctrl.report = report
+        json_report_ctrl.output_format = output_format
+        json_report_ctrl.report_filepath = None
+
+        json_report_ctrl.exposed = {}
+
+        json_report_ctrl.renderer = json_report_ctrl.initRenderer()
+
+        return json_report_ctrl
 
     def loadReport( self, report_filepath: str ) -> JsonReportSchema:
         if not os.path.exists( report_filepath ):
@@ -33,16 +50,20 @@ class JsonReportController:
         template_filename = None
         if self.output_format == "adoc":
             template_filename = "json2adoc_report.adoc.j2"
+        elif self.output_format == "tex":
+            template_filename = "json2tex_report.tex.j2"
         #TODO: add more formats here (latex,html,...)
         else:
             raise ValueError(f"Output format '{self.output_format}' not supported.")
-        return os.path.join(os.path.dirname(__file__),"templates"), template_filename
+        return os.path.join(os.path.dirname(__file__),"templates",self.output_format), template_filename
 
 
     def initRenderer( self) -> TemplateRenderer:
         template_path, template_filename = self.getTemplatePath( )
         renderer = TemplateRenderer( template_paths=template_path, template_filename=template_filename )
         renderer.env.globals.update( {
+            "zip":zip,
+            "JsonReportController":JsonReportController,
             "FiguresController":FiguresController,
             "TableController":TableController,
             "TextController":TextController
@@ -65,7 +86,7 @@ class JsonReportController:
 
         return data
 
-    def render(self, output_dirpath: str, output_filename:str = None ) -> str:
+    def render(self, output_dirpath: str, output_filename:str = None, attachments_dirpath:str=None, **kwargs ) -> str:
         if not os.path.exists( output_dirpath ):
             os.makedirs( output_dirpath )
 
@@ -74,6 +95,32 @@ class JsonReportController:
 
         output_filepath = os.path.join( output_dirpath, os.path.basename(output_filename) )
 
-        self.renderer.render( output_filepath, dict(report=self.report, report_data = self.data ))
+        if not attachments_dirpath:
+            attachments_dirpath = os.path.join(os.path.dirname(output_filepath),"data")
+
+        self.renderer.render(
+            output_filepath,
+            dict(
+                uuid = self.id,
+                report=self.report,
+                report_data = self.data,
+                attachments_dirpath = attachments_dirpath,
+                **kwargs
+            )
+        )
 
         return os.path.abspath(output_filepath)
+
+    def exportAsZip( self, output_dirpath: str, output_filename:str = None, **kwargs ) -> str:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            report_path = self.render(
+                output_dirpath=tmpdir,
+                output_filename=f"{output_filename}.{self.output_format}",
+                attachments_dirpath=os.path.join(tmpdir,"data"),
+                attachments_base_url = "./data",
+                **kwargs
+            )
+
+            shutil.make_archive(os.path.join(output_dirpath,output_filename),"zip",tmpdir)
+
+        return os.path.join(output_dirpath,output_filename)

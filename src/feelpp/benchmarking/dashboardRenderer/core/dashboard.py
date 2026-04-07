@@ -51,7 +51,7 @@ class Dashboard:
         """ Prints the hierarchical structure of the component tree for debugging or review."""
         self.tree.print()
 
-    def render( self, base_path:str, clean:bool = False ):
+    def render( self, base_path:str, clean:bool = False, project_name="", **kwargs ):
         """
         Triggers the rendering process, generating the final dashboard files.
         Args:
@@ -59,11 +59,16 @@ class Dashboard:
             clean (bool, optional): If True, deletes the existing 'pages' directory before rendering. Defaults to False.
         """
         pages_dir = os.path.join( base_path, "pages" )
+        attachments_dir = os.path.join( base_path, "attachments" )
+        attachments_base_url = os.path.join( f"/{project_name}/_attachments" )
 
-        if clean and os.path.isdir(pages_dir):
-            shutil.rmtree(pages_dir)
+        if clean:
+            if os.path.isdir(pages_dir):
+                shutil.rmtree(pages_dir)
+            if os.path.isdir(attachments_dir):
+                shutil.rmtree(attachments_dir)
 
-        self.tree.render(pages_dir)
+        self.tree.render(pages_dir, attachments_dirpath = attachments_dir, attachments_base_url = attachments_base_url, **kwargs)
 
     def patchTemplateInfo( self, patches:List[str], targets:str, prefix:str, save:bool = False ):
         """

@@ -29,7 +29,7 @@ class TemplateRenderer:
         self.template = self.env.get_template( template_filename )
 
 
-    def render( self, output_filepath:str, data:Dict[str,Any]={} ) -> None:
+    def render( self, output_filepath:str, data:Dict[str,Any]={}, **kwargs ) -> None:
         """
         Render the provided data into the primary template and write the output to the specified file path.
 
@@ -42,15 +42,18 @@ class TemplateRenderer:
 
         data.update({"self_dirpath":os.path.dirname(output_filepath)})
         with open( output_filepath, 'w' ) as f:
-            f.write( self.template.render(data) )
+            f.write( self.template.render(data,**kwargs) )
 
     def setGlobals( self ) -> None:
         """Configures global variables available to all templates loaded by this environment."""
         self.env.globals["renderTemplate"] = self.renderTemplate
         self.env.globals["ValidateJsonReport"] = JsonReportSchema.model_validate
+
+        from feelpp.benchmarking.json_report.renderer import JsonReportController
         self.env.globals.update( {
             "FiguresController":FiguresController,
-            "TableController":TableController
+            "TableController":TableController,
+            "JsonReportController":JsonReportController
         } )
 
     def setFilters( self ) -> None:
@@ -71,7 +74,7 @@ class TemplateRenderer:
             return value.strip('"')
         return value
 
-    def renderTemplate( self, template_path:str, data:Dict[str,Any], destination:str ) -> None:
+    def renderTemplate( self, template_path:str, data:Dict[str,Any], destination:str, **kwargs ) -> None:
         """
         Renders an arbitrary, secondary template file within the environment to a specific destination.
 
@@ -87,7 +90,7 @@ class TemplateRenderer:
         if not os.path.isdir( dest_dir ):
             os.makedirs( dest_dir )
         with open( destination, 'w' ) as f:
-            f.write( template.render( data ) )
+            f.write( template.render( data, **kwargs ) )
 
 class BaseRendererFactory:
     """
@@ -118,7 +121,8 @@ class BaseRendererFactory:
             )
         template_dirs = [
             os.path.join(Path(__file__).resolve().parent,"templates"),
-            os.path.join(files("feelpp.benchmarking.json_report"),"templates")
+            os.path.join(files("feelpp.benchmarking.json_report"),"templates","adoc"),
+            os.path.join(files("feelpp.benchmarking.json_report"),"templates","tex")
         ]
         if extra_templated_dir:
             template_dirs += [extra_templated_dir]

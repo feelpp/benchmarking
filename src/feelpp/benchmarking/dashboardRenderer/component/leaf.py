@@ -50,7 +50,7 @@ class LeafComponent(GraphNode):
             branches.append( "-".join([b.id for b in branch[1:][::-1]]) )
         return ",".join( branches )
 
-    def render( self, base_dir:str ) -> None:
+    def render( self, base_dir:str, **kwargs ) -> None:
         """
         Renders the leaf component's view in its dedicated subdirectory.
 
@@ -71,9 +71,9 @@ class LeafComponent(GraphNode):
         ) )
 
         self.view.copyPartials( leaf_dir, os.path.join(base_dir,"..") )
-        self.view.renderExtra( leaf_dir )
+        self.view.renderExtra( leaf_dir, **kwargs )
 
-        self.view.render( leaf_dir )
+        self.view.render( leaf_dir, **kwargs )
 
     def patchTemplateInfo( self, patch : Union[dict,TemplateDataFile], prefix:str, save:bool = False ) -> None:
         """

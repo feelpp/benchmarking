@@ -100,3 +100,33 @@ class TestController:
         result = ctrl.generate()
         # unknown op ignored, value replaced normally
         assert result == "Value: test"
+
+    # ------------------------------------------------------------------
+    # LaTeX formatting: escaping and conversions
+    # ------------------------------------------------------------------
+    @pytest.mark.parametrize("text,expected", [
+        (r"50% complete", r"50\% complete"),
+        ("This is *bold* text", "This is \\textbf{bold} text"),
+        ("*first* and *second*", "\\textbf{first} and \\textbf{second}"),
+        ("stem:[x = \\frac{1}{2}]", "$x = \\frac{1}{2}$"),
+        ("Math: stem:[ a^2 + b^2 ] here", "Math: $a^2 + b^2$ here"),
+        ("https://example.com[Site]", "\\href{https://example.com}{Site}"),
+        ("https://example.com[]", "\\url{https://example.com}"),
+        ("<<section_id, Label>>", "\\hyperlink{section_id}{Label}"),
+        ("<<equation_1>>", "\\ref{equation_1}"),
+        ("*Bold* with stem:[x^2] and https://s.com[link]", 
+         "\\textbf{Bold} with $x^2$ and \\href{https://s.com}{link}"),
+    ])
+    def test_latex_formatting_conversions(self, text, expected):
+        """Test LaTeX format conversions from AsciiDoc syntax"""
+        ctrl = Controller({}, Text(content=text))
+        result = ctrl.generate(format="tex")
+        assert result == expected
+
+    def test_unknown_format_raises_error(self):
+        """Unknown format should raise NotImplementedError"""
+        ctrl = Controller({}, Text(content="test"))
+        with pytest.raises(NotImplementedError):
+            ctrl.generate(format="unknown")
+
+

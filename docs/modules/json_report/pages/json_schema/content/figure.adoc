@@ -10,7 +10,9 @@ The **Plot Node** defines a data visualization within the report. It specifies t
 |===
 |Field|Type|Description|Default Value
 
+|`id`|string| *Optional.* Identifies the plot node within the report. Used for internal cross referencing |`null`
 |`type`|string|Must be set to `"plot"`.|`"plot"`
+|`caption`|string|*Optional.* A descriptive caption for the figure.|`null`
 |`ref`|string|The unique `name`  of the data file (from the root `data` list) to reference for building the figure.|*Required*
 |`plot`|object|The nested configuration object (`Plot` schema) defining the figure's dimensions, type, and transformation.|*Required*
 |===
@@ -135,7 +137,7 @@ For the given example, it produces the following dataframe
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationStrategyFactory
+from feelpp.benchmarking.json_report.figures.transformationFactory import TransformationFactory
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot
 plot_config = Plot(**{
     "title": "Absolute performance",
@@ -145,7 +147,7 @@ plot_config = Plot(**{
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{"parameter":"elements", "label":"N"}
 })
-strategy = TransformationStrategyFactory.create(plot_config)
+strategy = TransformationFactory.create(plot_config)
 df = strategy.calculate(master_df)
 print(df)
 ----
@@ -166,7 +168,7 @@ plot_config = Plot(**{
     "secondary_axis":{ "parameter":"elements", "label":"N"
     }
 })
-strategy = TransformationStrategyFactory.create(plot_config)
+strategy = TransformationFactory.create(plot_config)
 df = strategy.calculate(master_df)
 print(df)
 ----
@@ -189,7 +191,7 @@ plot_config = Plot(**{
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{"parameter":"elements", "label":"N"}
 })
-strategy = TransformationStrategyFactory.create(plot_config)
+strategy = TransformationFactory.create(plot_config)
 df = strategy.calculate(master_df)
 print(df)
 ----
@@ -261,16 +263,17 @@ Axis definition:
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Scatter Plot",
     "plot_types": [ "scatter" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("scatter",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -282,16 +285,17 @@ Axis definition:
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Marked Scatter Plot",
     "plot_types": [ "marked_scatter" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("marked_scatter",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -304,16 +308,17 @@ Axis definition:
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Stacked Bar Plot",
     "plot_types": [ "stacked_bar" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("stacked_bar",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -325,16 +330,17 @@ Axis definition:
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Grouped Bar Plot",
     "plot_types": [ "grouped_bar" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("grouped_bar",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -349,16 +355,17 @@ Axis definition:
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Heatmap",
     "plot_types": [ "heatmap" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("heatmap",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -375,16 +382,17 @@ Cell values correspond to `yaxis`.
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Table",
     "plot_types": [ "table" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("table",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -396,16 +404,17 @@ fig.show()
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Sunburst",
     "plot_types": [ "sunburst" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("sunburst",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -421,16 +430,17 @@ The `yaxis` will be shown in the line color.
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Parallel Coordinates",
     "plot_types": [ "parallelcoordinates" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("parallelcoordinates",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -458,16 +468,17 @@ These plots are used for visualizing three or four variables. **At least three d
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Scatter 3D",
     "plot_types": [ "scatter3d" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("scatter3d",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 
@@ -476,16 +487,17 @@ fig.show()
 
 [%dynamic%open%hide_code,python]
 ----
-from feelpp.benchmarking.json_report.figures.figureFactory import FigureFactory
-figures = FigureFactory.create(Plot(**{
+from feelpp.benchmarking.json_report.figures.plotly.figureFactory import FigureFactory
+plot_config = Plot(**{
     "title": "Absolute performance - Surface 3D",
     "plot_types": [ "surface3d" ],
     "xaxis":{ "parameter":"tasks", "label":"Number of tasks" },
     "yaxis":{ "parameter":"value", "label":"Execution time (s)" },
     "color_axis":{ "parameter":"perfvalue", "label":"Performance variable" },
     "secondary_axis":{ "parameter":"elements", "label":"N" }
-}))
-fig = figures[0].createFigure(master_df)
+})
+figures = FigureFactory.create("surface3d",plot_config)
+fig = figures.createFigure(TransformationFactory.create(plot_config).calculate(master_df))
 fig.show()
 ----
 

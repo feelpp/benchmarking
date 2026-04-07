@@ -1,0 +1,6 @@
+{% macro render(textNode,data,context={}) %}
+{%if textNode.id %}
+[[{{textNode.id}}]]
+{% endif %}
+{{ TextController((data or {}).get(textNode.ref),textNode.text).generate() }}
+{% endmacro %}

@@ -7,7 +7,58 @@ class Controller:
         self.text_config = text
         self.data = data
 
-    def generate(self):
+    @staticmethod
+    def _asciidoc_to_latex_urls(text: str) -> str:
+        pattern = re.compile(r'([(<]*)([a-zA-Z][a-zA-Z0-9+.-]*:\S+?)\[(.*?)\]([)>.,;!?:]*)')
+
+        def repl(m):
+            pre, url, label, post = m.groups()
+            url = url.strip()
+            label = label.strip()
+            if label:
+                replacement = r'\href{' + url + '}{' + label + '}'
+            else:
+                replacement = r'\url{' + url + '}'
+            return pre + replacement + post
+
+        return pattern.sub(repl, text)
+
+
+    def formatText(self,text:str,format = "adoc"):
+        if format == "adoc":
+            pass
+        elif format == "tex":
+            #Escape comments
+            text = text.replace("%","\\%")
+
+            # stem
+            text = re.sub( r"stem:\[\s*(.*?)\s*\]", r"$\1$", text )
+
+            #italics
+            re.sub(r'(?<![A-Za-z0-9\$])_(\S(?:.*?\S)?)_(?![A-Za-z0-9\$])', r'\\textit{\1}', text)
+
+            #bold
+            text = re.sub(r"(?<![A-Za-z0-9])\*(.+?)\*(?![A-Za-z0-9])", r"\\textbf{\1}", text )
+
+            #underline
+            text = re.sub(r"r'\[\.underline\]#(.*?)#'", r"\\underline{\1}", text )
+
+            #links
+            text = self._asciidoc_to_latex_urls(text)
+
+            #references
+            text = re.sub(r"<<\s*([^\s,>]+)\s*(?:,\s*([^>]+))?\s*>>", lambda m : f"\\hyperlink{{{m.group(1)}}}{{{m.group(2)}}}" if m.group(2) else f"\\ref{{{m.group(1)}}}", text )
+
+
+        else:
+            raise NotImplementedError(f"Format not recognized in text controller: {format}")
+
+        return text
+
+
+
+
+    def generate(self, format="adoc"):
         if self.text_config.mode == "static":
             content = self.text_config.content
 
@@ -23,7 +74,7 @@ class Controller:
         else:
             content = self.text_config.content
 
-        return content
+        return self.formatText(str(content),format)
 
     def _resolvePlaceHolders(self, match):
         expr = match.group(1)

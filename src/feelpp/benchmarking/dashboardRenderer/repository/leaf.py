@@ -50,7 +50,7 @@ class LeafComponentRepository(Repository):
             collected += LeafComponentRepository.collectMetadata( v, path + [k] )
         return collected
 
-    def render( self, base_dir:str ) -> None:
+    def render( self, base_dir:str, **kwargs ) -> None:
         """
         Renders all Leaf Components stored in the repository.
 
@@ -63,5 +63,5 @@ class LeafComponentRepository(Repository):
         if not os.path.isdir( leaves_dir ):
             os.mkdir( leaves_dir )
         for leaf in self.data:
-            leaf.render( leaves_dir )
+            leaf.render( leaves_dir, **kwargs )
 

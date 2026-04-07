@@ -123,7 +123,7 @@ class ComponentTree(TreeNode):
                     c.parents.remove(b[-1])
                 b[-1].children.clear()
 
-    def render( self, base_path:str ) -> None:
+    def render( self, base_path:str, **kwargs) -> None:
         """
         Renders the entire component tree structure to disk.
         It renders all repository and node pages (via the base class render) and then delegates the rendering of all leaf components to the LeafComponentRepository.
@@ -131,10 +131,10 @@ class ComponentTree(TreeNode):
         Args:
             base_path (str): The root directory where the dashboard will be generated.
         """
-        super().render(base_path,None,renderLeaves=False)
-        self.leaf_repository.render(base_path)
+        super().render(base_path,None,renderLeaves=False, **kwargs)
+        self.leaf_repository.render(base_path, **kwargs)
 
-    def patchTemplateInfo( self, patches:list[str], targets:str, prefix:str, save:bool = False ):
+    def patchTemplateInfo( self, patches:List[str], targets:str, prefix:str, save:bool = False ):
         """
         Applies template patches to specific leaf components based on the given target criteria.
 
