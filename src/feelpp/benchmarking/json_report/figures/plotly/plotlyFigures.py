@@ -8,8 +8,11 @@ from pandas import factorize as pd_factorize
 
 class PlotlyFigure(Figure):
     """ Base class for a Plotly figure """
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
+
+    def createJson(self,df):
+        return self.createFigure(df).to_json()
 
     def createTraces(self,df):
         raise NotImplementedError("Pure virtual function. Not to be called from the base class")
@@ -37,7 +40,7 @@ class PlotlyFigure(Figure):
         """
         frames = []
         ranges=[]
-        secondary_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
+        secondary_axis = self.config.secondary_axis.parameter
         anim_dimension_values = df.index.get_level_values(secondary_axis).unique().values
 
         for dim in anim_dimension_values:
@@ -65,7 +68,7 @@ class PlotlyFigure(Figure):
         return fig
 
 
-    def createMultiindexFigure(self,df):
+    def createMultiindexFigure(self,df,data_dirpath="."):
         """ Creates a plotly figure from a multiIndex dataframe
         Args:
             df (pd.DataFrame). The transformed dataframe (must be multiindex)
@@ -74,7 +77,7 @@ class PlotlyFigure(Figure):
         """
         return self.createSliderAnimation(df)
 
-    def createSimpleFigure(self,df):
+    def createSimpleFigure(self,df,data_dirpath="."):
         """ Creates a plotly figure from a given dataframe
         Args:
             df (pd.DataFrame). The transformed dataframe
@@ -83,26 +86,26 @@ class PlotlyFigure(Figure):
         """
         return go.Figure(self.createTraces(df))
 
-    def createFigure(self,df):
+    def createFigure(self,df, data_dirpath = "."):
         """ Creates a figure from the master dataframe
         Args:
             df (pd.DataFrame). The master dataframe containing all reframe test data
         Returns:
             go.Figure: Plotly figure corresponding to the grouped Bar type
         """
-        figure = super().createFigure(df)
+        figure = super().createFigure(df,data_dirpath)
         figure.update_layout(self.config.layout_modifiers)
         figure = self.updateLayout(figure)
         return figure
 
-    def createHtml(self,df):
-        return self.createFigure(df).to_html(auto_play=False,include_plotlyjs=False, full_html=False)
+    def createHtml(self,df,data_dirpath="."):
+        return self.createFigure(df,data_dirpath).to_html(auto_play=False,include_plotlyjs=False, full_html=False)
 
 
 class PlotlyScatterFigure(PlotlyFigure):
     """ Concrete Figure class for scatter figures """
-    def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
-        super().__init__(plot_config,transformation_strategy)
+    def __init__(self, plot_config,fill_lines=[]):
+        super().__init__(plot_config)
         self.fill_lines = fill_lines
 
     def createTraces(self,df):
@@ -121,28 +124,28 @@ class PlotlyScatterFigure(PlotlyFigure):
 
 class PlotlyMarkedScatter(PlotlyFigure):
     """ Concrete Figure class for marked scatter figures """
-    def __init__(self, plot_config,transformation_strategy,fill_lines=[]):
-        super().__init__(plot_config,transformation_strategy)
+    def __init__(self, plot_config,fill_lines=[]):
+        super().__init__(plot_config)
         self.fill_lines = fill_lines
         self.marks = ["circle","square","diamond","cross","x","triangle-up","triangle-down","triangle-left","triangle-right","pentagon","hexagon","octagon","star","hexagram","star-triangle-up","star-triangle-down","star-square","star-diamond","diamond-tall","diamond-wide","hourglass","bowtie"]
         self.colors = ["red","blue","green","orange","purple","brown","pink","gray","cyan","magenta","yellow","darkblue","darkred","darkgreen","darkorange","darkpurple","darkbrown","darkpink","darkgray","darkcyan","darkmagenta","darkyellow","lightblue","lightred","lightgreen","lightorange","lightpurple","lightbrown","lightpink","lightgray","lightcyan","lightmagenta","lightyellow","black"]
 
-        if len(self.transformation_strategy.dimensions["extra_axes"])>0:
-            self.mark_axis = self.transformation_strategy.dimensions["extra_axes"][0].parameter
+        if len(self.config.extra_axes)>0:
+            self.mark_axis = self.config.extra_axes[0].parameter
             self.mark_axis_label = self.config.extra_axes[0].label
         else:
-            self.mark_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
+            self.mark_axis = self.config.secondary_axis.parameter
             self.mark_axis_label = self.config.secondary_axis.label if self.mark_axis else self.config.color_axis.label if self.config.color_axis else ""
 
-    def createMultiindexFigure(self, df):
+    def createMultiindexFigure(self, df, data_dirpath="."):
         if len(df.index.names) == 2:
-            return super().createSimpleFigure(df)
+            return super().createSimpleFigure(df,data_dirpath)
         elif len(df.index.names) == 3:
-            return super().createMultiindexFigure(df)
+            return super().createMultiindexFigure(df,data_dirpath)
         else:
             raise ValueError("Marked scatter figures can only be created from 2 or 3 level multiindex dataframes")
 
-    def createSimpleFigure(self, df):
+    def createSimpleFigure(self, df, data_dirpath="."):
         return go.Figure(self.createMarkTraces(df))
 
     def createTraces(self,df):
@@ -198,8 +201,8 @@ class PlotlyMarkedScatter(PlotlyFigure):
 
 class PlotlyTableFigure(PlotlyFigure):
     """ Concrete Figure class for scatter figures """
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
         self.precision = 3
 
     def cellFormat(self,df):
@@ -211,7 +214,7 @@ class PlotlyTableFigure(PlotlyFigure):
         """
         return [f'.{self.precision}' if t == float64 else '' for t in [df.index.dtype] + df.dtypes.values.tolist()]
 
-    def createMultiindexFigure(self,df):
+    def createMultiindexFigure(self,df,data_dirpath="."):
         """ Creates a plotly table from a multiindex dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe (must be multiindex)
@@ -228,7 +231,7 @@ class PlotlyTableFigure(PlotlyFigure):
             )
         )
 
-    def createSimpleFigure(self,df):
+    def createSimpleFigure(self,df,data_dirpath="."):
         """ Creates a simple plotly table from a dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe
@@ -253,18 +256,18 @@ class PlotlyTableFigure(PlotlyFigure):
 
 class PlotlyStackedBarFigure(PlotlyFigure):
     """ Concrete Figure class for stacked bar charts"""
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
 
-    def createMultiindexFigure(self,df):
+    def createMultiindexFigure(self,df,data_dirpath="."):
         """ Creates a stacked and grouped plotly bar chart from a multiindex dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe (must be multiindex)
             Returns:
                 go.Figure. Containing a stacked and grouped bar traces for a multiindex dataframe
         """
-        xaxis = self.transformation_strategy.dimensions["xaxis"].parameter
-        secondary = self.transformation_strategy.dimensions["secondary_axis"].parameter
+        xaxis = self.config.xaxis.parameter
+        secondary = self.config.secondary_axis.parameter
 
         df2 = df.reset_index()
 
@@ -278,7 +281,7 @@ class PlotlyStackedBarFigure(PlotlyFigure):
         fig.update_layout(barmode="stack")
         return fig
 
-    def createSimpleFigure(self,df):
+    def createSimpleFigure(self,df,data_dirpath="."):
         """ Creates a stacked plotly bar chart from a single indexed dataframe
             Args:
                 df (pd.DataFrame). The transformed dataframe
@@ -304,8 +307,8 @@ class PlotlyStackedBarFigure(PlotlyFigure):
 
 
 class PlotlyGroupedBarFigure(PlotlyFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
 
     def createTraces(self,df):
         """ Creates the Bar traces for a given dataframe. Useful for animation creation.
@@ -319,8 +322,8 @@ class PlotlyGroupedBarFigure(PlotlyFigure):
         ]
 
 class PlotlyHeatmapFigure(PlotlyFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
 
     def createTraces(self, df):
         """ Creates the Heatmap traces for a given dataframe. Useful for animation creation.
@@ -348,10 +351,10 @@ class PlotlyHeatmapFigure(PlotlyFigure):
 
 
 class PlotlySunburstFigure(PlotlyFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
 
-    def createMultiindexFigure(self, df):
+    def createMultiindexFigure(self, df,data_dirpath="."):
         """ Creates the Sunburst traces for a given dataframe. Useful for animation creation.
         Args:
             - df (pd.DataFrame): The dataframe containing the figure data.
@@ -363,7 +366,7 @@ class PlotlySunburstFigure(PlotlyFigure):
             values = "value"
         )
 
-    def createSimpleFigure(self, df):
+    def createSimpleFigure(self, df, data_dirpath="."):
         """ Creates a Plotly Sunburst figure from a given dataframe
         Args:
             df (pd.DataFrame). The transformed dataframe
@@ -384,8 +387,8 @@ class PlotlySunburstFigure(PlotlyFigure):
         return fig
 
 class PlotlyParallelcoordinatesFigure(PlotlyFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
 
     @staticmethod
     def encodeFactorize(df):
@@ -395,7 +398,7 @@ class PlotlyParallelcoordinatesFigure(PlotlyFigure):
                 melted_factorized[column],_ = pd_factorize(df[column])
         return melted_factorized
 
-    def createSimpleFigure(self, df):
+    def createSimpleFigure(self, df,data_dirpath="."):
         melted = df.reset_index().melt(value_vars=df.columns, id_vars=df.index.name)
         melted_factorized = self.encodeFactorize(melted)
 
@@ -411,7 +414,7 @@ class PlotlyParallelcoordinatesFigure(PlotlyFigure):
             )
         )
 
-    def createMultiindexFigure(self, df):
+    def createMultiindexFigure(self, df,data_dirpath="."):
         melted = df.reset_index().melt(value_vars=df.columns,id_vars=df.index.names)
         melted_factorized = self.encodeFactorize(melted)
 
@@ -437,24 +440,24 @@ class PlotlyParallelcoordinatesFigure(PlotlyFigure):
 
 
 class Plotly3DFigure(PlotlyFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
-        if len(self.transformation_strategy.dimensions["extra_axes"])>0:
-            self.y_axis = self.transformation_strategy.dimensions["extra_axes"][0].parameter
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
+        if len(self.config.extra_axes)>0:
+            self.y_axis = self.config.extra_axes[0].parameter
             self.y_axis_label = self.config.extra_axes[0].label
         else:
-            self.y_axis = self.transformation_strategy.dimensions["secondary_axis"].parameter
+            self.y_axis = self.config.secondary_axis.parameter
             self.y_axis_label = self.config.secondary_axis.label if self.y_axis else self.config.color_axis.label if self.config.color_axis else ""
 
-    def createMultiindexFigure(self, df):
+    def createMultiindexFigure(self, df, data_dirpath="."):
         if len(df.index.names) == 2:
-            return super().createSimpleFigure(df) #3D simple figure is equivalent to a multiindex 2D figure
+            return super().createSimpleFigure(df,data_dirpath) #3D simple figure is equivalent to a multiindex 2D figure
         elif len(df.index.names) == 3:
-            return super().createMultiindexFigure(df)
+            return super().createMultiindexFigure(df,data_dirpath)
         else:
             raise ValueError("3D figures can only be created from 2 or 3 level multiindex dataframes")
 
-    def createSimpleFigure(self, df):
+    def createSimpleFigure(self, df,data_dirpath="."):
         if not df.empty:
             raise ValueError("Secondary axis must be specified for 3d Figures")
         return go.Figure()
@@ -473,8 +476,8 @@ class Plotly3DFigure(PlotlyFigure):
         return fig
 
 class PlotlyScatter3DFigure(Plotly3DFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
 
     def createTraces(self, df):
         """ Creates a 3D scatter plot traces
@@ -485,7 +488,7 @@ class PlotlyScatter3DFigure(Plotly3DFigure):
         """
         return [
             go.Scatter3d(
-                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"].parameter),
+                x=df.index.get_level_values(self.config.xaxis.parameter),
                 y=df.index.get_level_values(self.y_axis),
                 z=df[col],
                 mode='markers', name=col
@@ -495,8 +498,8 @@ class PlotlyScatter3DFigure(Plotly3DFigure):
 
 
 class PlotlySurface3DFigure(Plotly3DFigure):
-    def __init__(self, plot_config, transformation_strategy):
-        super().__init__(plot_config, transformation_strategy)
+    def __init__(self, plot_config):
+        super().__init__(plot_config)
 
     def createTraces(self, df):
         """ Creates a 3D surface plot traces
@@ -507,7 +510,7 @@ class PlotlySurface3DFigure(Plotly3DFigure):
         """
         return [
             go.Mesh3d(
-                x=df.index.get_level_values(self.transformation_strategy.dimensions["xaxis"].parameter),
+                x=df.index.get_level_values(self.config.xaxis.parameter),
                 y=df.index.get_level_values(self.y_axis),
                 z=df[col],
                 opacity=0.5, name=col

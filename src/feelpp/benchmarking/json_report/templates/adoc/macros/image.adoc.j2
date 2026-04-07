@@ -1,0 +1,20 @@
+{% macro render(imageNode,data,make_block = True, context={}) %}
+{% set src = imageNode.src %}
+{% set alt = imageNode.alt or imageNode.caption or "" %}
+{% set styles = imageNode.style | join(' ')%}
+
+{% if imageNode.id %}
+[[{{imageNode.id}}]]
+{% endif %}
+{% if imageNode.caption %}
+.{{imageNode.caption}}
+{% endif %}
+{% if make_block %}
+[example.image]
+====
+image::{{src}}[role="{{styles}}",alt={{alt}}]
+====
+{% else %}
+image::{{src}}[role="{{styles}}",alt={{alt}}]
+{% endif %}
+{% endmacro %}

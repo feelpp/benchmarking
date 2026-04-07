@@ -45,8 +45,8 @@ if __name__=="__main__":
         os.makedirs(dirpath)
 
     with open(args.out,'w') as f:
-        f.write(f"elapsed,fibonacci_number\n{elapsed_time},{fib_number}")
+        f.write(f"fibonacci_number\n{fib_number}")
 
-    print(f"Elapsed time: {elapsed_time}")
-    print(f"Fibonacci number: {fib_number}")
+    print(f"elapsed: {elapsed_time}")
+
     print("Done!")

@@ -1,0 +1,19 @@
+
+
+{% for fn in csv_filenames %}
+\pgfplotstableread[col sep=comma]{{'{\\detokenize{'}}{{fn}}{{'}}'}}\data{{loop.index | inttouniquestr }}
+{% endfor %}
+
+
+\begin{table}[H]
+
+{% if anim_dimension_values %}
+  {% for dim in anim_dimension_values %}
+  \pgfplotstabletypeset[]{\data{{ loop.index | inttouniquestr }}}
+  \caption{ {{secondary_axis.label}}={{dim}} }
+  {% endfor %}
+{% else %}
+  \pgfplotstabletypeset[]{\data{{1 | inttouniquestr }}}
+{% endif %}
+\caption{ {{caption}} }
+\end{table}

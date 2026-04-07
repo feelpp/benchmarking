@@ -1,0 +1,12 @@
+{% import "macros/text.adoc.j2"  as text %}
+
+{% macro render(listNode,data,context={}) %}
+
+{% if listNode.id %}
+[[{{listNode.id}}]]
+{% endif %}
+{% for item in listNode.items %}
+- {{text.render(item,data,context=context)}}
+{% endfor %}
+
+{% endmacro %}
