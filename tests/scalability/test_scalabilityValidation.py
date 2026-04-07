@@ -25,5 +25,29 @@ class TestStage:
         stage = Stage(**{"name":"test_stage","filepath":"test_filepath","format":"csv"})
         assert stage.variables_path == []
 
+    def test_regex_validation(self):
+        """ Tests mandatory regex fields and named/numbered groups """
+        # Missing pattern
+        with pytest.raises(ValidationError, match="regex must be specified if format == regex"):
+            Stage(**{"name": "r_stage", "filepath": "file.txt", "format": "regex", "variable_value_group": "value"})
+
+        # Missing variable_value_group
+        with pytest.raises(ValidationError, match="variable_value_group must be specified if format == regex"):
+            Stage(**{"name": "r_stage", "filepath": "file.txt", "format": "regex", "pattern": ".*"})
+
+        # Valid named capture groups
+        stage = Stage(
+            name="r_stage",
+            filepath="file.txt",
+            format="regex",
+            pattern="^(?P<name>[^:]+):\\s*(?P<value>[\\d.]+)$",
+            variable_name_group="name",
+            variable_value_group="value"
+        )
+        assert stage.format == "regex"
+        assert stage.variable_name_group == "name"
+        assert stage.variable_value_group == "value"
+
+
 class TestAppOutput:
     pass

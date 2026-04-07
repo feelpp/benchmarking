@@ -1,16 +1,19 @@
-{% macro render(tableNode, data) %}
+{% macro render(tableNode, data, context={}) %}
 
 {%set table_controller = TableController(data.get(tableNode.ref),tableNode.layout, tableNode.style) %}
 {%set table = table_controller.generate() %}
 
 
-{% if tableNode.caption %}
-.{{tableNode.caption}}
-{% endif %}
 {% if tableNode.style.classnames %}
 [{% for classname in tableNode.style.classnames %}.{{classname}}{% endfor %}]
 {% endif %}
 --
+{% if tableNode.id %}
+[[{{tableNode.id}}]]
+{% endif %}
+{% if tableNode.caption %}
+.{{tableNode.caption}}
+{% endif %}
 [cols="{{ table_controller.getColsAlignment() }}",options="header"]
 |===
 
