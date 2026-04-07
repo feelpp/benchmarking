@@ -1,0 +1,43 @@
+{% import "macros/image.tex.j2" as image %}
+{% import "macros/table.tex.j2" as table %}
+{% import "macros/latex.tex.j2" as latex %}
+{% import "macros/text.tex.j2" as text %}
+{% import "macros/itemize.tex.j2" as itemize %}
+
+{% macro render(gridNode, report_data,context={}) %}
+
+{% set col_width = 1.0 / gridNode.columns %}
+
+\begin{figure}[ht!]
+\centering
+
+{% for node in gridNode.contents %}
+\begin{minipage}[t]{ {{ "%.3f"|format(col_width) }}\linewidth }
+
+{% if node.type == "image" %}
+{{ image.render(node, report_data.get(node.ref), make_block=False,context=context) }}
+{% elif node.type == "latex" %}
+{{ latex.render(node, report_data.get(node.ref),context=context) }}
+{% elif node.type == "text" %}
+{{ text.render(node, report_data.get(node.ref),context=context) }}
+{% elif node.type == "table" %}
+{{ table.render(node, report_data.get(node.ref),context=context) }}
+{% elif node.type == "itemize" %}
+{{ itemize.render(node, report_data.get(node.ref),context=context) }}
+{% endif %}
+\end{minipage}%
+{% if not loop.last %}
+\hfill
+{% endif %}
+{% endfor %}
+
+{% if gridNode.caption %}
+\caption{ {{ gridNode.caption }} }
+{% endif %}
+{% if gridNode.id %}
+\label{fig:{{ gridNode.id }}}
+{% endif %}
+
+\end{figure}
+
+{% endmacro %}

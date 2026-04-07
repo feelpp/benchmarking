@@ -3,11 +3,22 @@ from typing import Optional,Literal,Dict,Union,List
 
 
 class Stage(BaseModel):
-    name:str
+    name:Optional[str] = None
     filepath:str
-    format:Optional[Literal["csv","tsv","json"]] = None
+    format:Optional[Literal["csv","tsv","json","regex"]] = None
     variables_path:Optional[Union[str,List[str]]] = []
     units: Optional[Dict[str,str]] = {}
+
+    pattern: Optional[str] = None
+    variable_value_group: Optional[Union[str,int]] = None
+    variable_name_group: Optional[Union[str,int]] = None
+
+    @field_validator("name",mode="after")
+    @classmethod
+    def defaultName(cls,v):
+        if v is None:
+            return ""
+        return v
 
     @field_validator("units",mode="before")
     @classmethod
@@ -28,7 +39,12 @@ class Stage(BaseModel):
                 raise ValueError("variables_path must be specified if format == json")
             if type(self.variables_path) == str:
                 self.variables_path = [self.variables_path]
-        elif self.format != "json":
+        elif self.format == "regex":
+            if not self.pattern:
+                raise ValueError("regex must be specified if format == regex")
+            if not self.variable_value_group:
+                raise ValueError("variable_value_group must be specified if format == regex")
+        else:
             if self.variables_path:
                 raise ValueError("variables_path cannot be specified with other format than json")
         return self
@@ -40,7 +56,17 @@ class CustomVariable(BaseModel):
     unit: str
 
 class Scalability(BaseModel):
-    directory: str
+    directory: Optional[str] = None
     stages: List[Stage]
     custom_variables:Optional[List[CustomVariable]] = []
     clean_directory: Optional[bool] = False
+
+    @model_validator(mode = "after")
+    def checkOptionalDirectory(self):
+        if self.directory is None:
+            #Directory should be specified if any stage has filename other than stdout
+            for stage in self.stages:
+                if stage.filepath != "stdout":
+                    raise ValueError("Directory should be specified for non-stdout output files")
+
+        return self

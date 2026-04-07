@@ -179,7 +179,7 @@ class GraphNode:
                 paths.append([self] + parent_path)
         return paths
 
-    def render( self, base_dir:str, parent_id:str = None, renderLeaves = True ) -> None:
+    def render( self, base_dir:str, parent_id:str = None, renderLeaves = True, **kwargs) -> None:
         """
         Renders the node's view and recursively calls render on its children.
 
@@ -205,13 +205,13 @@ class GraphNode:
             ) )
 
 
-        self.view.renderExtra( component_dir )
-        self.view.render( component_dir )
+        self.view.renderExtra( component_dir, **kwargs )
+        self.view.render( component_dir, **kwargs )
         for child in self.children:
             if not renderLeaves and child.isLeaf():
                 continue
 
-            child.render( component_dir, new_parent_id, renderLeaves )
+            child.render( component_dir, new_parent_id, renderLeaves, **kwargs )
 
 
     def upstreamViewData( self, aggregator: Callable[[str, Optional[str], dict, List], dict] ) -> dict:

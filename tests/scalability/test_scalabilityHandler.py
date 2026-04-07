@@ -2,7 +2,7 @@
 
 import pytest
 import tempfile, json
-from feelpp.benchmarking.reframe.scalability import ScalabilityHandler, CsvExtractor,TsvExtractor,JsonExtractor,Extractor,ExtractorFactory
+from feelpp.benchmarking.reframe.scalability import ScalabilityHandler, CsvExtractor,TsvExtractor,JsonExtractor,RegexExtractor,Extractor,ExtractorFactory
 import numpy as np
 
 class StageMocker:
@@ -81,6 +81,33 @@ class TestExtractors:
             assert perfvars[f"file_{col1}"].evaluate() == values[i]
 
         file.close()
+
+
+
+    def test_extractRegex(self):
+        """ Test extracting performance variables using regex from a file """
+
+        file = tempfile.NamedTemporaryFile(mode="w+")
+        content = "assembly: 0.012\nsolve: 1.42\npostprocess: 0.08"
+        file.write(content)
+        file.flush()
+
+        pattern = r"^(?P<name>[^:]+):\s*(?P<value>[\d.]+)$"
+        extractor = RegexExtractor(
+            filepath=file.name,
+            stage_name="timers",
+            pattern=pattern,
+            variable_name_group="name",
+            variable_value_group="value",
+            units={"*":"s"}
+        )
+        perfvars = extractor.extract()
+        assert perfvars["timers_assembly"].evaluate() == 0.012
+        assert perfvars["timers_solve"].evaluate() == 1.42
+        assert perfvars["timers_postprocess"].evaluate() == 0.08
+
+        file.close()
+
 
 
     def test_extractJson(self):

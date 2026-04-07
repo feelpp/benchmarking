@@ -1,0 +1,230 @@
+\documentclass[11pt]{report}
+
+\usepackage{graphicx}
+\usepackage{pgf-pie}
+\usepackage{currfile}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{underscore}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[parfill]{parskip}
+
+\setlength{\parindent}{0pt}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+
+\chapter{}
+
+\section{Student Performance}
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l c c }
+    \hline
+Student & Subject & Score & Grade & Passed \\
+    \hline
+Alice & Math & 85.0 & B & ✔️ \\
+Bob & Math & 78.0 & C & ✔️ \\
+Charlie & Math & 62.0 & D & ✔️ \\
+Alice & Physics & 92.0 & A & ✔️ \\
+Bob & Physics & 88.0 & B & ✔️ \\
+Charlie & Physics & 55.0 & D & ❌ \\
+Alice & Chemistry & 70.0 & C & ✔️ \\
+Bob & Chemistry & 65.0 & D & ✔️ \\
+Charlie & Chemistry & 45.0 & D & ❌ \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+\section{Inline Table}
+
+\subsection{Default inline table}
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l l l }
+    \hline
+time & power & temperature & comfort & power\_temp\_sum \\
+    \hline
+1.2 & 10 & 22.5 & 0.5 & 32.5 \\
+2.3 & 20 & 23.0 & 0.6 & 43.0 \\
+3.4 & 30 & 21.3 & 0.7 & 51.3 \\
+4.5 & 40 & 22.1 & 0.8 & 62.1 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+\subsection{Styled inline table}
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ c l l l l }
+    \hline
+time & power & temperature & power\_temp\_sum & comfort \\
+    \hline
+1.2 & 10 & 22.5 & 32.5 & 0.5 \\
+2.3 & 20 & 23.0 & 43.0 & 0.6 \\
+3.4 & 30 & 21.3 & 51.3 & 0.7 \\
+4.5 & 40 & 22.1 & 62.1 & 0.8 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+
+
+\subsection{Ref to inline}
+
+
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l l l }
+    \hline
+time & power & temperature & comfort & power\_temp\_sum \\
+    \hline
+2.3 & 20 & 23.0 & 0.6 & 43.0 \\
+3.4 & 30 & 21.3 & 0.7 & 51.3 \\
+4.5 & 40 & 22.1 & 0.8 & 62.1 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+
+
+
+
+
+\section{File Table}
+
+
+\subsection{Default file table}
+
+
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l l l }
+    \hline
+Scenario & Time\_s & Memory\_MB & result & memory\_per\_time \\
+    \hline
+Run A & 12 & 1024 & 🟢 & 81.92 \\
+Run B & 25 & 2048 & 🔴 & 81.59 \\
+Run C & 15 & 1536 & 🟢 & 96.60 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+
+
+
+\subsection{Styled file table}
+
+
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ c l l }
+    \hline
+result & Scenario & memory\_per\_time \\
+    \hline
+🟢 & Run A & 81.92 \\
+🔴 & Run B & 81.59 \\
+🟢 & Run C & 96.60 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+
+\subsection{Ref to file table}
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l }
+    \hline
+result & Scenario & Memory\_MB \\
+    \hline
+🔴 & 1 & 2048 \\
+🟢 & 2 & 2560 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+
+\section{Table from Json}
+
+
+\subsection{Default table from json}
+
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l }
+    \hline
+subject & days\_absent & days\_present \\
+    \hline
+Chemistry & 4.3 & 15.7 \\
+Math & 4.7 & 15.3 \\
+Physics & 4.7 & 15.3 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+\subsection{Styled table from json}
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l r r }
+    \hline
+subject & Absents (Days) & Present (Days) \\
+    \hline
+Chemistry & 4.3 & 15.7 \\
+Math & 4.7 & 15.3 \\
+Physics & 4.7 & 15.3 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+\subsection{Ref to json table}
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{ l l l }
+    \hline
+subject & days\_absent & days\_present \\
+    \hline
+Math & 4.7 & 15.3 \\
+Physics & 4.7 & 15.3 \\
+Chemistry & 4.3 & 15.7 \\
+    \hline
+    \end{tabular}}
+\end{table}
+
+
+
+
+\end{document}

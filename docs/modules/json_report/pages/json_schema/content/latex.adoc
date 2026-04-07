@@ -5,6 +5,8 @@ The **LaTeX Node** is designed for the direct embedding of mathematical formulas
 |===
 |Field|Type|Description|Default Value
 
+|`id`|string| *Optional.* Identifies the LaTeX node within the report. Used for internal cross referencing |`null`
+|`is_equation`|boolean|*Optional.* Indicates if the LaTeX content represents a standalone equation. It adds `\begin\{equation\}` and `\end\{equation\}` around the content if true.|`false`
 |`type`|string|Must be set to `"latex"`.|`"latex"`
 |`latex`|string|The raw LaTeX content (e.g., a mathematical equation or a custom LaTeX block).|*Required*
 |`ref`|string|The `name` of the data field to reference for dynamic placeholder resolution.|`null`

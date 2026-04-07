@@ -1,0 +1,38 @@
+{% set context = {
+    "uuid":uuid,
+    "attachments_dirpath": attachments_dirpath,
+    "attachments_base_url": attachments_base_url,
+} %}
+
+\documentclass[11pt]{report}
+
+\usepackage{graphicx}
+\usepackage{pgf-pie}
+\usepackage{currfile}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{underscore}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[parfill]{parskip}
+
+\setlength{\parindent}{0pt}
+\usepgfplotslibrary{fillbetween}
+
+{% for package in report.extra_packages %}
+\usepackage{{"{"}}{{package}}{{"}"}}
+{% endfor %}
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+{% import "macros/section.tex.j2"    as section %}
+
+{{ section.render(report, report_data, 1,context=context) }}
+
+\end{document}
