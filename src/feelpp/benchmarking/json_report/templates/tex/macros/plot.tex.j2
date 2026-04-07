@@ -1,0 +1,27 @@
+{% macro render(plotNode,data,context={}) %}
+
+{% set figure_ctrl = FiguresController(data.get(plotNode.ref),plotNode.plot, context.uuid) %}
+
+{# CURRENTLY ONLY THE FIRST PLOT TYPE IS EXPORTED #}
+{% set plot_type = plotNode.plot.plot_types[0] %}
+{% set exported_paths = figure_ctrl.exportFigureData(
+    plot_type = plot_type,
+    backend = "latex",
+    transformation = plotNode.plot.transformation,
+    formats = ["csv"],
+    outdir = context.attachments_dirpath
+)%}
+{% set data_url = (context.attachments_base_url or context.attachments_dirpath)~"/"~exported_paths["csv"] %}
+
+{%set fig = figure_ctrl.renderFigure(
+    plot_type = plot_type,
+    backend = "latex",
+    transformation = plotNode.plot.transformation,
+    data_dir = data_url
+) %}
+
+{%if fig %}
+{{fig}}
+{% endif %}
+
+{% endmacro %}

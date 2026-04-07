@@ -1,3 +1,4 @@
+import requests, warnings,os
 from typing import Literal, Union, Optional, List, Dict, Annotated, Callable, Any
 from pydantic import ValidationError, BaseModel, field_validator, model_validator, Field, ConfigDict
 from datetime import datetime
@@ -8,6 +9,7 @@ from feelpp.benchmarking.json_report.schemas.dataRefs import DataTable, DataObje
 
 class ReportNode(BaseModel):
     type:str
+    id: Optional[str] = None
     ref: Optional[str] = None
 
     model_config = ConfigDict( extra="forbid" )
@@ -19,6 +21,7 @@ class TextNode(ReportNode):
 
 class LatexNode(ReportNode):
     type:Literal["latex"]
+    is_equation: Optional[bool] = False
     latex: str
 
 class ImageNode(ReportNode):
@@ -27,9 +30,29 @@ class ImageNode(ReportNode):
     caption: Optional[str] = None
     alt: Optional[str] = None
     style: Optional[List[str]] = ["img-fluid"]
+    is_remote: Optional[bool] = True
+
+
+    def downloadImage(self,dirpath:str=".") -> str:
+        if not self.is_remote:
+            warnings.warn("downloadImage() used for local image... Will return the src attr")
+            return self.src
+
+        response = requests.get(self.src)
+        image_name = os.path.basename(self.src)
+        if response.status_code != 200:
+            warnings.warn(f"Could not download image from {self.src}")
+            return image_name
+
+        os.makedirs(dirpath,exist_ok=True)
+        image_path = os.path.join(dirpath,image_name)
+        with open(image_path,"wb") as f:
+            f.write(response.content)
+        return image_name
 
 class PlotNode(ReportNode):
     type: Literal["plot"]
+    caption: Optional[str] = None
     plot: Plot
 
 
@@ -68,6 +91,7 @@ class SectionNode(ReportNode):
 class GridNode(ReportNode):
     type: Literal["grid"]
     contents: Optional[List[Node]] = []
+    caption: Optional[str] = None
     columns: Optional[int] = 1
     justify: Optional[Literal["start","center","end"]] = "start"
     align: Optional[Literal["start","center","end"]] = "start"
@@ -117,7 +141,7 @@ class JsonReportSchema(BaseModel):
         else:
             raise TypeError(f"Expected dict or list at root, got {type(values)}")
 
-    def flattenContent(self, contents = None) -> list[Node]:
+    def flattenContent(self, contents = None) -> List[Node]:
         flattened = []
         if contents is None:
             contents = self.contents

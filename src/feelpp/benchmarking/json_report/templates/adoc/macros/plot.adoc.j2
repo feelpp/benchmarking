@@ -1,0 +1,69 @@
+{% macro render(plotNode,data, make_block=True, context={}) %}
+
+
+{% if plotNode.id %}
+[[{{plotNode.id}}]]
+{% endif %}
+{% if make_block %}
+[example.plot]
+{%if plotNode.caption %}
+.{{plotNode.caption}}
+{% endif %}
+====
+{% endif %}
+++++
+
+{% set figure_ctrl = FiguresController(data.get(plotNode.ref),plotNode.plot, context.uuid) %}
+
+<div class='figure-container'>
+    {% if figure_ctrl.figure_views | length > 1%}
+    <div class='tabs-container'>
+    {% for plot_type in figure_ctrl.figure_views.keys() %}
+        <button class='figure-tab' onclick='switchTab(this, {{loop.index}})'>{{plot_type}}</button>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+
+    {% for plot_type in figure_ctrl.figure_views.keys() %}
+    {% set exported_paths = figure_ctrl.exportFigureData(
+        plot_type = plot_type,
+        backend = "plotly",
+        transformation = plotNode.plot.transformation,
+        formats = ["zip_csv","json"],
+        outdir = context.attachments_dirpath
+    )%}
+    {% set csv_url = (context.attachments_base_url or context.attachments_dirpath)~"/"~exported_paths["zip_csv"] %}
+    {% set json_url = (context.attachments_base_url or context.attachments_dirpath)~"/"~exported_paths["json"] %}
+    {% set figure_div_id = "graph-div-"~figure_ctrl.id~"-"~loop.index%}
+
+    <div class="subfigure-container {% if loop.first %}active{% else %}inactive{% endif %}" data-subfigure="{{loop.index}}">
+        <div id="{{figure_div_id}}"> </div>
+        <div class='export-container'> <a href='{{csv_url}}' download>CSV</a> </div>
+    </div>
+
+    <script>
+        fetch('{{json_url}}')
+        .then(response => response.json())
+        .then(figure_json => { Plotly.newPlot('{{figure_div_id}}',figure_json); })
+        .catch(err => console.error(err));
+    </script>
+
+    {% endfor %}
+
+
+</div>
+
+
+
+{%if plotNode.caption and make_block==False %}
+<div class='plotly-figure-caption title'>{{plotNode.caption}}</div>
+{% endif %}
+
+
+++++
+{% if make_block %}
+====
+{% endif %}
+
+{% endmacro %}

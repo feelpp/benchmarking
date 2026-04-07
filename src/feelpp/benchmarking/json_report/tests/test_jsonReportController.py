@@ -160,6 +160,7 @@ def test_renderWritesToOutput(monkeypatch, tmp_path):
     fake_renderer.render = MagicMock()
 
     ctrl = JsonReportController.__new__(JsonReportController)
+    ctrl.id = "ABCD"
     ctrl.report_filepath = "report.json"
     ctrl.output_format = "adoc"
     ctrl.renderer = fake_renderer

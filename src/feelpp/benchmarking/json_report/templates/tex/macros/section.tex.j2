@@ -1,0 +1,44 @@
+{% import "macros/text.tex.j2"  as text %}
+{% import "macros/table.tex.j2" as table %}
+{% import "macros/image.tex.j2" as image %}
+{% import "macros/plot.tex.j2"  as plot %}
+{% import "macros/latex.tex.j2" as latex %}
+{% import "macros/itemize.tex.j2" as itemize %}
+{% import "macros/grid.tex.j2"  as grid %}
+
+{% set handlers = {
+    "plot":   plot.render,
+    "text":   text.render,
+    "image":  image.render,
+    "latex":  latex.render,
+    "table":  table.render,
+    "itemize": itemize.render
+} %}
+
+{% set levelTag = [ "\\chapter","\\section","\\subsection" ]%}
+
+{% macro render(sectionNode, report_data, level=1, context={}) %}
+
+{% if level - 1 < levelTag | length  %}
+{{levelTag[ level -1 ]}}{{'{'}}{% if sectionNode.title %}{{sectionNode.title}}{% endif %}{{'}'}}
+{% else %}
+\paragraph{{'{'}} {% if sectionNode.title %}{{sectionNode.title}}{% endif %} {{'}'}}
+{% endif %}
+{%if sectionNode.id %}
+\label{{'{'}}{{sectionNode.id}}{{'}'}}
+{% endif %}
+
+{% for node in sectionNode.contents %}
+{% if node.type == "section" %}
+{{ render(node, report_data, level + 1, context=context) }}
+{% elif node.type == "grid" %}
+{{ grid.render(node, report_data, context=context) }}
+{% else %}
+{% set handler = handlers.get(node.type) %}
+{% if handler %}
+{{ handler(node, report_data.get(node.ref),context=context) }}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% endmacro %}
