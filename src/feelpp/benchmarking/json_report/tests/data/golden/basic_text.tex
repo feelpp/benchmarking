@@ -1,0 +1,80 @@
+\documentclass[11pt]{report}
+\usepackage{graphicx}
+\usepackage{pgf-pie}
+\usepackage{currfile}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{underscore}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[parfill]{parskip}
+
+\setlength{\parindent}{0pt}
+\usepgfplotslibrary{fillbetween}
+
+\pgfplotsset{compat=newest}
+
+\begin{document}
+
+\chapter{}
+
+\section{Introduction}
+
+This is a basic end-to-end test to verify that plain text and sections render correctly.
+
+\subsection{Subsection}
+
+Nested sections should appear with correct formatting.
+
+\section{Raw Object}
+
+Custom from file : SOME RAW TEST
+
+Custom from inline : Some data i want to refactor across nodes
+
+\section{Object from file}
+
+Number of students 2
+
+\begin{itemize}
+  \item Javier: 100 (B)
+  \item Oscar: 90 (C)
+\end{itemize}
+
+\section{Inline Object}
+
+Value my data value
+
+\section{References}
+
+Unchanged reference : SOME RAW TEST
+
+Reference lower : some raw test
+
+Inline ref : Some data i want to refactor across nodes
+
+Inline UPPER : SOME DATA I WANT TO REFACTOR ACROSS NODES
+
+
+\begin{itemize}
+  \item Javier Copy: 100 (B)
+
+  \item Oscar Copy: 90 (C)
+
+\end{itemize}
+
+
+Dumped json : {"students": {"javier": {"score": "100", "grade": "B"}, "oscar": {"score": "90", "grade": "C"}}}
+
+Inline object from ref: my data value
+
+Object Casted to raw: {"data1": "my data value"}
+
+
+
+\end{document}

@@ -27,13 +27,26 @@ class TemplateDataFile(BaseModel):
     prefix: Optional[str] = ""
     format: str = None
     action: Optional[str] = "input"
+    platform: Optional[str] = "local"
     filepath: str
 
     @model_validator(mode="after")
     def checkFormat(self):
-        if self.format is None:
-            self.format = self.filepath.split(".")[-1]
+        if self.platform == "local":
+            if self.format is None:
+                self.format = self.filepath.split(".")[-1]
+        else:
+            if self.format is None:
+                raise ValueError("Format must be specified for remote data")
         return self
+
+    @field_validator("platform",mode="after")
+    @classmethod
+    def checkPlatform(cls,v):
+        if v not in ["local","girder"]:
+            raise NotImplementedError(f"Data management platform not supported : {v}")
+        return v
+
 
 class TemplateInfo(BaseModel):
     template:Optional[str] = None
@@ -124,11 +137,11 @@ class TemplateDefaults(BaseModel):
 
 
 class DashboardSchema(BaseModel):
-    dashboard_metadata:Optional[Union[dict[str,str],TemplateInfo]] = TemplateInfo(data={})
+    dashboard_metadata:Optional[Union[Dict[str,str],TemplateInfo]] = TemplateInfo(data={})
     component_map: Union[ComponentMap,Dict]
-    components: Dict[str,Dict[str, Union[dict[str,str],TemplateInfo]]]
+    components: Dict[str,Dict[str, Union[Dict[str,str],TemplateInfo]]]
     views : Optional[Dict[str,Union[Dict,str]]] = None
-    repositories : Optional[Dict[str,Union[dict[str,str],TemplateInfo]]] = None
+    repositories : Optional[Dict[str,Union[Dict[str,str],TemplateInfo]]] = None
     template_defaults: Optional[TemplateDefaults] = TemplateDefaults()
 
     @model_validator(mode="after")
@@ -230,5 +243,5 @@ class DashboardSchema(BaseModel):
 
                 if not component_data.template:
                     component_data.template = template
-
+                component_data.data = component_data.data[::-1] #Put defaults at the start so actual values overwrite
         return self

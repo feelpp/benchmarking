@@ -15,6 +15,14 @@
                 "name":"",
                 "filepath":"output.csv",
                 "units":{ "fibonacci_number":"" }
+            },
+            {
+                "name":"",
+                "filepath":"stdout",
+                "format":"regex",
+                "pattern": "^(?P<name>[^:\\n]+):\\s*(?P<value>[-+]?[\\d.]+(?:[eE][-+]?\\d+)?)$",
+                "variable_name_group":"name",
+                "variable_value_group":"value"
             }
         ]
     },
