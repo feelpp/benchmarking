@@ -40,6 +40,9 @@ def init(args):
     for img in glob.glob(os.path.join(script_data_path,"website_images","*")):
         shutil.copy(img,"docs/modules/ROOT/images")
 
+    #Add supplemental UI
+    shutil.copytree(os.path.join(script_data_path,"supplemental-ui"), "docs/antora/supplemental_ui")
+
     #Create index
     with open("docs/modules/ROOT/pages/index.adoc","w") as f:
         f.write(f"= {args.project_title}\n:page-layout: toolboxes\n:page-tags: catalog, catalog-index\n:docdatetime: {datetime.strftime(datetime.now(),'%Y-%m-%dT%H:%M:%S')}\n")
