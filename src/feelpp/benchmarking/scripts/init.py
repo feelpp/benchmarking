@@ -61,8 +61,8 @@ def main_cli():
     init_parser = subparsers.add_parser('init')
 
     init_parser.add_argument("--destination",'-d', required=False, default=".",type=str,help="Base directory where to initialize antora files.")
-    init_parser.add_argument("--project-title",'-t', required=True, type=str, help="The title of your project.")
-    init_parser.add_argument("--project-name",'-n', required=True, type=str, help="The name of your project. Must not contain spaces or any special characters other than underscore (_)")
+    init_parser.add_argument("--project-title",'-t', required=False, default="My Project", type=str, help="The title of your project.")
+    init_parser.add_argument("--project-name",'-n', required=False, default="my_project", type=str, help="The name of your project. Must not contain spaces or any special characters other than underscore (_)")
     init_parser.set_defaults(func=init)
 
     args = parser.parse_args()
