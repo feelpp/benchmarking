@@ -25,11 +25,13 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     #TODO: Find a way to avoid env variables
 
     #====================== INIT READERS ==================#
-    machine_reader = ConfigReader(
-        str(os.environ.get("MACHINE_CONFIG_FILEPATH")),
-        MachineConfig, "machine",
-        "--dry-run" in sys.argv
-    )
+    machine_filepath = os.environ.get("MACHINE_CONFIG_FILEPATH")
+    if machine_filepath:
+        machine_reader = ConfigReader( machine_filepath, MachineConfig, "machine", "--dry-run" in sys.argv )
+    else:
+        machine_reader = ConfigReader(None,MachineConfig,"machine",dry_run="--dry-run" in sys.argv)
+        machine_reader.config = MachineConfig(machine="default")
+
 
     app_reader = ConfigReader(
         str(os.environ.get("APP_CONFIG_FILEPATH")),
@@ -157,7 +159,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_before('run')
     def setResources(self):
         ResourceHandler.setResources(self.app_reader.config.resources, self)
-        self.num_cpus_per_task = 1
 
     @run_before('run')
     def cleanupDirectories(self):

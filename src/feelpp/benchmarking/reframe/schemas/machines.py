@@ -31,14 +31,14 @@ class MachineConfig(BaseModel):
     reports_base_dir: Optional[str] = "./reports/"
     input_dataset_base_dir:Optional[str] = None
     input_user_dir:Optional[str] = None
-    output_app_dir:str
+    output_app_dir:Optional[str] = None
     access:Optional[List[str]] = []
     env_variables:Optional[Dict] = {}
     containers:Optional[Dict[str,Container]] = {}
 
     platform:Optional[Literal["apptainer","docker","builtin"]] = "builtin"
-    partitions: Optional[List[str]] = []
-    prog_environments: Optional[List[str]] = []
+    partitions: Optional[List[str]] = ["default"]
+    prog_environments: Optional[List[str]] = ["default"]
 
     #This field should be hidden from user schema ( are post-processed under parseTargets method )
     #TODO: maybe skipJsonSchema or something like that.

@@ -10,7 +10,12 @@ from feelpp.benchmarking.dashboardRenderer.handlers.girder import GirderHandler
 def main_cli():
     parser = Parser()
 
-    machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
+    if parser.args.machine_config:
+        machine_reader = ConfigReader(parser.args.machine_config,MachineConfig,"machine",dry_run=parser.args.dry_run)
+    else:
+        machine_reader = ConfigReader(None,MachineConfig,"machine",dry_run=parser.args.dry_run)
+        machine_reader.config = MachineConfig(machine="default")
+
 
     #Sets the cachedir and tmpdir directories for containers
     for platform, dirs in machine_reader.config.containers.items():
@@ -24,7 +29,8 @@ def main_cli():
 
     cmd_builder = CommandBuilder(machine_reader.config,parser)
 
-    os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.machine_config
+    if parser.args.machine_config:
+        os.environ["MACHINE_CONFIG_FILEPATH"] = parser.args.machine_config
 
     website_config = WebsiteConfigCreator(machine_reader.config.reports_base_dir)
 
@@ -103,7 +109,7 @@ def main_cli():
 
         try:
             # ============== LAUNCH REFRAME =======================#
-            reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout)
+            reframe_cmd = cmd_builder.buildCommand( app_reader.config.timeout )
             exit_code = subprocess.run(reframe_cmd, shell=True)
             #======================================================#
         finally:
