@@ -24,7 +24,7 @@ class Container(BaseModel):
 
 class MachineConfig(BaseModel):
     machine:str
-    targets:Optional[Union[str,List[str]]] = None
+    targets:Optional[Union[str,List[str]]] = "::"
     active: Optional[bool] = True
     execution_policy:Optional[Literal["serial","async"]] = "serial"
     reframe_base_dir:Optional[str] = "./reframe/"
@@ -37,8 +37,8 @@ class MachineConfig(BaseModel):
     containers:Optional[Dict[str,Container]] = {}
 
     platform:Optional[Literal["apptainer","docker","builtin"]] = "builtin"
-    partitions: Optional[List[str]] = ["default"]
-    prog_environments: Optional[List[str]] = ["default"]
+    partitions: Optional[List[str]] = []
+    prog_environments: Optional[List[str]] = []
 
     #This field should be hidden from user schema ( are post-processed under parseTargets method )
     #TODO: maybe skipJsonSchema or something like that.
