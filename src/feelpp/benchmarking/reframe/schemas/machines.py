@@ -24,7 +24,7 @@ class Container(BaseModel):
 
 class MachineConfig(BaseModel):
     machine:str
-    targets:Optional[Union[str,List[str]]] = "::"
+    targets:Optional[Union[str,List[str]]] = None
     active: Optional[bool] = True
     execution_policy:Optional[Literal["serial","async"]] = "serial"
     reframe_base_dir:Optional[str] = "./reframe/"
@@ -46,15 +46,25 @@ class MachineConfig(BaseModel):
 
     @model_validator(mode="after")
     def parseTargets(self):
+        targets = None
         if not self.targets:
-            if not self.platform or not self.partitions or not self.prog_environments:
-                raise ValueError("Either specify the `targets` field or the (platform, partitions,prog_environments) fields for a cartesian product.")
-            return self
+            if self.platform and self.partitions and self.prog_environments:
+                targets = [
+                    f"{p}:{self.platform}:{e}"
+                    for p in self.partitions
+                    for e in self.prog_environments
+                ]
+                self.partitions = []
+                self.prog_environments = []
+            else:
+                targets = "::"
+        else:
+            targets = self.targets
 
-        self.targets = self.targets if type(self.targets) == list else [self.targets]
+        targets = targets if type(targets) == list else [targets]
         platform = None
 
-        for target in self.targets:
+        for target in targets:
 
             split = target.split(":")
             if len(split) != 3:
