@@ -77,6 +77,17 @@ class LeafComponent(GraphNode):
         self.view.render( leaf_dir, **kwargs )
 
     def patchTemplateInfo( self, patch : Union[dict,TemplateDataFile], prefix:str, save:bool = False ) -> None:
+        """
+        Updates the view's template data with a patch and optionally saves the patch
+        to a corresponding data file linked to the view.
+
+        Args:
+            patch (Union[dict,TemplateDataFile]): The data to be patched into the template data.
+            prefix (str): The key under which the patch should be stored in the template data.
+                          This key is also used to identify the TemplateDataFile to save to.
+            save (bool): If True, the patch will be written back to the associated data file
+                         (e.g., a JSON file) on the filesystem.
+        """
         template_data_files = [d for d in self.view.template_info.data if isinstance(d,TemplateDataFile) and d.prefix and d.prefix == prefix ]
 
         if len( template_data_files ) > 1:
