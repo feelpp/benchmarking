@@ -175,12 +175,12 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def wrapCmdInTimer(self):
-        self.prerun_cmds += ['START_TIME=$(date +%s.%N)']
+        self.prerun_cmds += ['START_TIME=$(python3 -c "import time; print(time.time())")']
         self.postrun_cmds += [
-            'END_TIME=$(date +%s.%N)',
-            'RUNTIME=$(awk -v start="$START_TIME" -v end="$END_TIME" \'BEGIN {printf "%.9f", end - start}\')',
+            'END_TIME=$(python3 -c "import time; print(time.time())")',
+            'RUNTIME=$(python3 -c "print(f\'{float($END_TIME) - float($START_TIME):.9f}\')")',
             'echo "__RFM_TOTAL_RUNTIME_SECONDS__=${RUNTIME}"'
-        ]
+       ]
 
     @run_before('run')
     def setExecutable(self):
