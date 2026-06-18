@@ -19,6 +19,11 @@ class DefaultPlot(Plot):
 DEFAULT_DATA = [
     { "name":"reframe_json", "filepath":"./reframe_report.json" },
     { "type":"DataTable", "name":"reframe_df", "ref":"reframe_json", "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor" },
+    { "type":"DataTable", "name":"perfvar_table", "ref":"reframe_df",
+        "table_options":{
+            "group_by":{"columns":["perfvalue"],"agg":"first"}
+        }
+    },
     { "type":"DataTable", "name":"parameter_table", "ref":"reframe_df",
         "table_options":{
             "computed_columns":{ "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'" },
@@ -128,7 +133,10 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
                                 "classnames":["scrollable","sortable"]
                             },
                             "filter":{ "placeholder":"Filter testcases..." }
-                        }
+                        },
+                        { "type":"table","ref":"perfvar_table", "layout":{
+                            "rename":{"perfvalue":"Performance Variable"}, "column_order":["perfvalue"] 
+                        } }
                     ]
                 })
             ]
