@@ -89,9 +89,9 @@ class LeafComponent(GraphNode):
         else:
             target_file = template_data_files[0]
             if save:
-                write_path = os.path.join(self.view.template_data_dir, target_file.filepath) if self.view.template_data_dir else target_file.filepath
+                write_path = os.path.join(self.view.template_data_dir, target_file.filepath) if hasattr(self.view,"template_data_dir") and self.view.template_data_dir else target_file.filepath
             else:
-                base_dir = self.view.template_data_dir if self.view.template_data_dir else (os.path.dirname(target_file.filepath) or ".")
+                base_dir = self.view.template_data_dir if hasattr(self.view,"template_data_dir") and self.view.template_data_dir else (os.path.dirname(target_file.filepath) or ".")
 
                 tmp_fd, write_path = tempfile.mkstemp(dir=base_dir, suffix=f".{target_file.format}")
                 os.close(tmp_fd)
