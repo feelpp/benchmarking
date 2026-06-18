@@ -41,7 +41,7 @@ def init(args):
         shutil.copy(img,"docs/modules/ROOT/images")
 
     #Add supplemental UI
-    shutil.copytree(os.path.join(script_data_path,"supplemental-ui"), "docs/antora/supplemental_ui")
+    shutil.copytree(os.path.join(script_data_path,"supplemental-ui"), "docs/antora/supplemental-ui")
 
     #Create index
     with open("docs/modules/ROOT/pages/index.adoc","w") as f:
