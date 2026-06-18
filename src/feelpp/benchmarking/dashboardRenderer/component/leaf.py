@@ -95,7 +95,7 @@ class LeafComponent(GraphNode):
 
                 tmp_fd, write_path = tempfile.mkstemp(dir=base_dir, suffix=f".{target_file.format}")
                 os.close(tmp_fd)
-                target_file.filepath = write_path
+            target_file.filepath = write_path
 
             with open(write_path, "w") as f:
                 if target_file.format == "json":
