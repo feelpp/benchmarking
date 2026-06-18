@@ -172,6 +172,16 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.job.options += self.machine_reader.config.access
         self.job.options += ['--threads-per-core=1']
 
+
+    @run_before('run')
+    def wrapCmdInTimer(self):
+        self.prerun_cmds += ['START_TIME=$(date +%s.%N)']
+        self.postrun_cmds += [
+            'END_TIME=$(date +%s.%N)',
+            'RUNTIME=$(awk -v start="$START_TIME" -v end="$END_TIME" \'BEGIN {printf "%.9f", end - start}\')',
+            'echo "__RFM_TOTAL_RUNTIME_SECONDS__=${RUNTIME}"'
+        ]
+
     @run_before('run')
     def setExecutable(self):
         if self.machine_reader.config.platform == "builtin":
