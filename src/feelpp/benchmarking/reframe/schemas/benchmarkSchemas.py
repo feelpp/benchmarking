@@ -99,3 +99,11 @@ class ConfigFile(BaseModel):
                 raise ValueError(f"{k} not implemented")
         return v
 
+    @field_validator("platforms",mode="after")
+    @classmethod
+    def addBuiltinPlatform(cls,v):
+        if "builtin" not in v:
+            v["builtin"] = Platform()
+        return v
+
+
