@@ -1,3 +1,4 @@
+import tempfile
 from feelpp.benchmarking.dashboardRenderer.component.base import GraphNode
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.views.base import View
@@ -76,34 +77,34 @@ class LeafComponent(GraphNode):
         self.view.render( leaf_dir, **kwargs )
 
     def patchTemplateInfo( self, patch : Union[dict,TemplateDataFile], prefix:str, save:bool = False ) -> None:
-        """
-        Updates the view's template data with a patch and optionally saves the patch
-        to a corresponding data file linked to the view.
+        template_data_files = [d for d in self.view.template_info.data if isinstance(d,TemplateDataFile) and d.prefix and d.prefix == prefix ]
 
-        Args:
-            patch (Union[dict,TemplateDataFile]): The data to be patched into the template data.
-            prefix (str): The key under which the patch should be stored in the template data.
-                          This key is also used to identify the TemplateDataFile to save to.
-            save (bool): If True, the patch will be written back to the associated data file
-                         (e.g., a JSON file) on the filesystem.
-        """
-        if save:
-            template_data_files = [d for d in self.view.template_info.data if isinstance(d,TemplateDataFile) and d.prefix and d.prefix == prefix ]
+        if len( template_data_files ) > 1:
+            warnings.warn(f"More than one file having prefix {prefix} found. First occurence will be overwritten")
 
-            if len( template_data_files ) > 1:
-                warnings.warn(f"More than one file having prefix {prefix} found. First occurence will be overwritten")
+        patch_data = patch.model_dump() if hasattr(patch, "model_dump") else patch
 
-            filepath = None
-            if len( template_data_files ) == 0:
-                warnings.warn(f"No data files with {prefix} found in {self.id}. Saving this patch will not be possible.")
+        if not template_data_files:
+            warnings.warn(f"No data files with {prefix} found in {self.id}. Saving/patching will not be possible.")
+        else:
+            target_file = template_data_files[0]
+            if save:
+                write_path = os.path.join(self.view.template_data_dir, target_file.filepath) if self.view.template_data_dir else target_file.filepath
             else:
-                filepath = template_data_files[0].filepath
-                format = template_data_files[0].format
+                base_dir = self.view.template_data_dir if self.view.template_data_dir else (os.path.dirname(target_file.filepath) or ".")
 
-            if filepath:
-                with open( os.path.join( self.view.template_data_dir, filepath ), "w" ) as f:
-                    if format == "json":
-                        json.dump( patch.model_dump(), f )
-                    else:
-                        f.write( patch )
-        self.view.updateTemplateData( {prefix:patch} )
+                tmp_fd, write_path = tempfile.mkstemp(dir=base_dir, suffix=f".{target_file.format}")
+                os.close(tmp_fd)
+                target_file.filepath = write_path
+
+            with open(write_path, "w") as f:
+                if target_file.format == "json":
+                    json.dump(patch_data, f)
+                else:
+                    f.write(patch_data)
+            self.view.updateTemplateData(target_file)
+
+            if not save: #Cleanup temp file
+                os.remove(write_path)
+
+        self.view.updateTemplateData( {prefix:patch_data} )
