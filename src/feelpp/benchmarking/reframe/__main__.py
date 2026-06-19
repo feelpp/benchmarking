@@ -44,7 +44,10 @@ def main_cli():
         app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
 
         executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
-        report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
+        if parser.args.dry_run:
+            report_folder_path = None
+        else:
+            report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
 
         #===============PULL IMAGES==================#
         if not parser.args.dry_run:
@@ -79,32 +82,34 @@ def main_cli():
         #================================================#
 
         #============== UPDATE WEBSITE CONFIG FILE ==============#
-        common_itempath = (parser.args.move_results or report_folder_path).split("/")
-        common_itempath = "/".join(common_itempath[:-1 - (common_itempath[-1] == "")])
+        if not parser.args.dry_run:
+            common_itempath = (parser.args.move_results or report_folder_path).split("/")
+            common_itempath = "/".join(common_itempath[:-1 - (common_itempath[-1] == "")])
 
-        website_config.updateExecutionMapping(
-            executable_name, machine_reader.config.machine, app_reader.config.use_case_name,
-            report_itempath = common_itempath
-        )
+            website_config.updateExecutionMapping(
+                executable_name, machine_reader.config.machine, app_reader.config.use_case_name,
+                report_itempath = common_itempath
+            )
 
-        website_config.updateMachine(machine_reader.config.machine)
-        website_config.updateUseCase(app_reader.config.use_case_name)
-        website_config.updateApplication(executable_name)
+            website_config.updateMachine(machine_reader.config.machine)
+            website_config.updateUseCase(app_reader.config.use_case_name)
+            website_config.updateApplication(executable_name)
 
-        website_config.save()
+            website_config.save()
         #======================================================#
 
 
         #============ CREATING RESULT ITEM ================#
-        with open(os.path.join(report_folder_path,"report.json"),"w") as f:
-            f.write(json.dumps(app_reader.config.json_report.model_dump()))
+        if not parser.args.dry_run:
+            with open(os.path.join(report_folder_path,"report.json"),"w") as f:
+                f.write(json.dumps(app_reader.config.json_report.model_dump()))
 
-        #Copy use case description if existant
-        FileHandler.copyResource(
-            app_reader.config.additional_files.description_filepath,
-            os.path.join(report_folder_path,"partials"),
-            "description"
-        )
+            #Copy use case description if existant
+            FileHandler.copyResource(
+                app_reader.config.additional_files.description_filepath,
+                os.path.join(report_folder_path,"partials"),
+                "description"
+            )
         #===============================================#
 
         try:
@@ -113,7 +118,7 @@ def main_cli():
             exit_code = subprocess.run(reframe_cmd, shell=True)
             #======================================================#
         finally:
-            if not os.path.exists(os.path.join(report_folder_path,"reframe_report.json")):
+            if report_folder_path and not os.path.exists(os.path.join(report_folder_path,"reframe_report.json")):
                 if os.path.exists(os.path.join(report_folder_path,"report.json")):
                     os.remove(os.path.join(report_folder_path,"report.json"))
                 os.rmdir(report_folder_path)
@@ -122,8 +127,9 @@ def main_cli():
         if parser.args.move_results:
             if not os.path.exists(parser.args.move_results):
                 os.makedirs(parser.args.move_results)
-            os.rename(os.path.join(report_folder_path,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
-            os.rename(os.path.join(report_folder_path,"report.json"),os.path.join(parser.args.move_results,"report.json"))
+            if report_folder_path:
+                os.rename(os.path.join(report_folder_path,"reframe_report.json"),os.path.join(parser.args.move_results,"reframe_report.json"))
+                os.rename(os.path.join(report_folder_path,"report.json"),os.path.join(parser.args.move_results,"report.json"))
         #======================================================#
 
     if parser.args.website:
