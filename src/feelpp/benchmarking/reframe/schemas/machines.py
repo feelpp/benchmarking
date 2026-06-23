@@ -28,7 +28,7 @@ class MachineConfig(BaseModel):
     active: Optional[bool] = True
     execution_policy:Optional[Literal["serial","async"]] = "serial"
     reframe_base_dir:Optional[str] = "./reframe/"
-    reports_base_dir: Optional[str] = "$PWD/reports/"
+    reports_base_dir: Optional[str] = os.path.join(os.path.curdir,"reports/")
     input_dataset_base_dir:Optional[str] = None
     input_user_dir:Optional[str] = None
     output_app_dir:Optional[str] = None
