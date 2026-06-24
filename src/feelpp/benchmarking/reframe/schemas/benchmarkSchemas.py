@@ -34,6 +34,8 @@ class ConfigFile(BaseModel):
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     json_report: Optional[Union[JsonReportSchemaWithDefaults,List[DefaultPlot]]] = JsonReportSchemaWithDefaults()
 
+    prepare_cmds: List[str] = []
+
     model_config = ConfigDict( extra='allow' )
     def __getattr__(self, item):
         if item in self.model_extra:

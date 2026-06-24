@@ -172,6 +172,9 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         self.job.options += self.machine_reader.config.access
         self.job.options += ['--threads-per-core=1']
 
+    @run_before('run')
+    def addPrepareCmds(self):
+        self.prerun_cmds += self.app_reader.config.prepare_cmds
 
     @run_before('run')
     def wrapCmdInTimer(self):
