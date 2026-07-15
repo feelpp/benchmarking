@@ -174,6 +174,7 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
 
     @run_before('run')
     def addPrepareCmds(self):
+        self.prerun_cmds += self.machine_reader.config.prepare_cmds
         self.prerun_cmds += self.app_reader.config.prepare_cmds
 
     @run_before('run')

@@ -36,6 +36,8 @@ class MachineConfig(BaseModel):
     env_variables:Optional[Dict] = {}
     containers:Optional[Dict[str,Container]] = {}
 
+    prepare_cmds: List[str] = []
+
     platform:Optional[Literal["apptainer","docker","builtin"]] = "builtin"
     partitions: Optional[List[str]] = []
     prog_environments: Optional[List[str]] = []
