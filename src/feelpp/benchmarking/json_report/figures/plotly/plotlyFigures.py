@@ -28,8 +28,8 @@ class PlotlyFigure(Figure):
             title=self.config.title,
             legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
-        fig.update_xaxes(title=self.config.xaxis.label, autoscale=True)
-        fig.update_yaxes(title=self.config.yaxis.label, autoscale=True)
+        fig.update_xaxes(title=self.config.xaxis.label, autorange=True)
+        fig.update_yaxes(title=self.config.yaxis.label, autorange=True)
         return fig
 
     def createSliderAnimation(self,df):
@@ -40,20 +40,22 @@ class PlotlyFigure(Figure):
         Returns: (go.Figure) The plotly slider animation figure
         """
         frames = []
-        ranges=[]
+        # ranges=[]
         secondary_axis = self.config.secondary_axis.parameter
         anim_dimension_values = df.index.get_level_values(secondary_axis).unique().values
 
         for dim in anim_dimension_values:
             frame_df = df.xs(dim,level=secondary_axis,axis=0)
             frames.append(self.createTraces(frame_df))
-            ranges.append(self.getIdealRange(frame_df))
+            # ranges.append(self.getIdealRange(frame_df))
 
         if frames:
             fig = go.Figure(
                 data = frames[0],
                 frames = [
-                    go.Frame( data = f, name=f"frame_{i}", layout=dict( yaxis=dict(range = ranges[i]) ) )
+                    go.Frame( data = f, name=f"frame_{i}",
+                        # layout=dict( yaxis=dict(range = ranges[i]) )
+                    )
                     for i,f in enumerate(frames)
                 ],
                 layout=go.Layout(
@@ -61,7 +63,8 @@ class PlotlyFigure(Figure):
                         active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
                         steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
                     )],
-                    yaxis=dict(range = ranges[0]),
+                    yaxis=dict(autorange=True),
+                    xaxis=dict(autorange=True),
                 )
             )
         else:
@@ -87,7 +90,7 @@ class PlotlyFigure(Figure):
         """
         return go.Figure(self.createTraces(df))
 
-    def createFigure(self,df, data_dirpath = "."):
+    def createFigure(self,df, data_dirpath = ".", **args):
         """ Creates a figure from the master dataframe
         Args:
             df (pd.DataFrame). The master dataframe containing all reframe test data
