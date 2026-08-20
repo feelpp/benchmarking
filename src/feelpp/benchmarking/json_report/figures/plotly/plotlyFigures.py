@@ -26,10 +26,10 @@ class PlotlyFigure(Figure):
         """
         fig.update_layout(
             title=self.config.title,
-            xaxis=dict(title = self.config.xaxis.label),
-            yaxis=dict(title = self.config.yaxis.label),
             legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
+        fig.update_xaxes(title=self.config.xaxis.label, autoscale=True)
+        fig.update_yaxes(title=self.config.yaxis.label, autoscale=True)
         return fig
 
     def createSliderAnimation(self,df):
