@@ -20,6 +20,9 @@ class ResourceStrategy:
 class TaskAndTaskPerNodeStrategy(ResourceStrategy):
     """ Resource Strategy to configure the resources for the test with tasks and tasks per node """
     def configure(self, resources, rfm_test):
+        if resources.cpus_per_task:
+            rfm_test.num_cpus_per_task = int(resources.cpus_per_task)
+
         rfm_test.num_tasks_per_node = int(resources.tasks_per_node)
         rfm_test.num_tasks = int(resources.tasks)
         rfm_test.num_nodes = int(np.ceil(rfm_test.num_tasks / rfm_test.num_tasks_per_node))
@@ -28,20 +31,25 @@ class TaskAndTaskPerNodeStrategy(ResourceStrategy):
         super().validate(rfm_test)
         assert rfm_test.num_tasks % rfm_test.num_tasks_per_node == 0, 'Number of tasks should be divisible by tasks per node'
         assert rfm_test.num_tasks >= rfm_test.num_tasks_per_node > 0, 'Number of tasks should be greater than tasks per node'
-        assert rfm_test.num_tasks_per_node <= rfm_test.current_partition.processor.num_cpus, f"A node has not enough capacity ({rfm_test.current_partition.processor.num_cpus}, {rfm_test.num_tasks_per_node})"
+        assert rfm_test.num_tasks_per_node * (rfm_test.num_cpus_per_task or 1) <= rfm_test.current_partition.processor.num_cpus, f"A node has not enough capacity ({rfm_test.current_partition.processor.num_cpus} cpus, {rfm_test.num_tasks_per_node} tasks per node, {rfm_test.num_cpus_per_task} cpus per task)"
 
 class NodesAndTasksPerNodeStrategy(ResourceStrategy):
     """ Resource Strategy to configure the resources for the test with nodes and tasks per node
         The number of tasks is calculated as the number of nodes multiplied by the number of tasks per node
     """
     def configure(self, resources, rfm_test):
+        if resources.cpus_per_task:
+            rfm_test.num_cpus_per_task = int(resources.cpus_per_task)
+
         rfm_test.num_tasks_per_node = int(resources.tasks_per_node)
         rfm_test.num_nodes = int(resources.nodes)
         rfm_test.num_tasks = int(rfm_test.num_tasks_per_node * rfm_test.num_nodes)
 
     def validate(self, rfm_test):
         super().validate(rfm_test)
-        assert rfm_test.num_tasks_per_node <= rfm_test.current_partition.processor.num_cpus, f"A node has not enough capacity ({rfm_test.current_partition.processor.num_cpus}, {rfm_test.num_tasks_per_node})"
+        assert rfm_test.num_nodes > 0, "Number of nodes should be strictly positive."
+        assert rfm_test.num_tasks_per_node * (rfm_test.num_cpus_per_task or 1) <= rfm_test.current_partition.processor.num_cpus, f"A node has not enough capacity ({rfm_test.current_partition.processor.num_cpus} cpus, {rfm_test.num_tasks_per_node} tasks per node, {rfm_test.num_cpus_per_task} cpus per task)"
+
 
 
 class TasksAndNodesStrategy(ResourceStrategy):
@@ -49,6 +57,9 @@ class TasksAndNodesStrategy(ResourceStrategy):
         The number of tasks per node is calculated as the euclidean quotient of the number of tasks divided by the number of nodes
     """
     def configure(self, resources, rfm_test):
+        if resources.cpus_per_task:
+            rfm_test.num_cpus_per_task = int(resources.cpus_per_task)
+
         rfm_test.num_tasks = int(resources.tasks)
         rfm_test.num_nodes = int(resources.nodes)
         rfm_test.num_tasks_per_node = rfm_test.num_tasks // rfm_test.num_nodes
@@ -118,6 +129,20 @@ class ExclusiveAccessEnforcer:
     def enforceExclusiveAccess(self, rfm_test):
         rfm_test.exclusive_access = self.exclusive_access
 
+class HyperthreadingEnforcer:
+    """ Plugin to enforce hyperthreading value to the nodes
+        The hyperthreading value is set to 1 by default
+    """
+    def __init__(self, threads_per_core):
+        """Args:
+            threads_per_core (int): The hyperthreading value
+        """
+        self.threads_per_core = int(threads_per_core) if threads_per_core is not None else 1
+
+    def enforceHyperthreading(self, rfm_test):
+        rfm_test.job.options += [f'--threads-per-core={self.threads_per_core}']
+        rfm_test.multithreading = self.threads_per_core > 1
+
 class ResourceHandler:
     """ Resource Handler to set the resources for the test, based on the resources model """
     @staticmethod
@@ -130,6 +155,7 @@ class ResourceHandler:
         Returns:
             ReFrameTest: The ReFrame test with the resources configured
         """
+        strategy =  ResourceStrategy()
         if resources.tasks and resources.tasks_per_node:
             strategy = TaskAndTaskPerNodeStrategy()
         elif resources.nodes and resources.tasks_per_node:
@@ -153,6 +179,8 @@ class ResourceHandler:
 
         if resources.memory:
             MemoryEnforcer(resources.memory).enforceMemory(rfm_test)
+
+
 
         ExclusiveAccessEnforcer(resources.exclusive_access).enforceExclusiveAccess(rfm_test)
 

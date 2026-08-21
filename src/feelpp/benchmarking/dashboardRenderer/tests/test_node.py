@@ -1,6 +1,6 @@
 from feelpp.benchmarking.dashboardRenderer.component.base import GraphNode
 from feelpp.benchmarking.dashboardRenderer.component.leaf import LeafComponent
-from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateDataFile
+from feelpp.benchmarking.dashboardRenderer.schemas.dashboardSchema import TemplateDataFile, TemplateInfo
 
 import pytest
 
@@ -8,6 +8,7 @@ class MockView:
     def __init__(self,name = ""):
         self.name = name
         self.template_data = {"test":"template_data"}
+        self.template_info = TemplateInfo(data=[TemplateDataFile(format="json",prefix="meta",filepath="")])
     def clone(self):
         return MockView(f"Cloned {self.name}")
     def updateTemplateData(self,data):
