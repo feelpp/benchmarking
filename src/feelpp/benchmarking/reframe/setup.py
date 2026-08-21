@@ -157,7 +157,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_before('run')
     def setResources(self):
         ResourceHandler.setResources(self.app_reader.config.resources, self)
-        self.num_cpus_per_task = 1
 
     @run_before('run')
     def cleanupDirectories(self):
