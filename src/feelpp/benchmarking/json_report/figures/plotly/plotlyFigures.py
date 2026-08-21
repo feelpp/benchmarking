@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 import plotly.express as px
+import plotly.colors as plotly_colors
 
 from feelpp.benchmarking.json_report.figures.base import Figure
 from numpy import float64 as float64
@@ -114,12 +115,13 @@ class PlotlyScatterFigure(PlotlyFigure):
             - df (pd.DataFrame): The dataframe containing the figure data.
         Returns: (list[go.Trace]) The Scatter traces to display in the scatter figure.
         """
+        pcolors = plotly_colors.qualitative.Plotly
         return [
             go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i > 0 else None, line=dict(color="black",dash="dash") ,mode="lines")
             for i,col in enumerate(self.fill_lines)
         ] + [
-            go.Scatter( x = df.index, y = df.loc[:,col], name = col )
-            for col in [c for c in df.columns if c not in self.fill_lines]
+            go.Scatter( x = df.index, y = df.loc[:,col], name = col, line=dict(color=pcolors[i % len(pcolors)]))
+            for i,col in enumerate([c for c in df.columns if c not in self.fill_lines])
         ]
 
 class PlotlyMarkedScatter(PlotlyFigure):

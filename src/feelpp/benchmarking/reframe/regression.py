@@ -1,4 +1,5 @@
 import reframe as rfm
+import reframe.utility.sanity as sn
 from feelpp.benchmarking.reframe.setup import ReframeSetup, DEBUG
 from feelpp.benchmarking.reframe.config.configReader import FileHandler
 from feelpp.benchmarking.reframe.validation import ValidationHandler
@@ -69,10 +70,15 @@ class RegressionTest(ReframeSetup):
             self.hashcode
         )
 
-
     @run_before('performance')
     def setPerfVars(self):
         self.perf_variables = {}
+
+        self.perf_variables["__RFM_TOTAL_RUNTIME__"] = sn.make_performance_function(
+            sn.extractsingle( r'__RFM_TOTAL_RUNTIME_SECONDS__=([0-9.]+)', self.stdout, 1, float),
+            unit='s'
+        )
+
         if not self.scalability_handler:
             return
         self.perf_variables.update(

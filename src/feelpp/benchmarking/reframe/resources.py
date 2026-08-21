@@ -155,6 +155,7 @@ class ResourceHandler:
         Returns:
             ReFrameTest: The ReFrame test with the resources configured
         """
+        strategy =  ResourceStrategy()
         if resources.tasks and resources.tasks_per_node:
             strategy = TaskAndTaskPerNodeStrategy()
         elif resources.nodes and resources.tasks_per_node:
