@@ -168,7 +168,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         """ Sets the necessary pre-run configurations"""
         self.job.launcher.options += self.current_partition.get_resource('launcher_options')
         self.job.options += self.machine_reader.config.access
-        self.job.options += ['--threads-per-core=1']
 
     @run_before('run')
     def setExecutable(self):

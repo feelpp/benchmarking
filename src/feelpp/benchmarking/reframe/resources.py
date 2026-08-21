@@ -129,6 +129,20 @@ class ExclusiveAccessEnforcer:
     def enforceExclusiveAccess(self, rfm_test):
         rfm_test.exclusive_access = self.exclusive_access
 
+class HyperthreadingEnforcer:
+    """ Plugin to enforce hyperthreading value to the nodes
+        The hyperthreading value is set to 1 by default
+    """
+    def __init__(self, threads_per_core):
+        """Args:
+            threads_per_core (int): The hyperthreading value
+        """
+        self.threads_per_core = int(threads_per_core) if threads_per_core is not None else 1
+
+    def enforceHyperthreading(self, rfm_test):
+        rfm_test.job.options += [f'--threads-per-core={self.threads_per_core}']
+        rfm_test.multithreading = self.threads_per_core > 1
+
 class ResourceHandler:
     """ Resource Handler to set the resources for the test, based on the resources model """
     @staticmethod
@@ -164,6 +178,8 @@ class ResourceHandler:
 
         if resources.memory:
             MemoryEnforcer(resources.memory).enforceMemory(rfm_test)
+
+
 
         ExclusiveAccessEnforcer(resources.exclusive_access).enforceExclusiveAccess(rfm_test)
 

@@ -10,6 +10,7 @@ class Resources(BaseModel):
     exclusive_access: Optional[Union[str,bool]] = True
 
     cpus_per_task: Optional[Union[str,int]] = 1
+    threads_per_core: Optional[Union[str,int]] = 1 #Hyperthreading
 
     @model_validator(mode="after")
     def validateResources(self):
