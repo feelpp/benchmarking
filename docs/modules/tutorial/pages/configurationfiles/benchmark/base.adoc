@@ -8,7 +8,7 @@ use_case_name [*str*]::
 
     Custom name given to the use case. Serves as an ID of the use case, must be unique across use cases.
 
-timeout [*str*]::
+timeout [*str*] (Optional)::
 
     Job execution timeout, starting when the job is launched (and not pending). Format: days-hours:minutes:seconds
     This field is notably important so that HPC resources are not wasted unnecessarily.
@@ -25,3 +25,6 @@ options [*List[str]*]::
     `[ "--number-of-elements={{parameters.elements.value}}", "--number-of-points={{parameters.points.value}}", "--verbose" ]`
 
 
+prepare_cmds [*List[str]*] (Optional)::
+
+    Specifies commands to execute before running the application. These commands will be placed in the SLURM (or other scheduler) script before the line in charge of running your executable.
