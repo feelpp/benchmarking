@@ -1,3 +1,4 @@
+import tempfile
 from feelpp.benchmarking.dashboardRenderer.component.base import GraphNode
 from feelpp.benchmarking.dashboardRenderer.repository.base import Repository
 from feelpp.benchmarking.dashboardRenderer.views.base import View
@@ -87,23 +88,34 @@ class LeafComponent(GraphNode):
             save (bool): If True, the patch will be written back to the associated data file
                          (e.g., a JSON file) on the filesystem.
         """
-        if save:
-            template_data_files = [d for d in self.view.template_info.data if isinstance(d,TemplateDataFile) and d.prefix and d.prefix == prefix ]
+        template_data_files = [d for d in self.view.template_info.data if isinstance(d,TemplateDataFile) and d.prefix and d.prefix == prefix ]
 
-            if len( template_data_files ) > 1:
-                warnings.warn(f"More than one file having prefix {prefix} found. First occurence will be overwritten")
+        if len( template_data_files ) > 1:
+            warnings.warn(f"More than one file having prefix {prefix} found. First occurence will be overwritten")
 
-            filepath = None
-            if len( template_data_files ) == 0:
-                warnings.warn(f"No data files with {prefix} found in {self.id}. Saving this patch will not be possible.")
+        patch_data = patch.model_dump() if hasattr(patch, "model_dump") else patch
+
+        if not template_data_files:
+            warnings.warn(f"No data files with {prefix} found in {self.id}. Saving/patching will not be possible.")
+        else:
+            target_file = template_data_files[0]
+            if save:
+                write_path = os.path.join(self.view.template_data_dir, target_file.filepath) if hasattr(self.view,"template_data_dir") and self.view.template_data_dir else target_file.filepath
             else:
-                filepath = template_data_files[0].filepath
-                format = template_data_files[0].format
+                base_dir = self.view.template_data_dir if hasattr(self.view,"template_data_dir") and self.view.template_data_dir else (os.path.dirname(target_file.filepath) or ".")
 
-            if filepath:
-                with open( os.path.join( self.view.template_data_dir, filepath ), "w" ) as f:
-                    if format == "json":
-                        json.dump( patch.model_dump(), f )
-                    else:
-                        f.write( patch )
-        self.view.updateTemplateData( {prefix:patch} )
+                tmp_fd, write_path = tempfile.mkstemp(dir=base_dir, suffix=f".{target_file.format}")
+                os.close(tmp_fd)
+            target_file.filepath = write_path
+
+            with open(write_path, "w") as f:
+                if target_file.format == "json":
+                    json.dump(patch_data, f)
+                else:
+                    f.write(patch_data)
+            self.view.updateTemplateData(target_file)
+
+            if not save: #Cleanup temp file
+                os.remove(write_path)
+
+        self.view.updateTemplateData( {prefix:patch_data} )

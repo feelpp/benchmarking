@@ -118,8 +118,10 @@ class ConfigReader:
         self.context = { "dry_run":dry_run }
         if config_paths:
             self.config = self.load( self.prepareConfigs(config_paths), schema )
+            self.original_config = self.config.model_copy()
+        else:
+            self.config = None
         self.name = name
-        self.original_config = self.config.model_copy()
         self.processor = TemplateProcessor()
         for additional_reader in additional_readers:
             self.updateConfig(TemplateProcessor.flattenDict(additional_reader.config,additional_reader.name))
@@ -169,6 +171,8 @@ class ConfigReader:
             flattened_replace: (dict) Containing all key, pair values that indicate the paths to replace. e.g { "replace.this.path": "with_this_value" }
                 If not provided, placeholders will be changed with own confing
         """
+        if not self.config:
+            return
         if not flattened_replace:
             flattened_replace = TemplateProcessor.flattenDict(self.config.model_dump())
         self.config = self.schema.model_validate(self.processor.recursiveReplace(self.config.model_dump(),flattened_replace), context=self.context)

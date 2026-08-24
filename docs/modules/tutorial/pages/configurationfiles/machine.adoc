@@ -23,6 +23,7 @@ targets [*str | List[str]*] (Optional)::
     Specifies in which partition, platform and prog_environment run benchmarks on.
     The syntax is `[partition:platform:prog_environment]`. Default values are supported by only putting `:`. For example `partition::prog_environment`. Default values are "default" for partition and prog_environment, and "builtin" for platform.
     You can choose between providing this field OR indicating all `partitions`, `platform`, `prog_environments` fields.
+    Defaults to "default:builtin:default" if not provided.
 
 partitions [*List[str]*] (Optional)::
 
@@ -63,9 +64,13 @@ input_user_dir [*str*] (Optional)::
     Base directory where input data can be found before running tests. If provided, `input_dataset_base_dir` should be present too. It is used to copy `input_file_dependencies` from this directory to the `input_dataset_base_dir`.
     Refer to xref:tutorial:advancedConfiguration.adoc[Advanced Configuration] for more information.
 
-output_app_dir [*str*]::
+output_app_dir [*str*] (Optional)::
 
     The base directory where the benchmarked application should write its outputs to.
+
+prepare_cmds [*List[str]*] (Optional)::
+
+    Specifies commands to execute before running the application. These commands will be placed in the SLURM (or other scheduler) script before the line in charge of running your executable.
 
 containers Dict[str,Container] (Optional)::
 

@@ -72,11 +72,44 @@ The previous script will do the following:
 
 == Quickstart
 
-For detailed documentation, refer to our link:https://bench.feelpp.org/benchmarking/tutorial/index.html[docs].
+For detailed documentation, refer to our link:https://bench.feelpp.org/benchmarking/tutorial/configuration.html[docs].
+
+[IMPORTANT]
+Make sure to set up the xref:tutorial:gettingstarted.adoc#_prerequisites[Antora Environment].
+
+If not done yet, run the following command to initialize the Antora environment:
+
+[source,bash]
+----
+feelpp-antora init
+----
+
+Create a `bench.json` file :
+
+[source, json]
+----
+{
+    "use_case_name":"sleep_bench",
+    "executable":"sleep",
+    "options":["1"]
+}
+----
+
+And run the benchmark with
+
+[source,bash]
+----
+feelpp-benchmarking-exec -bc ./bench.json -w
+----
+
+This will launch a server to view the benchmark results.
+
+== Example
+
 
 === The benchmarked application
 
-The framwork includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _examples/parallelsum/parallelSum.cpp_, or you can download it here : link:https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp[parallelSum.cpp]
+The framework includes a sample C++/MPI application that can be used to get familiar with the framework's core concepts. It can be found under _examples/parallelsum/parallelSum.cpp_, or you can download it here : link:https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp[parallelSum.cpp]
 
 This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.
 
@@ -284,4 +317,4 @@ The script takes the following arguments:
     `--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
     `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
     `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
-    `--website` (`-w`) : [Optional] Automatically compite the website and start an http server.
+    `--website` (`-w`) : [Optional] Automatically compile the website and start an http server.
