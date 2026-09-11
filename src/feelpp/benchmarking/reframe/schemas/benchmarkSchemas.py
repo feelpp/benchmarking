@@ -1,3 +1,4 @@
+import os
 from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict, ValidationError
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.schemas.parameters import Parameter
