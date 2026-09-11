@@ -43,11 +43,11 @@ def main_cli():
             configs += [{"json_report":parser.args.plots_config}]
         app_reader = ConfigReader(configs,ConfigFile,"app",dry_run=parser.args.dry_run,additional_readers=[machine_reader])
 
-        executable_name = os.path.basename(app_reader.config.executable).split(".")[0]
+        application_name = app_reader.config.application_name
         if parser.args.dry_run:
             report_folder_path = None
         else:
-            report_folder_path = cmd_builder.createReportFolder(executable_name,app_reader.config.use_case_name)
+            report_folder_path = cmd_builder.createReportFolder(application_name,app_reader.config.use_case_name)
 
         #===============PULL IMAGES==================#
         if not parser.args.dry_run:
@@ -87,13 +87,13 @@ def main_cli():
             common_itempath = "/".join(common_itempath[:-1 - (common_itempath[-1] == "")])
 
             website_config.updateExecutionMapping(
-                executable_name, machine_reader.config.machine, app_reader.config.use_case_name,
+                application_name, machine_reader.config.machine, app_reader.config.use_case_name,
                 report_itempath = common_itempath
             )
 
             website_config.updateMachine(machine_reader.config.machine)
             website_config.updateUseCase(app_reader.config.use_case_name)
-            website_config.updateApplication(executable_name)
+            website_config.updateApplication(application_name)
 
             website_config.save()
         #======================================================#
