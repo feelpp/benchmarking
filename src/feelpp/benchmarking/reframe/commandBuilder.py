@@ -48,7 +48,6 @@ class CommandBuilder:
 
 
     def buildCommand(self,timeout):
-        assert self.report_folder_path is not None, "Report folder path not set"
         cmd = [
             'reframe',
             f'-C {self.buildConfigFilePath()}',
@@ -57,7 +56,7 @@ class CommandBuilder:
             f'--system={self.machine_config.machine}',
             f'--exec-policy={self.machine_config.execution_policy}',
             f'--prefix={self.machine_config.reframe_base_dir}',
-            f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}',
+            f'--report-file={str(os.path.join(self.report_folder_path,"reframe_report.json"))}' if self.report_folder_path else "",
             f"{self.buildJobOptions(timeout)}",
             f'--perflogdir=logs',
             f'{self.buildExecutionMode()}'

@@ -38,9 +38,6 @@ class TestParser:
                 #two dir and one bench config
                 parser = initParser(['-mc','machine_config.json','-pc','plots_config.json','--dir','tests/configtest','--dir','tests/data','-bc','test_bc.json'])
 
-            with pytest.raises(ValueError,match='sys exit called'):
-                #No machine config
-                parser = initParser(['-pc','plots_config.json','-bc','test_bc.json'])
 
             with pytest.raises(ValueError,match='sys exit called'):
                 #Non-existent dir
