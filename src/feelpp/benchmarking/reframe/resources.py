@@ -75,6 +75,10 @@ class TasksStrategy(ResourceStrategy):
         The number of tasks per node is calculated as the minimum between the number of tasks and the number of CPUs per node
     """
     def configure(self, resources, rfm_test):
+        
+        if resources.cpus_per_task:
+            rfm_test.num_cpus_per_task = int(resources.cpus_per_task)
+
         rfm_test.num_tasks = int(resources.tasks)
         rfm_test.num_nodes = int(np.ceil(rfm_test.num_tasks / rfm_test.current_partition.processor.num_cpus))
         rfm_test.num_tasks_per_node = min(rfm_test.num_tasks, rfm_test.current_partition.processor.num_cpus)
