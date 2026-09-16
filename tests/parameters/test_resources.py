@@ -4,13 +4,14 @@ from feelpp.benchmarking.reframe.resources import TaskAndTaskPerNodeStrategy, No
 
 class ResourcesMocker:
     """ Mocks the resources object """
-    def __init__(self, tasks = None, tasks_per_node = None, nodes = None, memory = None, exclusive_access = None, gpus_per_node = None):
+    def __init__(self, tasks = None, tasks_per_node = None, nodes = None, memory = None, exclusive_access = None, gpus_per_node = None, cpus_per_task = None ):
         self.tasks = tasks
         self.tasks_per_node = tasks_per_node
         self.nodes = nodes
         self.memory = memory
         self.exclusive_access = exclusive_access
         self.gpus_per_node = gpus_per_node
+        self.cpus_per_task = cpus_per_task
 
 
 class RfmTestMocker:
@@ -18,6 +19,7 @@ class RfmTestMocker:
     def __init__(self, num_cpus, memory_per_node):
         self.current_partition = self.Partition(num_cpus=num_cpus, memory_per_node=memory_per_node)
         self.job = self.Job()
+        self.num_cpus_per_task = None #Because the resource strategy does not set it if none.
 
     class Job:
         def __init__(self):

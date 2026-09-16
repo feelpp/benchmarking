@@ -21,7 +21,7 @@ class Parser(BaseParser):
     def addArgs(self):
         """ Add the necessary arguments to the parser"""
         options = self.parser.add_argument_group("Options")
-        options.add_argument('--machine-config', '-mc', required=True, type=str, metavar='MACHINE_CONFIG', help='Path to JSON reframe machine configuration file, specific to a system.')
+        options.add_argument('--machine-config', '-mc', required=False, default=None, type=str, metavar='MACHINE_CONFIG', help='Path to JSON reframe machine configuration file, specific to a system.')
         options.add_argument('--plots-config', '-pc', required=False, default=None, type=str, help='Path to JSON plots configuration file, used to generate figures. \nIf not provided, no plots will be generated. The plots configuration can also be included in the benchmark configuration file, under the "plots" field.')
         options.add_argument('--benchmark-config', '-bc', type=str, nargs='+', action='extend', default=[], metavar='CONFIG', help='Paths to JSON benchmark configuration files \nIn combination with --dir, specify only provide basenames for selecting JSON files.')
         options.add_argument('--custom-rfm-config', '-rc', type=str, required=False, default=None, help="Additional reframe configuration file to use instead of built-in ones. It should correspond the with the --machine-config specifications.")
@@ -40,7 +40,8 @@ class Parser(BaseParser):
     def convertPathsToAbsolute(self):
         """ Converts arguments that contain paths to absolute. No change is made if absolute paths are provided"""
         self.args.benchmark_config = [os.path.abspath(c) for c in self.args.benchmark_config]
-        self.args.machine_config = os.path.abspath(self.args.machine_config)
+        if self.args.machine_config:
+            self.args.machine_config = os.path.abspath(self.args.machine_config)
         if self.args.plots_config:
             self.args.plots_config = os.path.abspath(self.args.plots_config)
 
@@ -52,10 +53,6 @@ class Parser(BaseParser):
 
         if self.args.benchmark_config and len(self.args.dir) > 1:
             print(f'[Error] --dir and --benchmark-config combination can only handle one DIR')
-            sys.exit(1)
-
-        if not self.args.machine_config:
-            print(f'[Error] --machine-config should be specified')
             sys.exit(1)
 
 
