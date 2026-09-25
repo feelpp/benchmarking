@@ -28,13 +28,15 @@ class MachineConfig(BaseModel):
     active: Optional[bool] = True
     execution_policy:Optional[Literal["serial","async"]] = "serial"
     reframe_base_dir:Optional[str] = "./reframe/"
-    reports_base_dir: Optional[str] = "./reports/"
+    reports_base_dir: Optional[str] = os.path.join(os.path.curdir,"reports/")
     input_dataset_base_dir:Optional[str] = None
     input_user_dir:Optional[str] = None
-    output_app_dir:str
+    output_app_dir:Optional[str] = None
     access:Optional[List[str]] = []
     env_variables:Optional[Dict] = {}
     containers:Optional[Dict[str,Container]] = {}
+
+    prepare_cmds: List[str] = []
 
     platform:Optional[Literal["apptainer","docker","builtin"]] = "builtin"
     partitions: Optional[List[str]] = []
@@ -46,15 +48,25 @@ class MachineConfig(BaseModel):
 
     @model_validator(mode="after")
     def parseTargets(self):
+        targets = None
         if not self.targets:
-            if not self.platform or not self.partitions or not self.prog_environments:
-                raise ValueError("Either specify the `targets` field or the (platform, partitions,prog_environments) fields for a cartesian product.")
-            return self
+            if self.platform and self.partitions and self.prog_environments:
+                targets = [
+                    f"{p}:{self.platform}:{e}"
+                    for p in self.partitions
+                    for e in self.prog_environments
+                ]
+                self.partitions = []
+                self.prog_environments = []
+            else:
+                targets = "::"
+        else:
+            targets = self.targets
 
-        self.targets = self.targets if type(self.targets) == list else [self.targets]
+        targets = targets if type(targets) == list else [targets]
         platform = None
 
-        for target in self.targets:
+        for target in targets:
 
             split = target.split(":")
             if len(split) != 3:
