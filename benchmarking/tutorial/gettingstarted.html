@@ -154,29 +154,32 @@ MathJax.Hub.Config({
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">Documentation</a>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="gettingstarted.html">Getting Started</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="index.html#_getting_started">Getting Started</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="configuration.html">Configuration Guide</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="configurationfiles/system.html">System Configuration</a>
+    <a class="nav-link" href="configuration.html#_system_configuration">System Configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="configurationfiles/magicstrings.html">Magic Strings</a>
+    <a class="nav-link" href="configuration.html#_magic_strings">Magic Strings</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="configurationfiles/machine.html">Machine Configuration</a>
+    <a class="nav-link" href="configuration.html#_machine_configuration">Machine Configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="configurationfiles/benchmark.html">Benchmark Configuration</a>
+    <a class="nav-link" href="configuration.html#_benchmark_configuration">Benchmark Configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="configurationfiles/plots.html">Plots Configuration</a>
+    <a class="nav-link" href="configuration.html#_figures">Plots Configuration</a>
   </li>
 </ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="examples.html">Examples</a>
   </li>
 </ul>
   </li>
@@ -329,8 +332,7 @@ MathJax.Hub.Config({
   <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">The Feel++ Benchmarking Project</a></li>
-    <li><a href="index.html">Documentation</a></li>
-    <li><a href="gettingstarted.html">Getting Started</a></li>
+    <li><a href="gettingstarted.html">Getting started</a></li>
   </ul>
 </nav>
 
@@ -492,12 +494,60 @@ source .venv/bin/activate</code></pre>
 <h2 id="_quickstart"><a class="anchor" href="#_quickstart"></a>3. Quickstart</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For detailed documentation, refer to our <a href="https://bench.feelpp.org/benchmarking/tutorial/index.html">docs</a>.</p>
+<p>For detailed documentation, refer to our <a href="https://bench.feelpp.org/benchmarking/tutorial/configuration.html">docs</a>.</p>
 </div>
-<div class="sect2">
-<h3 id="_the_benchmarked_application"><a class="anchor" href="#_the_benchmarked_application"></a>3.1. The benchmarked application</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Make sure to set up the <a href="#_prerequisites">Antora Environment</a>.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>The framwork includes a sample C++/MPI application that can be used to get familiar with the framework&#8217;s core concepts. It can be found under <em>examples/parallelsum/parallelSum.cpp</em>, or you can download it here : <a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp">parallelSum.cpp</a></p>
+<p>If not done yet, run the following command to initialize the Antora environment:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">feelpp-antora init</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a <code>bench.json</code> file :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+    "use_case_name":"sleep_bench",
+    "executable":"sleep",
+    "options":["1"]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And run the benchmark with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">feelpp-benchmarking-exec -bc ./bench.json -w</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will launch a server to view the benchmark results.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example"><a class="anchor" href="#_example"></a>4. Example</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_the_benchmarked_application"><a class="anchor" href="#_the_benchmarked_application"></a>4.1. The benchmarked application</h3>
+<div class="paragraph">
+<p>The framework includes a sample C++/MPI application that can be used to get familiar with the framework&#8217;s core concepts. It can be found under <em>examples/parallelsum/parallelSum.cpp</em>, or you can download it here : <a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.cpp">parallelSum.cpp</a></p>
 </div>
 <div class="paragraph">
 <p>This Feel++ Benchmarking "Hello World" application will compute the sum of an array distributed across multiple MPI processes. Each process will compute a partial sum, and then it will be summed to get the total sum.</p>
@@ -515,7 +565,7 @@ source .venv/bin/activate</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_machine_configuration_files"><a class="anchor" href="#_machine_configuration_files"></a>3.2. Machine configuration files</h3>
+<h3 id="_machine_configuration_files"><a class="anchor" href="#_machine_configuration_files"></a>4.2. Machine configuration files</h3>
 <div class="paragraph">
 <p>The framework also contains a default system configuration, located under <em>examples/machines/default.json</em> corresponding to the file _examples/machines/default.py, that looks like this :</p>
 </div>
@@ -559,7 +609,7 @@ source .venv/bin/activate</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_benchmark_configuration_files"><a class="anchor" href="#_benchmark_configuration_files"></a>3.3. Benchmark configuration files</h3>
+<h3 id="_benchmark_configuration_files"><a class="anchor" href="#_benchmark_configuration_files"></a>4.3. Benchmark configuration files</h3>
 <div class="paragraph">
 <p>Along with machine configuration files, users must provide the specifications of the benchmark. A sample file is provided under <em>examples/parallelsum/parallelSum.json</em>. <a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/parallelSum.json">parallelSum.json</a></p>
 </div>
@@ -637,7 +687,7 @@ source .venv/bin/activate</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_plots_configuration"><a class="anchor" href="#_plots_configuration"></a>3.4. Plots configuration</h3>
+<h3 id="_plots_configuration"><a class="anchor" href="#_plots_configuration"></a>4.4. Plots configuration</h3>
 <div class="paragraph">
 <p>Along with the benchmark configuration, a figure configuration file is provided <em>examples/parallelsum/plots.json</em> Download it here <a href="https://github.com/feelpp/benchmarking/blob/master/examples/parallelsum/plots.json">plots.json</a>.</p>
 </div>
@@ -663,7 +713,7 @@ source .venv/bin/activate</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_running_a_benchmark"><a class="anchor" href="#_running_a_benchmark"></a>3.5. Running a benchmark</h3>
+<h3 id="_running_a_benchmark"><a class="anchor" href="#_running_a_benchmark"></a>4.5. Running a benchmark</h3>
 <div class="paragraph">
 <p>Finally, to benchmark the test application, generate the reports and plot the figures, run (changing the file paths as needed)</p>
 </div>
@@ -707,10 +757,10 @@ source .venv/bin/activate</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_usage"><a class="anchor" href="#_usage"></a>4. Usage</h2>
+<h2 id="_usage"><a class="anchor" href="#_usage"></a>5. Usage</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_executing_a_benchmark"><a class="anchor" href="#_executing_a_benchmark"></a>4.1. Executing a benchmark</h3>
+<h3 id="_executing_a_benchmark"><a class="anchor" href="#_executing_a_benchmark"></a>5.1. Executing a benchmark</h3>
 <div class="paragraph">
 <p>In order to execute a benchmark, you can make use of the <code>feelpp-benchmarking-exec</code> command after all configuration files have been set ( <a href="configuration.html" class="xref page">Configuration Reference</a>).</p>
 </div>
@@ -747,7 +797,7 @@ source .venv/bin/activate</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_rendering_reports"><a class="anchor" href="#_rendering_reports"></a>4.2. Rendering reports</h3>
+<h3 id="_rendering_reports"><a class="anchor" href="#_rendering_reports"></a>5.2. Rendering reports</h3>
 <div class="paragraph">
 <p>To render reports, a webiste configuration file is needed. This file indicates how the website views should be structured, and it indicates the hierarchy of the benchmarks.</p>
 </div>
@@ -769,7 +819,7 @@ source .venv/bin/activate</code></pre>
 `--plot-configs` (`-pc`): Path the a plot configuration to use for a given benchmark. To be used along with --patch-reports
 `--patch-reports` (`-pr`) : Ids of the reports to path, the syntax of the id is machine:application:usecase:date e.g. gaya:feelpp_app:my_use_case:2024_11_05T01_05_32. It is possible to affect all reports in a component by replacing the machine, application, use_case or date by 'all'. Also, one can indicate to patch the latest report by replacing the date by 'latest'. If this option is not provided but plot-configs is, then the latest report will be patched (most recent report date)
 `--save-patches` (`-sp`) : If this flag is active, existing plot configurations will be replaced with the ones provided in patch-reports.
-`--website` (`-w`) : [Optional] Automatically compite the website and start an http server.</pre>
+`--website` (`-w`) : [Optional] Automatically compile the website and start an http server.</pre>
 </div>
 </div>
 </div>

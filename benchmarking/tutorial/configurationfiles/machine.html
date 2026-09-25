@@ -155,28 +155,31 @@ MathJax.Hub.Config({
     <a class="nav-link" href="../index.html">Documentation</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../gettingstarted.html">Getting Started</a>
+    <a class="nav-link" href="../index.html#_getting_started">Getting Started</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../configuration.html">Configuration Guide</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="system.html">System Configuration</a>
+    <a class="nav-link" href="../configuration.html#_system_configuration">System Configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="magicstrings.html">Magic Strings</a>
-  </li>
-  <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="machine.html">Machine Configuration</a>
+    <a class="nav-link" href="../configuration.html#_magic_strings">Magic Strings</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="benchmark.html">Benchmark Configuration</a>
+    <a class="nav-link" href="../configuration.html#_machine_configuration">Machine Configuration</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="plots.html">Plots Configuration</a>
+    <a class="nav-link" href="../configuration.html#_benchmark_configuration">Benchmark Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../configuration.html#_figures">Plots Configuration</a>
   </li>
 </ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../examples.html">Examples</a>
   </li>
 </ul>
   </li>
@@ -329,9 +332,7 @@ MathJax.Hub.Config({
   <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../../index.html">The Feel++ Benchmarking Project</a></li>
-    <li><a href="../index.html">Documentation</a></li>
-    <li><a href="../configuration.html">Configuration Guide</a></li>
-    <li><a href="machine.html">Machine Configuration</a></li>
+    <li><a href="machine.html">Machine configuration</a></li>
   </ul>
 </nav>
 
@@ -384,7 +385,8 @@ For example, passing <code>[--account=&lt;YOUR-ACCOUNT&gt;]</code> will add <cod
 <dd>
 <p>Specifies in which partition, platform and prog_environment run benchmarks on.
 The syntax is <code>[partition:platform:prog_environment]</code>. Default values are supported by only putting <code>:</code>. For example <code>partition::prog_environment</code>. Default values are "default" for partition and prog_environment, and "builtin" for platform.
-You can choose between providing this field OR indicating all <code>partitions</code>, <code>platform</code>, <code>prog_environments</code> fields.</p>
+You can choose between providing this field OR indicating all <code>partitions</code>, <code>platform</code>, <code>prog_environments</code> fields.
+Defaults to "default:builtin:default" if not provided.</p>
 </dd>
 <dt class="hdlist1">partitions [<strong>List[str]</strong>] (Optional)</dt>
 <dd>
@@ -425,9 +427,13 @@ Refer to <a href="../advancedConfiguration.html" class="xref page">Advanced Conf
 <p>Base directory where input data can be found before running tests. If provided, <code>input_dataset_base_dir</code> should be present too. It is used to copy <code>input_file_dependencies</code> from this directory to the <code>input_dataset_base_dir</code>.
 Refer to <a href="../advancedConfiguration.html" class="xref page">Advanced Configuration</a> for more information.</p>
 </dd>
-<dt class="hdlist1">output_app_dir [<strong>str</strong>]</dt>
+<dt class="hdlist1">output_app_dir [<strong>str</strong>] (Optional)</dt>
 <dd>
 <p>The base directory where the benchmarked application should write its outputs to.</p>
+</dd>
+<dt class="hdlist1">prepare_cmds [<strong>List[str]</strong>] (Optional)</dt>
+<dd>
+<p>Specifies commands to execute before running the application. These commands will be placed in the SLURM (or other scheduler) script before the line in charge of running your executable.</p>
 </dd>
 <dt class="hdlist1">containers Dict[str,Container] (Optional)</dt>
 <dd>
