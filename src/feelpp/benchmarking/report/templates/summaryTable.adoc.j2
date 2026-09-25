@@ -5,25 +5,49 @@
 --
 
 {%if "latest_leaf" in repo_table.columns  %}
-[cols="^1,^3,^3,^3,^3,^3", options="header"]
+[cols="^1,^1,^1,^1,^3,^3", options="header"]
 |===
-| | *{{ child_repo_type }}* | Latest | # Runs | # Test Cases | # Failures
+| % Success | # Runs | # Test Cases | # Failures | *{{ child_repo_type }}* | Latest
 
 {% for row in repo_table.reset_index().to_dict(orient="records") %}
 {% set row_url = "leaves/"+row["latest_leaf"]+"/leaf.adoc" %}
-|{% if row["result"] == "pass" %}🟢{% else %}🔴{% endif %} | {{ row[repo_table.index.name] }} | xref:{{row_url}}[{{row["latest"]}}] | {{ row["num_runs"] }} | {{ row["num_cases"] }} | {{ row["num_failures"] }}
+
+{% set total = row["num_cases"] %}
+{% set failures = row["num_failures"] %}
+
+{% set success_pct = ((total - failures) / total * 100) if total > 0 else 0 %}
+{% set pct_fmt = "%.0f"|format(success_pct) %}
+{% set bar_color = "#28a745" if success_pct == 100 else ("#fd7e14" if success_pct >= 80 else "#dc3545") %}
+
+| pass:[<div style="display: inline-block; width: 70px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; vertical-align: middle;"><div style="width: {{ pct_fmt }}%; height: 100%; background: {{ bar_color }};"></div></div> <span style="font-size: 0.9em; margin-left: 5px; font-weight: bold;">{{ pct_fmt }}%</span>]
+| {{ row["num_runs"] }}
+| {{ total }}
+| {{ failures }}
+| {{ row[repo_table.index.name] }}
+| xref:{{row_url}}[{{row["latest"]}}]
 {% endfor %}
 |===
 
 {%else%}
 
-[cols="^1,^3,^3,^3,^3", options="header"]
+[cols="^1,^1,^1,^1,^3", options="header"]
 |===
-| | *{{ child_repo_type }}* | # Runs | # Test Cases | # Failures
+| Success % | # Runs | # Test Cases | # Failures | *{{ child_repo_type }}*
 
 {% for row in repo_table.reset_index().to_dict(orient="records") %}
-{%set row_url = "leaves/"+row["leaves"]+"/leaf.adoc" %}
-|{% if row["result"] == "pass" %}🟢{% else %}🔴{% endif %} | xref:{{row_url}}[{{ row[repo_table.index.name] }}] | {{ row["num_runs"] }} | {{ row["num_cases"] }} | {{ row["num_failures"] }}
+{% set row_url = "leaves/"+row["leaves"]+"/leaf.adoc" %}
+{% set total = row["num_cases"] %}
+{% set failures = row["num_failures"] %}
+
+{% set success_pct = ((total - failures) / total * 100) if total > 0 else 0 %}
+{% set pct_fmt = "%.0f"|format(success_pct) %}
+{% set bar_color = "#28a745" if success_pct == 100 else ("#fd7e14" if success_pct >= 80 else "#dc3545") %}
+
+| pass:[<div style="display: inline-block; width: 70px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; vertical-align: middle;"><div style="width: {{ pct_fmt }}%; height: 100%; background: {{ bar_color }};"></div></div> <span style="font-size: 0.9em; margin-left: 5px; font-weight: bold;">{{ pct_fmt }}%</span>]
+| {{ row["num_runs"] }}
+| {{ total }}
+| {{ failures }}
+| xref:{{row_url}}[{{ row[repo_table.index.name] }}]
 {% endfor %}
 |===
 
