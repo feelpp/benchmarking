@@ -1,3 +1,4 @@
+import os
 from pydantic import BaseModel, field_validator, model_validator, RootModel, ConfigDict, ValidationError
 from typing import Literal, Union, Optional, List, Dict
 from feelpp.benchmarking.reframe.schemas.parameters import Parameter
@@ -20,6 +21,7 @@ class AdditionalFiles(BaseModel):
 
 class ConfigFile(BaseModel):
     executable: str
+    application_name: Optional[str] = None
     timeout: Optional[str] = None
     resources: Optional[Resources] = Resources(tasks=1, exclusive_access=False)
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
@@ -50,6 +52,13 @@ class ConfigFile(BaseModel):
         if isinstance(v, list):
             return JsonReportSchemaWithDefaults.model_validate(v)
         return v
+
+
+    @model_validator(mode="after")
+    def setDefaultApplicationName(self):
+        if not self.application_name:
+            self.application_name = os.path.basename(self.executable).split(".")[0]
+        return self
 
     @field_validator("timeout",mode="before")
     @classmethod
