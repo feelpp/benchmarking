@@ -12,6 +12,8 @@
     | replace('_', '\\_')
     | replace('~', '\\textasciitilde{}')
     | replace('^', '\\^{}')
+    | replace('🟢', '\\textcolor{green}{\\textbullet}')
+    | replace('🔴', '\\textcolor{red}{\\textbullet}')
 }}
 {%- endmacro %}
 
