@@ -8,7 +8,7 @@ site_configuration = {
             'partitions': [
                 {
                     'name': 'production',
-                    'scheduler': 'squeue',
+                    'scheduler': 'slurm',
                     'launcher': 'srun',
                     'max_jobs': 8,
                     'access': ['--partition=production'],
@@ -37,7 +37,7 @@ site_configuration = {
                 },
                 {
                     'name': 'public',
-                    'scheduler': 'squeue',
+                    'scheduler': 'slurm',
                     'launcher': 'srun',
                     'max_jobs': 8,
                     'access': ['--partition=public'],
@@ -66,7 +66,7 @@ site_configuration = {
                 },
                 {
                     'name':'gpu',
-                    'scheduler':'squeue',
+                    'scheduler':'slurm',
                     'launcher':'srun',
                     'max_jobs':4,
                     'access': ['--partition=gpu'],

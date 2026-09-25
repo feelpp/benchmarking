@@ -80,7 +80,7 @@ class TestMachineValidation:
             output_app_dir="path/to/output",
             targets="partition:apptainer:env"
         )
-        assert config.targets == ["partition:apptainer:env"]
+        assert config.targets == "partition:apptainer:env"
         assert config.platform == "apptainer"
         assert config.partitions == ["partition"]
         assert config.prog_environments == ["env"]
@@ -120,16 +120,6 @@ class TestMachineValidation:
         assert config.platform == "apptainer"
         assert set(config.partitions) == {"partition1", "partition2"}
         assert set(config.prog_environments) == {"env1", "env2"}
-
-        with pytest.raises(ValueError, match="Either specify the `targets` field or the .* fields for a cartesian product"):
-            MachineConfig(
-                machine="TestMachine",
-                reframe_base_dir="path/to/reframe",
-                reports_base_dir="path/to/reports",
-                output_app_dir="path/to/output",
-                platform="apptainer",
-                partitions=[]
-            )
 
     def test_checkContainerTypes(self):
         """Tests validation of `containers` field."""

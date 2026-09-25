@@ -25,11 +25,13 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     #TODO: Find a way to avoid env variables
 
     #====================== INIT READERS ==================#
-    machine_reader = ConfigReader(
-        str(os.environ.get("MACHINE_CONFIG_FILEPATH")),
-        MachineConfig, "machine",
-        "--dry-run" in sys.argv
-    )
+    machine_filepath = os.environ.get("MACHINE_CONFIG_FILEPATH")
+    if machine_filepath:
+        machine_reader = ConfigReader( machine_filepath, MachineConfig, "machine", "--dry-run" in sys.argv )
+    else:
+        machine_reader = ConfigReader(None,MachineConfig,"machine",dry_run="--dry-run" in sys.argv)
+        machine_reader.config = MachineConfig(machine="default")
+
 
     app_reader = ConfigReader(
         str(os.environ.get("APP_CONFIG_FILEPATH")),
@@ -157,7 +159,6 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
     @run_before('run')
     def setResources(self):
         ResourceHandler.setResources(self.app_reader.config.resources, self)
-        self.num_cpus_per_task = 1
 
     @run_before('run')
     def cleanupDirectories(self):
@@ -169,7 +170,20 @@ class ReframeSetup(rfm.RunOnlyRegressionTest):
         """ Sets the necessary pre-run configurations"""
         self.job.launcher.options += self.current_partition.get_resource('launcher_options')
         self.job.options += self.machine_reader.config.access
-        self.job.options += ['--threads-per-core=1']
+
+    @run_before('run')
+    def addPrepareCmds(self):
+        self.prerun_cmds += self.machine_reader.config.prepare_cmds
+        self.prerun_cmds += self.app_reader.config.prepare_cmds
+
+    @run_before('run')
+    def wrapCmdInTimer(self):
+        self.prerun_cmds += ['START_TIME=$(python3 -c "import time; print(time.time())")']
+        self.postrun_cmds += [
+            'END_TIME=$(python3 -c "import time; print(time.time())")',
+            'RUNTIME=$(python3 -c "print(f\'{float($END_TIME) - float($START_TIME):.9f}\')")',
+            'echo "__RFM_TOTAL_RUNTIME_SECONDS__=${RUNTIME}"'
+       ]
 
     @run_before('run')
     def setExecutable(self):

@@ -20,7 +20,7 @@ class AdditionalFiles(BaseModel):
 
 class ConfigFile(BaseModel):
     executable: str
-    timeout: Optional[str] = "0-00:05:00"
+    timeout: Optional[str] = None
     resources: Optional[Resources] = Resources(tasks=1, exclusive_access=False)
     platforms:Optional[Dict[str,Platform]] = {"builtin":Platform()}
     use_case_name: str
@@ -33,6 +33,8 @@ class ConfigFile(BaseModel):
     parameters: Optional[List[Parameter]] = []
     additional_files: Optional[AdditionalFiles] = AdditionalFiles()
     json_report: Optional[Union[JsonReportSchemaWithDefaults,List[DefaultPlot]]] = JsonReportSchemaWithDefaults()
+
+    prepare_cmds: List[str] = []
 
     model_config = ConfigDict( extra='allow' )
     def __getattr__(self, item):
@@ -52,16 +54,17 @@ class ConfigFile(BaseModel):
     @field_validator("timeout",mode="before")
     @classmethod
     def validateTimeout(cls,v):
-        pattern = r'^\d+-\d{1,2}:\d{1,2}:\d{1,2}$'
-        if not re.match(pattern, v):
-            raise ValueError(f"Time is not properly formatted (<days>-<hours>:<minutes>:<seconds>) : {v}")
-        days,time = v.split("-")
-        hours,minutes,seconds = time.split(":")
+        if v:
+            pattern = r'^\d+-\d{1,2}:\d{1,2}:\d{1,2}$'
+            if not re.match(pattern, v):
+                raise ValueError(f"Time is not properly formatted (<days>-<hours>:<minutes>:<seconds>) : {v}")
+            days,time = v.split("-")
+            hours,minutes,seconds = time.split(":")
 
-        assert int(days) >= 0
-        assert 24>int(hours)>=0
-        assert 60>int(minutes)>=0
-        assert 60>int(seconds)>=0
+            assert int(days) >= 0
+            assert 24>int(hours)>=0
+            assert 60>int(minutes)>=0
+            assert 60>int(seconds)>=0
 
         return v
 
@@ -97,4 +100,12 @@ class ConfigFile(BaseModel):
             if k not in accepted_platforms:
                 raise ValueError(f"{k} not implemented")
         return v
+
+    @field_validator("platforms",mode="after")
+    @classmethod
+    def addBuiltinPlatform(cls,v):
+        if "builtin" not in v:
+            v["builtin"] = Platform()
+        return v
+
 

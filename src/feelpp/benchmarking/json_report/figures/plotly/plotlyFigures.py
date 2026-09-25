@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 import plotly.express as px
+import plotly.colors as plotly_colors
 
 from feelpp.benchmarking.json_report.figures.base import Figure
 from numpy import float64 as float64
@@ -25,46 +26,59 @@ class PlotlyFigure(Figure):
         """
         fig.update_layout(
             title=self.config.title,
-            xaxis=dict(title = self.config.xaxis.label),
-            yaxis=dict(title = self.config.yaxis.label),
             legend=dict(title=self.config.color_axis.label if self.config.color_axis else "")
         )
+        fig.update_xaxes(title=self.config.xaxis.label, autorange=True)
+        fig.update_yaxes(title=self.config.yaxis.label, autorange=True)
         return fig
 
-    def createSliderAnimation(self,df):
-        """ Creates a plotly slider animation figure from a pandas dataframe. Depending on the provided config parameters.
-        The slider axis corresponds to the secondary_axis parameter of the configuration file.
-        Args:
-            - df (pd.DataFrame): The dataframe containing the figure data.
-        Returns: (go.Figure) The plotly slider animation figure
-        """
-        frames = []
-        ranges=[]
+    def createSliderAnimation(self, df):
+        """ Creates a plotly slider animation figure from a pandas dataframe. """
         secondary_axis = self.config.secondary_axis.parameter
         anim_dimension_values = df.index.get_level_values(secondary_axis).unique().values
 
-        for dim in anim_dimension_values:
-            frame_df = df.xs(dim,level=secondary_axis,axis=0)
-            frames.append(self.createTraces(frame_df))
-            ranges.append(self.getIdealRange(frame_df))
+        all_traces = []
+        steps = []
+        traces_per_frame = []
 
-        if frames:
-            fig = go.Figure(
-                data = frames[0],
-                frames = [
-                    go.Frame( data = f, name=f"frame_{i}", layout=dict( yaxis=dict(range = ranges[i]) ) )
-                    for i,f in enumerate(frames)
-                ],
-                layout=go.Layout(
-                    sliders=[dict(
-                        active=0, currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "), transition = dict(duration= 0),
-                        steps=[dict(label=f"{h}",method="animate",args=[[f"frame_{k}"],dict(mode="immediate",frame=dict(duration=0, redraw=True))]) for k,h in enumerate(anim_dimension_values)],
-                    )],
-                    yaxis=dict(range = ranges[0]),
-                )
+        for i, dim in enumerate(anim_dimension_values):
+            frame_df = df.xs(dim, level=secondary_axis, axis=0)
+            frame_traces = self.createTraces(frame_df)
+            traces_per_frame.append(len(frame_traces))
+
+            for trace in frame_traces:
+                trace.visible = (i == 0)
+                all_traces.append(trace)
+
+        for i, dim in enumerate(anim_dimension_values):
+            visible_array = [False] * len(all_traces)
+
+            start_idx = sum(traces_per_frame[:i])
+            end_idx = start_idx + traces_per_frame[i]
+            for j in range(start_idx, end_idx):
+                visible_array[j] = True
+            step = dict(
+                label=f"{dim}",
+                method="update",
+                args=[
+                    {"visible": visible_array},
+                    {"xaxis.autorange": True, "yaxis.autorange": True}
+                ]
+            )
+            steps.append(step)
+
+        if all_traces:
+            fig = go.Figure(data=all_traces)
+            fig.update_layout(
+                sliders=[dict(
+                    active=0,
+                    currentvalue=dict(prefix=f"{self.config.secondary_axis.label} = "),
+                    steps=steps
+                )]
             )
         else:
             fig = go.Figure()
+
         return fig
 
 
@@ -86,7 +100,7 @@ class PlotlyFigure(Figure):
         """
         return go.Figure(self.createTraces(df))
 
-    def createFigure(self,df, data_dirpath = "."):
+    def createFigure(self,df, data_dirpath = ".", **args):
         """ Creates a figure from the master dataframe
         Args:
             df (pd.DataFrame). The master dataframe containing all reframe test data
@@ -114,12 +128,13 @@ class PlotlyScatterFigure(PlotlyFigure):
             - df (pd.DataFrame): The dataframe containing the figure data.
         Returns: (list[go.Trace]) The Scatter traces to display in the scatter figure.
         """
+        pcolors = plotly_colors.qualitative.Plotly
         return [
             go.Scatter( x = df.index, y = df.loc[:,col], name = col, fill='tonexty' if i > 0 else None, line=dict(color="black",dash="dash") ,mode="lines")
             for i,col in enumerate(self.fill_lines)
         ] + [
-            go.Scatter( x = df.index, y = df.loc[:,col], name = col )
-            for col in [c for c in df.columns if c not in self.fill_lines]
+            go.Scatter( x = df.index, y = df.loc[:,col], name = col, line=dict(color=pcolors[i % len(pcolors)]))
+            for i,col in enumerate([c for c in df.columns if c not in self.fill_lines])
         ]
 
 class PlotlyMarkedScatter(PlotlyFigure):
