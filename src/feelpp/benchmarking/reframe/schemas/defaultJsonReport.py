@@ -1,7 +1,7 @@
-from pydantic import model_validator, ValidationError, field_validator
+from pydantic import Field, model_validator, ValidationError, field_validator
 from typing import List,Dict, Optional
 from feelpp.benchmarking.json_report.figures.schemas.plot import Plot, PlotAxis
-from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema
+from feelpp.benchmarking.json_report.schemas.jsonReport import JsonReportSchema, SectionNode
 
 class DefaultPlotYAxis(PlotAxis):
     parameter: Optional[str] = "value"
@@ -19,6 +19,11 @@ class DefaultPlot(Plot):
 DEFAULT_DATA = [
     { "name":"reframe_json", "filepath":"./reframe_report.json" },
     { "type":"DataTable", "name":"reframe_df", "ref":"reframe_json", "preprocessor":"feelpp.benchmarking.report.plugins.reframeReport:runsToDfPreprocessor" },
+    { "type":"DataTable", "name":"perfvar_table", "ref":"reframe_df",
+        "table_options":{
+            "group_by":{"columns":["perfvalue"],"agg":"first"}
+        }
+    },
     { "type":"DataTable", "name":"parameter_table", "ref":"reframe_df",
         "table_options":{
             "computed_columns":{ "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'" },
@@ -31,7 +36,7 @@ DEFAULT_DATA = [
 
 
 class JsonReportSchemaWithDefaults(JsonReportSchema):
-    data: List[Dict] = []
+    data: List[Dict] = Field(default_factory=lambda: DEFAULT_DATA.copy())
 
     @staticmethod
     def addToDefault(v:list):
@@ -100,5 +105,40 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
         if self.title is None:
             self.title = f"{self.datetime}"
 
+        return self
+
+    @model_validator(mode="after")
+    def applyDefaultContent(self):
+        if not self.contents:
+            self.contents = [
+                SectionNode(**{
+                    "type":"section",
+                    "title":"Parametrization",
+                    "contents":[
+                        {
+                            "type":"table",
+                            "ref": "parameter_table",
+                            "layout":{
+                                "rename":{
+                                    "testcases.time_total":"Total Time (s)",
+                                    "testcases.hashcode":"Hash",
+                                    "result":"",
+                                    "logs_link":""
+                                },
+                                "column_order":["result","testcases.hashcode", "testcases.time_total","logs_link"]
+                            },
+                            "style":{
+                                "column_align":{ "result":"center" },
+                                "column_width":{ "result":1,"logs_link":1},
+                                "classnames":["scrollable","sortable"]
+                            },
+                            "filter":{ "placeholder":"Filter testcases..." }
+                        },
+                        { "type":"table","ref":"perfvar_table", "layout":{
+                            "rename":{"perfvalue":"Performance Variable"}, "column_order":["perfvalue"] 
+                        } }
+                    ]
+                })
+            ]
         return self
 
