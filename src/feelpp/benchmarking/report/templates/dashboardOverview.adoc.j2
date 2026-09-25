@@ -9,7 +9,8 @@
 {% if "leaves" in aggregated["data"] %}
 {% set agg = {
     "date":"first",
-    "runs.num_failures": "max"
+    "runs.num_failures": "max",
+    "runs.num_cases": "max"
 } %}
 
 {% if "machines" in aggregated["data"].columns %}
@@ -30,13 +31,26 @@
 
 [.scrollable]
 --
-[cols="^1,^2,^1,^1,^1, options="header"]
+[cols="^1,^1,^1,^2,^1,^1,^1", options="header"]
 |===
-| Status | Date | machine | application | Use Case
+| Success % | #Testcases | #Failures | Date | machine | application | Use Case
 
 {% for row in df.to_dict(orient="records") %}
 {% set row_url = "leaves/"+row["leaves"]+"/leaf.adoc" %}
-|{% if row["runs.num_failures"] == 0 %}🟢{% else %}🔴{% endif %} | xref:{{row_url}}[{{ row["date"] }}] | {{ row["machines"] }} | {{ row["applications"] }} | {{ row["use_cases"] }}
+{% set total = row["runs.num_cases"] %}
+{% set failures = row["runs.num_failures"] %}
+
+{% set success_pct = ((total - failures) / total * 100) if total > 0 else 0 %}
+{% set pct_fmt = "%.0f"|format(success_pct) %}
+{% set bar_color = "#28a745" if success_pct == 100 else ("#fd7e14" if success_pct >= 80 else "#dc3545") %}
+
+| pass:[<div style="display: inline-block; width: 70px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; vertical-align: middle;"><div style="width: {{ pct_fmt }}%; height: 100%; background: {{ bar_color }};"></div></div> <span style="font-size: 0.9em; margin-left: 5px; font-weight: bold;">{{ pct_fmt }}%</span>]
+| {{ total }}
+| {{ failures }}
+| xref:{{row_url}}[{{ row["date"] }}]
+| {{ row["machines"] }}
+| {{ row["applications"] }}
+| {{ row["use_cases"] }}
 {% endfor %}
 
 |===
