@@ -44,6 +44,8 @@ class PlotlyFigure(Figure):
         for i, dim in enumerate(anim_dimension_values):
             frame_df = df.xs(dim, level=secondary_axis, axis=0)
             frame_traces = self.createTraces(frame_df)
+            if not isinstance(frame_traces, list):
+                frame_traces = [frame_traces]
             traces_per_frame.append(len(frame_traces))
 
             for trace in frame_traces:
