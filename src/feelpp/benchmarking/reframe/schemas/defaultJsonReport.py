@@ -27,7 +27,7 @@ DEFAULT_DATA = [
     { "type":"DataTable", "name":"parameter_table", "ref":"reframe_df",
         "table_options":{
             "computed_columns":{ "logs_link":"f'link:logs/{row[\"testcases.hashcode\"]}.html[Logs]'" },
-            "group_by":{"columns":["testcases.hashcode"], "agg":"first"},
+            "group_by":{"columns":["testcases.hashcode"], "agg":"last"},
             "format":{ "testcases.time_total":"%.3f", "result":{"pass": "🟢", "fail": "🔴", "abort": "🟠"} }
         }
     }
@@ -135,7 +135,7 @@ class JsonReportSchemaWithDefaults(JsonReportSchema):
                             "filter":{ "placeholder":"Filter testcases..." }
                         },
                         { "type":"table","ref":"perfvar_table", "layout":{
-                            "rename":{"perfvalue":"Performance Variable"}, "column_order":["perfvalue"] 
+                            "rename":{"perfvalue":"Performance Variable"}, "column_order":["perfvalue"]
                         } }
                     ]
                 })
