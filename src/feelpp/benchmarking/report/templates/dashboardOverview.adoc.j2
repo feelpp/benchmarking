@@ -9,8 +9,8 @@
 {% if "leaves" in aggregated["data"] %}
 {% set agg = {
     "date":"first",
-    "runs.num_failures": "max",
-    "runs.num_cases": "max"
+    "session_info.num_failures": "first",
+    "session_info.num_cases": "first"
 } %}
 
 {% if "machines" in aggregated["data"].columns %}
@@ -37,8 +37,8 @@
 
 {% for row in df.to_dict(orient="records") %}
 {% set row_url = "leaves/"+row["leaves"]+"/leaf.adoc" %}
-{% set total = row["runs.num_cases"] %}
-{% set failures = row["runs.num_failures"] %}
+{% set total = row["session_info.num_cases"] %}
+{% set failures = row["session_info.num_failures"] %}
 
 {% set success_pct = ((total - failures) / total * 100) if total > 0 else 0 %}
 {% set pct_fmt = "%.0f"|format(success_pct) %}
