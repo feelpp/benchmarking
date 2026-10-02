@@ -123,6 +123,55 @@ def main_cli():
                     os.remove(os.path.join(report_folder_path,"report.json"))
                 os.rmdir(report_folder_path)
 
+
+        #================= MERGE RESTORED SESSION REPORTS =============#
+        if "--restore-session" in parser.args.reframe_args:
+            reframe_args = parser.args.reframe_args.split(" ")
+            restore_session_index = reframe_args.index("--restore-session")
+            restore_session_path = reframe_args[restore_session_index + 1]
+            if not os.path.exists(restore_session_path) or not os.path.isfile(restore_session_path):
+                raise FileNotFoundError(f"Restore session path {restore_session_path} does not exist")
+            with open(restore_session_path,"r") as f:
+                restored_report = json.load(f)
+            with open(os.path.join(report_folder_path,"reframe_report.json"),"r") as f:
+                current_report = json.load(f)
+            restored_report["runs"].extend(current_report["runs"])
+            restored_report["session_info"]["num_cases"] = max([run["num_cases"] for run in restored_report["runs"]])
+            restored_report["session_info"]["num_failures"] = min([run["num_failures"] for run in restored_report["runs"]])
+
+            with open(restore_session_path,"w") as f:
+                json.dump(restored_report,f,indent=4)
+
+            #Update logs and partials
+            new_logs_dir = os.path.join(report_folder_path,"logs")
+            restored_logs_dir = os.path.join(os.path.dirname(restore_session_path),"logs")
+            #Copy new logs into restored, overwrite if existant
+            if os.path.exists(restored_logs_dir):
+                if os.path.exists(new_logs_dir):
+                    for log_file in os.listdir(new_logs_dir):
+                        shutil.copy(os.path.join(new_logs_dir,log_file),restored_logs_dir)
+            else:
+                if os.path.exists(new_logs_dir):
+                    shutil.copytree(new_logs_dir,restored_logs_dir)
+
+            new_partials_dir = os.path.join(report_folder_path,"partials")
+            restored_partials_dir = os.path.join(os.path.dirname(restore_session_path),"partials")
+            #Copy new partials into restored, overwrite if existant
+            if os.path.exists(restored_partials_dir):
+                if os.path.exists(new_partials_dir):
+                    for partial_file in os.listdir(new_partials_dir):
+                        shutil.copy(os.path.join(new_partials_dir,partial_file),restored_partials_dir)
+            else:
+                if os.path.exists(new_partials_dir):
+                    shutil.copytree(new_partials_dir,restored_partials_dir)
+
+            #Remove current report folder
+            if os.path.exists(report_folder_path):
+                shutil.rmtree(report_folder_path)
+        #======================================================#
+
+
+
         # ================== MOVE RESULTS (OPTION)============#
         if parser.args.move_results:
             if not os.path.exists(parser.args.move_results):

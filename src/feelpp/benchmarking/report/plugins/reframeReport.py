@@ -35,8 +35,8 @@ class ReframeReportPlugin:
         leaf_summary = df.groupby("leaves").agg(
             num_runs=("runs.run_index", lambda x: x.max() + 1),
             date=("date", "first"),
-            num_cases=("runs.num_cases", "first"),
-            num_failures=("runs.num_failures", "first"),
+            num_cases=("session_info.num_cases", "first"),
+            num_failures=("session_info.num_failures", "first"),
             result=("result", lambda x: "pass" if (x == "pass").all() else "fail"),
             repo_value=(repository_type, "first"),
         )
@@ -59,7 +59,8 @@ class ReframeReportPlugin:
 
 
     @staticmethod
-    def runsToDf(runs):
+    def runsToDf(report):
+        runs = report.get("runs",[])
         runs_dfs = []
         for run in runs:
             run_df = pd.DataFrame.from_dict(run,orient="index").T.drop(columns="testcases")
@@ -97,10 +98,17 @@ class ReframeReportPlugin:
 
             testcases_df = pd.concat(testcases,axis=0)
             runs_dfs.append(pd.concat([testcases_df,run_df.loc[run_df.index.repeat(perfvar_df.shape[0])].reset_index(drop=True)],axis=1))
-        return pd.concat(runs_dfs,axis=0)
+        runs_df = pd.concat(runs_dfs,axis=0)
+        session_info = report.get("session_info",{})
+        for k,v in session_info.items():
+            if isinstance(v,dict) or isinstance(v,list):
+                runs_df[f"session_info.{k}"] = str(v)
+            else:
+                runs_df[f"session_info.{k}"] = v
+        return runs_df
 
 
 def runsToDfPreprocessor(rfm_report):
     if rfm_report:
-        return ReframeReportPlugin.runsToDf(rfm_report.get("runs",[]))
+        return ReframeReportPlugin.runsToDf(rfm_report)
     return pd.DataFrame()
