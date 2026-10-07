@@ -1,0 +1,321 @@
+= Examples
+
+
+== Sleep
+
+As the "Hello World" for `feelpp.benchmarking` we will measure the execution time of the `sleep` command for multiple values of the sleep duration. The `sleep` command is a simple command that pauses the execution for a specified number of seconds.
+
+To do so, we first need to create the following benchmark configuration file `sleep_bench.json`:
+
+[source,json]
+----
+{
+    "use_case_name":"sleep_bench",
+    "executable":"sleep",
+    "options":["1","2","3"]
+}
+----
+
+We simple need to run it with
+
+[source,bash]
+----
+feelpp-benchmarking-exec -bc ./sleep_bench.json -w
+----
+
+The `-bc` option specifies the benchmark configuration file, and the `-w` option tells the program to render reports and initiate a web server to visualize the results. We can ignore other options for now.
+
+As for the JSON file:
+- `use_case_name` is the name of the benchmark use case.
+- `executable` is the command to be executed.
+- `options` is a list of arguments to be passed to the executable. In this case, we are passing the sleep duration in seconds.
+
+
+
+== Fibonacci
+
+Under the `examples` directory, there is a `fibonacci` folder that contains a Python script that will compute the `n`-th Fibonacci number, using either a recursive or an iterative approach.
+The script takes two arguments: the Fibonacci number to compute (`-n`) and the method to use (`-a`, `--approach`), which can be either `recursive` or `iterative`.
+
+In order to benchmark the execution time of the Fibonacci script for different values of `n` and both approaches, we need to create a benchmark configuration file `fibonacci_bench.json`:
+The script will also output the result in a CSV file, and will log times on the standard output.
+
+
+[source,json]
+----
+{
+    "use_case_name":"Fibonacci",
+    "executable": "python $PWD/examples/fibonacci/fibonacci.py",
+    "output_dir":"$PWD/outputs/fibo",
+    "options":[
+        "-n {{parameters.n.value}}",
+        "-a {{parameters.method.value}}",
+        "-o {{output_dir}}/output.csv"
+    ],
+    "scalability": {
+        "directory":"{{output_dir}}",
+        "stages":[
+            {
+                "name":"",
+                "filepath":"output.csv",
+                "units":{ "fibonacci_number":"" }
+            },
+            {
+                "name":"",
+                "filepath":"stdout",
+                "format":"regex",
+                "pattern": "^(?P<name>[^:\\n]+):\\s*(?P<value>[-+]?[\\d.]+(?:[eE][-+]?\\d+)?)$",
+                "variable_name_group":"name",
+                "variable_value_group":"value"
+            }
+        ]
+    },
+    "sanity":{ "success":["Done!"] },
+
+    "resources": {"tasks":1, "exclusive_access":false },
+    "parameters": [
+        {
+            "name":"n",
+            "range":{"min":10,"max":40,"step":5}
+        },
+        {
+            "name":"method",
+            "sequence":["recursive","iterative"]
+        }
+    ]
+}
+----
+
+
+Let's break down the JSON file:
+- `use_case_name` is the name of the benchmark use case.
+- `executable` is the command to be executed. In this case, we are running the Python script `fibonacci.py`.
+- `output_dir` is the directory where the output files will be stored. This field is optional and is used to be referenced elsewhere in the configuration using `{{output_dir}}`.
+- `options` is a list of arguments to be passed to the executable. In this case, we are passing the Fibonacci number to compute (`-n`), the method to use (`-a`), and the output file path (`-o`).
+- `scalability` is a section that defines how to extract performance metrics from the output files. It contains a list of stages, each with a name, a file path, and a list of units to extract. The first stage extracts the Fibonacci number from the `output.csv` file, while the second stage extracts the execution time from the standard output using a regular expression.
+- `sanity` is a section that defines how to check if the benchmark was successful. In this case, we are looking for the string "Done!" in the standard output. If the string is not found, the benchmark will be considered failed.
+- `resources` is a section that defines the resources to be used for the benchmark. In this case, we are using 1 task, as the algorithm is sequential, and allowing other benchmarks to run concurrently on the same node.
+- `parameters` is a section that defines the parameters to be varied during the benchmark. In this case, we are varying the Fibonacci number to compute (`n`) from 10 to 40 in steps of 5, and the method to use (`method`) between `recursive` and `iterative`.
+
+
+We can also pass a report configuration to customize the outputs. For simplicity, we will create the following file `fibonacci_report.json`:
+
+[source,json]
+----
+{
+"contents":[
+    {
+        "type":"table",
+        "ref": "parameter_table",
+        "layout":{
+            "rename":{
+                "testcases.time_total":"Total Time (s)",
+                "testcases.hashcode":"Hash",
+                "result":"",
+                "logs_link":""
+            },
+            "column_order":["result","testcases.hashcode","n", "method", "testcases.time_total","logs_link"]
+        },
+        "style":{
+            "column_align":{ "result":"center" },
+            "column_width":{ "result":1,"logs_link":1},
+            "classnames":["scrollable","sortable"]
+        },
+        "filter":{ "placeholder":"Filter testcases..." }
+    },
+    {
+        "type": "plot",
+        "plot": {
+            "title": "Time Complexity",
+            "plot_types": [ "scatter" ],
+            "transformation": "performance",
+            "aggregations": [ { "column": "perfvalue", "agg": "filter:elapsed" } ],
+            "xaxis": {"parameter": "n","label": "N"},
+            "yaxis": { "parameter": "value", "label": "Execution time (s)"},
+            "color_axis": { "parameter": "method", "label": "Method" }
+        }
+    }
+]
+}
+----
+
+
+Let's break down the report file:
+- `contents` is a list of content blocks to be included in the report. In this case, we have two blocks: a table and a plot.
+- The table block has a reference name `parameter_table`, and it will display the results of the benchmark in a tabular format. This `parameter_table` is a built-in table that is automatically generated by `feelpp.benchmarking` and contains the results of all test cases. We can customize the layout and style of the table using the `layout` and `style` sections. In this case, we are renaming some columns, changing the order of the columns, aligning the result column to the center, and setting the width of the result and logs_link columns to 1. We are also adding a filter input to allow users to filter the test cases.
+- The plot block has a reference name `reframe_df`, and it will display a scatter
+
+You can then run the benchmark with the following command:
+
+[source,bash]
+----
+feelpp-benchmarking-exec -bc ./fibonacci_bench.json -pc ./fibonacci_report.json -w
+----
+
+
+== Matrix Vector Multiplication
+
+The matrix-vector multiplication example introduces two important features of feelpp.benchmarking: parameterized resources and machine-specific configuration.
+
+The application is a parallel matrix-vector multiplication. We will study its execution time for different matrix sizes and different numbers of parallel tasks.
+The application reports its performance measurements in a JSON file, which can be automatically extracted by feelpp.benchmarking.
+
+Unlike the previous examples, the executable and output directories are not hard-coded in the benchmark configuration.
+Instead, they use values provided by the machine configuration:
+
+[source,json]
+----
+{
+    "machine": "default",
+    "input_dataset_base_dir":"$PWD/examples",
+    "output_app_dir":"$PWD/outputs"
+}
+----
+
+- `machine` is the name of the machine configuration to use. `default` is a built-in configuration that uses the current machine's hostname to determine the appropriate settings. You can also create your own machine ReFrame configuration and pass it with the `-rc` option.
+- `input_dataset_base_dir` is the base directory where the input datasets are located.
+- `output_app_dir` is the base directory where the output files will be stored, for all benchmarks that run on this machine.
+
+These fields can be accessed from the benchmark configuration JSON using the `{{machine.<field>}}` syntax. For example, `{{machine.input_dataset_base_dir}}` will be replaced with the value of `input_dataset_base_dir` from the machine configuration.
+
+This separation is useful because the benchmark itself does not need to contain machine-specific paths.
+
+The source code for this benchmark is located under `examples/matrixvector/matrixvector.cpp`. The application takes two arguments: the size of the matrix  and the number of parallel tasks, in that order.
+
+Compile the application with your preferred compiler and MPI implementation, and then create the following benchmark configuration file `matrixvector_bench.json`:
+
+[source,json]
+----
+{
+    "executable": "{{machine.input_dataset_base_dir}}/matrixvector/matrixvector",
+    "use_case_name": "Multiplication",
+    "timeout":"0-0:5:0",
+    "output_directory": "{{machine.output_app_dir}}/matrixvector",
+    "options": [
+        "{{parameters.elements.value}}",
+        "{{output_directory}}/{{instance}}"
+    ],
+    "scalability": {
+        "directory": "{{output_directory}}/{{instance}}/",
+        "stages": [
+            {
+                "name":"",
+                "filepath": "scalability.json",
+                "format": "json",
+                "variables_path":"*"
+            }
+        ]
+    },
+    "resources":{
+        "tasks":"{{parameters.tasks.value}}",
+        "exclusive_access":false
+    },
+    "sanity": {
+        "success": [],
+        "error": ["[OOPSIE]"]
+    },
+
+    "parameters": [
+        {
+            "name": "tasks",
+            "sequence": [ 1 ,2,4 ]
+        },
+        {
+            "name":"elements",
+            "linspace":{ "min":1000, "max":4000, "n_steps":4 }
+        }
+    ]
+}
+----
+
+In this case, we are varying the number of tasks between 1, 2, and 4, and the matrix size between 1000 and 4000 in 4 steps.
+The number of tasks is passed to the `resources` section using the `{{parameters.tasks.value}}` syntax, which will be replaced with the value of the `tasks` parameter for each test case.
+The output directory is set to `{{machine.output_app_dir}}/matrixvector`, which will be replaced with the value of `output_app_dir` from the machine configuration.
+
+
+As for the report configuration, we will create the following file `matrixvector_report.json`:
+
+[source,json]
+----
+{
+"contents":[
+    {
+        "type": "section",
+        "title": "Execution Time vs Number of Tasks",
+        "contents": [
+            {
+                "type": "plot",
+                "plot": {
+                    "title": "Performance",
+                    "plot_types": [ "scatter", "stacked_bar", "grouped_bar" ],
+                    "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+                    "yaxis": { "label": "Execution time (s)" },
+                    "color_axis": { "filter": [ { "elapsed_fill": "Fill", "elapsed_compute": "Compute" } ] },
+                    "secondary_axis": { "parameter": "elements", "label": "N" }
+                }
+            },
+            {
+                "type": "text",
+                "text": "This plot shows the execution time breakdown (fill and compute stages) as the number of tasks increases. It highlights parallel scaling behavior for different matrix sizes."
+            }
+        ]
+    },
+    {
+        "type": "section",
+        "title": "Execution Time vs Problem Size (N)",
+        "contents": [
+            {
+                "type": "plot",
+                "plot": {
+                    "title": "Absolute performance",
+                    "plot_types": [ "scatter", "stacked_bar", "grouped_bar" ],
+                    "xaxis": { "parameter": "elements", "label": "N" },
+                    "yaxis": { "label": "Execution time (s)" },
+                    "color_axis": { "filter": [ { "elapsed_fill": "Fill", "elapsed_compute": "Compute" } ] },
+                    "secondary_axis": { "parameter": "tasks", "label": "Number of tasks" }
+                }
+            },
+            {
+                "type": "text",
+                "text": "This plot illustrates how execution time scales with matrix size N under different task counts. It helps identify compute bottlenecks and memory throughput constraints."
+            }
+        ]
+    },
+    {
+        "type": "section",
+        "title": "Speedup Analysis",
+        "contents": [
+            {
+                "type": "plot",
+                "plot": {
+                    "title": "Speedup",
+                    "plot_types": [ "scatter" ],
+                    "transformation": "speedup",
+                    "xaxis": { "parameter": "tasks", "label": "Number of tasks" },
+                    "yaxis": { "label": "Speedup" },
+                    "color_axis": { "filter": [ { "elapsed_fill": "Fill", "elapsed_compute": "Compute" } ] },
+                    "secondary_axis": { "parameter": "elements", "label": "N" }
+                }
+            },
+            {
+                "type": "text",
+                "text": "This speedup plot shows how effectively the computation accelerates when increasing task parallelism. It highlights differences between fill and compute phases and reveals scaling limits for larger matrix sizes."
+            }
+        ]
+    }
+]
+}
+----
+
+A more complete report can be found under the `examples` folder.
+
+Finally, we can run the benchmark with the following command:
+
+[source,bash]
+----
+feelpp-benchmarking-exec -bc ./matrixvector_bench.json -pc ./matrixvector_report.json -mc ./machine.json -w
+----
+
+
+
+
