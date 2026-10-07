@@ -278,21 +278,21 @@ The script accepts the following options :
 
   `--machine-config`, (`-mc`)
                         Path to JSON reframe machine configuration file, specific to a system.
-  `--plots-config`, (`-pc`)   Path to JSON plots configuration file, used to generate figures. 
+  `--plots-config`, (`-pc`)   Path to JSON plots configuration file, used to generate figures.
                         If not provided, no plots will be generated. The plots configuration can also be included in the benchmark configuration file, under the "plots" field.
   `--benchmark-config`, (`-bc`)
-                        Paths to JSON benchmark configuration files 
+                        Paths to JSON benchmark configuration files
                         In combination with `--dir`, specify only provide basenames for selecting JSON files.
   `--custom-rfm-config`, (`-rc`)
                         Additional reframe configuration file to use instead of built-in ones. It should correspond the with the `--machine-config` specifications.
   `--dir`, (`-d`)             Name of the directory containing JSON configuration files
-  `--exclude`, (`-e`)         To use in combination with `--dir`, mentioned files will not be launched. 
+  `--exclude`, (`-e`)         To use in combination with `--dir`, mentioned files will not be launched.
                         Only provide basenames to exclude.
-  `--move-results`, (`-mv`)   Directory to move the resulting files to. 
+  `--move-results`, (`-mv`)   Directory to move the resulting files to.
                         If not provided, result files will be located under the directory specified by the machine configuration.
-  `--list-files`, (`-lf`)     List all benchmarking configuration file found. 
+  `--list-files`, (`-lf`)     List all benchmarking configuration file found.
                         If this option is provided, the application will not run. Use it for validation.
-  `--verbose`, (`-v`)         Select verbose level by specifying multiple v's. 
+  `--verbose`, (`-v`)         Select verbose level by specifying multiple v's.
   `--help`, (`-h`)            Display help and quit program
   `--website`, (`-w`)         Render reports, compile them and create the website.
   `--dry-run`             Execute ReFrame in dry-run mode. No tests will run, but the script to execute it will be generated in the stage directory. Config validation will be skipped, although warnings will be raised if bad.

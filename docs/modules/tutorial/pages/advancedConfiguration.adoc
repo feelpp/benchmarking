@@ -1,16 +1,186 @@
 = Advanced Configuration
 
 == Downloading remote data
-TODO
 
-== Transfering input files between disks
-TODO
+The framework supports specifying remote dependencies to be downloaded before the benchmark executes.
+To do so, the benchmark configuration file must contain a `remote_input_dependencies` field.
+
+Currently, only "Girder" data platform is supported. The following example shows how to specify a Girder dependency.
+
+[source, json]
+----
+{
+"remote_input_dependencies": {
+    "my_remote_data":{
+        "girder":{ "item": "my_item_remote_id" },
+        "destination": "/path/to/output/directory"
+    }
+}
+}
+----
+
+[TIP]
+====
+Girder supports specifying the ID of either an item, a file or a folder.
+====
+
+The destination path can be accessed by other fields using the `{{remote_input_dependencies.my_input_file.destination}}` syntax.
+
+
+== Input File Dependencies And Transfering input files between disks
+
+The _feelpp.benchmarking_ framework allows you to specify input file dependencies in the Benchmark Specification file. This is notably useful to impose validation checks on the input files before running the benchmark.
+
+Additionally, this field can be used to handle data transfer between different disks.
+
+For example, most HPC clusters have Large Capacity disks and High Performance disks. A common problem is that the application's performance can be bottlenecked by the disk's read/write speed if the input files are stored on the Large Capacity disk. In this case, you can use the `input_file_dependencies` field to copy the input files to the High Performance disk before running the benchmark, and delete them after the benchmark is completed so that the High Performance disk does not become cluttered.
+
+== How to specify file dependencies
+
+The `input_file_dependencies` field is a dictionary containing a custom name as the key and an absolute or relative path to the file as the value.
+
+However, this field is highly dependent on a special field on the Machine Specification file: `input_user_dir`.
+
+- If this field is not specified and the filepaths are relative, they are relative to `machine.input_dataset_base_dir`.
+- If this field is specified, the filepaths should be relative to `machine.input_user_dir`, and they will be copied from `machine.input_user_dir` to `machine.input_dataset_base_dir` keeping the same directory structure.
+
+
+.Using file dependencies
+[.examp#examp:3]
+****
+
+If we have the following diretory paths set on the machine configuration file:
+
+[source,json]
+----
+{
+"input_dataset_base_dir":"/hpd/input_data",
+"input_user_dir":"/lcd/input_data"
+}
+----
+
+And the following `input_file_dependencies` field in the Benchmark Specification file:
+
+[source,json]
+----
+"input_file_dependencies":{
+    "my_input_file": "input_file.txt"
+}
+----
+
+1. First, the framework will check if the file `lcd/input_data/input_file.txt` exists.
+2. Right before job submission, it will then copy the file from `lcd/input_data/input_file.txt` to `hpd/input_data/input_file.txt`.
+3. The jobs will run using the file `hpd/input_data/input_file.txt`.
+4. After the job is completed, the file `hpd/input_data/input_file.txt` will be deleted.
+
+****
+
+NOTE: The existance of all file dependencies will be verified.
+
+TIP: Parameters can be used in the `input_file_dependencies` field for refactoring.
 
 == Pruning the parameter space
-TODO
+
+It is possible to specify a set of conditions on each parameter to decide whether a parameter value should be included in the parameter space or not. This is done by specifying a `conditions` field on a given parameter of the `parameters` section.
+
+The `conditions` field is a dictionary containing each parameter value as the key, and a list of dictionaries each indicating the affected parameter and the value that the affected parameter should have for the condition to be satisfied. If all conditions are satisfied, the parameter value will be included in the parameter space.
+The following example shows how to specify a condition on the `tasks` parameter depending on the `memory`.
+
+[source, json]
+----
+"parameters": {
+    {
+        "name":"memory",
+        "sequence":[512, 1024, 2048]
+    },
+    {
+        "name":"tasks",
+        "sequence":[128, 256, 512],
+        "conditions": {
+            "128":[{"memory":[512, 1024]}]", //Run the benchark with 128 tasks only if the memory is either 512 or 1024
+            //256 tasks will always be included if not specified
+            "512":[{"memory":[2048]}]" //Run the benchark with 512 tasks only if the memory is 2048
+        }
+    }
+}
+----
+
+Intersections can also be done, for example:
+
+[source, json]
+----
+"parameters": {
+    {
+        "name":"memory",
+        "sequence":[512, 1024, 2048]
+    },
+    {
+        "name":"tasks",
+        "sequence":[128, 256, 512],
+    },
+    {
+        "name":"mesh",
+        "sequence":["M1", "M2", "M3"],
+        "conditions": {
+            "M1":[{"memory":[512]}, {"tasks":[128]}]", //Run the benchark with mesh M1 only if the memory is 512 and tasks is 128
+            "M2":[{"memory":[1024]}, {"tasks":[256]}]", //Run the benchark with mesh M2 only if the memory is 1024 and tasks is 256
+        }
+    }
+}
+----
+
+
 
 == Specifying custom performance variables
-TODO
 
-== Configuring the dashboard's overview
-TODO
+Custom performance variables can be created by performing operations on existing ones.
+This can be done in the _feelpp.benchmarking_ framework by specifying a custom performance variable in the Benchmark Specification file.
+
+The `custom_varialbes` field should be added on the `scalability` section. This field should contain a list of dictionaries, each dictionary containing the following fields:
+
+- `name`: The given name of the custom performance variable.
+- `operation`: The operation to be performed on the existing performance variables. (available operations: `sum`, `mean`, `max`, `min` ).
+- `columns`: The list of performance variables to be used in the operation.
+- `unit`: The unit of the custom performance variable.
+
+TIP: Custom variables can be used in other custom variables. Recursion is allowed.
+
+.Custom performance variables
+[.examp#examp:4]
+****
+
+Let's say that the _/output/data.csv_ file contains the following performance variables:
+
+[source,raw]
+----
+initialization, simulation, postprocessing
+0.1, 0.2, 0.3
+----
+
+Then, the total time custom performance variable can be specified as follows:
+
+[source,json]
+----
+"scalability": {
+    "directory":"/output",
+    "stages": [
+        {
+            "name": "stage1",
+            "filepath":"data.csv",
+            "format":"csv"
+        }
+    ],
+    "custom_variables":[
+        {
+            "name": "total_time",
+            "op":"sum",
+            "columns": ["stage1_initialization", "stage1_simulation", "stage1_postprocessing"],
+            "unit":"s"
+        }
+    ]
+}
+----
+****
+
+TIP: Variables from different files (stages) can be aggregated in the same custom variable.conditions
+
