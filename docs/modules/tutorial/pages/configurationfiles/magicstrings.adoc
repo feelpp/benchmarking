@@ -65,5 +65,11 @@ For example,
 [CAUTION]
 ====
 Shorthand representations such as `~` and relative paths starting by `.` are not supported.
-For relative file or folder paths, use `$PWD` instead.
+For relative file or folder paths, use `$HOME` and `$PWD` instead.
+====
+
+
+[NOTE]
+====
+Placeholders are resolved recursively until no further substitutions can be made. If a placeholder cannot be resolved, it is left unchanged.
 ====

@@ -45,13 +45,15 @@ env_variables [*Dict[str,str]*] (Optional)::
 
     key:value pairs for machine related environment variables. These variables will be set after the _init_ phase of ReFrame tests.
 
-reframe_base_dir [*str*]::
+reframe_base_dir [*str*] (Optional)::
 
     Directory where ReFrame will save its _stage_ and _output_ directories. If it does not exist, it will be created.
+    Defaults to `./reframe`
 
-reports_base_dir [*str*]::
+reports_base_dir [*str*] (Optional)::
 
     Directory where the output reports should be exported to.
+    Defaults to `./reports`
 
 input_dataset_base_dir [*str*] (Optional)::
 
